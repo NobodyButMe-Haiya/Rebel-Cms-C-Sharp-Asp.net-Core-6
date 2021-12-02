@@ -1,0 +1,580 @@
+-- MariaDB dump 10.19  Distrib 10.6.4-MariaDB, for osx10.16 (x86_64)
+--
+-- Host: localhost    Database: rebelcms
+-- ------------------------------------------------------
+-- Server version	10.6.4-MariaDB
+
+/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
+/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
+/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
+/*!40101 SET NAMES utf8mb4 */;
+/*!40103 SET @OLD_TIME_ZONE=@@TIME_ZONE */;
+/*!40103 SET TIME_ZONE='+00:00' */;
+/*!40014 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0 */;
+/*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
+/*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
+/*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
+
+--
+-- Table structure for table `configuration`
+--
+
+DROP TABLE IF EXISTS `configuration`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `configuration` (
+  `configurationId` int(11) NOT NULL AUTO_INCREMENT,
+  `configurationPortal` varchar(128) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
+  `configurationPortalLocal` varchar(128) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `configurationEmailHost` varchar(128) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `configurationEmail` varchar(128) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
+  `configurationEmailPassword` varchar(128) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
+  `configurationEmailPort` varchar(128) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
+  `configurationEmailSecure` varchar(128) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
+  PRIMARY KEY (`configurationId`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `configuration`
+--
+
+LOCK TABLES `configuration` WRITE;
+/*!40000 ALTER TABLE `configuration` DISABLE KEYS */;
+/*!40000 ALTER TABLE `configuration` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `contact_us`
+--
+
+DROP TABLE IF EXISTS `contact_us`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `contact_us` (
+  `contactUsId` int(11) NOT NULL AUTO_INCREMENT,
+  `tenantId` int(11) NOT NULL,
+  `contactUsName` varchar(32) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `contactUsEmail` varchar(32) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `contactUsMessage` varchar(1024) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `isRead` int(11) DEFAULT NULL,
+  `isDelete` int(11) DEFAULT NULL,
+  PRIMARY KEY (`contactUsId`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `contact_us`
+--
+
+LOCK TABLES `contact_us` WRITE;
+/*!40000 ALTER TABLE `contact_us` DISABLE KEYS */;
+/*!40000 ALTER TABLE `contact_us` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `document_number`
+--
+
+DROP TABLE IF EXISTS `document_number`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `document_number` (
+  `documentNumberId` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `tenantId` int(11) unsigned NOT NULL,
+  `documentNumberCode` varchar(128) COLLATE utf8mb4_unicode_ci DEFAULT '',
+  `documentNumber` int(5) unsigned zerofill DEFAULT NULL,
+  `documentNumberDescription` varchar(128) COLLATE utf8mb4_unicode_ci DEFAULT '',
+  `isDelete` tinyint(2) DEFAULT NULL,
+  `executeBy` varchar(128) COLLATE utf8mb4_unicode_ci DEFAULT '',
+  PRIMARY KEY (`documentNumberId`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `document_number`
+--
+
+LOCK TABLES `document_number` WRITE;
+/*!40000 ALTER TABLE `document_number` DISABLE KEYS */;
+/*!40000 ALTER TABLE `document_number` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `folder`
+--
+
+DROP TABLE IF EXISTS `folder`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `folder` (
+  `folderId` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `tenantId` int(11) unsigned NOT NULL,
+  `folderSeq` int(11) NOT NULL,
+  `folderName` varchar(128) DEFAULT NULL,
+  `folderFilename` varchar(128) DEFAULT NULL,
+  `folderIcon` varchar(128) DEFAULT NULL,
+  `isDelete` int(11) NOT NULL DEFAULT 0,
+  PRIMARY KEY (`folderId`)
+) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=latin1;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `folder`
+--
+
+LOCK TABLES `folder` WRITE;
+/*!40000 ALTER TABLE `folder` DISABLE KEYS */;
+INSERT INTO `folder` VALUES (1,55,1,'Administrator','','fa fa-lock',0),(2,55,3,'Setting','','fa fa-cog',0),(3,55,1,'Application','',NULL,0),(4,55,2,'Menu','','fa fa-bars',0),(5,55,3,'3434','343',NULL,1),(6,55,1,'test1','4',NULL,0),(7,55,5,'6','6','6',1);
+/*!40000 ALTER TABLE `folder` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `folder_access`
+--
+
+DROP TABLE IF EXISTS `folder_access`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `folder_access` (
+  `folderAccessId` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `folderId` int(11) unsigned DEFAULT NULL,
+  `roleId` int(11) unsigned DEFAULT NULL,
+  `folderAccessValue` int(11) DEFAULT NULL,
+  PRIMARY KEY (`folderAccessId`),
+  KEY `folderId` (`folderId`),
+  KEY `roleId` (`roleId`),
+  CONSTRAINT `FK_folder_access_folder` FOREIGN KEY (`folderId`) REFERENCES `folder` (`folderId`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=17 DEFAULT CHARSET=utf8mb4;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `folder_access`
+--
+
+LOCK TABLES `folder_access` WRITE;
+/*!40000 ALTER TABLE `folder_access` DISABLE KEYS */;
+INSERT INTO `folder_access` VALUES (1,1,1,1),(2,2,1,1),(3,3,1,1),(4,4,1,1),(5,1,2,0),(6,2,2,0),(7,3,2,0),(8,4,2,0),(9,1,3,0),(10,2,3,0),(11,3,3,0),(12,4,3,0),(13,1,4,0),(14,2,4,0),(15,3,4,0),(16,4,4,0);
+/*!40000 ALTER TABLE `folder_access` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `follow_up`
+--
+
+DROP TABLE IF EXISTS `follow_up`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `follow_up` (
+  `followUpId` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `tenantId` int(11) unsigned NOT NULL,
+  `followUpName` varchar(128) DEFAULT NULL,
+  `isDelete` int(11) NOT NULL DEFAULT 0,
+  `executeBy` varchar(128) NOT NULL DEFAULT '0',
+  PRIMARY KEY (`followUpId`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `follow_up`
+--
+
+LOCK TABLES `follow_up` WRITE;
+/*!40000 ALTER TABLE `follow_up` DISABLE KEYS */;
+/*!40000 ALTER TABLE `follow_up` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `invoice`
+--
+
+DROP TABLE IF EXISTS `invoice`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `invoice` (
+  `roleId` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `tenantId` int(11) unsigned NOT NULL,
+  `roleName` varchar(128) DEFAULT NULL,
+  `isDelete` int(11) NOT NULL DEFAULT 0,
+  `executeBy` varchar(128) NOT NULL DEFAULT '0',
+  PRIMARY KEY (`roleId`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `invoice`
+--
+
+LOCK TABLES `invoice` WRITE;
+/*!40000 ALTER TABLE `invoice` DISABLE KEYS */;
+/*!40000 ALTER TABLE `invoice` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `invoice_detail`
+--
+
+DROP TABLE IF EXISTS `invoice_detail`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `invoice_detail` (
+  `roleId` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `tenantId` int(11) unsigned NOT NULL,
+  `roleName` varchar(128) DEFAULT NULL,
+  `isDelete` int(11) NOT NULL DEFAULT 0,
+  `executeBy` varchar(128) NOT NULL DEFAULT '0',
+  PRIMARY KEY (`roleId`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `invoice_detail`
+--
+
+LOCK TABLES `invoice_detail` WRITE;
+/*!40000 ALTER TABLE `invoice_detail` DISABLE KEYS */;
+/*!40000 ALTER TABLE `invoice_detail` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `invoice_follow_up`
+--
+
+DROP TABLE IF EXISTS `invoice_follow_up`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `invoice_follow_up` (
+  `invoiceFollowUpId` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `tenantId` int(11) unsigned NOT NULL,
+  `invoiceId` int(11) unsigned NOT NULL,
+  `followUpId` int(11) unsigned NOT NULL,
+  `followUpAttachmentId` int(11) unsigned NOT NULL,
+  `isDelete` int(11) NOT NULL DEFAULT 0,
+  `executeBy` varchar(128) NOT NULL DEFAULT '0',
+  `invoiceFollowUpDescription` int(11) unsigned NOT NULL,
+  PRIMARY KEY (`invoiceFollowUpId`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `invoice_follow_up`
+--
+
+LOCK TABLES `invoice_follow_up` WRITE;
+/*!40000 ALTER TABLE `invoice_follow_up` DISABLE KEYS */;
+/*!40000 ALTER TABLE `invoice_follow_up` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `leaf`
+--
+
+DROP TABLE IF EXISTS `leaf`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `leaf` (
+  `leafId` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `tenantId` int(11) unsigned DEFAULT NULL,
+  `folderId` int(11) unsigned DEFAULT NULL,
+  `leafSeq` int(11) unsigned NOT NULL,
+  `leafName` varchar(100) DEFAULT NULL,
+  `leafFilename` varchar(254) DEFAULT NULL,
+  `leafIcon` varchar(100) DEFAULT NULL,
+  `isDelete` int(11) DEFAULT NULL,
+  PRIMARY KEY (`leafId`),
+  KEY `folderId` (`folderId`),
+  CONSTRAINT `FK_leaf_folder` FOREIGN KEY (`folderId`) REFERENCES `folder` (`folderId`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=22 DEFAULT CHARSET=utf8mb4;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `leaf`
+--
+
+LOCK TABLES `leaf` WRITE;
+/*!40000 ALTER TABLE `leaf` DISABLE KEYS */;
+INSERT INTO `leaf` VALUES (1,55,1,1,'Log','Log','fas fa-clipboard-list',0),(2,55,1,2,'Log System','LogSystem','fas fa-clipboard-list',0),(3,55,1,3,'Role','Role','fa fa-lock',0),(4,55,1,4,'User','User','fa fa-users',0),(5,55,3,5,'User Token','UserToken','fa fa-user-secret',1),(6,55,4,1,'Folder ','Folder','fa fa-folder',0),(7,55,4,3,'Folder Access','folderAccess','fa fa-lock',0),(8,55,4,2,'Leaf','Leaf','fa fa-leaf',0),(9,55,4,4,'Leaf Access','LeafAccess','fa fa-lock',0),(10,55,2,1,'Document Number','DocumentNumber','fa fa-lock',0),(11,55,2,5,'Token Type','Token Type','fa fa-user-secret',1),(12,55,3,5,'Product','Product','fa fa-user-secret',0),(13,55,3,5,'Invoice','Invoice','fa fa-user-secret',1),(14,55,3,5,'Follow Up','FollowUp','fa fa-user-secret',1),(15,55,2,1,'Category','ProductCategory','fa fa-lock',0),(16,55,2,1,'Type','ProductType','fa fa-lock',0),(18,NULL,4,3434,'3434','343',NULL,1),(19,NULL,4,2323,'2323','2323',NULL,1),(20,55,2,3,'232','332323',NULL,1),(21,55,1,6,'6','6',NULL,1);
+/*!40000 ALTER TABLE `leaf` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `leaf_access`
+--
+
+DROP TABLE IF EXISTS `leaf_access`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `leaf_access` (
+  `leafAccessId` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `leafId` int(11) unsigned DEFAULT NULL,
+  `roleId` int(11) unsigned DEFAULT NULL,
+  `leafAccessCreateValue` int(11) DEFAULT NULL,
+  `leafAccessReadValue` int(11) DEFAULT NULL,
+  `leafAccessUpdateValue` int(11) DEFAULT NULL,
+  `leafAccessDeleteValue` int(11) DEFAULT NULL,
+  `leafAccessExtraOneValue` int(11) DEFAULT NULL,
+  `leafAccessExtraTwoValue` int(11) DEFAULT NULL,
+  PRIMARY KEY (`leafAccessId`),
+  KEY `leafId` (`leafId`),
+  KEY `roleId` (`roleId`),
+  CONSTRAINT `FK_leaf_access_leaf` FOREIGN KEY (`leafId`) REFERENCES `leaf` (`leafId`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=41 DEFAULT CHARSET=utf8mb4;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `leaf_access`
+--
+
+LOCK TABLES `leaf_access` WRITE;
+/*!40000 ALTER TABLE `leaf_access` DISABLE KEYS */;
+INSERT INTO `leaf_access` VALUES (1,1,1,0,1,0,0,0,0),(2,2,1,0,1,0,0,0,0),(3,3,1,1,1,1,1,0,0),(4,4,1,1,1,1,1,0,0),(5,5,1,1,1,1,1,0,0),(6,6,1,1,1,1,1,0,0),(7,7,1,1,1,1,1,0,0),(8,8,1,1,1,1,1,0,0),(9,9,1,1,1,1,1,0,0),(10,10,1,1,1,1,1,0,0),(11,11,1,1,1,1,1,0,0),(12,12,1,1,1,1,1,0,0),(13,13,1,1,1,1,1,0,0),(14,14,1,1,1,1,1,0,0),(15,15,1,1,1,1,1,0,0),(16,16,1,1,1,1,1,0,0),(17,1,22,0,0,0,0,0,0),(18,2,22,0,0,0,0,0,0),(19,3,22,0,0,0,0,0,0),(20,4,22,0,0,0,0,0,0),(21,6,22,0,0,0,0,0,0),(22,7,22,0,0,0,0,0,0),(23,8,22,0,0,0,0,0,0),(24,9,22,0,0,0,0,0,0),(25,10,22,0,0,0,0,0,0),(26,12,22,0,0,0,0,0,0),(27,15,22,0,0,0,0,0,0),(28,16,22,0,0,0,0,0,0),(29,1,23,0,0,0,0,0,0),(30,2,23,0,0,0,0,0,0),(31,3,23,0,0,0,0,0,0),(32,4,23,0,0,0,0,0,0),(33,6,23,0,0,0,0,0,0),(34,7,23,0,0,0,0,0,0),(35,8,23,0,0,0,0,0,0),(36,9,23,0,0,0,0,0,0),(37,10,23,0,0,0,0,0,0),(38,12,23,0,0,0,0,0,0),(39,15,23,0,0,0,0,0,0),(40,16,23,0,0,0,0,0,0);
+/*!40000 ALTER TABLE `leaf_access` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `log`
+--
+
+DROP TABLE IF EXISTS `log`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `log` (
+  `logId` int(11) NOT NULL AUTO_INCREMENT,
+  `tenantId` int(11) NOT NULL,
+  `userId` int(11) NOT NULL,
+  `logUserName` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
+  `logQuery` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `logError` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `logDateTime` timestamp(6) NOT NULL DEFAULT current_timestamp(6),
+  PRIMARY KEY (`logId`)
+) ENGINE=MyISAM AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `log`
+--
+
+LOCK TABLES `log` WRITE;
+/*!40000 ALTER TABLE `log` DISABLE KEYS */;
+INSERT INTO `log` VALUES (1,1,55,'idcms','\n                INSERT INTO folder\n                ( \n                    folderId, folderName, \n                    folderFilename, folderIcon, \n                    folderSeq,isDelete,\n                    tenantId\n                )VALUES(\n                    NULL, \'folder\',\n                    \'23\', \'4\',\n                    24,0,\n                        55\n                )','MySql.Data.MySqlClient.MySqlException (0x80004005): Parameter \'@tenantId\' has already been defined.\n   at MySql.Data.MySqlClient.MySqlParameterCollection.InternalAdd(MySqlParameter value, Nullable`1 index)\n   at CallSite.Target(Closure , CallSite , MySqlParameterCollection , String , Object )\n   at System.Dynamic.UpdateDelegates.UpdateAndExecuteVoid3[T0,T1,T2](CallSite site, T0 arg0, T1 arg1, T2 arg2)\n   at RebelCmsTemplate.Repository.Menu.FolderRepository.Create(FolderModel folderModel)','2021-12-01 09:26:14.000000'),(2,1,55,'idcms','\n                UPDATE  folder\n                SET     isDelete = 1\n                WHERE   folderId  = 6;','MySql.Data.MySqlClient.MySqlException (0x80004005): Parameter \'@folderId\' has already been defined.\n   at MySql.Data.MySqlClient.MySqlParameterCollection.InternalAdd(MySqlParameter value, Nullable`1 index)\n   at CallSite.Target(Closure , CallSite , MySqlParameterCollection , String , Object )\n   at System.Dynamic.UpdateDelegates.UpdateAndExecuteVoid3[T0,T1,T2](CallSite site, T0 arg0, T1 arg1, T2 arg2)\n   at RebelCmsTemplate.Repository.Menu.FolderRepository.Delete(FolderModel folderModel)','2021-12-01 09:30:19.000000'),(3,1,1,'admin','','System.IndexOutOfRangeException: Could not find specified column in results: productDescription\n   at MySql.Data.MySqlClient.ResultSet.GetOrdinal(String name)\n   at MySql.Data.MySqlClient.MySqlDataReader.get_Item(String name)\n   at RebelCmsTemplate.Repository.Application.ProductRepository.Read() in /Users/user/Projects/RebelCmsTemplateSharp/RebelCmsTemplate/Repository/Application/ProductRepository.cs:line 143\n   at AspNetCoreGeneratedDocument.Views_Pages_Application_Product.ExecuteAsync() in /Users/user/Projects/RebelCmsTemplateSharp/RebelCmsTemplate/Views/Pages/Application/Product.cshtml:line 21','2021-12-01 11:48:49.000000'),(4,1,1,'admin','','System.IndexOutOfRangeException: Could not find specified column in results: productDescription\n   at MySql.Data.MySqlClient.ResultSet.GetOrdinal(String name)\n   at MySql.Data.MySqlClient.MySqlDataReader.get_Item(String name)\n   at RebelCmsTemplate.Repository.Application.ProductRepository.Read() in /Users/user/Projects/RebelCmsTemplateSharp/RebelCmsTemplate/Repository/Application/ProductRepository.cs:line 143\n   at AspNetCoreGeneratedDocument.Views_Pages_Application_Product.ExecuteAsync() in /Users/user/Projects/RebelCmsTemplateSharp/RebelCmsTemplate/Views/Pages/Application/Product.cshtml:line 21','2021-12-01 11:48:51.000000'),(5,1,1,'admin','','System.IndexOutOfRangeException: Could not find specified column in results: productDescription\n   at MySql.Data.MySqlClient.ResultSet.GetOrdinal(String name)\n   at MySql.Data.MySqlClient.MySqlDataReader.get_Item(String name)\n   at RebelCmsTemplate.Repository.Application.ProductRepository.Read() in /Users/user/Projects/RebelCmsTemplateSharp/RebelCmsTemplate/Repository/Application/ProductRepository.cs:line 143\n   at AspNetCoreGeneratedDocument.Views_Pages_Application_Product.ExecuteAsync() in /Users/user/Projects/RebelCmsTemplateSharp/RebelCmsTemplate/Views/Pages/Application/Product.cshtml:line 21','2021-12-01 11:48:54.000000'),(6,1,1,'admin','','System.IndexOutOfRangeException: Could not find specified column in results: productDescription\n   at MySql.Data.MySqlClient.ResultSet.GetOrdinal(String name)\n   at MySql.Data.MySqlClient.MySqlDataReader.get_Item(String name)\n   at RebelCmsTemplate.Repository.Application.ProductRepository.Read()\n   at AspNetCoreGeneratedDocument.Views_Pages_Application_Product.ExecuteAsync()','2021-12-01 11:51:05.000000');
+/*!40000 ALTER TABLE `log` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `log_system`
+--
+
+DROP TABLE IF EXISTS `log_system`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `log_system` (
+  `logSystemId` int(11) NOT NULL AUTO_INCREMENT,
+  `tenantId` int(11) NOT NULL,
+  `tenantName` int(11) NOT NULL,
+  `logSystemQuery` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `logSystemDateTime` timestamp(6) NOT NULL DEFAULT current_timestamp(6),
+  PRIMARY KEY (`logSystemId`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `log_system`
+--
+
+LOCK TABLES `log_system` WRITE;
+/*!40000 ALTER TABLE `log_system` DISABLE KEYS */;
+/*!40000 ALTER TABLE `log_system` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `product`
+--
+
+DROP TABLE IF EXISTS `product`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `product` (
+  `productId` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `tenantId` int(11) unsigned NOT NULL,
+  `vendorId` int(11) unsigned NOT NULL,
+  `productCategoryId` int(11) unsigned NOT NULL,
+  `productTypeId` int(11) unsigned NOT NULL,
+  `productName` varchar(128) DEFAULT NULL,
+  `productDescription` varchar(128) DEFAULT NULL,
+  `productQuantityPerUnit` varchar(128) DEFAULT NULL,
+  `productCostPrice` double(12,2) DEFAULT NULL,
+  `productSellingPrice` double(12,2) DEFAULT NULL,
+  `productUnitsInStock` double(12,2) DEFAULT NULL,
+  `productUnitsOnOrder` double(12,2) DEFAULT NULL,
+  `productReOrderLevel` double(12,2) DEFAULT NULL,
+  `isDelete` int(11) NOT NULL DEFAULT 0,
+  `executeBy` varchar(128) NOT NULL DEFAULT '0',
+  PRIMARY KEY (`productId`)
+) ENGINE=InnoDB AUTO_INCREMENT=81 DEFAULT CHARSET=utf8mb4;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `product`
+--
+
+LOCK TABLES `product` WRITE;
+/*!40000 ALTER TABLE `product` DISABLE KEYS */;
+INSERT INTO `product` VALUES (4,1,1,1,4,'Chai',NULL,'10 boxes x 20 bags',18.00,23.00,39.00,0.00,10.00,0,'migrate'),(5,1,1,1,4,'Chang',NULL,'24 - 12 oz bottles',19.00,24.00,17.00,40.00,25.00,0,'migrate'),(6,1,1,2,7,'Aniseed Syrup',NULL,'12 - 550 ml bottles',10.00,15.00,13.00,70.00,25.00,0,'migrate'),(7,1,1,2,10,'Chef Anton\'s Cajun Seasoning',NULL,'48 - 6 oz jars',22.00,27.00,53.00,0.00,0.00,0,'migrate'),(8,1,1,2,7,'Chef Anton\'s Gumbo Mix',NULL,'36 boxes',21.35,26.35,0.00,0.00,0.00,0,'migrate'),(9,1,1,2,8,'Grandma\'s Boysenberry Spread',NULL,'12 - 8 oz jars',25.00,30.00,120.00,0.00,25.00,0,'migrate'),(10,1,1,7,20,'Uncle Bob\'s Organic Dried Pears',NULL,'12 - 1 lb pkgs.',30.00,35.00,15.00,0.00,10.00,0,'migrate'),(11,1,1,2,7,'Northwoods Cranberry Sauce',NULL,'12 - 12 oz jars',40.00,45.00,6.00,0.00,0.00,0,'migrate'),(12,1,1,6,6,'Mishi Kobe Niku',NULL,'18 - 500 g pkgs.',97.00,102.00,29.00,0.00,0.00,0,'migrate'),(13,1,1,8,22,'Ikura',NULL,'12 - 200 ml jars',31.00,36.00,31.00,0.00,0.00,0,'migrate'),(14,1,1,4,14,'Queso Cabrales',NULL,'1 kg pkg.',21.00,26.00,22.00,30.00,30.00,0,'migrate'),(15,1,1,4,14,'Queso Manchego La Pastora',NULL,'10 - 500 g pkgs.',38.00,43.00,86.00,0.00,0.00,0,'migrate'),(16,1,1,8,22,'Konbu',NULL,'2 kg box',6.00,11.00,24.00,0.00,5.00,0,'migrate'),(17,1,1,7,21,'Tofu',NULL,'40 - 100 g pkgs.',23.25,28.25,35.00,0.00,0.00,0,'migrate'),(18,1,1,2,7,'Genen Shouyu',NULL,'24 - 250 ml bottles',15.50,20.50,39.00,0.00,5.00,0,'migrate'),(19,1,1,3,11,'Pavlova',NULL,'32 - 500 g boxes',17.45,22.45,29.00,0.00,10.00,0,'migrate'),(20,1,1,6,6,'Alice Mutton',NULL,'20 - 1 kg tins',39.00,44.00,0.00,0.00,0.00,0,'migrate'),(21,1,1,8,23,'Carnarvon Tigers',NULL,'16 kg pkg.',62.50,67.50,42.00,0.00,0.00,0,'migrate'),(22,1,1,3,11,'Teatime Chocolate Biscuits',NULL,'10 boxes x 12 pieces',9.20,14.20,25.00,0.00,5.00,0,'migrate'),(23,1,1,3,12,'Sir Rodney\'s Marmalade',NULL,'30 gift boxes',81.00,86.00,40.00,0.00,0.00,0,'migrate'),(24,1,1,3,13,'Sir Rodney\'s Scones',NULL,'24 pkgs. x 4 pieces',10.00,15.00,3.00,40.00,5.00,0,'migrate'),(25,1,1,5,15,'Gustaf\'s Knckebrd',NULL,'24 - 500 g pkgs.',21.00,26.00,104.00,0.00,25.00,0,'migrate'),(26,1,1,5,16,'Tunnbrd',NULL,'12 - 250 g pkgs.',9.00,14.00,61.00,0.00,25.00,0,'migrate'),(27,1,1,1,2,'Guaran Fantstica',NULL,'12 - 355 ml cans',4.50,9.50,20.00,0.00,0.00,0,'migrate'),(28,1,1,3,11,'NuNuCa Nu-Nougat-Creme',NULL,'20 - 450 g glasses',14.00,19.00,76.00,0.00,30.00,0,'migrate'),(29,1,1,3,11,'Gumbr Gummibrchen',NULL,'100 - 250 g bags',31.23,36.23,15.00,0.00,0.00,0,'migrate'),(30,1,1,3,11,'Schoggi Schokolade',NULL,'100 - 100 g pieces',43.90,48.90,49.00,0.00,30.00,0,'migrate'),(31,1,1,7,20,'Rssle Sauerkraut',NULL,'25 - 825 g cans',45.60,50.60,26.00,0.00,0.00,0,'migrate'),(32,1,1,6,6,'Thringer Rostbratwurst',NULL,'50 bags x 30 sausgs.',123.79,128.79,0.00,0.00,0.00,0,'migrate'),(33,1,1,8,23,'Nord-Ost Matjeshering',NULL,'10 - 200 g glasses',25.89,30.89,10.00,0.00,15.00,0,'migrate'),(34,1,1,4,14,'Gorgonzola Telino',NULL,'12 - 100 g pkgs',12.50,17.50,0.00,70.00,20.00,0,'migrate'),(35,1,1,4,14,'Mascarpone Fabioli',NULL,'24 - 200 g pkgs.',32.00,37.00,9.00,40.00,25.00,0,'migrate'),(36,1,1,4,14,'Geitost',NULL,'500 g',2.50,7.50,112.00,0.00,20.00,0,'migrate'),(37,1,1,1,6,'Sasquatch Ale',NULL,'24 - 12 oz bottles',14.00,19.00,111.00,0.00,15.00,0,'migrate'),(38,1,1,1,5,'Steeleye Stout',NULL,'24 - 12 oz bottles',18.00,23.00,20.00,0.00,15.00,0,'migrate'),(39,1,1,8,23,'Inlagd Sill',NULL,'24 - 250 g  jars',19.00,24.00,112.00,0.00,20.00,0,'migrate'),(40,1,1,8,23,'Gravad lax',NULL,'12 - 500 g pkgs.',26.00,31.00,11.00,50.00,25.00,0,'migrate'),(41,1,1,1,5,'Cte de Blaye',NULL,'12 - 75 cl bottles',263.50,268.50,17.00,0.00,15.00,0,'migrate'),(42,1,1,1,5,'Chartreuse verte',NULL,'750 cc per bottle',18.00,23.00,69.00,0.00,5.00,0,'migrate'),(43,1,1,8,23,'Boston Crab Meat',NULL,'24 - 4 oz tins',18.40,23.40,123.00,0.00,30.00,0,'migrate'),(44,1,1,8,23,'Jack\'s New England Clam Chowder',NULL,'12 - 12 oz cans',9.65,14.65,85.00,0.00,10.00,0,'migrate'),(45,1,1,5,15,'Singaporean Hokkien Fried Mee',NULL,'32 - 1 kg pkgs.',14.00,19.00,26.00,0.00,0.00,0,'migrate'),(46,1,1,1,4,'Ipoh Coffee',NULL,'16 - 500 g tins',46.00,51.00,17.00,10.00,25.00,0,'migrate'),(47,1,1,2,9,'Gula Malacca',NULL,'20 - 2 kg bags',19.45,24.45,27.00,0.00,15.00,0,'migrate'),(48,1,1,8,22,'Rogede sild',NULL,'1k pkg.',9.50,14.50,5.00,70.00,15.00,0,'migrate'),(49,1,1,8,22,'Spegesild',NULL,'4 - 450 g glasses',12.00,17.00,95.00,0.00,0.00,0,'migrate'),(50,1,1,3,11,'Zaanse koeken',NULL,'10 - 4 oz boxes',9.50,14.50,36.00,0.00,0.00,0,'migrate'),(51,1,1,3,11,'Chocolade',NULL,'10 pkgs.',12.75,17.75,15.00,70.00,25.00,0,'migrate'),(52,1,1,3,11,'Maxilaku',NULL,'24 - 50 g pkgs.',20.00,25.00,10.00,60.00,15.00,0,'migrate'),(53,1,1,3,12,'Valkoinen suklaa',NULL,'12 - 100 g bars',16.25,21.25,65.00,0.00,30.00,0,'migrate'),(54,1,1,7,21,'Manjimup Dried Apples',NULL,'50 - 300 g pkgs.',53.00,58.00,20.00,0.00,10.00,0,'migrate'),(55,1,1,5,17,'Filo Mix',NULL,'16 - 2 kg boxes',7.00,12.00,38.00,0.00,25.00,0,'migrate'),(56,1,1,6,6,'Perth Pasties',NULL,'48 pieces',32.80,37.80,0.00,0.00,0.00,0,'migrate'),(57,1,1,6,6,'Tourtire',NULL,'16 pies',7.45,12.45,21.00,0.00,10.00,0,'migrate'),(58,1,1,6,6,'Pt chinois',NULL,'24 boxes x 2 pies',24.00,29.00,115.00,0.00,20.00,0,'migrate'),(59,1,1,5,18,'Gnocchi di nonna Alice',NULL,'24 - 250 g pkgs.',38.00,43.00,21.00,10.00,30.00,0,'migrate'),(60,1,1,5,18,'Ravioli Angelo',NULL,'24 - 250 g pkgs.',19.50,24.50,36.00,0.00,20.00,0,'migrate'),(61,1,1,8,22,'Escargots de Bourgogne',NULL,'24 pieces',13.25,18.25,62.00,0.00,20.00,0,'migrate'),(62,1,1,4,14,'Raclette Courdavault',NULL,'5 kg pkg.',55.00,60.00,79.00,0.00,0.00,0,'migrate'),(63,1,1,4,14,'Camembert Pierrot',NULL,'15 - 300 g rounds',34.00,39.00,19.00,0.00,0.00,0,'migrate'),(64,1,1,2,8,'Sirop d\'rable',NULL,'24 - 500 ml bottles',28.50,33.50,113.00,0.00,25.00,0,'migrate'),(65,1,1,3,13,'Tarte au sucre',NULL,'48 pies',49.30,54.30,17.00,0.00,0.00,0,'migrate'),(66,1,1,2,7,'Vegie-spread',NULL,'15 - 625 g jars',43.90,48.90,24.00,0.00,5.00,0,'migrate'),(67,1,1,5,16,'Wimmers gute Semmelkndel',NULL,'20 bags x 4 pieces',33.25,38.25,22.00,80.00,30.00,0,'migrate'),(68,1,1,2,8,'Louisiana Fiery Hot Pepper Sauce',NULL,'32 - 8 oz bottles',21.05,26.05,76.00,0.00,0.00,0,'migrate'),(69,1,1,2,7,'Louisiana Hot Spiced Okra',NULL,'24 - 8 oz jars',17.00,22.00,4.00,100.00,20.00,0,'migrate'),(70,1,1,1,3,'Laughing Lumberjack Lager',NULL,'24 - 12 oz bottles',14.00,19.00,52.00,0.00,10.00,0,'migrate'),(71,1,1,3,13,'Scottish Longbreads',NULL,'10 boxes x 8 pieces',12.50,17.50,6.00,10.00,15.00,0,'migrate'),(72,1,1,4,14,'Gudbrandsdalsost',NULL,'10 kg pkg.',36.00,41.00,26.00,0.00,15.00,0,'migrate'),(73,1,1,1,5,'Outback Lager',NULL,'24 - 355 ml bottles',15.00,20.00,15.00,10.00,30.00,0,'migrate'),(74,1,1,4,14,'Flotemysost',NULL,'10 - 500 g pkgs.',21.50,26.50,26.00,0.00,0.00,0,'migrate'),(75,1,1,4,14,'Mozzarella di Giovanni',NULL,'24 - 200 g pkgs.',34.80,39.80,14.00,0.00,0.00,0,'migrate'),(76,1,1,8,22,'Rd Kaviar',NULL,'24 - 150 g jars',15.00,20.00,101.00,0.00,5.00,0,'migrate'),(77,1,1,7,20,'Longlife Tofu',NULL,'5 kg pkg.',10.00,15.00,4.00,20.00,5.00,0,'migrate'),(78,1,1,1,2,'Rhnbru Klosterbier',NULL,'24 - 0.5 l bottles',7.75,12.75,125.00,0.00,25.00,0,'migrate'),(79,1,1,1,1,'Lakkalikri',NULL,'500 ml',18.00,23.00,57.00,0.00,20.00,0,'migrate'),(80,1,1,2,10,'Original Frankfurter grne Soe',NULL,'12 boxes',13.00,18.00,32.00,0.00,15.00,0,'migrate');
+/*!40000 ALTER TABLE `product` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `product_category`
+--
+
+DROP TABLE IF EXISTS `product_category`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `product_category` (
+  `productCategoryId` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `tenantId` int(11) unsigned NOT NULL,
+  `productCategoryName` varchar(128) DEFAULT NULL,
+  `isDelete` int(11) NOT NULL DEFAULT 0,
+  `executeBy` varchar(128) NOT NULL DEFAULT '0',
+  PRIMARY KEY (`productCategoryId`)
+) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb4;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `product_category`
+--
+
+LOCK TABLES `product_category` WRITE;
+/*!40000 ALTER TABLE `product_category` DISABLE KEYS */;
+INSERT INTO `product_category` VALUES (1,1,'Beverages',0,'0'),(2,1,'Condiments',0,'0'),(3,1,'Confections',0,'0'),(4,1,'Dairy Products',0,'0'),(5,1,'Grains/Cereals',0,'0'),(6,1,'Meat/Poultry',0,'0'),(7,1,'Produce',0,'0'),(8,1,'Seafood',0,'0');
+/*!40000 ALTER TABLE `product_category` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `product_type`
+--
+
+DROP TABLE IF EXISTS `product_type`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `product_type` (
+  `productTypeId` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `tenantId` int(11) unsigned NOT NULL,
+  `productCategoryId` int(11) unsigned NOT NULL,
+  `productTypeName` varchar(128) DEFAULT NULL,
+  `isDelete` int(11) NOT NULL DEFAULT 0,
+  `executeBy` varchar(128) NOT NULL DEFAULT '0',
+  PRIMARY KEY (`productTypeId`)
+) ENGINE=InnoDB AUTO_INCREMENT=24 DEFAULT CHARSET=utf8mb4;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `product_type`
+--
+
+LOCK TABLES `product_type` WRITE;
+/*!40000 ALTER TABLE `product_type` DISABLE KEYS */;
+INSERT INTO `product_type` VALUES (1,1,1,'Soft drinks',0,'0'),(2,1,1,'coffees',0,'0'),(3,1,1,'coffees',0,'0'),(4,1,1,'teas',0,'0'),(5,1,1,'beers',0,'0'),(6,1,1,'ales',0,'0'),(7,1,2,'Sweet and savory sauces',0,'0'),(8,1,2,'relishes',0,'0'),(9,1,2,'spreads',0,'0'),(10,1,2,'seasonings',0,'0'),(11,1,3,'Desserts',0,'0'),(12,1,3,'candies',0,'0'),(13,1,3,'sweet breads',0,'0'),(14,1,4,'Cheeses',0,'0'),(15,1,5,'Breads',0,'0'),(16,1,5,'crackers',0,'0'),(17,1,5,'pasta',0,'0'),(18,1,5,'cereal',0,'0'),(19,1,6,'Prepared meats',0,'0'),(20,1,7,'Dried fruit',0,'0'),(21,1,7,'bean curd',0,'0'),(22,1,8,'seaweed',0,'0'),(23,1,8,'fish',0,'0');
+/*!40000 ALTER TABLE `product_type` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `role`
+--
+
+DROP TABLE IF EXISTS `role`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `role` (
+  `roleId` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `tenantId` int(11) unsigned NOT NULL,
+  `roleName` varchar(128) DEFAULT NULL,
+  `isDelete` int(11) NOT NULL DEFAULT 0,
+  `executeBy` varchar(128) NOT NULL DEFAULT '0',
+  PRIMARY KEY (`roleId`)
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `role`
+--
+
+LOCK TABLES `role` WRITE;
+/*!40000 ALTER TABLE `role` DISABLE KEYS */;
+INSERT INTO `role` VALUES (1,1,'admin',0,'0'),(2,1,'Employee',0,'0'),(3,1,'Vendor',0,'0');
+/*!40000 ALTER TABLE `role` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `tenant`
+--
+
+DROP TABLE IF EXISTS `tenant`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `tenant` (
+  `tenantId` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `tenantName` varchar(128) DEFAULT NULL,
+  `isDelete` int(11) NOT NULL DEFAULT 0,
+  `executeBy` varchar(128) NOT NULL DEFAULT '0',
+  PRIMARY KEY (`tenantId`)
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `tenant`
+--
+
+LOCK TABLES `tenant` WRITE;
+/*!40000 ALTER TABLE `tenant` DISABLE KEYS */;
+INSERT INTO `tenant` VALUES (1,'dummy',0,'0');
+/*!40000 ALTER TABLE `tenant` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `user`
+--
+
+DROP TABLE IF EXISTS `user`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `user` (
+  `userId` int(11) NOT NULL AUTO_INCREMENT,
+  `roleId` int(11) unsigned DEFAULT NULL,
+  `tenantId` int(11) unsigned DEFAULT NULL,
+  `userName` varchar(128) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT '',
+  `userPassword` varchar(128) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT '',
+  `userAddress` varchar(256) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT '',
+  `userEmail` varchar(128) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT '',
+  `userPhone` varchar(128) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT '',
+  `userPicture` blob DEFAULT NULL,
+  `userNote` varchar(256) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT '',
+  `isDelete` tinyint(2) DEFAULT NULL,
+  `isConform` tinyint(2) DEFAULT NULL,
+  `executeBy` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT '',
+  `executeTime` datetime DEFAULT NULL,
+  PRIMARY KEY (`userId`),
+  KEY `roleId` (`roleId`)
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `user`
+--
+
+LOCK TABLES `user` WRITE;
+/*!40000 ALTER TABLE `user` DISABLE KEYS */;
+INSERT INTO `user` VALUES (1,1,1,'admin','8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92','','','',NULL,'',0,NULL,'',NULL);
+/*!40000 ALTER TABLE `user` ENABLE KEYS */;
+UNLOCK TABLES;
+/*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
+
+/*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
+/*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
+/*!40014 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS */;
+/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
+/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
+/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
+/*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
+
+-- Dump completed on 2021-12-01 20:06:28

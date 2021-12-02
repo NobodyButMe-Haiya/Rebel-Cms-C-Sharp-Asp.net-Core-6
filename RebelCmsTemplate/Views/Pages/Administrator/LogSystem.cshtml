@@ -1,0 +1,292 @@
+﻿@inject Microsoft.AspNetCore.Http.IHttpContextAccessor _httpContextAccessor
+@using RebelCmsTemplate.Models.Administrator
+@using RebelCmsTemplate.Models.Shared
+@using RebelCmsTemplate.Repository.Administrator;
+@using RebelCmsTemplate.Util;
+@using RebelCmsTemplate.Enum;
+@{
+    SharedUtil sharedUtils = new(_httpContextAccessor);
+    List<LogSystemModel> logSystemModels = new();
+    try
+    {
+        LogSystemRepository logSystemRepository = new(_httpContextAccessor);
+        logSystemModels = logSystemRepository.Read();
+    }
+    catch (Exception ex)
+    {
+        sharedUtils.SetSystemException(ex);
+    }
+    var fileInfo = ViewContext.ExecutingFilePath?.Split("/");
+    var filename = fileInfo != null ? fileInfo[4] : "";
+    var name = filename.Split(".")[0];
+    NavigationModel navigationModel = sharedUtils.GetNavigation(name);
+}
+
+    <div class="page-title">
+        <div class="row">
+            <div class="col-12 col-md-6 order-md-1 order-last">
+                <h3>@navigationModel.LeafName</h3>
+            </div>
+            <div class="col-12 col-md-6 order-md-2 order-first">
+                <nav aria-label="breadcrumb" class="breadcrumb-header float-start float-lg-end">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item">
+                            <a href="#">
+                                <i class="@navigationModel.FolderIcon"></i>
+                                @navigationModel.FolderName
+                            </a>
+                        </li>
+                        <li class="breadcrumb-item active" aria-current="page">
+                            <i class="@navigationModel.LeafIcon"></i>
+                            @navigationModel.LeafName
+                        </li>
+                        <li class="breadcrumb-item active" aria-current="page">
+                            <i class="fas fa-sign-out-alt"></i>
+                            <a href="/logout">Logout</a>
+                        </li>
+                    </ol>
+                </nav>
+            </div>
+        </div>
+    </div>
+    <section class="content">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-xs-12 col-sm-12 col-md-12">
+                    <div class="card">
+                        <table class="table table-bordered table-striped table-condensed table-hover" id="tableData">
+                            <thead>
+                                <tr>
+                                    <th scope="col" style="width: 25px; text-align: center">
+                                        <div style="text-align: center">#</div>
+                                    </th>
+                                    <th scope="col">Log Query</th>
+                                    <th scope="col">TimeStamp</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tableBody">
+                                @foreach (var row in logSystemModels)
+                                {
+                                    <tr id="log-@row.LogSystemKey">
+                                        <td>@row.LogSystemQuery</td>
+                                        <td>@row.LogSystemDateTime</td>
+                                    </tr>
+                                }
+
+                                @if (logSystemModels.Count == 0)
+                                {
+                                    <tr>
+                                        <td colspan="7" class="noRecord">
+                                            @SharedUtil.NoRecord
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <script>
+        function resetRecord() {
+            readRecord();
+            $("#search").val("");
+        }
+        function emptyTemplate() {
+            return "" +
+                "<tr>" +
+                "<td colspan='6'>It's lonely here</td>" +
+                "</tr>";
+        }
+        function template(logSystemId, logSystemQuery, logSystemDateTime) {
+            return "" +
+                "<tr id=\"log-" + logSystemId + "'>" +
+                "<td>" + logSystemQuery + "</td>" +
+                "<td>" + logSystemDateTime + "</td>" +
+                "</tr>";
+        }
+        function readRecord() {
+            $.ajax({
+                type: "post",
+                url: "api/administrator/logSystem",
+                contentType: "application/x-www-form-urlencoded",
+                async: false,
+                data: {
+                    mode: "read",
+                    leafCheckKey: @navigationModel.LeafCheckKey
+            },
+                             statusCode: {
+                                 500: function () {
+                                     Swal.fire("System Error", "@SharedUtil.UserErrorNotification", "error");
+                                 }
+                             },
+                             beforeSend: function () {
+                                 console.log("loading ..");
+                             }}).done(function(data)  {
+                    if (data === void 0) {
+                        location.href = "/";
+                    }
+                    let status = data.status;
+                         let code = data.code;
+                    if (data.status) {
+                        if (data.data === void 0) {
+                            $("#tableBody").html("").html(emptyTemplate());
+                        } else {
+                            if (data.data.length > 0) {
+                                let templateStringBuilder = "";
+                                for (let i = 0; i < data.data.length; i++) {
+                                    templateStringBuilder += template(data.data[i].logSystemId, data.data[i].logSystemQuery, data.data[i].logDateTime);
+                                }
+                                $("#tableBody").html("").html(templateStringBuilder);
+                            } else {
+                                $("#tableBody").html("").html(emptyTemplate());
+                            }
+                        }
+                    } else if (status === false) {
+                if (typeof(code) === 'string'){
+                                            @{
+                                                if (sharedUtils.GetRoleId().Equals( (int)AccessEnum.ADMINISTRATOR_ACCESS ))
+                                                {
+                                                    <text>
+                                                    Swal.fire("Debugging Admin", code, "error");
+                                                    </text>
+                                                }
+                                                else
+                                                {
+                                                    <text>
+                                                    Swal.fire("System", "@SharedUtil.UserErrorNotification", "error");
+                                                    </text>
+                                                }
+                                            }
+                                        }else        if (parseInt(code) === parseInt(@((int)ReturnCodeEnum.ACCESS_DENIED) )) {
+                            let timerInterval
+                            Swal.fire({
+                                title: 'Auto close alert!',
+                                html: 'Session Out .Pease Re-login.I will close in <b></b> milliseconds.',
+                                timer: 2000,
+                                timerProgressBar: true,
+                                didOpen: () => {
+                                    Swal.showLoading()
+                                    const b = Swal.getHtmlContainer().querySelector('b')
+                                    timerInterval = setInterval(() => {
+                                        b.textContent = Swal.getTimerLeft()
+                                    }, 100)
+                                },
+                                willClose: () => {
+                                    clearInterval(timerInterval)
+                                }
+                            }).then((result) => {
+                                
+                                if (result.dismiss === Swal.DismissReason.timer) {
+                                    console.log('session out .. ');
+                                    location.href = "/";
+                                }
+                            });
+                        } else {
+                            location.href = "/";
+                        }
+                    } else {
+                        location.href = "/";
+                    }
+             }).fail(function(xhr)  {
+                                                console.log(xhr.status)
+                                                Swal.fire("System", "@SharedUtil.UserErrorNotification", "error");
+                                            }).always(function (){
+                                                console.log("always:complete");    
+                                            });
+      
+        }
+        function searchRecord() {
+            $.ajax({
+                type: "post",
+                url: "api/administrator/logSystem",
+                contentType: "application/x-www-form-urlencoded",
+                async: false,
+                data: {
+                    mode: "search",
+                    leafCheckKey: @navigationModel.LeafCheckKey,
+                    search: $("#search").val()
+                },
+                                 statusCode: {
+                                     500: function () {
+                                         Swal.fire("System Error", "@SharedUtil.UserErrorNotification", "error");
+                                     }
+                                 },
+                                 beforeSend: function () {
+                                     console.log("loading ..");
+                                 }}).done(function(data)  {
+                    if (data === void 0) {
+                        location.href = "/";
+                    }
+                    let status = data.status;
+                         let code = data.code;
+                    if (status) {
+                        console.log(data.data);
+                        if (data.data === void 0) {
+                            $("#tableBody").html("").html(emptyTemplate());
+                        } else {
+                            if (data.data.length > 0) {
+                                let templateStringBuilder = "";
+                                for (let i = 0; i < data.data.length; i++) {
+                                    var row = data.data[i];
+                                    templateStringBuilder += template(row.logSystemId, row.logSystemQuery, row.logDateTime);
+                                }
+                                $("#tableBody").html("").html(templateStringBuilder);
+                            }
+                            console.log(data.data);
+                        }
+                    } else if (status === false) {
+                       if (typeof(code) === 'string'){
+                                                   @{
+                                                       if (sharedUtils.GetRoleId().Equals( (int)AccessEnum.ADMINISTRATOR_ACCESS ))
+                                                       {
+                                                           <text>
+                                                           Swal.fire("Debugging Admin", code, "error");
+                                                           </text>
+                                                       }
+                                                       else
+                                                       {
+                                                           <text>
+                                                           Swal.fire("System", "@SharedUtil.UserErrorNotification", "error");
+                                                           </text>
+                                                       }
+                                                   }
+                                               }else  if (parseInt(code) === parseInt(@((int)ReturnCodeEnum.ACCESS_DENIED) )) {
+                            let timerInterval
+                            Swal.fire({
+                                title: 'Auto close alert!',
+                                html: 'Session Out .Pease Re-login.I will close in <b></b> milliseconds.',
+                                timer: 2000,
+                                timerProgressBar: true,
+                                didOpen: () => {
+                                    Swal.showLoading()
+                                    const b = Swal.getHtmlContainer().querySelector('b')
+                                    timerInterval = setInterval(() => {
+                                        b.textContent = Swal.getTimerLeft()
+                                    }, 100)
+                                },
+                                willClose: () => {
+                                    clearInterval(timerInterval)
+                                }
+                            }).then((result) => {
+                                
+                                if (result.dismiss === Swal.DismissReason.timer) {
+                                    console.log('session out .. ');
+                                    location.href = "/";
+                                }
+                            });
+                        } else {
+                            location.href = "/";
+                        }
+                    } else {
+                        location.href = "/";
+                    }
+              }).fail(function(xhr)  {
+                                                 console.log(xhr.status)
+                                                 Swal.fire("System", "@SharedUtil.UserErrorNotification", "error");
+                                             }).always(function (){
+                                                 console.log("always:complete");    
+                                             });
+        }
+    </script>

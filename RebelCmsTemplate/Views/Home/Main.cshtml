@@ -1,0 +1,182 @@
+﻿@inject Microsoft.AspNetCore.Http.IHttpContextAccessor _httpContextAccessor
+@using RebelCmsTemplate.Models.Menu
+@using RebelCmsTemplate.Util;
+@using RebelCmsTemplate.Enum;
+@{
+    // wee been typing these before
+    SharedUtil sharedUtils = new(_httpContextAccessor);
+
+    var error = "";
+    List<MenuModel> menuModels = new();
+    try
+    {
+        MenuUtil menuUtil = new(_httpContextAccessor);
+        menuModels = menuUtil.GetMenu();
+    }
+    catch (Exception ex)
+    {
+        sharedUtils.SetSystemException(ex);
+        error = ex.Message;
+    }
+
+}
+
+
+@if (sharedUtils.GetTenantId() == 0 || sharedUtils.GetTenantId().Equals(null))
+{
+    <script>
+    location.href = "/";
+</script>
+}
+<style>
+    #main {
+        background-color: #f2f7ff;
+        padding: 20px;
+    }
+</style>
+<div id="app">
+    <div id="sidebar" class="active">
+        <div class="sidebar-wrapper active">
+            <div class="sidebar-header">
+                <div class="d-flex justify-content-between">
+                    <div class="logo">
+                        <a href=""><img src="~/images/logo/logo.png" alt="Logo" srcset=""></a>
+                    </div>
+                    <div class="toggler">
+                        <a href="#" class="sidebar-hide d-xl-none d-block"><i class="bi bi-x bi-middle"></i></a>
+                    </div>
+                </div>
+            </div>
+            <div class="sidebar-menu">
+                <ul class="menu">
+                    @foreach (MenuModel menuModel in menuModels)
+                    {
+                        <li class="sidebar-item active has-sub ">
+                            <a href="#" class='sidebar-link'>
+                                <i class="bi bi-grid-fill"></i>
+                                <span>@menuModel.FolderName</span>
+                            </a>
+                        </li>
+                        @if (menuModel.Details?.Count > 0)
+                        {
+                            foreach (MenuDetailModel menuDetailModel in menuModel.Details)
+                            {
+                                <li class="sidebar-item ">
+                                    <a href="#" class='sidebar-link' onclick="route(@menuDetailModel.LeafKey)">
+                                        <i class="bi bi-stack"></i>
+                                        <span>@menuDetailModel.LeafName</span>
+                                    </a>
+                                </li>
+                            }
+                        }
+
+                    }
+
+                </ul>
+            </div>
+            <button class="sidebar-toggler btn x"><i data-feather="x"></i></button>
+        </div>
+    </div>
+    <div id="main">
+        <header class="mb-3">
+            <a href="#" class="burger-btn d-block d-xl-none">
+                <i class="bi bi-justify fs-3"></i>
+            </a>
+        </header>
+        <div class="page-heading" id="page-content">
+
+            <h3>Profile Statistics</h3>
+
+            <section class="row">
+                Your Dashboard
+                @if (error.Length > 0)
+                {
+                    <div class="row">
+                        @error
+                    </div>
+                }
+            </section>
+        </div>
+        <footer>
+            <div class="footer clearfix mb-0 text-muted">
+                <div class="float-start">
+                    <p>2021 &copy; Mazer && Rebels Developer</p>
+                </div>
+                <div class="float-end">
+                    <p>
+                        Crafted with Rebels Developer And Mazer <span class="text-danger"><i
+                                class="bi bi-heart"></i></span>
+                        by
+                        <a href="https://ahmadsaugi.com">A. Saugi</a>
+                        .
+                    </p>
+                </div>
+                <div class="row col-md-12">
+                    <a rel="license" href="https://creativecommons.org/licenses/by-nc/4.0/"><img
+                            alt="Creative Commons License" style="border-width:0"
+                            src="https://i.creativecommons.org/l/by-nc/4.0/88x31.png" /></a>
+                    <br />This work is licensed under a
+                    <a rel="license" href="https://creativecommons.org/licenses/by-nc/4.0/">Creative Commons
+                        Attribution-NonCommercial 4.0 International License</a>
+
+                </div>
+            </div>
+        </footer>
+    </div>
+
+</div>
+<script>
+    function route(leafCheckId) {
+        $.ajax({
+            type: 'POST',
+            url: "api/route",
+            data: {
+                method: 'view',
+                leafCheckId: leafCheckId
+            },
+            beforeSend: function () {
+                console.log("loading");
+            }
+        }).done(function (data) {
+            let status = data.status;
+            let code = data.code;
+            if (status) {
+                // possible future history.pushState(null, data.title, data.url);
+                $("#page-content").html("").html(data.page)
+            } else if (status === false) {
+                if (parseInt(code) === parseInt(@((int)ReturnCodeEnum.ACCESS_DENIED) )) {
+                    let timerInterval
+                    Swal.fire({
+                        title: 'Auto close alert!',
+                        html: 'Session Out .Pease Re-login.I will close in <b></b> milliseconds.',
+                        timer: 2000,
+                        timerProgressBar: true,
+                        didOpen: () => {
+                            Swal.showLoading()
+                            const b = Swal.getHtmlContainer().querySelector('b')
+                            timerInterval = setInterval(() => {
+                                b.textContent = Swal.getTimerLeft()
+                            }, 100)
+                        },
+                        willClose: () => {
+                            clearInterval(timerInterval)
+                        }
+                    }).then((result) => {
+                        /* Read more about handling dismissals below */
+                        if (result.dismiss === Swal.DismissReason.timer) {
+                            console.log('session out .. ');
+                            location.href = "/";
+                        }
+                    });
+                } else {
+                    location.href = "/";
+                }
+            } else {
+                location.href = "/";
+            }
+        }).fail(function () {
+            console.log(xhr.status)
+            Swal.fire("System", "@SharedUtil.UserErrorNotification", "error");
+        });
+    }
+</script>
