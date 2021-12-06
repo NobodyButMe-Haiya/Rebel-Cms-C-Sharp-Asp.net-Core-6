@@ -22,12 +22,15 @@ Get the code via patreon and with those example.
 # Why does SPA compare to  Normal Website 
 
 1. Normal website do cache all those javascript , css and load lesser but loading time a bit higher. 
-2. Normal javascript like vue , react load one time js field and maybe cache. We don’t like cache for some purpose.
+2. Normal javascript like vue , react load one time js file and maybe cache. We don’t like cache for some purpose.
 
 # What will be odd  in this sample 
  1. XHR error - reason , the server load the data but not async. So don’t worry about it  because you tooo fast clicking. 
 
-
+# Most people said vue,react and angular the best for asp.net for spa?
+1. We no idea , we implement spa 10 years ago  without those thing . The last one using jquery same like this but no need those thing because not existed yet. 
+2. The real spa is no website reload for all pages. Sorry we unsure how to manipulate hispter js library . We live in dom world not ref .
+3. We can easily use resources like php for spa purpose . Razor and hot reload give a bit life
 # What’s really problem in real life application moved to website. 
 
 1. You have  10,000 product . A select box/ combo box in web wouldn’t handle this large data. If you need master-detail setup , rather clicked to open  to edit instead of one time add row  by row detail .  
@@ -36,7 +39,7 @@ Get the code via patreon and with those example.
 Why still rename as Rebel ?
 The name rebel is to make sure people understand we rebel for non structure development. Software development is long process hour and testing. A small company doesn’t understand CMMI or Waterfall only blaim to agile. A real business will be maintain if got stable based application. 
 
-Are this rebel sms for commercial ?
+Are this rebelcms for commercial ?
 Sorry not , if you deploy it commercial you need to contact us via curling_yaw.0w@icloud.com
 If you want cheap solution , please find other . 
 
