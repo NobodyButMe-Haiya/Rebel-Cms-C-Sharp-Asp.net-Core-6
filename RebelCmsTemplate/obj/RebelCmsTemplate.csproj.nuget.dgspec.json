@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "/Users/user/Projects/rebelcmsfinal/Rebel-Cms-C-Sharp-Asp.net-Core-6/RebelCmsTemplate/RebelCmsTemplate.csproj": {}
+    "/Users/user/Projects/Rebel-Cms-C-Sharp-Asp.net-Core-6/RebelCmsTemplate/RebelCmsTemplate.csproj": {}
   },
   "projects": {
-    "/Users/user/Projects/rebelcmsfinal/Rebel-Cms-C-Sharp-Asp.net-Core-6/RebelCmsTemplate/RebelCmsTemplate.csproj": {
+    "/Users/user/Projects/Rebel-Cms-C-Sharp-Asp.net-Core-6/RebelCmsTemplate/RebelCmsTemplate.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "/Users/user/Projects/rebelcmsfinal/Rebel-Cms-C-Sharp-Asp.net-Core-6/RebelCmsTemplate/RebelCmsTemplate.csproj",
+        "projectUniqueName": "/Users/user/Projects/Rebel-Cms-C-Sharp-Asp.net-Core-6/RebelCmsTemplate/RebelCmsTemplate.csproj",
         "projectName": "RebelCmsTemplate",
-        "projectPath": "/Users/user/Projects/rebelcmsfinal/Rebel-Cms-C-Sharp-Asp.net-Core-6/RebelCmsTemplate/RebelCmsTemplate.csproj",
+        "projectPath": "/Users/user/Projects/Rebel-Cms-C-Sharp-Asp.net-Core-6/RebelCmsTemplate/RebelCmsTemplate.csproj",
         "packagesPath": "/Users/user/.nuget/packages/",
-        "outputPath": "/Users/user/Projects/rebelcmsfinal/Rebel-Cms-C-Sharp-Asp.net-Core-6/RebelCmsTemplate/obj/",
+        "outputPath": "/Users/user/Projects/Rebel-Cms-C-Sharp-Asp.net-Core-6/RebelCmsTemplate/obj/",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "/Users/user/.config/NuGet/NuGet.Config"
@@ -69,7 +69,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "/usr/local/share/dotnet/sdk/6.0.100/RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "/usr/local/share/dotnet/sdk/6.0.101/RuntimeIdentifierGraph.json"
         }
       }
     }

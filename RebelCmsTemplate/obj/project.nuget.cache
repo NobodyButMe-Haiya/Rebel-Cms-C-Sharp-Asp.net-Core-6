@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "gn8FCDt9SDTR3Aw0NmZHbYcDVZKX5u+nGxf91smwCoKBWSG8uyVKfvlPbuzsNhMFbacPGeilbHbkNCoTOUMzhg==",
+  "dgSpecHash": "zmaQDuUH0zT7aoqvyMsXT4jUYKxsBXsT9VNI7Xovumsdnj0wQ1L7fspLMVfW6OM1vokjSIZtq9RNH3HT6MfO2Q==",
   "success": true,
-  "projectFilePath": "/Users/user/Projects/rebelcmsfinal/Rebel-Cms-C-Sharp-Asp.net-Core-6/RebelCmsTemplate/RebelCmsTemplate.csproj",
+  "projectFilePath": "/Users/user/Projects/Rebel-Cms-C-Sharp-Asp.net-Core-6/RebelCmsTemplate/RebelCmsTemplate.csproj",
   "expectedPackageFiles": [
     "/Users/user/.nuget/packages/bouncycastle.netcore/1.8.5/bouncycastle.netcore.1.8.5.nupkg.sha512",
     "/Users/user/.nuget/packages/closedxml/0.95.4/closedxml.0.95.4.nupkg.sha512",
