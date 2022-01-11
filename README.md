@@ -34,7 +34,8 @@ Get the code via patreon and with those example.
 # What’s really problem in real life application moved to website. 
 
 1. You have  10,000 product . A select box/ combo box in web wouldn’t handle this large data. If you need master-detail setup , rather clicked to open  to edit instead of one time add row  by row detail .  
-2. Make a textbox suggest using datalist  or Ajax request on key type on TEXTBOX . Saving 10,000 dom is not possible and crash the website . 
+2. Make a textbox suggest using datalist  or Ajax request on key type on TEXTBOX . Saving 10,000 dom is not possible and crash the website .(Maximum 500 record only datalist html)
+3. Create a popup box search using twitter boostrap modal and send the dom id . upon select and search it will send back to the textbox the code instead of all information. Your server need check which code.(Northwind database sample refer to product code , i assume they had this bug issue upon large data) . 
 
 Why still rename as Rebel ?
 The name rebel is to make sure people understand we rebel for non structure development. Software development is long process hour and testing. A small company doesn’t understand CMMI or Waterfall only blaim to agile. A real business will be maintain if got stable based application. 
