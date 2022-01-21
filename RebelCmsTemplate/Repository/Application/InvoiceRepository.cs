@@ -8,26 +8,26 @@ using RebelCmsTemplate.Models.Application;
 using RebelCmsTemplate.Models.Shared;
 using RebelCmsTemplate.Util;
 namespace RebelCmsTemplate.Repository.Application;
-    public class InvoiceRepository
+public class InvoiceRepository
+{
+    private readonly SharedUtil _sharedUtil;
+    public InvoiceRepository(IHttpContextAccessor httpContextAccessor)
     {
-        private readonly SharedUtil _sharedUtil;
-        public InvoiceRepository(IHttpContextAccessor httpContextAccessor)
+        _sharedUtil = new SharedUtil(httpContextAccessor);
+    }
+    public int Create(InvoiceModel invoiceModel)
+    {
+        var lastInsertKey = 0;
+        string sql = string.Empty;
+        List<ParameterModel> parameterModels = new();
+        using MySqlConnection connection = SharedUtil.GetConnection();
+        try
         {
-            _sharedUtil = new SharedUtil(httpContextAccessor);
-        }
-        public int Create(InvoiceModel invoiceModel)
-        {
-            var lastInsertKey = 0;
-            string sql = string.Empty;
-            List<ParameterModel> parameterModels = new ();
-            using MySqlConnection connection = SharedUtil.GetConnection();
-            try
-            {
-                connection.Open();
-                MySqlTransaction mySqlTransaction = connection.BeginTransaction();
-                sql += @"INSERT INTO invoice (invoiceId,tenantId,customerId,shipperId,employeeId,invoiceOrderDate,invoiceRequiredDate,invoiceShippedDate,invoiceFreight,invoiceShipName,invoiceShipAddress,invoiceShipCity,invoiceShipRegion,invoiceShipPostalCode,invoiceShipCountry,isDelete) VALUES (null,@tenantId,@customerId,@shipperId,@employeeId,@invoiceOrderDate,@invoiceRequiredDate,@invoiceShippedDate,@invoiceFreight,@invoiceShipName,@invoiceShipAddress,@invoiceShipCity,@invoiceShipRegion,@invoiceShipPostalCode,@invoiceShipCountry,@isDelete);";
-                MySqlCommand mySqlCommand = new(sql, connection);
-                parameterModels = new List<ParameterModel>
+            connection.Open();
+            MySqlTransaction mySqlTransaction = connection.BeginTransaction();
+            sql += @"INSERT INTO invoice (invoiceId,tenantId,customerId,shipperId,employeeId,invoiceOrderDate,invoiceRequiredDate,invoiceShippedDate,invoiceFreight,invoiceShipName,invoiceShipAddress,invoiceShipCity,invoiceShipRegion,invoiceShipPostalCode,invoiceShipCountry,isDelete) VALUES (null,@tenantId,@customerId,@shipperId,@employeeId,@invoiceOrderDate,@invoiceRequiredDate,@invoiceShippedDate,@invoiceFreight,@invoiceShipName,@invoiceShipAddress,@invoiceShipCity,@invoiceShipRegion,@invoiceShipPostalCode,@invoiceShipCountry,@isDelete);";
+            MySqlCommand mySqlCommand = new(sql, connection);
+            parameterModels = new List<ParameterModel>
                 {
                     new ()
                     {
@@ -106,33 +106,33 @@ namespace RebelCmsTemplate.Repository.Application;
                     },
 
                 };
-                foreach (ParameterModel parameter in parameterModels)
-                {
-                   mySqlCommand.Parameters.AddWithValue(parameter.Key, parameter.Value);
-                }
-                mySqlCommand.ExecuteNonQuery();
-                mySqlTransaction.Commit();
-                lastInsertKey = (int)mySqlCommand.LastInsertedId;
-                mySqlCommand.Dispose();
-            }
-            catch (MySqlException ex)
+            foreach (ParameterModel parameter in parameterModels)
             {
-                System.Diagnostics.Debug.WriteLine(ex.Message);
-                _sharedUtil.SetQueryException(SharedUtil.GetSqlSessionValue(sql, parameterModels), ex);
-                throw new Exception(ex.Message);
+                mySqlCommand.Parameters.AddWithValue(parameter.Key, parameter.Value);
             }
-            return lastInsertKey;
+            mySqlCommand.ExecuteNonQuery();
+            mySqlTransaction.Commit();
+            lastInsertKey = (int)mySqlCommand.LastInsertedId;
+            mySqlCommand.Dispose();
         }
-        public List<InvoiceModel> Read()
+        catch (MySqlException ex)
         {
-            List<InvoiceModel> invoiceModels = new();
-            string sql = string.Empty;
-            List<ParameterModel> parameterModels = new ();
-            using MySqlConnection connection = SharedUtil.GetConnection();
-            try
-            {
-                connection.Open();
-                sql = @"
+            System.Diagnostics.Debug.WriteLine(ex.Message);
+            _sharedUtil.SetQueryException(SharedUtil.GetSqlSessionValue(sql, parameterModels), ex);
+            throw new Exception(ex.Message);
+        }
+        return lastInsertKey;
+    }
+    public List<InvoiceModel> Read()
+    {
+        List<InvoiceModel> invoiceModels = new();
+        string sql = string.Empty;
+        List<ParameterModel> parameterModels = new();
+        using MySqlConnection connection = SharedUtil.GetConnection();
+        try
+        {
+            connection.Open();
+            sql = @"
                 SELECT      *
                 FROM        invoice 
 	 JOIN customer 
@@ -141,58 +141,56 @@ namespace RebelCmsTemplate.Repository.Application;
 	 USING(shipperId)
 	 JOIN employee 
 	 USING(employeeId)
-                WHERE       isDelete !=1
-                ORDER BY    invoiceId DESC ";
-                MySqlCommand mySqlCommand = new(sql, connection);
-                using (var reader = mySqlCommand.ExecuteReader())
+	 WHERE   invoice.isDelete != 1
+                ORDER BY    invoiceId DESC LIMIT 100 ";
+            MySqlCommand mySqlCommand = new(sql, connection);
+            using (var reader = mySqlCommand.ExecuteReader())
+            {
+                while (reader.Read())
                 {
-                    while (reader.Read())
+                   
+                    invoiceModels.Add(new InvoiceModel
                     {
-                        invoiceModels.Add(new InvoiceModel
-                       {
-                            InvoiceKey = Convert.ToInt32(reader["invoiceId"]),
- TenantName = reader["tenantName"].ToString(),
-                            TenantKey = Convert.ToInt32(reader["tenantId"]),
- CustomerName = reader["customerName"].ToString(),
-                            CustomerKey = Convert.ToInt32(reader["customerId"]),
- ShipperName = reader["shipperName"].ToString(),
-                            ShipperKey = Convert.ToInt32(reader["shipperId"]),
- EmployeeLastName = reader["employeeLastName"].ToString(),
-                            EmployeeKey = Convert.ToInt32(reader["employeeId"]),
-                            InvoiceOrderDate = CustomDateTimeConvert.ConvertToDate(reader["invoiceOrderDate"].ToString()),
-                            InvoiceRequiredDate = CustomDateTimeConvert.ConvertToDate(reader["invoiceRequiredDate"].ToString()),
-                            InvoiceShippedDate = CustomDateTimeConvert.ConvertToDate(reader["invoiceShippedDate"].ToString()),
-                            InvoiceFreight = Convert.ToDecimal(reader["invoiceFreight"]),
-                            InvoiceShipName = reader["invoiceShipName"].ToString(),
-                            InvoiceShipAddress = reader["invoiceShipAddress"].ToString(),
-                            InvoiceShipCity = reader["invoiceShipCity"].ToString(),
-                            InvoiceShipRegion = reader["invoiceShipRegion"].ToString(),
-                            InvoiceShipPostalCode = reader["invoiceShipPostalCode"].ToString(),
-                            InvoiceShipCountry = reader["invoiceShipCountry"].ToString(),
-                            IsDelete = Convert.ToInt32(reader["isDelete"]),
-});
-                    }
+                        InvoiceKey = Convert.ToInt32(reader["invoiceId"]),
+                        CustomerName = reader["customerName"].ToString(),
+                        CustomerKey = Convert.ToInt32(reader["customerId"]),
+                        ShipperName = reader["shipperName"].ToString(),
+                        ShipperKey = Convert.ToInt32(reader["shipperId"]),
+                        EmployeeLastName = reader["employeeLastName"].ToString(),
+                        EmployeeKey = Convert.ToInt32(reader["employeeId"]),
+                        InvoiceOrderDate = (reader["invoiceOrderDate"] != DBNull.Value) ? CustomDateTimeConvert.ConvertToDate((DateTime)reader["invoiceOrderDate"]) : null,
+                        InvoiceRequiredDate = (reader["invoiceRequiredDate"] != DBNull.Value) ? CustomDateTimeConvert.ConvertToDate((DateTime)reader["invoiceRequiredDate"]) : null,
+                        InvoiceShippedDate = (reader["invoiceShippedDate"] != DBNull.Value) ? CustomDateTimeConvert.ConvertToDate((DateTime)reader["invoiceShippedDate"]) : null,
+                        InvoiceFreight = Convert.ToDecimal(reader["invoiceFreight"]),
+                        InvoiceShipName = reader["invoiceShipName"].ToString(),
+                        InvoiceShipAddress = reader["invoiceShipAddress"].ToString(),
+                        InvoiceShipCity = reader["invoiceShipCity"].ToString(),
+                        InvoiceShipRegion = reader["invoiceShipRegion"].ToString(),
+                        InvoiceShipPostalCode = reader["invoiceShipPostalCode"].ToString(),
+                        InvoiceShipCountry = reader["invoiceShipCountry"].ToString(),
+                    });
                 }
-                mySqlCommand.Dispose();
             }
-            catch (MySqlException ex)
-            {
-                System.Diagnostics.Debug.WriteLine(ex.Message);
-                _sharedUtil.SetQueryException(SharedUtil.GetSqlSessionValue(sql, parameterModels), ex);
-               throw new Exception(ex.Message);
-            }
-            return invoiceModels;
+            mySqlCommand.Dispose();
         }
-        public List<InvoiceModel> Search(string search)
-       {
-            List<InvoiceModel> invoiceModels = new();
-            string sql = string.Empty;
-            List<ParameterModel> parameterModels = new ();
-            using MySqlConnection connection = SharedUtil.GetConnection();
-            try
-            {
-                connection.Open();
-                sql += @"
+        catch (MySqlException ex)
+        {
+            System.Diagnostics.Debug.WriteLine(ex.Message);
+            _sharedUtil.SetQueryException(SharedUtil.GetSqlSessionValue(sql, parameterModels), ex);
+            throw new Exception(ex.Message);
+        }
+        return invoiceModels;
+    }
+    public List<InvoiceModel> Search(string search)
+    {
+        List<InvoiceModel> invoiceModels = new();
+        string sql = string.Empty;
+        List<ParameterModel> parameterModels = new();
+        using MySqlConnection connection = SharedUtil.GetConnection();
+        try
+        {
+            connection.Open();
+            sql += @"
                 SELECT  *
                 FROM    invoice 
 	 JOIN customer 
@@ -213,8 +211,8 @@ namespace RebelCmsTemplate.Repository.Application;
 	 invoice.invoiceShipRegion like concat('%',@search,'%') OR
 	 invoice.invoiceShipPostalCode like concat('%',@search,'%') OR
 	 invoice.invoiceShipCountry like concat('%',@search,'%') )";
-                MySqlCommand mySqlCommand = new(sql, connection);
-                parameterModels = new List<ParameterModel>
+            MySqlCommand mySqlCommand = new(sql, connection);
+            parameterModels = new List<ParameterModel>
                 {
                     new ()
                     {
@@ -222,58 +220,55 @@ namespace RebelCmsTemplate.Repository.Application;
                         Value = search
                     }
                 };
-                foreach (ParameterModel parameter in parameterModels)
-                {
-                    mySqlCommand.Parameters.AddWithValue(parameter.Key, parameter.Value);
-                }
-                _sharedUtil.SetSqlSession(sql, parameterModels); 
-                using (var reader = mySqlCommand.ExecuteReader())
-                {
-                    while (reader.Read())
-                   {
-                        invoiceModels.Add(new InvoiceModel
-                       {
- TenantName = reader["tenantName"].ToString(),
-                            TenantKey = Convert.ToInt32(reader["tenantId"]),
- CustomerName = reader["customerName"].ToString(),
-                            CustomerKey = Convert.ToInt32(reader["customerId"]),
- ShipperName = reader["shipperName"].ToString(),
-                            ShipperKey = Convert.ToInt32(reader["shipperId"]),
- EmployeeLastName = reader["employeeLastName"].ToString(),
-                            EmployeeKey = Convert.ToInt32(reader["employeeId"]),
-                            InvoiceOrderDate = CustomDateTimeConvert.ConvertToDate(reader["invoiceOrderDate"].ToString()),
-                            InvoiceRequiredDate = CustomDateTimeConvert.ConvertToDate(reader["invoiceRequiredDate"].ToString()),
-                            InvoiceShippedDate = CustomDateTimeConvert.ConvertToDate(reader["invoiceShippedDate"].ToString()),
-                            InvoiceFreight = Convert.ToDecimal(reader["invoiceFreight"]),
-                            InvoiceShipName = reader["invoiceShipName"].ToString(),
-                            InvoiceShipAddress = reader["invoiceShipAddress"].ToString(),
-                            InvoiceShipCity = reader["invoiceShipCity"].ToString(),
-                            InvoiceShipRegion = reader["invoiceShipRegion"].ToString(),
-                            InvoiceShipPostalCode = reader["invoiceShipPostalCode"].ToString(),
-                            InvoiceShipCountry = reader["invoiceShipCountry"].ToString(),
-                            IsDelete = Convert.ToInt32(reader["isDelete"]),
-});
-                    }
-                }
-                mySqlCommand.Dispose();
-            }
-            catch (MySqlException ex)
+            foreach (ParameterModel parameter in parameterModels)
             {
-                System.Diagnostics.Debug.WriteLine(ex.Message);
-                _sharedUtil.SetQueryException(SharedUtil.GetSqlSessionValue(sql, parameterModels), ex);
-                throw new Exception(ex.Message);
+                mySqlCommand.Parameters.AddWithValue(parameter.Key, parameter.Value);
             }
-            return invoiceModels;
+            _sharedUtil.SetSqlSession(sql, parameterModels);
+            using (var reader = mySqlCommand.ExecuteReader())
+            {
+                while (reader.Read())
+                {
+                    invoiceModels.Add(new InvoiceModel
+                    {
+                        CustomerName = reader["customerName"].ToString(),
+                        CustomerKey = Convert.ToInt32(reader["customerId"]),
+                        ShipperName = reader["shipperName"].ToString(),
+                        ShipperKey = Convert.ToInt32(reader["shipperId"]),
+                        EmployeeLastName = reader["employeeLastName"].ToString(),
+                        EmployeeKey = Convert.ToInt32(reader["employeeId"]),
+                        InvoiceOrderDate = (reader["invoiceOrderDate"] != DBNull.Value) ? CustomDateTimeConvert.ConvertToDate((DateTime)reader["invoiceOrderDate"]) : null,
+                        InvoiceRequiredDate = (reader["invoiceRequiredDate"] != DBNull.Value) ? CustomDateTimeConvert.ConvertToDate((DateTime)reader["invoiceRequiredDate"]) : null,
+                        InvoiceShippedDate = (reader["invoiceShippedDate"] != DBNull.Value) ? CustomDateTimeConvert.ConvertToDate((DateTime)reader["invoiceShippedDate"]) : null,
+                        InvoiceFreight = Convert.ToDecimal(reader["invoiceFreight"]),
+                        InvoiceShipName = reader["invoiceShipName"].ToString(),
+                        InvoiceShipAddress = reader["invoiceShipAddress"].ToString(),
+                        InvoiceShipCity = reader["invoiceShipCity"].ToString(),
+                        InvoiceShipRegion = reader["invoiceShipRegion"].ToString(),
+                        InvoiceShipPostalCode = reader["invoiceShipPostalCode"].ToString(),
+                        InvoiceShipCountry = reader["invoiceShipCountry"].ToString(),
+                    });
+                }
+            }
+            mySqlCommand.Dispose();
         }
-        public InvoiceModel  GetSingle(InvoiceModel invoiceModel)
+        catch (MySqlException ex)
         {
-            string sql = string.Empty;
-            List<ParameterModel> parameterModels = new ();
-            using MySqlConnection connection = SharedUtil.GetConnection();
-            try
-            {
-                connection.Open();
-                sql += @"
+            System.Diagnostics.Debug.WriteLine(ex.Message);
+            _sharedUtil.SetQueryException(SharedUtil.GetSqlSessionValue(sql, parameterModels), ex);
+            throw new Exception(ex.Message);
+        }
+        return invoiceModels;
+    }
+    public InvoiceModel GetSingle(InvoiceModel invoiceModel)
+    {
+        string sql = string.Empty;
+        List<ParameterModel> parameterModels = new();
+        using MySqlConnection connection = SharedUtil.GetConnection();
+        try
+        {
+            connection.Open();
+            sql += @"
                 SELECT  *
                 FROM    invoice 
 	 JOIN customer 
@@ -284,8 +279,8 @@ namespace RebelCmsTemplate.Repository.Application;
 	 USING(employeeId)
                 WHERE   invoice.isDelete != 1
                 AND   invoice.invoiceId    =   @invoiceId LIMIT 1";
-                MySqlCommand mySqlCommand = new(sql, connection);
-                parameterModels = new List<ParameterModel>
+            MySqlCommand mySqlCommand = new(sql, connection);
+            parameterModels = new List<ParameterModel>
                 {
                     new ()
                     {
@@ -293,118 +288,127 @@ namespace RebelCmsTemplate.Repository.Application;
                         Value = invoiceModel.InvoiceKey
                    }
                 };
+            foreach (ParameterModel parameter in parameterModels)
+            {
+                mySqlCommand.Parameters.AddWithValue(parameter.Key, parameter.Value);
+            }
+            _sharedUtil.SetSqlSession(sql, parameterModels);
+            using (var reader = mySqlCommand.ExecuteReader())
+            {
+                while (reader.Read())
+                {
+                    if (reader["invoiceShippedDate"] != System.DBNull.Value)
+                    {
+                        System.Diagnostics.Debug.WriteLine(reader["invoiceShippedDate"].ToString());
+                    }
+                    else
+                    {
+                        System.Diagnostics.Debug.WriteLine("type "+ reader["invoiceShippedDate"].GetType());
+
+                        System.Diagnostics.Debug.WriteLine("in correct");
+                    }
+                    invoiceModel = new InvoiceModel()
+                    {
+                        InvoiceKey = Convert.ToInt32(reader["invoiceId"]),
+                        CustomerKey = Convert.ToInt32(reader["customerId"]),
+                        ShipperKey = Convert.ToInt32(reader["shipperId"]),
+                        EmployeeKey = Convert.ToInt32(reader["employeeId"]),
+                        InvoiceOrderDate = (reader["invoiceOrderDate"] != DBNull.Value) ? CustomDateTimeConvert.ConvertToDate((DateTime)reader["invoiceOrderDate"]) : null,
+                        InvoiceRequiredDate = (reader["invoiceRequiredDate"] != DBNull.Value) ? CustomDateTimeConvert.ConvertToDate((DateTime)reader["invoiceRequiredDate"]) : null,
+                        InvoiceShippedDate = (reader["invoiceShippedDate"] != DBNull.Value) ? CustomDateTimeConvert.ConvertToDate((DateTime)reader["invoiceShippedDate"]) : null,
+                        InvoiceFreight = Convert.ToDecimal(reader["invoiceFreight"]),
+                        InvoiceShipName = reader["invoiceShipName"].ToString(),
+                        InvoiceShipAddress = reader["invoiceShipAddress"].ToString(),
+                        InvoiceShipCity = reader["invoiceShipCity"].ToString(),
+                        InvoiceShipRegion = reader["invoiceShipRegion"].ToString(),
+                        InvoiceShipPostalCode = reader["invoiceShipPostalCode"].ToString(),
+                        InvoiceShipCountry = reader["invoiceShipCountry"].ToString(),
+                    };
+                }
+            }
+            mySqlCommand.Dispose();
+        }
+        catch (MySqlException ex)
+        {
+            System.Diagnostics.Debug.WriteLine(ex.Message);
+            _sharedUtil.SetQueryException(SharedUtil.GetSqlSessionValue(sql, parameterModels), ex);
+            throw new Exception(ex.Message);
+        }
+        return invoiceModel;
+    }
+    public byte[] GetExcel()
+    {
+        using var workbook = new XLWorkbook();
+        var worksheet = workbook.Worksheets.Add("Administrator > Invoice ");
+        worksheet.Cell(1, 1).Value = "Customer";
+        worksheet.Cell(1, 2).Value = "Shipper";
+        worksheet.Cell(1, 3).Value = "Employee";
+        worksheet.Cell(1, 4).Value = "Order Date";
+        worksheet.Cell(1, 5).Value = "Required Date";
+        worksheet.Cell(1, 6).Value = "Shipped Date";
+        worksheet.Cell(1, 7).Value = "Freight";
+        worksheet.Cell(1, 8).Value = "Ship Name";
+        worksheet.Cell(1, 9).Value = "Ship Address";
+        worksheet.Cell(1, 10).Value = "Ship City";
+        worksheet.Cell(1, 11).Value = "Ship Region";
+        worksheet.Cell(1, 12).Value = "Ship Postal Code";
+        worksheet.Cell(1, 13).Value = "Ship Country";
+        var sql = _sharedUtil.GetSqlSession();
+        var parameterModels = _sharedUtil.GetListSqlParameter();
+        using MySqlConnection connection = SharedUtil.GetConnection();
+        try
+        {
+            connection.Open();
+            MySqlCommand mySqlCommand = new(sql, connection);
+            if (parameterModels != null)
+            {
                 foreach (ParameterModel parameter in parameterModels)
                 {
                     mySqlCommand.Parameters.AddWithValue(parameter.Key, parameter.Value);
                 }
-                _sharedUtil.SetSqlSession(sql, parameterModels); 
-                using (var reader = mySqlCommand.ExecuteReader())
-                {
-                    while (reader.Read())
-                   {
-invoiceModel = new InvoiceModel() { 
-InvoiceKey = Convert.ToInt32(reader["invoiceId"]),
-TenantKey = Convert.ToInt32(reader["tenantId"]),
-CustomerKey = Convert.ToInt32(reader["customerId"]),
-ShipperKey = Convert.ToInt32(reader["shipperId"]),
-EmployeeKey = Convert.ToInt32(reader["employeeId"]),
-InvoiceOrderDate = CustomDateTimeConvert.ConvertToDate(reader["invoiceOrderDate"].ToString()),
-InvoiceRequiredDate = CustomDateTimeConvert.ConvertToDate(reader["invoiceRequiredDate"].ToString()),
-InvoiceShippedDate = CustomDateTimeConvert.ConvertToDate(reader["invoiceShippedDate"].ToString()),
-InvoiceFreight = Convert.ToDecimal(reader["invoiceFreight"]),
-InvoiceShipName = reader["invoiceShipName"].ToString(),
-InvoiceShipAddress = reader["invoiceShipAddress"].ToString(),
-InvoiceShipCity = reader["invoiceShipCity"].ToString(),
-InvoiceShipRegion = reader["invoiceShipRegion"].ToString(),
-InvoiceShipPostalCode = reader["invoiceShipPostalCode"].ToString(),
-InvoiceShipCountry = reader["invoiceShipCountry"].ToString(),
-IsDelete = Convert.ToInt32(reader["isDelete"]),
-                    };
-                    }
-                }
-                mySqlCommand.Dispose();
             }
-            catch (MySqlException ex)
+            using (var reader = mySqlCommand.ExecuteReader())
             {
-                System.Diagnostics.Debug.WriteLine(ex.Message);
-                _sharedUtil.SetQueryException(SharedUtil.GetSqlSessionValue(sql, parameterModels), ex);
-                throw new Exception(ex.Message);
+                var counter = 1;
+                while (reader.Read())
+                {
+                    var currentRow = counter++;
+                    worksheet.Cell(currentRow, 2).Value = reader["customerName"].ToString();
+                    worksheet.Cell(currentRow, 2).Value = reader["shipperName"].ToString();
+                    worksheet.Cell(currentRow, 2).Value = reader["employeeLastName"].ToString();
+                    worksheet.Cell(currentRow, 2).Value = reader["invoiceOrderDate"].ToString();
+                    worksheet.Cell(currentRow, 2).Value = reader["invoiceRequiredDate"].ToString();
+                    worksheet.Cell(currentRow, 2).Value = reader["invoiceShippedDate"].ToString();
+                    worksheet.Cell(currentRow, 2).Value = reader["invoiceFreight"].ToString();
+                    worksheet.Cell(currentRow, 2).Value = reader["invoiceShipName"].ToString();
+                    worksheet.Cell(currentRow, 2).Value = reader["invoiceShipAddress"].ToString();
+                    worksheet.Cell(currentRow, 2).Value = reader["invoiceShipCity"].ToString();
+                    worksheet.Cell(currentRow, 2).Value = reader["invoiceShipRegion"].ToString();
+                    worksheet.Cell(currentRow, 2).Value = reader["invoiceShipPostalCode"].ToString();
+                    worksheet.Cell(currentRow, 2).Value = reader["invoiceShipCountry"].ToString();
+                }
             }
-            return invoiceModel;
+            mySqlCommand.Dispose();
         }
-        public byte[] GetExcel()
+        catch (MySqlException ex)
         {
-            using var workbook = new XLWorkbook();
-            var worksheet = workbook.Worksheets.Add("Administrator > Invoice ");
-            worksheet.Cell(1, 1).Value = "Customer";
-            worksheet.Cell(1, 2).Value = "Shipper";
-            worksheet.Cell(1, 3).Value = "Employee";
-            worksheet.Cell(1, 4).Value = "Order Date";
-            worksheet.Cell(1, 5).Value = "Required Date";
-            worksheet.Cell(1, 6).Value = "Shipped Date";
-            worksheet.Cell(1, 7).Value = "Freight";
-            worksheet.Cell(1, 8).Value = "Ship Name";
-            worksheet.Cell(1, 9).Value = "Ship Address";
-            worksheet.Cell(1, 10).Value = "Ship City";
-            worksheet.Cell(1, 11).Value = "Ship Region";
-            worksheet.Cell(1, 12).Value = "Ship Postal Code";
-            worksheet.Cell(1, 13).Value = "Ship Country";
-            var sql = _sharedUtil.GetSqlSession();
-           var parameterModels = _sharedUtil.GetListSqlParameter();
-            using MySqlConnection connection = SharedUtil.GetConnection();
-            try
-            {
-               connection.Open();
-                MySqlCommand mySqlCommand = new(sql, connection);
-                if (parameterModels != null)
-                {
-                    foreach (ParameterModel parameter in parameterModels)
-                    {
-                        mySqlCommand.Parameters.AddWithValue(parameter.Key, parameter.Value);
-                    }
-                }
-                using (var reader = mySqlCommand.ExecuteReader())
-                {
-                    var counter = 1;
-                   while (reader.Read())
-                    {
-                        var currentRow = counter++;
-                        worksheet.Cell(currentRow, 2).Value = reader["customerName"].ToString();
-                        worksheet.Cell(currentRow, 2).Value = reader["shipperName"].ToString();
-                        worksheet.Cell(currentRow, 2).Value = reader["employeeLastName"].ToString();
-                        worksheet.Cell(currentRow, 2).Value = reader["invoiceOrderDate"].ToString();
-                        worksheet.Cell(currentRow, 2).Value = reader["invoiceRequiredDate"].ToString();
-                        worksheet.Cell(currentRow, 2).Value = reader["invoiceShippedDate"].ToString();
-                        worksheet.Cell(currentRow, 2).Value = reader["invoiceFreight"].ToString();
-                        worksheet.Cell(currentRow, 2).Value = reader["invoiceShipName"].ToString();
-                        worksheet.Cell(currentRow, 2).Value = reader["invoiceShipAddress"].ToString();
-                        worksheet.Cell(currentRow, 2).Value = reader["invoiceShipCity"].ToString();
-                        worksheet.Cell(currentRow, 2).Value = reader["invoiceShipRegion"].ToString();
-                        worksheet.Cell(currentRow, 2).Value = reader["invoiceShipPostalCode"].ToString();
-                        worksheet.Cell(currentRow, 2).Value = reader["invoiceShipCountry"].ToString();
-                    }
-                }
-                mySqlCommand.Dispose();
-            }
-            catch (MySqlException ex)
-            {
-                System.Diagnostics.Debug.WriteLine(ex.Message);
-                throw new Exception(ex.Message);
-            }
-            using var stream = new MemoryStream();
-           workbook.SaveAs(stream);
-            return stream.ToArray();
+            System.Diagnostics.Debug.WriteLine(ex.Message);
+            throw new Exception(ex.Message);
         }
-        public void Update(InvoiceModel invoiceModel)
+        using var stream = new MemoryStream();
+        workbook.SaveAs(stream);
+        return stream.ToArray();
+    }
+    public void Update(InvoiceModel invoiceModel)
+    {
+        string sql = string.Empty;
+        List<ParameterModel> parameterModels = new();
+        using MySqlConnection connection = SharedUtil.GetConnection();
+        try
         {
-            string sql = string.Empty;
-            List<ParameterModel> parameterModels = new ();
-            using MySqlConnection connection = SharedUtil.GetConnection();
-            try
-            {
-                connection.Open();
-                MySqlTransaction mySqlTransaction = connection.BeginTransaction();
-                sql = @"
+            connection.Open();
+            MySqlTransaction mySqlTransaction = connection.BeginTransaction();
+            sql = @"
                 UPDATE  invoice 
                 SET     
 tenantId=@tenantId,
@@ -424,8 +428,8 @@ invoiceShipCountry=@invoiceShipCountry,
 isDelete=@isDelete
 
                 WHERE   invoiceId    =   @invoiceId";
-                MySqlCommand mySqlCommand = new(sql, connection);
-                parameterModels = new List<ParameterModel>
+            MySqlCommand mySqlCommand = new(sql, connection);
+            parameterModels = new List<ParameterModel>
                 {
                     new ()
                     {
@@ -509,36 +513,36 @@ isDelete=@isDelete
                     },
 
                 };
-                foreach (ParameterModel parameter in parameterModels)
-                {
-                    mySqlCommand.Parameters.AddWithValue(parameter.Key, parameter.Value);
-                }
-                mySqlCommand.ExecuteNonQuery();
-                mySqlTransaction.Commit();
-                mySqlCommand.Dispose();
-            }
-            catch (MySqlException ex)
+            foreach (ParameterModel parameter in parameterModels)
             {
-                System.Diagnostics.Debug.WriteLine(ex.Message);
-                _sharedUtil.SetQueryException(SharedUtil.GetSqlSessionValue(sql, parameterModels), ex);
-                throw new Exception(ex.Message);
+                mySqlCommand.Parameters.AddWithValue(parameter.Key, parameter.Value);
             }
+            mySqlCommand.ExecuteNonQuery();
+            mySqlTransaction.Commit();
+            mySqlCommand.Dispose();
         }
-        public void Delete(InvoiceModel invoiceModel)
+        catch (MySqlException ex)
         {
-            string sql = string.Empty;
-            List<ParameterModel> parameterModels = new ();
-            using MySqlConnection connection = SharedUtil.GetConnection();
-            try
-            {
-                connection.Open();
-                MySqlTransaction mySqlTransaction = connection.BeginTransaction();
-                sql = @"
+            System.Diagnostics.Debug.WriteLine(ex.Message);
+            _sharedUtil.SetQueryException(SharedUtil.GetSqlSessionValue(sql, parameterModels), ex);
+            throw new Exception(ex.Message);
+        }
+    }
+    public void Delete(InvoiceModel invoiceModel)
+    {
+        string sql = string.Empty;
+        List<ParameterModel> parameterModels = new();
+        using MySqlConnection connection = SharedUtil.GetConnection();
+        try
+        {
+            connection.Open();
+            MySqlTransaction mySqlTransaction = connection.BeginTransaction();
+            sql = @"
                 UPDATE  invoice 
                 SET     isDelete    =   1
                 WHERE   invoiceId    =   @invoiceId";
-                MySqlCommand mySqlCommand = new(sql, connection);
-                parameterModels = new List<ParameterModel>
+            MySqlCommand mySqlCommand = new(sql, connection);
+            parameterModels = new List<ParameterModel>
                 {
                     new ()
                     {
@@ -546,19 +550,19 @@ isDelete=@isDelete
                         Value = invoiceModel.InvoiceKey
                    }
                 };
-                foreach (ParameterModel parameter in parameterModels)
-                {
-                    mySqlCommand.Parameters.AddWithValue(parameter.Key, parameter.Value);
-                }
-                mySqlCommand.ExecuteNonQuery();
-                mySqlTransaction.Commit();
-                mySqlCommand.Dispose();
-            }
-            catch (MySqlException ex)
+            foreach (ParameterModel parameter in parameterModels)
             {
-                System.Diagnostics.Debug.WriteLine(ex.Message);
-                _sharedUtil.SetQueryException(SharedUtil.GetSqlSessionValue(sql, parameterModels), ex);
-                throw new Exception(ex.Message);
+                mySqlCommand.Parameters.AddWithValue(parameter.Key, parameter.Value);
             }
+            mySqlCommand.ExecuteNonQuery();
+            mySqlTransaction.Commit();
+            mySqlCommand.Dispose();
         }
+        catch (MySqlException ex)
+        {
+            System.Diagnostics.Debug.WriteLine(ex.Message);
+            _sharedUtil.SetQueryException(SharedUtil.GetSqlSessionValue(sql, parameterModels), ex);
+            throw new Exception(ex.Message);
+        }
+    }
 }
