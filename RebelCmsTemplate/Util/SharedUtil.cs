@@ -259,6 +259,19 @@ namespace RebelCmsTemplate.Util
 
             return tenantName;
         }
+        public async Task<byte[]> GetByteArrayFromImageAsync(IFormFile file)
+        {
+            using (var target = new MemoryStream())
+            {
+                await file.CopyToAsync(target);
+                return target.ToArray();
+            }
+        }
+        public static string GetImageString(byte[] data,string type="png")
+        {
+            var base64String = Convert.ToBase64String(data);
+            return "data:image/"+type+";base64,"+base64String ;
+        }
         public static string Return500()
         {
             const string x = "<div id=\"error\">" +

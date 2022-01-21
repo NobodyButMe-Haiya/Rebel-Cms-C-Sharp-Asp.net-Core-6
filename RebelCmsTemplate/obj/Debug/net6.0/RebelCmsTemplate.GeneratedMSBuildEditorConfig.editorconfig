@@ -79,12 +79,28 @@ build_metadata.AdditionalFiles.CssScope =
 build_metadata.AdditionalFiles.TargetPath = Vmlld3MvUGFnZXMvQXBwbGljYXRpb24vQ29udGFjdFVzLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
+[/Users/user/Projects/Rebel-Cms-C-Sharp-Asp.net-Core-6/RebelCmsTemplate/Views/Pages/Application/Customer.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvUGFnZXMvQXBwbGljYXRpb24vQ3VzdG9tZXIuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[/Users/user/Projects/Rebel-Cms-C-Sharp-Asp.net-Core-6/RebelCmsTemplate/Views/Pages/Application/Employee.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvUGFnZXMvQXBwbGljYXRpb24vRW1wbG95ZWUuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
 [/Users/user/Projects/Rebel-Cms-C-Sharp-Asp.net-Core-6/RebelCmsTemplate/Views/Pages/Application/FollowUp.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3MvUGFnZXMvQXBwbGljYXRpb24vRm9sbG93VXAuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
+[/Users/user/Projects/Rebel-Cms-C-Sharp-Asp.net-Core-6/RebelCmsTemplate/Views/Pages/Application/Invoice.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvUGFnZXMvQXBwbGljYXRpb24vSW52b2ljZS5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
 [/Users/user/Projects/Rebel-Cms-C-Sharp-Asp.net-Core-6/RebelCmsTemplate/Views/Pages/Application/Product.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3MvUGFnZXMvQXBwbGljYXRpb24vUHJvZHVjdC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[/Users/user/Projects/Rebel-Cms-C-Sharp-Asp.net-Core-6/RebelCmsTemplate/Views/Pages/Application/Shipper.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvUGFnZXMvQXBwbGljYXRpb24vU2hpcHBlci5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
 [/Users/user/Projects/Rebel-Cms-C-Sharp-Asp.net-Core-6/RebelCmsTemplate/Views/Pages/Menu/Folder.cshtml]

@@ -130,6 +130,7 @@
         $.ajax({
             type: 'POST',
             url: "api/route",
+            async:false,
             data: {
                 method: 'view',
                 leafCheckId: leafCheckId
@@ -174,7 +175,7 @@
             } else {
                 location.href = "/";
             }
-        }).fail(function () {
+        }).fail(function (xhr) {
             console.log(xhr.status)
             Swal.fire("System", "@SharedUtil.UserErrorNotification", "error");
         });

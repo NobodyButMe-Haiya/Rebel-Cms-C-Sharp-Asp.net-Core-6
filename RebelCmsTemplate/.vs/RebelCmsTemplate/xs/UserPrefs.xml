@@ -1,0 +1,48 @@
+﻿<Properties StartupConfiguration="{AA6022AF-E055-4108-BF76-6ED4D5D8A6E3}|Default">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Views/Pages/Application/Invoice.cshtml">
+    <Files>
+      <File FileName="Views/Pages/Application/Invoice.cshtml" Line="363" Column="93" />
+    </Files>
+    <Pads>
+      <Pad Id="ProjectPad">
+        <State name="__root__">
+          <Node name="RebelCmsTemplate" expanded="True">
+            <Node name="RebelCmsTemplate" expanded="True">
+              <Node name="Controllers" expanded="True">
+                <Node name="Api" expanded="True">
+                  <Node name="Application" expanded="True" />
+                </Node>
+              </Node>
+              <Node name="Models" expanded="True">
+                <Node name="Application" expanded="True" />
+              </Node>
+              <Node name="Repository" expanded="True">
+                <Node name="Application" expanded="True" />
+              </Node>
+              <Node name="Views" expanded="True">
+                <Node name="Home" expanded="True" />
+                <Node name="Pages" expanded="True">
+                  <Node name="Application" expanded="True" />
+                  <Node name="Setting" expanded="True" />
+                </Node>
+              </Node>
+              <Node name="wwwroot" expanded="True">
+                <Node name="js" expanded="True" />
+              </Node>
+            </Node>
+          </Node>
+        </State>
+      </Pad>
+      <Pad Id="MonoDevelop.Debugger.WatchPad">
+        <State />
+      </Pad>
+    </Pads>
+  </MonoDevelop.Ide.Workbench>
+  <MonoDevelop.Ide.DebuggingService.PinnedWatches />
+  <MonoDevelop.Ide.ItemProperties.RebelCmsTemplate PreferredExecutionTarget="/Applications/Google Chrome.app" />
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
+  <MonoDevelop.Ide.DebuggingService.Breakpoints>
+    <BreakpointStore />
+  </MonoDevelop.Ide.DebuggingService.Breakpoints>
+  <MultiItemStartupConfigurations />
+</Properties>

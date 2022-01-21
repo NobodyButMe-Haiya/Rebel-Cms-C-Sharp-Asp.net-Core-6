@@ -39,6 +39,7 @@
         <Content Remove="C:\Users\youtuber\.nuget\packages\bootstrap\5.1.2\contentFiles\any\any\wwwroot\css\bootstrap.rtl.css.map" />
         <Content Remove="C:\Users\youtuber\.nuget\packages\bootstrap\5.1.2\contentFiles\any\any\wwwroot\css\bootstrap.rtl.min.css" />
         <Content Remove="C:\Users\youtuber\.nuget\packages\bootstrap\5.1.2\contentFiles\any\any\wwwroot\css\bootstrap.rtl.min.css.map" />
+        <Content Remove="Controllers\DataTable.cshtml" />
     </ItemGroup>
 
     <ItemGroup>

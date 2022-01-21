@@ -1,8 +1,19 @@
-﻿
+﻿function showPreview(event,imageTarget) {
+    if (event.target.files.length > 0) {
+        var src = URL.createObjectURL(event.target.files[0]);
+        var preview = document.getElementById(imageTarget);
+        console.log(event)
+        if (event.target.files[0].size > 10485760) {
+            alert("Too big dear file size.10 MB max size");
+            event.target.files[0] = "";
+        } else {
+            preview.src = src;
+            preview.style.display = "block";
+        }
+    }
+}
 
 function toggleChecked(status) {
-    //alert("status"+status);
-    console.log("status" + status); // don't delete it..
     $(":checkbox").each(function () {
         if (status === true) {
             $(this).val(1);
@@ -10,7 +21,7 @@ function toggleChecked(status) {
             $(this).attr("checked", true);
             $(this).prop("checked", true);
         } else {
-            $(this).val('5');
+            $(this).val(0);
             $(this).checked = false;
             $(this).attr("checked", false);
             $(this).prop("checked", false);

@@ -1,0 +1,973 @@
+@inject Microsoft.AspNetCore.Http.IHttpContextAccessor _httpContextAccessor
+@using RebelCmsTemplate.Models.Application
+@using RebelCmsTemplate.Models.Shared
+@using RebelCmsTemplate.Repository.Application
+@using RebelCmsTemplate.Util;
+@using RebelCmsTemplate.Enum;
+@{
+    SharedUtil sharedUtils = new(_httpContextAccessor);
+    List<EmployeeModel> employeeModels = new();
+    try
+    {
+        EmployeeRepository employeeRepository = new(_httpContextAccessor);
+        employeeModels = employeeRepository.Read();
+    }
+    catch (Exception ex)
+    {
+        sharedUtils.SetSystemException(ex);
+    }
+    var fileInfo = ViewContext.ExecutingFilePath?.Split("/");
+    var filename = fileInfo != null ? fileInfo[4] : "";
+    var name = filename.Split(".")[0];
+    NavigationModel navigationModel = sharedUtils.GetNavigation(name);
+}
+<div class="page-title">
+    <div class="row">
+        <div class="col-12 col-md-6 order-md-1 order-last">
+            <h3>@navigationModel.LeafName</h3>
+        </div>
+        <div class="col-12 col-md-6 order-md-2 order-first">
+            <nav aria-label="breadcrumb" class="breadcrumb-header float-start float-lg-end">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item">
+                        <a href="#">
+                            <i class="@navigationModel.FolderIcon"></i> @navigationModel.FolderName
+                        </a>
+                    </li>
+                    <li class="breadcrumb-item active" aria-current="page">
+                        <i class="@navigationModel.LeafIcon"></i> @navigationModel.LeafName
+                    </li>
+                    <li class="breadcrumb-item active" aria-current="page">
+                        <i class="fas fa-file-excel"></i>
+                        <a href="#" onclick="excelRecord()">Excel</a>
+                    </li>
+                    <li class="breadcrumb-item active" aria-current="page">
+                        <i class="fas fa-sign-out-alt"></i>
+                        <a href="/logout">Logout</a>
+                    </li>
+                </ol>
+            </nav>
+        </div>
+    </div>
+</div>
+<section class="content">
+    <div class="container-fluid">
+        <form class="form-horizontal">
+            <div class="card card-primary">
+                <div class="card-header">
+                    <Button id="createButton" type="button" class="btn btn-success" onclick="createRecord()">
+                        <i class="fas fa-newspaper"></i>&nbsp;CREATE
+                    </Button>&nbsp;
+                    <Button id="updateButton" type="button" class="btn btn-warning" onclick="updateRecord()" disabled="disabled">
+                        <i class="fas fa-edit"></i>&nbsp;UPDATE
+                    </Button>&nbsp;
+                    <Button id="deleteButton" type="button" class="btn btn-danger" onclick="deleteRecord()" disabled="disabled">
+                        <i class="fas fa-trash"></i>&nbsp;DELETE
+                    </Button>&nbsp;
+                    <button type="button" class="btn btn-warning" onclick="resetForm()">
+                        <i class="fas fa-power-off"></i> Reset
+                    </button>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <input type="hidden" id="employeeKey" value="0" />
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="employeeLastName">Last Name</label>
+                                <input type="text" id="employeeLastName" class="form-control" value=" " maxlength="20" />
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="employeeFirstName">First Name</label>
+                                <input type="text" id="employeeFirstName" class="form-control" value=" " maxlength="10" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="employeeTitle">Title</label>
+                                <input type="text" id="employeeTitle" class="form-control" value=" " maxlength="30" />
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="employeeTitleOfCourtesy">Title Of Courtesy</label>
+                                <input type="text" id="employeeTitleOfCourtesy" class="form-control" value=" " maxlength="25" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="employeeBirthDate">Birth Date</label>
+                                <input type="date" id="employeeBirthDate" class="form-control" value="" />
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="employeeHireDate">Hire Date</label>
+                                <input type="date" id="employeeHireDate" class="form-control" value="" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="employeeAddress">Address</label>
+                                <input type="text" id="employeeAddress" class="form-control" value=" " maxlength="60" />
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="employeeCity">City</label>
+                                <input type="text" id="employeeCity" class="form-control" value=" " maxlength="15" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="employeeRegion">Region</label>
+                                <input type="text" id="employeeRegion" class="form-control" value=" " maxlength="15" />
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="employeePostalCode">Postal Code</label>
+                                <input type="text" id="employeePostalCode" class="form-control" value=" " maxlength="10" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="employeeCountry">Country</label>
+                                <input type="text" id="employeeCountry" class="form-control" value=" " maxlength="15" />
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="employeeHomePhone">Home Phone</label>
+                                <input type="text" id="employeeHomePhone" class="form-control" value=" " maxlength="24" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="employeeExtension">Extension</label>
+                                <input type="text" id="employeeExtension" class="form-control" value=" " maxlength="4" />
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="employeePhoto">Photo</label>
+                                <input type="file" id="employeePhoto" class="form-control" onchange="showPreview(event,'employeePhotoImage');" />
+                                <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+P+/HgAFhAJ/wlseKgAAAABJRU5ErkJggg==" id="employeePhotoImage" class="img-fluid" accept="image/png" style="width:100px;height:100px" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="employeeNotes">Notes</label>
+                                <input type="text" id="employeeNotes" class="form-control" value=" " maxlength="" />
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="employeePhotoPath">Photo Path</label>
+                                <input type="text" id="employeePhotoPath" class="form-control" value=" " maxlength="255" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="employeeSalary">Salary</label>
+                                <input type="number" step="0.01" id="employeeSalary" class="form-control" value="0" maxlength="" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                    </div>
+                </div>
+            </div>
+        </form>
+        <div class="row">
+            <div class="col-xs-12 col-sm-12 col-md-12">&nbsp;</div>
+        </div>
+        <div class="card">
+            <div class="card-header">
+                <label for="search">Search</label>
+            </div>
+            <div class="card-body">
+                <input name="search" id="search" class="form-control" placeholder="Please Enter Name  Or Other Here" maxlength="64" style="width: 350px!important;" />
+            </div>
+            <div class="card-footer">
+                <button type="button" class="btn btn-info" onclick="searchRecord()">
+                    <i class="fas fa-filter"></i> Filter
+                </button>
+                &nbsp;
+                <button type="button" class="btn btn-warning" onclick="resetRecord()">
+                    <i class="fas fa-power-off"></i> Reset
+                </button>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-xs-12 col-sm-12 col-md-12">&nbsp;</div>
+        </div>
+        <div class="row">
+            <div class="col-xs-12 col-sm-12 col-md-12">
+                <div class="card">
+                    <table class="table table-bordered table-striped table-condensed table-hover" id="tableData">
+                        <thead>
+                            <tr>
+                                <th>Last Name</th>
+                                <th>First Name</th>
+                                <th>Title</th>
+                                <th>Title Of Courtesy</th>
+                                <th>Birth Date</th>
+                                <th style="width: 230px">Process</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tableBody">
+                            @foreach (var row in employeeModels)
+                            {
+                                <tr id='employee-@row.EmployeeKey'>
+                                    <td>@row.EmployeeLastName</td>
+                                    <td>@row.EmployeeFirstName</td>
+                                    <td>@row.EmployeeTitle</td>
+                                    <td>@row.EmployeeTitleOfCourtesy</td>
+                                    <td>@row.EmployeeBirthDate</td>
+                                    <td style="text-align: center">
+                                        <Button type="button" class="btn btn-warning" onclick="viewRecord(@row.EmployeeKey)">
+                                            <i class="fas fa-edit"></i>&nbsp;VIEW
+                                        </Button>
+                                    </td>
+                                </tr>
+                            }
+                            @if (employeeModels.Count == 0)
+                            {
+                                <tr>
+                                    <td colspan="20" class="noRecord">
+                                        @SharedUtil.NoRecord
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<script>
+        function resetForm() {
+	$("#employeeKey").val('');
+	$("#tenantKey").val('');
+	$("#employeeLastName").val('');
+	$("#employeeFirstName").val('');
+	$("#employeeTitle").val('');
+	$("#employeeTitleOfCourtesy").val('');
+	$("#employeeBirthDate").val('');
+	$("#employeeHireDate").val('');
+	$("#employeeAddress").val('');
+	$("#employeeCity").val('');
+	$("#employeeRegion").val('');
+	$("#employeePostalCode").val('');
+	$("#employeeCountry").val('');
+	$("#employeeHomePhone").val('');
+	$("#employeeExtension").val('');
+	$("#employeePhoto").val('');
+	$("#employeeNotes").val('');
+	$("#employeePhotoPath").val('');
+	$("#employeeSalary").val('');
+	$("#isDelete").val('');
+            $("#createButton").removeAttr("disabled","disabled");
+            $("#updateButton").attr("disabled","disabled");
+            $("#deleteButton").attr("disabled","disabled");
+        }
+        function resetRecord() {
+         readRecord();
+         $("#search").val("");
+	$("#employeeKey").val('');
+	$("#tenantKey").val('');
+	$("#employeeLastName").val('');
+	$("#employeeFirstName").val('');
+	$("#employeeTitle").val('');
+	$("#employeeTitleOfCourtesy").val('');
+	$("#employeeBirthDate").val('');
+	$("#employeeHireDate").val('');
+	$("#employeeAddress").val('');
+	$("#employeeCity").val('');
+	$("#employeeRegion").val('');
+	$("#employeePostalCode").val('');
+	$("#employeeCountry").val('');
+	$("#employeeHomePhone").val('');
+	$("#employeeExtension").val('');
+	$("#employeePhoto").val('');
+	$("#employeeNotes").val('');
+	$("#employeePhotoPath").val('');
+	$("#employeeSalary").val('');
+	$("#isDelete").val('');
+        }
+        function emptyTemplate() {
+         return"<tr><td colspan='20'>It's lonely here</td></tr>";
+        }
+        function template(employeeKey,employeeLastName,employeeFirstName,employeeTitle,employeeTitleOfCourtesy,employeeBirthDate,employeeHireDate,employeeAddress,employeeCity,employeeRegion,employeePostalCode,employeeCountry,employeeHomePhone,employeeExtension,employeePhoto,employeeNotes,employeePhotoPath,employeeSalary) {
+            let template =  "" +
+                "<tr id='employee-" + employeeKey + "'>" +
+                                    "<td>"+employeeLastName+"</td>" +
+                                    "<td>"+employeeFirstName+"</td>" +
+                                    "<td>"+employeeTitle+"</td>" +
+                                    "<td>"+employeeTitleOfCourtesy+"</td>" +
+                                    "<td>"+employeeBirthDate+"</td>" +
+                "<td style='text-align: center'><div class='btn-group'>" +
+                "<Button type='button' class='btn btn-warning' onclick='viewRecord(" + employeeKey + ")'>" +
+                "<i class='fas fa-search'></i> View" +
+                "</Button>" +
+                "</div></td>" +
+                "</tr>";
+               return template;
+        }
+        function createRecord() {
+         const employeeKey = $("#employeeKey");
+         const employeeLastName = $("#employeeLastName");
+         const employeeFirstName = $("#employeeFirstName");
+         const employeeTitle = $("#employeeTitle");
+         const employeeTitleOfCourtesy = $("#employeeTitleOfCourtesy");
+         const employeeBirthDate = $("#employeeBirthDate");
+         const employeeHireDate = $("#employeeHireDate");
+         const employeeAddress = $("#employeeAddress");
+         const employeeCity = $("#employeeCity");
+         const employeeRegion = $("#employeeRegion");
+         const employeePostalCode = $("#employeePostalCode");
+         const employeeCountry = $("#employeeCountry");
+         const employeeHomePhone = $("#employeeHomePhone");
+         const employeeExtension = $("#employeeExtension");
+         const employeePhoto = $("#employeePhoto");
+         const employeeNotes = $("#employeeNotes");
+         const employeePhotoPath = $("#employeePhotoPath");
+         const employeeSalary = $("#employeeSalary");
+          var formData = new FormData();
+ formData.append("mode","create");
+ formData.append("leafCheckKey",@navigationModel.LeafCheckKey);
+        formData.append('employeeKey',employeeKey.val());
+        formData.append('employeeLastName',employeeLastName.val());
+        formData.append('employeeFirstName',employeeFirstName.val());
+        formData.append('employeeTitle',employeeTitle.val());
+        formData.append('employeeTitleOfCourtesy',employeeTitleOfCourtesy.val());
+        formData.append('employeeBirthDate',employeeBirthDate.val());
+        formData.append('employeeHireDate',employeeHireDate.val());
+        formData.append('employeeAddress',employeeAddress.val());
+        formData.append('employeeCity',employeeCity.val());
+        formData.append('employeeRegion',employeeRegion.val());
+        formData.append('employeePostalCode',employeePostalCode.val());
+        formData.append('employeeCountry',employeeCountry.val());
+        formData.append('employeeHomePhone',employeeHomePhone.val());
+        formData.append('employeeExtension',employeeExtension.val());
+var filesEmployeePhoto = $('#employeePhoto')[0].files;
+if(filesEmployeePhoto.length > 0 ){
+        formData.append('employeePhoto',filesEmployeePhoto[0]);
+}
+        formData.append('employeeNotes',employeeNotes.val());
+        formData.append('employeePhotoPath',employeePhotoPath.val());
+        formData.append('employeeSalary',employeeSalary.val());
+         $.ajax({
+          type: 'POST',
+           url: "api/application/employee",
+           async: false,
+           contentType: false,
+           processData: false,
+           data: formData,
+           statusCode: {
+            500: function () {
+             Swal.fire("System Error", "@SharedUtil.UserErrorNotification", "error");
+           }
+          },
+          beforeSend: function () {
+           console.log("loading ..");
+          }}).done(function(data)  {
+            if (data === void 0) {
+             location.href = "/";
+            }
+            let status = data.status;
+            let code = data.code;
+            if (status) {
+             const lastInsertKey = data.lastInsertKey;
+             $("#tableBody").prepend(template(lastInsertKey,employeeLastName.val(),employeeFirstName.val(),employeeTitle.val(),employeeTitleOfCourtesy.val(),employeeBirthDate.val(),employeeHireDate.val(),employeeAddress.val(),employeeCity.val(),employeeRegion.val(),employeePostalCode.val(),employeeCountry.val(),employeeHomePhone.val(),employeeExtension.val(),employeePhoto.val(),employeeNotes.val(),employeePhotoPath.val(),employeeSalary.val()));
+  $("employeeKey").val(lastInsertKey);
+            $("#createButton").attr("disabled","disabled");
+            $("#updateButton").removeAttr("disabled","disabled");
+            $("#deleteButton").removeAttr("disabled","disabled");
+             Swal.fire({
+               title: 'Success!',
+               text: '@SharedUtil.RecordCreated',
+               icon: 'success',
+               confirmButtonText: 'Cool'
+             });
+            } else if (status === false) {
+             if (typeof(code) === 'string'){
+             @{
+              if (sharedUtils.GetRoleId().Equals( (int)AccessEnum.ADMINISTRATOR_ACCESS ))
+              {
+               <text>
+                Swal.fire("Debugging Admin", code, "error");
+               </text>
+              }else{
+               <text>
+                Swal.fire("System", "@SharedUtil.UserErrorNotification", "error");
+               </text>
+              }
+             }
+            }else  if (parseInt(code) === parseInt(@((int)ReturnCodeEnum.ACCESS_DENIED) )) {
+             let timerInterval;
+             Swal.fire({
+              title: 'Auto close alert!',
+              html: 'Session Out .Pease Re-login.I will close in <b></b> milliseconds.',
+              timer: 2000,
+              timerProgressBar: true,
+              didOpen: () => {
+                Swal.showLoading();
+                const b = Swal.getHtmlContainer().querySelector('b');
+                timerInterval = setInterval(() => {
+                b.textContent = Swal.getTimerLeft()
+               }, 100)
+              },
+              willClose: () => {
+               clearInterval(timerInterval)
+              }
+            }).then((result) => {
+              if (result.dismiss === Swal.DismissReason.timer) {
+               console.log('session out .. ');
+               location.href = "/";
+              }
+            });
+           } else {
+            location.href = "/";
+           }
+          } else {
+           location.href = "/";
+          }
+         }).fail(function(xhr)  {
+          console.log(xhr.status);
+          Swal.fire("System", "@SharedUtil.UserErrorNotification", "error");
+         }).always(function (){
+          console.log("always:complete");
+         });
+        }
+        function readRecord() {
+         $.ajax({
+          type: "post",
+          url: "api/application/employee",
+          async: false,
+          contentType: "application/x-www-form-urlencoded",
+          data: {
+           mode: "read",
+           leafCheckKey: @navigationModel.LeafCheckKey,
+          }, statusCode: {
+           500: function () {
+            Swal.fire("System Error", "@SharedUtil.UserErrorNotification", "error");
+           }
+          }, beforeSend() {
+           console.log("loading ..");
+          }}).done(function(data)  {
+              if (data === void 0) {
+               location.href = "/";
+              }
+              let status = data.status;
+              let code = data.code;
+              if (status) {
+               if (data.data === void 0) {
+                $("#tableBody").html("").html(emptyTemplate());
+               } else {
+                if (data.data.length > 0) {
+                 let templateStringBuilder = "";
+                 for (let i = 0; i < data.data.length; i++) {
+                  row = data.data[i];
+                  templateStringBuilder += template(row.employeeKey,row.employeeLastName,row.employeeFirstName,row.employeeTitle,row.employeeTitleOfCourtesy,row.employeeBirthDate,row.employeeHireDate,row.employeeAddress,row.employeeCity,row.employeeRegion,row.employeePostalCode,row.employeeCountry,row.employeeHomePhone,row.employeeExtension,row.employeePhoto,row.employeeNotes,row.employeePhotoPath,row.employeeSalary);
+                 }
+                 $("#tableBody").html("").html(templateStringBuilder);
+                } else {
+                 $("#tableBody").html("").html(emptyTemplate());
+                }
+               }
+              } else if (status === false) {
+               if (typeof(code) === 'string'){
+               @{
+                if (sharedUtils.GetRoleId().Equals( (int)AccessEnum.ADMINISTRATOR_ACCESS ))
+                {
+                 <text>
+                  Swal.fire("Debugging Admin", code, "error");
+                 </text>
+                }
+                else
+                {
+                 <text>
+                  Swal.fire("System", "@SharedUtil.UserErrorNotification", "error");
+                 </text>
+                }
+               }
+              } else if (parseInt(code) === parseInt(@((int)ReturnCodeEnum.ACCESS_DENIED) )) {
+               let timerInterval;
+               Swal.fire({
+                title: 'Auto close alert!',
+                html: 'Session Out .Pease Re-login.I will close in <b></b> milliseconds.',
+                timer: 2000,
+                timerProgressBar: true,
+                didOpen: () => {
+                 Swal.showLoading();
+                 const b = Swal.getHtmlContainer().querySelector('b');
+                 timerInterval = setInterval(() => {
+                 b.textContent = Swal.getTimerLeft()
+                }, 100)
+               },
+               willClose: () => {
+                clearInterval(timerInterval)
+               }
+              }).then((result) => {
+               if (result.dismiss === Swal.DismissReason.timer) {
+                console.log('session out .. ');
+                location.href = "/";
+               }
+              });
+            } else {
+             location.href = "/";
+            }
+           } else {
+            location.href = "/";
+           }
+          }).fail(function(xhr)  {
+           console.log(xhr.status);
+           Swal.fire("System", "@SharedUtil.UserErrorNotification", "error");
+          }).always(function (){
+           console.log("always:complete");
+          });
+        }
+        function searchRecord() {
+         $.ajax({
+          type: "post",
+          url: "api/application/employee",
+          async: false,
+          contentType: "application/x-www-form-urlencoded",
+          data: {
+           mode: "search",
+           leafCheckKey: @navigationModel.LeafCheckKey,
+           search: $("#search").val()
+          },
+          statusCode: {
+           500: function () {
+            Swal.fire("System Error", "@SharedUtil.UserErrorNotification", "error");
+           }
+          }, beforeSend() {
+           console.log("loading ..");
+          }}).done(function(data)  {
+            if (data === void 0) { location.href = "/"; }
+             let status =data.status;
+             let code = data.code;
+             if (status) {
+              if (data.data === void 0) {
+               $("#tableBody").html("").html(emptyTemplate());
+              } else {
+               if (data.data.length > 0) {
+                let templateStringBuilder = "";
+                for (let i = 0; i < data.data.length; i++) {
+                 row = data.data[i];
+                 templateStringBuilder += template(row.employeeKey,row.employeeLastName,row.employeeFirstName,row.employeeTitle,row.employeeTitleOfCourtesy,row.employeeBirthDate,row.employeeHireDate,row.employeeAddress,row.employeeCity,row.employeeRegion,row.employeePostalCode,row.employeeCountry,row.employeeHomePhone,row.employeeExtension,row.employeePhoto,row.employeeNotes,row.employeePhotoPath,row.employeeSalary);
+                }
+                $("#tableBody").html("").html(templateStringBuilder);
+               }
+              }
+             } else if (status === false) {
+              if (typeof(code) === 'string'){
+              @{
+                if (sharedUtils.GetRoleId().Equals( (int)AccessEnum.ADMINISTRATOR_ACCESS ))
+                {
+                 <text>
+                  Swal.fire("Debugging Admin", code, "error");
+                 </text>
+                }
+                else
+                {
+                 <text>
+                  Swal.fire("System", "@SharedUtil.UserErrorNotification", "error");
+                 </text>
+                }
+               }
+              }else if (parseInt(code) === parseInt(@((int)ReturnCodeEnum.ACCESS_DENIED) )) {
+               let timerInterval;
+               Swal.fire({
+                title: 'Auto close alert!',
+                html: 'Session Out .Pease Re-login.I will close in <b></b> milliseconds.',
+                timer: 2000,
+                timerProgressBar: true,
+                didOpen: () => {
+                 Swal.showLoading();
+                 const b = Swal.getHtmlContainer().querySelector('b');
+                 timerInterval = setInterval(() => {
+                 b.textContent = Swal.getTimerLeft()
+                }, 100)
+               },
+               willClose: () => { clearInterval(timerInterval) }
+             }).then((result) => {
+              if (result.dismiss === Swal.DismissReason.timer) {
+               console.log('session out .. ');
+               location.href = "/";
+              }
+             });
+            } else {
+             location.href = "/";
+            }
+           } else {
+            location.href = "/";
+           }
+         }).fail(function(xhr)  {
+          console.log(xhr.status);
+          Swal.fire("System", "@SharedUtil.UserErrorNotification", "error");
+         }).always(function (){
+          console.log("always:complete");
+         });
+        }
+        function excelRecord() {
+         window.open("api/application/employee");
+        }
+        function viewRecord(employeeKey) {
+         $.ajax({
+          type: "post",
+          url: "api/application/employee",
+          async: false,
+          contentType: "application/x-www-form-urlencoded",
+          data: {
+           mode: "single",
+           leafCheckKey: @navigationModel.LeafCheckKey,
+           employeeKey: employeeKey
+          },
+          statusCode: {
+           500: function () {
+            Swal.fire("System Error", "@SharedUtil.UserErrorNotification", "error");
+           }
+          }, beforeSend() {
+           console.log("loading ..");
+          }}).done(function(data)  {
+            if (data === void 0) { location.href = "/"; }
+             let status =data.status;
+             let code = data.code;
+             if (status) {
+              if (data.dataSingle === void 0) {
+               $("#tableBody").html("").html(emptyTemplate());
+              } else {
+	$("#employeeKey").val(data.dataSingle.employeeKey);
+	$("#employeeLastName").val(data.dataSingle.employeeLastName);
+	$("#employeeFirstName").val(data.dataSingle.employeeFirstName);
+	$("#employeeTitle").val(data.dataSingle.employeeTitle);
+	$("#employeeTitleOfCourtesy").val(data.dataSingle.employeeTitleOfCourtesy);
+	$("#employeeBirthDate").val(data.dataSingle.employeeBirthDate);
+	$("#employeeHireDate").val(data.dataSingle.employeeHireDate);
+	$("#employeeAddress").val(data.dataSingle.employeeAddress);
+	$("#employeeCity").val(data.dataSingle.employeeCity);
+	$("#employeeRegion").val(data.dataSingle.employeeRegion);
+	$("#employeePostalCode").val(data.dataSingle.employeePostalCode);
+	$("#employeeCountry").val(data.dataSingle.employeeCountry);
+	$("#employeeHomePhone").val(data.dataSingle.employeeHomePhone);
+	$("#employeeExtension").val(data.dataSingle.employeeExtension);
+	$("#employeePhotoImage").attr("src",data.dataSingle.employeePhotoBase64String);
+	$("#employeeNotes").val(data.dataSingle.employeeNotes);
+	$("#employeePhotoPath").val(data.dataSingle.employeePhotoPath);
+	$("#employeeSalary").val(data.dataSingle.employeeSalary);
+            $("#createButton").attr("disabled","disabled");
+            $("#updateButton").removeAttr("disabled","disabled");
+            $("#deleteButton").removeAttr("disabled","disabled");
+            $("html, body").animate({ scrollTop: 0 }, "slow");
+              }
+             } else if (status === false) {
+              if (typeof(code) === 'string'){
+              @{
+                if (sharedUtils.GetRoleId().Equals( (int)AccessEnum.ADMINISTRATOR_ACCESS ))
+                {
+                 <text>
+                  Swal.fire("Debugging Admin", code, "error");
+                 </text>
+                }
+                else
+                {
+                 <text>
+                  Swal.fire("System", "@SharedUtil.UserErrorNotification", "error");
+                 </text>
+                }
+               }
+              }else if (parseInt(code) === parseInt(@((int)ReturnCodeEnum.ACCESS_DENIED) )) {
+               let timerInterval;
+               Swal.fire({
+                title: 'Auto close alert!',
+                html: 'Session Out .Pease Re-login.I will close in <b></b> milliseconds.',
+                timer: 2000,
+                timerProgressBar: true,
+                didOpen: () => {
+                 Swal.showLoading();
+                 const b = Swal.getHtmlContainer().querySelector('b');
+                 timerInterval = setInterval(() => {
+                 b.textContent = Swal.getTimerLeft()
+                }, 100)
+               },
+               willClose: () => { clearInterval(timerInterval) }
+             }).then((result) => {
+              if (result.dismiss === Swal.DismissReason.timer) {
+               console.log('session out .. ');
+               location.href = "/";
+              }
+             });
+            } else {
+             location.href = "/";
+            }
+           } else {
+            location.href = "/";
+           }
+         }).fail(function(xhr)  {
+          console.log(xhr.status);
+          Swal.fire("System", "@SharedUtil.UserErrorNotification", "error");
+         }).always(function (){
+          console.log("always:complete");
+         });
+        }
+        function excelRecord() {
+         window.open("api/application/employee");
+        }
+        function updateRecord() {
+         const employeeKey = $("#employeeKey");
+         const employeeLastName = $("#employeeLastName");
+         const employeeFirstName = $("#employeeFirstName");
+         const employeeTitle = $("#employeeTitle");
+         const employeeTitleOfCourtesy = $("#employeeTitleOfCourtesy");
+         const employeeBirthDate = $("#employeeBirthDate");
+         const employeeHireDate = $("#employeeHireDate");
+         const employeeAddress = $("#employeeAddress");
+         const employeeCity = $("#employeeCity");
+         const employeeRegion = $("#employeeRegion");
+         const employeePostalCode = $("#employeePostalCode");
+         const employeeCountry = $("#employeeCountry");
+         const employeeHomePhone = $("#employeeHomePhone");
+         const employeeExtension = $("#employeeExtension");
+         const employeePhoto = $("#employeePhoto");
+         const employeeNotes = $("#employeeNotes");
+         const employeePhotoPath = $("#employeePhotoPath");
+         const employeeSalary = $("#employeeSalary");
+ var formData = new FormData();
+ formData.append("mode","update");
+ formData.append("leafCheckKey",@navigationModel.LeafCheckKey);
+        formData.append('employeeKey',employeeKey.val());
+        formData.append('employeeLastName',employeeLastName.val());
+        formData.append('employeeFirstName',employeeFirstName.val());
+        formData.append('employeeTitle',employeeTitle.val());
+        formData.append('employeeTitleOfCourtesy',employeeTitleOfCourtesy.val());
+        formData.append('employeeBirthDate',employeeBirthDate.val());
+        formData.append('employeeHireDate',employeeHireDate.val());
+        formData.append('employeeAddress',employeeAddress.val());
+        formData.append('employeeCity',employeeCity.val());
+        formData.append('employeeRegion',employeeRegion.val());
+        formData.append('employeePostalCode',employeePostalCode.val());
+        formData.append('employeeCountry',employeeCountry.val());
+        formData.append('employeeHomePhone',employeeHomePhone.val());
+        formData.append('employeeExtension',employeeExtension.val());
+var filesEmployeePhoto = $('#employeePhoto')[0].files;
+if(filesEmployeePhoto.length > 0 ){
+        formData.append('employeePhoto',filesEmployeePhoto[0]);
+}
+        formData.append('employeeNotes',employeeNotes.val());
+        formData.append('employeePhotoPath',employeePhotoPath.val());
+        formData.append('employeeSalary',employeeSalary.val());
+         $.ajax({
+          type: 'POST',
+          url: "api/application/employee",
+           async: false,
+           contentType: false,
+           processData: false,
+           data: formData,
+          statusCode: {
+           500: function () {
+            Swal.fire("System Error", "@SharedUtil.UserErrorNotification", "error");
+           }
+          }, beforeSend() {
+           console.log("loading..");
+          }}).done(function(data)  {
+           if (data === void 0) {
+            location.href = "/";
+           }
+           let status = data.status;
+           let code = data.code;
+           if (status) {
+            $("#createButton").attr("disabled","disabled");
+            $("#updateButton").removeAttr("disabled","disabled");
+            $("#deleteButton").removeAttr("disabled","disabled");
+            Swal.fire("System", "@SharedUtil.RecordUpdated", 'success')
+           } else if (status === false) {
+            if (typeof(code) === 'string'){
+            @{
+             if (sharedUtils.GetRoleId().Equals( (int)AccessEnum.ADMINISTRATOR_ACCESS ))
+              {
+               <text>
+                Swal.fire("Debugging Admin", code, "error");
+               </text>
+              }
+              else
+              {
+               <text>
+                Swal.fire("System", "@SharedUtil.UserErrorNotification", "error");
+               </text>
+              }
+             }
+            }else if (parseInt(code) === parseInt(@((int)ReturnCodeEnum.ACCESS_DENIED) )) {
+             let timerInterval
+             Swal.fire({
+              title: 'Auto close alert!',
+              html: 'Session Out .Pease Re-login.I will close in <b></b> milliseconds.',
+              timer: 2000,
+              timerProgressBar: true,
+              didOpen: () => {
+              Swal.showLoading();
+               const b = Swal.getHtmlContainer().querySelector('b');
+               timerInterval = setInterval(() => {
+               b.textContent = Swal.getTimerLeft()
+              }, 100)
+             },
+             willClose: () => {
+              clearInterval(timerInterval)
+             }
+            }).then((result) => {
+              if (result.dismiss === Swal.DismissReason.timer) {
+               console.log('session out .. ');
+               location.href = "/";
+              }
+             });
+            } else {
+             location.href = "/";
+            }
+           } else {
+            location.href = "/";
+           }
+          }).fail(function(xhr)  {
+           console.log(xhr.status);
+           Swal.fire("System", "@SharedUtil.UserErrorNotification", "error");
+          }).always(function (){
+           console.log("always:complete");
+          });
+        }
+        function deleteRecord() {
+         Swal.fire({
+          title: 'Are you sure?',
+          text: "You won't be able to revert this!",
+          type: 'warning',
+          showCancelButton: true,
+          confirmButtonText: 'Yes, delete it!',
+          cancelButtonText: 'No, cancel!',
+          reverseButtons: true
+         }).then((result) => {
+          if (result.value) {
+           $.ajax({
+            type: 'POST',
+            url: "api/application/employee",
+            async: false,
+            data: {
+             mode: 'delete',
+             leafCheckKey: @navigationModel.LeafCheckKey,
+             employeeKey: $("#employeeKey").val()
+            }, statusCode: {
+             500: function () {
+              Swal.fire("System Error", "@SharedUtil.UserErrorNotification", "error");
+             }
+            },
+            beforeSend: function () {
+             console.log("loading..");
+           }}).done(function(data)  {
+              if (data === void 0) { location.href = "/"; }
+              let status = data.status;
+              let code = data.code;
+              if (status) {
+            $("#createButton").removeAttr("disabled","disabled");
+            $("#updateButton").attr("disabled","disabled");
+            $("#deleteButton").attr("disabled","disabled");
+	$("#employeeKey").val('');
+	$("#tenantKey").val('');
+	$("#employeeLastName").val('');
+	$("#employeeFirstName").val('');
+	$("#employeeTitle").val('');
+	$("#employeeTitleOfCourtesy").val('');
+	$("#employeeBirthDate").val('');
+	$("#employeeHireDate").val('');
+	$("#employeeAddress").val('');
+	$("#employeeCity").val('');
+	$("#employeeRegion").val('');
+	$("#employeePostalCode").val('');
+	$("#employeeCountry").val('');
+	$("#employeeHomePhone").val('');
+	$("#employeeExtension").val('');
+	$("#employeePhoto").val('');
+	$("#employeeNotes").val('');
+	$("#employeePhotoPath").val('');
+	$("#employeeSalary").val('');
+	$("#isDelete").val('');
+               readRecord();
+               Swal.fire("System", "@SharedUtil.RecordDeleted", "success");
+              } else if (status === false) {
+               if (typeof(code) === 'string'){
+               @{
+                if (sharedUtils.GetRoleId().Equals( (int)AccessEnum.ADMINISTRATOR_ACCESS ))
+                {
+                 <text>
+                  Swal.fire("Debugging Admin", code, "error");
+                 </text>
+                }
+                else
+                {
+                 <text>
+                  Swal.fire("System", "@SharedUtil.UserErrorNotification", "error");
+                 </text>
+                }
+               }
+              } else if (parseInt(code) === parseInt(@((int)ReturnCodeEnum.ACCESS_DENIED) )) {
+               let timerInterval;
+               Swal.fire({
+                title: 'Auto close alert!',
+                html: 'Session Out .Pease Re-login.I will close in <b></b> milliseconds.',
+                timer: 2000,
+                timerProgressBar: true,
+                didOpen: () => {
+                 Swal.showLoading();
+                 const b = Swal.getHtmlContainer().querySelector('b');
+                 timerInterval = setInterval(() => {
+                 b.textContent = Swal.getTimerLeft()
+                }, 100)
+               },
+               willClose: () => {
+                clearInterval(timerInterval)
+               }
+             }).then((result) => {
+               if (result.dismiss === Swal.DismissReason.timer) {
+                console.log('session out .. ');
+                location.href = "/";
+               }
+             });
+            } else {
+             location.href = "/";
+            }
+           } else {
+            location.href = "/";
+           }
+         }).fail(function(xhr)  {
+           console.log(xhr.status);
+           Swal.fire("System", "@SharedUtil.UserErrorNotification", "error");
+         }).always(function (){
+          console.log("always:complete");
+         });
+       } else if (result.dismiss === swal.DismissReason.cancel) {
+        Swal.fire({
+          icon: 'error',
+          title: 'Cancelled',
+          text: 'Be careful before delete record'
+        })
+       }
+      });
+    }
+</script>
