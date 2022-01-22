@@ -27,7 +27,7 @@ public class InvoiceController : Controller {
    }
    InvoiceRepository invoiceRepository = new(_httpContextAccessor);
    var content = invoiceRepository.GetExcel();
-   return File(content,"application/vnd.openxmlformats-officedocument.spreadsheetml.sheet","invoice46.xlsx");
+   return File(content,"application/vnd.openxmlformats-officedocument.spreadsheetml.sheet","invoice6.xlsx");
   }
   [HttpPost]
   public ActionResult Post()
@@ -169,6 +169,29 @@ public class InvoiceController : Controller {
                         }
                     }
                     break;
+                case "singleWithDetail":
+                    if (!checkAccessUtil.GetPermission(leafCheckKey, AuthenticationEnum.READ_ACCESS))
+                    {
+                        code = ((int)ReturnCodeEnum.ACCESS_DENIED).ToString();
+                    }
+                    else
+                    {
+                        try
+                        {
+                            InvoiceModel invoiceModel = new()
+                            {
+                                InvoiceKey = invoiceKey
+                            };
+                           dataSingle = invoiceRepository.GetSingleWithDetail(invoiceModel);
+                            code = ((int)ReturnCodeEnum.READ_SUCCESS).ToString();
+                            status = true;
+                        }
+                        catch (Exception ex)
+                        {
+                            code = sharedUtil.GetRoleId() == (int)AccessEnum.ADMINISTRATOR_ACCESS ? ex.Message : ((int)ReturnCodeEnum.SYSTEM_ERROR).ToString();
+                        }
+                    }
+                    break;
                 case "update":
                     if (!checkAccessUtil.GetPermission(leafCheckKey, AuthenticationEnum.UPDATE_ACCESS))
                     {
@@ -236,7 +259,7 @@ public class InvoiceController : Controller {
             {
                 return Ok(new { status, code, data });
             }
-            if (mode.Equals("single"))
+            if (mode.Equals("single") || mode.Equals("singleWithDetail"))
             {
                 return Ok(new { status, code, dataSingle });
             }

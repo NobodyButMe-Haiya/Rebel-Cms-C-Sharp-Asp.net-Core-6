@@ -25,3 +25,9 @@ public partial class InvoiceModel
 	public string? ShipperName { get; init; } 
 	public string? EmployeeLastName { get; init; } 
 }
+public partial class InvoiceModel
+{
+
+	// @todo  we cannot auto declare this thing as models  .. data is enough
+	public List<InvoiceDetailModel>? Data { get; set; }
+}

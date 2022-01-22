@@ -142,13 +142,12 @@ public class InvoiceRepository
 	 JOIN employee 
 	 USING(employeeId)
 	 WHERE   invoice.isDelete != 1
-                ORDER BY    invoiceId DESC LIMIT 100 ";
+                ORDER BY    invoiceId DESC ";
             MySqlCommand mySqlCommand = new(sql, connection);
             using (var reader = mySqlCommand.ExecuteReader())
             {
                 while (reader.Read())
                 {
-                   
                     invoiceModels.Add(new InvoiceModel
                     {
                         InvoiceKey = Convert.ToInt32(reader["invoiceId"]),
@@ -200,17 +199,17 @@ public class InvoiceRepository
 	 JOIN employee 
 	 USING(employeeId)
 	 WHERE   invoice.isDelete != 1
-	 AND (	 customer.customerId like concat('%',@search,'%') OR	 customer.customerId like concat('%',@search,'%') OR	 customer.customerId like concat('%',@search,'%') OR	 customer.customerId like concat('%',@search,'%') OR	 customer.customerId like concat('%',@search,'%') OR	 customer.customerId like concat('%',@search,'%') OR	 customer.customerId like concat('%',@search,'%') OR	 customer.customerId like concat('%',@search,'%') OR	 customer.customerId like concat('%',@search,'%') OR	 customer.customerId like concat('%',@search,'%') OR	 customer.customerId like concat('%',@search,'%') OR	 customer.customerId like concat('%',@search,'%') OR	 customer.customerId like concat('%',@search,'%') OR	 customer.customerId like concat('%',@search,'%') OR	 shipper.shipperId like concat('%',@search,'%') OR	 shipper.shipperId like concat('%',@search,'%') OR	 shipper.shipperId like concat('%',@search,'%') OR	 shipper.shipperId like concat('%',@search,'%') OR	 shipper.shipperId like concat('%',@search,'%') OR	 employee.employeeId like concat('%',@search,'%') OR	 employee.employeeId like concat('%',@search,'%') OR	 employee.employeeId like concat('%',@search,'%') OR	 employee.employeeId like concat('%',@search,'%') OR	 employee.employeeId like concat('%',@search,'%') OR	 employee.employeeId like concat('%',@search,'%') OR	 employee.employeeId like concat('%',@search,'%') OR	 employee.employeeId like concat('%',@search,'%') OR	 employee.employeeId like concat('%',@search,'%') OR	 employee.employeeId like concat('%',@search,'%') OR	 employee.employeeId like concat('%',@search,'%') OR	 employee.employeeId like concat('%',@search,'%') OR	 employee.employeeId like concat('%',@search,'%') OR	 employee.employeeId like concat('%',@search,'%') OR	 employee.employeeId like concat('%',@search,'%') OR	 employee.employeeId like concat('%',@search,'%') OR	 employee.employeeId like concat('%',@search,'%') OR	 employee.employeeId like concat('%',@search,'%') OR	 employee.employeeId like concat('%',@search,'%') OR	 employee.employeeId like concat('%',@search,'%') OR
-	 invoice.invoiceOrderDate like concat('%',@search,'%') OR
-	 invoice.invoiceRequiredDate like concat('%',@search,'%') OR
-	 invoice.invoiceShippedDate like concat('%',@search,'%') OR
-	 invoice.invoiceFreight like concat('%',@search,'%') OR
-	 invoice.invoiceShipName like concat('%',@search,'%') OR
-	 invoice.invoiceShipAddress like concat('%',@search,'%') OR
-	 invoice.invoiceShipCity like concat('%',@search,'%') OR
-	 invoice.invoiceShipRegion like concat('%',@search,'%') OR
-	 invoice.invoiceShipPostalCode like concat('%',@search,'%') OR
-	 invoice.invoiceShipCountry like concat('%',@search,'%') )";
+	 AND (	 customer.customerName LIKE CONCAT('%',@search,'%') OR	 customer.customerName LIKE CONCAT('%',@search,'%') OR	 customer.customerName LIKE CONCAT('%',@search,'%') OR	 customer.customerName LIKE CONCAT('%',@search,'%') OR	 customer.customerName LIKE CONCAT('%',@search,'%') OR	 customer.customerName LIKE CONCAT('%',@search,'%') OR	 customer.customerName LIKE CONCAT('%',@search,'%') OR	 customer.customerName LIKE CONCAT('%',@search,'%') OR	 customer.customerName LIKE CONCAT('%',@search,'%') OR	 customer.customerName LIKE CONCAT('%',@search,'%') OR	 customer.customerName LIKE CONCAT('%',@search,'%') OR	 customer.customerName LIKE CONCAT('%',@search,'%') OR	 customer.customerName LIKE CONCAT('%',@search,'%') OR	 customer.customerName LIKE CONCAT('%',@search,'%') OR	 shipper.shipperName LIKE CONCAT('%',@search,'%') OR	 shipper.shipperName LIKE CONCAT('%',@search,'%') OR	 shipper.shipperName LIKE CONCAT('%',@search,'%') OR	 shipper.shipperName LIKE CONCAT('%',@search,'%') OR	 shipper.shipperName LIKE CONCAT('%',@search,'%') OR	 employee.employeeLastName LIKE CONCAT('%',@search,'%') OR	 employee.employeeLastName LIKE CONCAT('%',@search,'%') OR	 employee.employeeLastName LIKE CONCAT('%',@search,'%') OR	 employee.employeeLastName LIKE CONCAT('%',@search,'%') OR	 employee.employeeLastName LIKE CONCAT('%',@search,'%') OR	 employee.employeeLastName LIKE CONCAT('%',@search,'%') OR	 employee.employeeLastName LIKE CONCAT('%',@search,'%') OR	 employee.employeeLastName LIKE CONCAT('%',@search,'%') OR	 employee.employeeLastName LIKE CONCAT('%',@search,'%') OR	 employee.employeeLastName LIKE CONCAT('%',@search,'%') OR	 employee.employeeLastName LIKE CONCAT('%',@search,'%') OR	 employee.employeeLastName LIKE CONCAT('%',@search,'%') OR	 employee.employeeLastName LIKE CONCAT('%',@search,'%') OR	 employee.employeeLastName LIKE CONCAT('%',@search,'%') OR	 employee.employeeLastName LIKE CONCAT('%',@search,'%') OR	 employee.employeeLastName LIKE CONCAT('%',@search,'%') OR	 employee.employeeLastName LIKE CONCAT('%',@search,'%') OR	 employee.employeeLastName LIKE CONCAT('%',@search,'%') OR	 employee.employeeLastName LIKE CONCAT('%',@search,'%') OR	 employee.employeeLastName LIKE CONCAT('%',@search,'%') OR
+	 invoice.invoiceOrderDate LIKE CONCAT('%',@search,'%') OR
+	 invoice.invoiceRequiredDate LIKE CONCAT('%',@search,'%') OR
+	 invoice.invoiceShippedDate LIKE CONCAT('%',@search,'%') OR
+	 invoice.invoiceFreight LIKE CONCAT('%',@search,'%') OR
+	 invoice.invoiceShipName LIKE CONCAT('%',@search,'%') OR
+	 invoice.invoiceShipAddress LIKE CONCAT('%',@search,'%') OR
+	 invoice.invoiceShipCity LIKE CONCAT('%',@search,'%') OR
+	 invoice.invoiceShipRegion LIKE CONCAT('%',@search,'%') OR
+	 invoice.invoiceShipPostalCode LIKE CONCAT('%',@search,'%') OR
+	 invoice.invoiceShipCountry LIKE CONCAT('%',@search,'%') )";
             MySqlCommand mySqlCommand = new(sql, connection);
             parameterModels = new List<ParameterModel>
                 {
@@ -297,16 +296,6 @@ public class InvoiceRepository
             {
                 while (reader.Read())
                 {
-                    if (reader["invoiceShippedDate"] != System.DBNull.Value)
-                    {
-                        System.Diagnostics.Debug.WriteLine(reader["invoiceShippedDate"].ToString());
-                    }
-                    else
-                    {
-                        System.Diagnostics.Debug.WriteLine("type "+ reader["invoiceShippedDate"].GetType());
-
-                        System.Diagnostics.Debug.WriteLine("in correct");
-                    }
                     invoiceModel = new InvoiceModel()
                     {
                         InvoiceKey = Convert.ToInt32(reader["invoiceId"]),
@@ -333,6 +322,117 @@ public class InvoiceRepository
             System.Diagnostics.Debug.WriteLine(ex.Message);
             _sharedUtil.SetQueryException(SharedUtil.GetSqlSessionValue(sql, parameterModels), ex);
             throw new Exception(ex.Message);
+        }
+        return invoiceModel;
+    }
+    public InvoiceModel GetSingleWithDetail(InvoiceModel invoiceModel)
+    {
+        string sql = string.Empty;
+        List<ParameterModel> parameterModels = new();
+        using MySqlConnection connection = SharedUtil.GetConnection();
+        try
+        {
+            connection.Open();
+            sql += @"
+                SELECT  *
+                FROM    invoice 
+	 JOIN customer 
+	 USING(customerId)
+	 JOIN shipper 
+	 USING(shipperId)
+	 JOIN employee 
+	 USING(employeeId)
+                WHERE   invoice.isDelete != 1
+                AND   invoice.invoiceId    =   @invoiceId LIMIT 1";
+            MySqlCommand mySqlCommand = new(sql, connection);
+            parameterModels = new List<ParameterModel>
+                {
+                    new ()
+                    {
+                        Key = "@invoiceId",
+                        Value = invoiceModel.InvoiceKey
+                   }
+                };
+            foreach (ParameterModel parameter in parameterModels)
+            {
+                mySqlCommand.Parameters.AddWithValue(parameter.Key, parameter.Value);
+            }
+            _sharedUtil.SetSqlSession(sql, parameterModels);
+            using (var reader = mySqlCommand.ExecuteReader())
+            {
+                while (reader.Read())
+                {
+                    invoiceModel = new InvoiceModel()
+                    {
+                        InvoiceKey = Convert.ToInt32(reader["invoiceId"]),
+                        CustomerKey = Convert.ToInt32(reader["customerId"]),
+                        ShipperKey = Convert.ToInt32(reader["shipperId"]),
+                        EmployeeKey = Convert.ToInt32(reader["employeeId"]),
+                        InvoiceOrderDate = (reader["invoiceOrderDate"] != DBNull.Value) ? CustomDateTimeConvert.ConvertToDate((DateTime)reader["invoiceOrderDate"]) : null,
+                        InvoiceRequiredDate = (reader["invoiceRequiredDate"] != DBNull.Value) ? CustomDateTimeConvert.ConvertToDate((DateTime)reader["invoiceRequiredDate"]) : null,
+                        InvoiceShippedDate = (reader["invoiceShippedDate"] != DBNull.Value) ? CustomDateTimeConvert.ConvertToDate((DateTime)reader["invoiceShippedDate"]) : null,
+                        InvoiceFreight = Convert.ToDecimal(reader["invoiceFreight"]),
+                        InvoiceShipName = reader["invoiceShipName"].ToString(),
+                        InvoiceShipAddress = reader["invoiceShipAddress"].ToString(),
+                        InvoiceShipCity = reader["invoiceShipCity"].ToString(),
+                        InvoiceShipRegion = reader["invoiceShipRegion"].ToString(),
+                        InvoiceShipPostalCode = reader["invoiceShipPostalCode"].ToString(),
+                        InvoiceShipCountry = reader["invoiceShipCountry"].ToString(),
+                    };
+                }
+            }
+            mySqlCommand.Dispose();
+        }
+        catch (MySqlException ex)
+        {
+            System.Diagnostics.Debug.WriteLine(ex.Message);
+            _sharedUtil.SetQueryException(SharedUtil.GetSqlSessionValue(sql, parameterModels), ex);
+            throw new Exception(ex.Message);
+        }
+        List<InvoiceDetailModel> invoiceDetailModels = new();
+        try
+        {
+            sql = @"
+                SELECT      *
+                FROM        invoice_detail 
+	 JOIN invoice 
+	 USING(invoiceId)
+	 JOIN product 
+	 USING(productId)
+	 WHERE   invoice.isDelete != 1
+                AND   invoice_detail.invoiceId    =   @invoiceId ";
+            MySqlCommand mySqlCommand = new(sql, connection);
+            foreach (ParameterModel parameter in parameterModels)
+            {
+                mySqlCommand.Parameters.AddWithValue(parameter.Key, parameter.Value);
+            }
+            using (var reader = mySqlCommand.ExecuteReader())
+            {
+                while (reader.Read())
+                {
+                    invoiceDetailModels.Add(new InvoiceDetailModel()
+                    {
+                        InvoiceDetailKey = Convert.ToInt32(reader["invoiceDetailId"]),
+                        InvoiceKey = Convert.ToInt32(reader["invoiceId"]),
+                        ProductKey = Convert.ToInt32(reader["productId"]),
+                        InvoiceDetailUnitPrice = Convert.ToDecimal(reader["invoiceDetailUnitPrice"]),
+                        InvoiceDetailQuantity = Convert.ToInt32(reader["invoiceDetailQuantity"]),
+                        InvoiceDetailDiscount = Convert.ToDouble(reader["invoiceDetailDiscount"]),
+
+                    });
+                }
+            }
+            mySqlCommand.Dispose();
+        }
+        catch (MySqlException ex)
+        {
+            System.Diagnostics.Debug.WriteLine(ex.Message);
+            _sharedUtil.SetQueryException(SharedUtil.GetSqlSessionValue(sql, parameterModels), ex);
+            throw new Exception(ex.Message);
+        }
+        if (invoiceDetailModels != null)
+        {
+            invoiceModel.Data = invoiceDetailModels;
         }
         return invoiceModel;
     }

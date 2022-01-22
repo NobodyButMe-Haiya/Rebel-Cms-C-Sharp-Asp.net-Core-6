@@ -1,9 +1,10 @@
 ﻿<Properties GitUserInfo="UsingGIT" StartupConfiguration="{0D6E5960-46B7-41B8-9D5E-4E041993E9B1}|Default">
-  <MonoDevelop.Ide.Workbench ActiveDocument="../RebelCmsConsoleApplication/RebelCmsConsoleApplication/CodeGenerator.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="RebelCmsTemplate/Repository/Application/InvoiceRepository.cs">
     <Files>
-      <File FileName="../RebelCmsConsoleApplication/RebelCmsConsoleApplication/CodeGenerator.cs" Line="249" Column="72" />
-      <File FileName="RebelCmsTemplate/Models/Application/InvoiceModel.cs" Line="21" Column="1" />
-      <File FileName="RebelCmsTemplate/Repository/Application/InvoiceRepository.cs" Line="451" Column="76" />
+      <File FileName="RebelCmsTemplate/Repository/Application/InvoiceRepository.cs" Line="162" Column="1" />
+      <File FileName="RebelCmsTemplate/Repository/Application/InvoiceDetailRepository.cs" Line="1" Column="1" />
+      <File FileName="RebelCmsTemplate/Repository/Application/EmployeeRepository.cs" Line="165" Column="1" />
+      <File FileName="../RebelCmsConsoleApplication/RebelCmsConsoleApplication/CodeGenerator.cs" Line="7078" Column="30" />
     </Files>
     <Pads>
       <Pad Id="ProjectPad">
