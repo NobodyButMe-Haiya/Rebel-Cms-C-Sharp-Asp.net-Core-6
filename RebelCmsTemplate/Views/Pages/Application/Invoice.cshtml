@@ -295,7 +295,7 @@
                                 <tr>
 <td>
 	<label>
-		<select name="productKey" id="productKey" class="form-control">
+		<select name="productKey" id="detail_productKey" class="form-control">
 		@if (productModels.Count == 0)
 		{
 			<option value="">Please Create A New field </option>
@@ -313,17 +313,17 @@
 </td>
                                     <td>
                                         <label>
-                                            <input type="number" step="0.01" name="invoiceDetailUnitPrice" id="invoiceDetailUnitPrice" class="form-control" />
+                                            <input type="number" step="0.01" name="invoiceDetailUnitPrice" id="detail_invoiceDetailUnitPrice" class="form-control" />
                                         </label>
                                     </td>
                                     <td>
                                         <label>
-                                            <input type="number" name="invoiceDetailQuantity" id="invoiceDetailQuantity" class="form-control" />
+                                            <input type="number" name="invoiceDetailQuantity" id="detail_invoiceDetailQuantity" class="form-control" />
                                         </label>
                                     </td>
                                     <td>
                                         <label>
-                                            <input type="number" step="0.01" name="invoiceDetailDiscount" id="invoiceDetailDiscount" class="form-control" />
+                                            <input type="number" step="0.01" name="invoiceDetailDiscount" id="detail_invoiceDetailDiscount" class="form-control" />
                                         </label>
                                     </td>
 		<td style="text-align: center">
@@ -349,21 +349,10 @@
     </div>
     </section>
     <script>
-
-        var customerModels = @Json.Serialize(customerModels);
-
-
-        var shipperModels = @Json.Serialize(shipperModels);
-
-
-        var employeeModels = @Json.Serialize(employeeModels);
-
-
-        var productModels = @Json.Serialize(productModels);
-
-
-
-
+ var customerModels = @Json.Serialize(customerModels);
+ var shipperModels = @Json.Serialize(shipperModels);
+ var employeeModels = @Json.Serialize(employeeModels);
+ var productModels = @Json.Serialize(productModels);
 	function newRecord() {
 $("#listView").hide();
 $("#formView").show();
@@ -435,7 +424,7 @@ $("#formView").hide();
                 "</tr>";
                return template; 
         }
-	function templateDetail(invoiceDetailKey,productKey,invoiceDetailUnitPrice,invoiceDetailQuantity,invoiceDetailDiscount) {
+	function templateDetail(invoiceDetailKey,invoiceKey,productKey,invoiceDetailUnitPrice,invoiceDetailQuantity,invoiceDetailDiscount) {
 	let productKeyOptions = "";
 	let i = 0;
 	productModels.map((row) => {
@@ -468,11 +457,11 @@ $("#formView").hide();
  "</label>" +
 "</td>" +
 			"<td style='text-align: center'><div class='btn-group'>" +
-			" <Button type='button' class='btn btn-warning' onclick='updateRecord(" + invoiceDetailKey + ")'>" +
+			" <Button type='button' class='btn btn-warning' onclick='updateDetailRecord(" + invoiceDetailKey + ")'>" +
 				"<i class='fas fa-edit'></i> UPDATE" +
 			"</Button>" +
 			"&nbsp;" +
-			"<Button type='button' class='btn btn-danger' onclick='deleteRecord(" + invoiceDetailKey + ")'>" +
+			"<Button type='button' class='btn btn-danger' onclick='deleteDetailRecord(" + invoiceDetailKey + ")'>" +
 				"<i class='fas fa-trash'></i> DELETE" +
 			"</Button>" +
 			"</div></td>" +
@@ -530,8 +519,7 @@ $("#formView").hide();
             let code = data.code;
             if (status) {
              const lastInsertKey = data.lastInsertKey;
-             $("#tableBody").prepend(template(lastInsertKey,invoiceOrderDate.val(),invoiceRequiredDate.val(),invoiceShippedDate.val(),invoiceFreight.val(),invoiceShipName.val(),invoiceShipAddress.val(),invoiceShipCity.val(),invoiceShipRegion.val(),invoiceShipPostalCode.val(),invoiceShipCountry.val()));
-  $("invoiceKeyKey").val(lastInsertKey);
+            $("#invoiceKey").val(lastInsertKey);
             $("#createButton").attr("disabled","disabled");
             $("#updateButton").removeAttr("disabled","disabled");
             $("#deleteButton").removeAttr("disabled","disabled");
@@ -592,28 +580,26 @@ $("#formView").hide();
          });
         }
         function createDetailRecord() {
- const invoiceDetailKey = $("#invoiceDetailKey");
- const invoiceKey = $("#invoiceKey");
- const productKey = $("#productKey");
- const invoiceDetailUnitPrice = $("#invoiceDetailUnitPrice");
- const invoiceDetailQuantity = $("#invoiceDetailQuantity");
- const invoiceDetailDiscount = $("#invoiceDetailDiscount");
-         $.ajax({
-          type: 'POST',
-           url: "api/application/invoiceDetail",
-           async: false,
-           data: {
-            mode: 'create',
-            leafCheckKey: @navigationModel.LeafCheckKey,
-            invoiceDetailKey: invoiceDetailKey.val(),
-            invoiceKey: invoiceKey.val(),
-            productKey: productKey.val(),
-            invoiceDetailUnitPrice: invoiceDetailUnitPrice.val(),
-            invoiceDetailQuantity: invoiceDetailQuantity.val(),
-            invoiceDetailDiscount: invoiceDetailDiscount.val(),
-           },statusCode: {
-            500: function () {
-             Swal.fire("System Error", "@SharedUtil.UserErrorNotification", "error");
+		const invoiceKey = $("#invoiceKey");
+		const productKey = $("#detail_productKey");
+		const invoiceDetailUnitPrice = $("#detail_invoiceDetailUnitPrice");
+		const invoiceDetailQuantity = $("#detail_invoiceDetailQuantity");
+		const invoiceDetailDiscount = $("#detail_invoiceDetailDiscount");
+		$.ajax({
+			type: 'POST',
+			url: "api/application/invoiceDetail",
+			async: false,
+			data: {
+				mode: 'create',
+				leafCheckKey: @navigationModel.LeafCheckKey,
+				invoiceKey: invoiceKey.val(),
+				productKey: productKey.val(),
+				invoiceDetailUnitPrice: invoiceDetailUnitPrice.val(),
+				invoiceDetailQuantity: invoiceDetailQuantity.val(),
+				invoiceDetailDiscount: invoiceDetailDiscount.val(),
+			},statusCode: {
+				500: function () {
+					Swal.fire("System Error", "@SharedUtil.UserErrorNotification", "error");
            }
           },
           beforeSend: function () {
@@ -626,15 +612,13 @@ $("#formView").hide();
             let code = data.code;
             if (status) {
              const lastInsertKey = data.lastInsertKey;
-             $("#tableBody").prepend(templateDetail(lastInsertKey,invoiceDetailUnitPrice.val(),invoiceDetailQuantity.val(),invoiceDetailDiscount.val()));
+             $("#tableDetailBody").prepend(templateDetail(lastInsertKey,invoiceKey.val(),productKey.val(),invoiceDetailUnitPrice.val(),invoiceDetailQuantity.val(),invoiceDetailDiscount.val()));
              Swal.fire({
                title: 'Success!',
                text: '@SharedUtil.RecordCreated',
                icon: 'success',
                confirmButtonText: 'Cool'
              });
-	invoiceDetailKey.val('');
-	invoiceKey.val('');
 	productKey.val('');
 	invoiceDetailUnitPrice.val('');
 	invoiceDetailQuantity.val('');
@@ -806,11 +790,11 @@ $("#formView").hide();
                  let templateStringBuilder = "";
                  for (let i = 0; i < data.data.length; i++) {
                   let row = data.data[i];
-                  templateStringBuilder += template(row.invoiceDetailKey,row.productKey,row.invoiceDetailUnitPrice,row.invoiceDetailQuantity,row.invoiceDetailDiscount);
+                  templateStringBuilder += template(row.invoiceDetailKey,row.invoiceKey,row.productKey,row.invoiceDetailUnitPrice,row.invoiceDetailQuantity,row.invoiceDetailDiscount);
                  }
-                 $("#tableBody").html("").html(templateStringBuilder);
+                 $("#tableDetailBody").html("").html(templateStringBuilder);
                 } else {
-                 $("#tableBody").html("").html(emptyTemplate());
+                 $("#tableDetailBody").html("").html(emptyTemplate());
                 }
                }
               } else if (status === false) {
@@ -997,7 +981,7 @@ $("#formView").show();
                  let templateStringBuilder = "";
                  for (let i = 0; i < data.dataSingle.data.length; i++) {
                   let row = data.dataSingle.data[i];
-                  templateStringBuilder += templateDetail(row.invoiceDetailKey,row.productKey,row.invoiceDetailUnitPrice,row.invoiceDetailQuantity,row.invoiceDetailDiscount);
+                  templateStringBuilder += templateDetail(row.invoiceDetailKey,row.invoiceKey,row.productKey,row.invoiceDetailUnitPrice,row.invoiceDetailQuantity,row.invoiceDetailDiscount);
                  }
                  $("#tableDetailBody").html("").html(templateStringBuilder);
                  }
@@ -1160,8 +1144,8 @@ $("#formView").show();
           data: {
            mode: 'update',
            leafCheckKey: @navigationModel.LeafCheckKey,
-           invoiceKey: invoiceKey,
-           invoiceDetailKey: $("#invoiceDetailKey-" + invoiceDetailKey).val(),
+           invoiceDetailKey: invoiceDetailKey,
+           invoiceKey: $("#invoiceKey").val(),
            productKey: $("#productKey-" + invoiceDetailKey).val(),
            invoiceDetailUnitPrice: $("#invoiceDetailUnitPrice-" + invoiceDetailKey).val(),
            invoiceDetailQuantity: $("#invoiceDetailQuantity-" + invoiceDetailKey).val(),

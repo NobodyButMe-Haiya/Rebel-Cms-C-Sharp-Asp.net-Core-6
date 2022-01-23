@@ -399,8 +399,8 @@ public class InvoiceRepository
 	 USING(invoiceId)
 	 JOIN product 
 	 USING(productId)
-	 WHERE   invoice.isDelete != 1
-                AND   invoice_detail.invoiceId    =   @invoiceId ";
+	 WHERE   invoice.isDelete != 1 invoice_detail.isDelete != 1
+                AND   invoice_detail.invoiceId    =   @invoiceId limit 5";
             MySqlCommand mySqlCommand = new(sql, connection);
             foreach (ParameterModel parameter in parameterModels)
             {
