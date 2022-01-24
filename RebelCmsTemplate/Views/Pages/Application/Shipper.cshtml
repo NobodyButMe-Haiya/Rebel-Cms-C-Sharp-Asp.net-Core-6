@@ -159,7 +159,8 @@
          return"<tr><td colspan='4'>It's lonely here</td></tr>";
         }
         function template(shipperKey,shipperName,shipperPhone) {
-            let template =  "" +
+            
+               return "" +
                 "<tr id='shipper-" + shipperKey + "'>" +
                                     "<td>" +
                                         "<label>" +
@@ -180,8 +181,7 @@
                 "<i class='fas fa-trash'></i> DELETE" +
                 "</Button>" +
                 "</div></td>" +
-                "</tr>";
-               return template; 
+                "</tr>"; 
         }
         function createRecord() {
          const shipperKey = $("#shipperKey");
@@ -302,7 +302,7 @@
                 if (data.data.length > 0) {
                  let templateStringBuilder = "";
                  for (let i = 0; i < data.data.length; i++) {
-                  row = data.data[i];
+                   let row = data.data[i];
                   templateStringBuilder += template(row.shipperKey,row.shipperName,row.shipperPhone);
                  }
                  $("#tableBody").html("").html(templateStringBuilder);
@@ -390,7 +390,7 @@
                if (data.data.length > 0) {
                 let templateStringBuilder = "";
                 for (let i = 0; i < data.data.length; i++) {
-                 row = data.data[i];
+                 let row = data.data[i];
                  templateStringBuilder += template(row.shipperKey,row.shipperName,row.shipperPhone);
                 }
                 $("#tableBody").html("").html(templateStringBuilder);

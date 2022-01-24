@@ -257,11 +257,11 @@ public class ShipperRepository
                 while (reader.Read())
                 {
                     var currentRow = counter++;
-                    worksheet.Cell(currentRow, 2).Value = reader["shipperId"].ToString();
+                    worksheet.Cell(currentRow, 1).Value = reader["shipperId"].ToString();
                     worksheet.Cell(currentRow, 2).Value = reader["tenantId"].ToString();
-                    worksheet.Cell(currentRow, 2).Value = reader["shipperName"].ToString();
-                    worksheet.Cell(currentRow, 2).Value = reader["shipperPhone"].ToString();
-                    worksheet.Cell(currentRow, 2).Value = reader["isDelete"].ToString();
+                    worksheet.Cell(currentRow, 3).Value = reader["shipperName"].ToString();
+                    worksheet.Cell(currentRow, 4).Value = reader["shipperPhone"].ToString();
+                    worksheet.Cell(currentRow, 5).Value = reader["isDelete"].ToString();
                 }
             }
 

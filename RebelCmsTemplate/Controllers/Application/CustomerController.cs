@@ -8,12 +8,12 @@ namespace RebelCmsTemplate.Controllers.Api.Application;
 
 [Route("api/application/[controller]")]
 [ApiController]
-public class EmployeeController : Controller
+public class CustomerController : Controller
 {
     private readonly IHttpContextAccessor _httpContextAccessor;
     private readonly RenderViewToStringUtil _renderViewToStringUtil;
 
-    public EmployeeController(RenderViewToStringUtil renderViewToStringUtil, IHttpContextAccessor httpContextAccessor)
+    public CustomerController(RenderViewToStringUtil renderViewToStringUtil, IHttpContextAccessor httpContextAccessor)
     {
         _renderViewToStringUtil = renderViewToStringUtil;
         _httpContextAccessor = httpContextAccessor;
@@ -30,69 +30,39 @@ public class EmployeeController : Controller
             return Ok(page);
         }
 
-        EmployeeRepository employeeRepository = new(_httpContextAccessor);
-        var content = employeeRepository.GetExcel();
-        return File(content, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "employee94.xlsx");
+        CustomerRepository customerRepository = new(_httpContextAccessor);
+        var content = customerRepository.GetExcel();
+        return File(content, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "customer89.xlsx");
     }
 
     [HttpPost]
-    public async Task<ActionResult> Post()
+    public ActionResult Post()
     {
         var status = false;
         var mode = Request.Form["mode"];
         var leafCheckKey = Convert.ToInt32(Request.Form["leafCheckKey"]);
-        EmployeeRepository employeeRepository = new(_httpContextAccessor);
+        CustomerRepository customerRepository = new(_httpContextAccessor);
         SharedUtil sharedUtil = new(_httpContextAccessor);
         CheckAccessUtil checkAccessUtil = new(_httpContextAccessor);
-        var employeeKey = !string.IsNullOrEmpty(Request.Form["employeeKey"])
-            ? Convert.ToInt32(Request.Form["employeeKey"])
+        var customerKey = !string.IsNullOrEmpty(Request.Form["customerKey"])
+            ? Convert.ToInt32(Request.Form["customerKey"])
             : 0;
-        var employeeLastName = Request.Form["employeeLastName"];
-        var employeeFirstName = Request.Form["employeeFirstName"];
-        var employeeTitle = Request.Form["employeeTitle"];
-        var employeeTitleOfCourtesy = Request.Form["employeeTitleOfCourtesy"];
-        var employeeBirthDate = DateOnly.FromDateTime(DateTime.Now);
-        if (!string.IsNullOrEmpty(Request.Form["employeeBirthDate"]))
-        {
-            var dateString = Request.Form["employeeBirthDate"].ToString().Split("-");
-            employeeBirthDate = new DateOnly(Convert.ToInt32(dateString[0]), Convert.ToInt32(dateString[1]),
-                Convert.ToInt32(dateString[2]));
-        }
-
-        var employeeHireDate = DateOnly.FromDateTime(DateTime.Now);
-        if (!string.IsNullOrEmpty(Request.Form["employeeHireDate"]))
-        {
-            var dateString = Request.Form["employeeHireDate"].ToString().Split("-");
-            employeeHireDate = new DateOnly(Convert.ToInt32(dateString[0]), Convert.ToInt32(dateString[1]),
-                Convert.ToInt32(dateString[2]));
-        }
-
-        var employeeAddress = Request.Form["employeeAddress"];
-        var employeeCity = Request.Form["employeeCity"];
-        var employeeRegion = Request.Form["employeeRegion"];
-        var employeePostalCode = Request.Form["employeePostalCode"];
-        var employeeCountry = Request.Form["employeeCountry"];
-        var employeeHomePhone = Request.Form["employeeHomePhone"];
-        var employeeExtension = Request.Form["employeeExtension"];
-        var employeePhoto = new byte[100];
-        foreach (var formFile in Request.Form.Files)
-        {
-            if (formFile.Name.Equals("employeePhoto"))
-            {
-                employeePhoto = await SharedUtil.GetByteArrayFromImageAsync(formFile);
-            }
-        }
-
-        var employeeNotes = Request.Form["employeeNotes"];
-        var employeePhotoPath = Request.Form["employeePhotoPath"];
-        var employeeSalary = !string.IsNullOrEmpty(Request.Form["employeeSalary"])
-            ? Convert.ToDouble(Request.Form["employeeSalary"])
-            : 0;
+        var customerCode = Request.Form["customerCode"];
+        var customerName = Request.Form["customerName"];
+        var customerContactName = Request.Form["customerContactName"];
+        var customerContactTitle = Request.Form["customerContactTitle"];
+        var customerAddress = Request.Form["customerAddress"];
+        var customerCity = Request.Form["customerCity"];
+        var customerRegion = Request.Form["customerRegion"];
+        var customerPostalCode = Request.Form["customerPostalCode"];
+        var customerCountry = Request.Form["customerCountry"];
+        var customerPhone = Request.Form["customerPhone"];
+        var customerFax = Request.Form["customerFax"];
         var search = Request.Form["search"];
-        List<EmployeeModel> data = new();
-        EmployeeModel dataSingle = new();
+        List<CustomerModel> data = new();
+        CustomerModel dataSingle = new();
         string code;
-        var lastInsertKey = 0;
+        var lastInsertKey=0;
         switch (mode)
         {
             case "create":
@@ -104,27 +74,21 @@ public class EmployeeController : Controller
                 {
                     try
                     {
-                        EmployeeModel employeeModel = new()
+                        CustomerModel customerModel = new()
                         {
-                            EmployeeLastName = employeeLastName,
-                            EmployeeFirstName = employeeFirstName,
-                            EmployeeTitle = employeeTitle,
-                            EmployeeTitleOfCourtesy = employeeTitleOfCourtesy,
-                            EmployeeBirthDate = employeeBirthDate,
-                            EmployeeHireDate = employeeHireDate,
-                            EmployeeAddress = employeeAddress,
-                            EmployeeCity = employeeCity,
-                            EmployeeRegion = employeeRegion,
-                            EmployeePostalCode = employeePostalCode,
-                            EmployeeCountry = employeeCountry,
-                            EmployeeHomePhone = employeeHomePhone,
-                            EmployeeExtension = employeeExtension,
-                            EmployeePhoto = employeePhoto,
-                            EmployeeNotes = employeeNotes,
-                            EmployeePhotoPath = employeePhotoPath,
-                            EmployeeSalary = employeeSalary
+                            CustomerCode = customerCode,
+                            CustomerName = customerName,
+                            CustomerContactName = customerContactName,
+                            CustomerContactTitle = customerContactTitle,
+                            CustomerAddress = customerAddress,
+                            CustomerCity = customerCity,
+                            CustomerRegion = customerRegion,
+                            CustomerPostalCode = customerPostalCode,
+                            CustomerCountry = customerCountry,
+                            CustomerPhone = customerPhone,
+                            CustomerFax = customerFax
                         };
-                        lastInsertKey = employeeRepository.Create(employeeModel);
+                        lastInsertKey = customerRepository.Create(customerModel);
                         code = ((int) ReturnCodeEnum.CREATE_SUCCESS).ToString();
                         status = true;
                     }
@@ -146,8 +110,7 @@ public class EmployeeController : Controller
                 {
                     try
                     {
-                        data = employeeRepository.Read();
-
+                        data = customerRepository.Read();
                         code = ((int) ReturnCodeEnum.CREATE_SUCCESS).ToString();
                         status = true;
                     }
@@ -169,13 +132,12 @@ public class EmployeeController : Controller
                 {
                     try
                     {
-                        data = employeeRepository.Search(search);
-
                         code = ((int) ReturnCodeEnum.READ_SUCCESS).ToString();
                         status = true;
                     }
                     catch (Exception ex)
                     {
+                        data = customerRepository.Search(search);
                         code = sharedUtil.GetRoleId() == (int) AccessEnum.ADMINISTRATOR_ACCESS
                             ? ex.Message
                             : ((int) ReturnCodeEnum.SYSTEM_ERROR).ToString();
@@ -192,14 +154,11 @@ public class EmployeeController : Controller
                 {
                     try
                     {
-                        EmployeeModel employeeModel = new()
+                        CustomerModel customerModel = new()
                         {
-                            EmployeeKey = employeeKey
+                            CustomerKey = customerKey
                         };
-                        dataSingle = employeeRepository.GetSingle(employeeModel);
-                        if (dataSingle.EmployeePhoto != null)
-                            dataSingle.EmployeePhotoBase64String = SharedUtil.GetImageString(dataSingle.EmployeePhoto);
-                        dataSingle.EmployeePhoto = Array.Empty<byte>();
+                        dataSingle = customerRepository.GetSingle(customerModel);
                         code = ((int) ReturnCodeEnum.READ_SUCCESS).ToString();
                         status = true;
                     }
@@ -212,6 +171,7 @@ public class EmployeeController : Controller
                 }
 
                 break;
+          
             case "update":
                 if (!checkAccessUtil.GetPermission(leafCheckKey, AuthenticationEnum.UPDATE_ACCESS))
                 {
@@ -221,28 +181,22 @@ public class EmployeeController : Controller
                 {
                     try
                     {
-                        EmployeeModel employeeModel = new()
+                        CustomerModel customerModel = new()
                         {
-                            EmployeeKey = employeeKey,
-                            EmployeeLastName = employeeLastName,
-                            EmployeeFirstName = employeeFirstName,
-                            EmployeeTitle = employeeTitle,
-                            EmployeeTitleOfCourtesy = employeeTitleOfCourtesy,
-                            EmployeeBirthDate = employeeBirthDate,
-                            EmployeeHireDate = employeeHireDate,
-                            EmployeeAddress = employeeAddress,
-                            EmployeeCity = employeeCity,
-                            EmployeeRegion = employeeRegion,
-                            EmployeePostalCode = employeePostalCode,
-                            EmployeeCountry = employeeCountry,
-                            EmployeeHomePhone = employeeHomePhone,
-                            EmployeeExtension = employeeExtension,
-                            EmployeePhoto = employeePhoto,
-                            EmployeeNotes = employeeNotes,
-                            EmployeePhotoPath = employeePhotoPath,
-                            EmployeeSalary = employeeSalary
+                            CustomerKey = customerKey,
+                            CustomerCode = customerCode,
+                            CustomerName = customerName,
+                            CustomerContactName = customerContactName,
+                            CustomerContactTitle = customerContactTitle,
+                            CustomerAddress = customerAddress,
+                            CustomerCity = customerCity,
+                            CustomerRegion = customerRegion,
+                            CustomerPostalCode = customerPostalCode,
+                            CustomerCountry = customerCountry,
+                            CustomerPhone = customerPhone,
+                            CustomerFax = customerFax
                         };
-                        employeeRepository.Update(employeeModel);
+                        customerRepository.Update(customerModel);
                         code = ((int) ReturnCodeEnum.UPDATE_SUCCESS).ToString();
                         status = true;
                     }
@@ -264,11 +218,11 @@ public class EmployeeController : Controller
                 {
                     try
                     {
-                        EmployeeModel employeeModel = new()
+                        CustomerModel customerModel = new()
                         {
-                            EmployeeKey = employeeKey
+                            CustomerKey = customerKey
                         };
-                        employeeRepository.Delete(employeeModel);
+                        customerRepository.Delete(customerModel);
                         code = ((int) ReturnCodeEnum.DELETE_SUCCESS).ToString();
                         status = true;
                     }
@@ -291,11 +245,10 @@ public class EmployeeController : Controller
             return Ok(new {status, code, data});
         }
 
-        if (mode.Equals("single"))
+        if (mode.Equals("single") || mode.Equals("singleWithDetail"))
         {
             return Ok(new {status, code, dataSingle});
         }
-
         return lastInsertKey > 0 ? Ok(new {status, code, lastInsertKey}) : Ok(new {status, code});
     }
 }

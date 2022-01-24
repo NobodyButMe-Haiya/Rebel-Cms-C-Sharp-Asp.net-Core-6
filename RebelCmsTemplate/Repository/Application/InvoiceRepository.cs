@@ -520,19 +520,19 @@ public class InvoiceRepository
                 while (reader.Read())
                 {
                     var currentRow = counter++;
-                    worksheet.Cell(currentRow, 2).Value = reader["customerName"].ToString();
+                    worksheet.Cell(currentRow, 1).Value = reader["customerName"].ToString();
                     worksheet.Cell(currentRow, 2).Value = reader["shipperName"].ToString();
-                    worksheet.Cell(currentRow, 2).Value = reader["employeeLastName"].ToString();
-                    worksheet.Cell(currentRow, 2).Value = reader["invoiceOrderDate"].ToString();
-                    worksheet.Cell(currentRow, 2).Value = reader["invoiceRequiredDate"].ToString();
-                    worksheet.Cell(currentRow, 2).Value = reader["invoiceShippedDate"].ToString();
-                    worksheet.Cell(currentRow, 2).Value = reader["invoiceFreight"].ToString();
-                    worksheet.Cell(currentRow, 2).Value = reader["invoiceShipName"].ToString();
-                    worksheet.Cell(currentRow, 2).Value = reader["invoiceShipAddress"].ToString();
-                    worksheet.Cell(currentRow, 2).Value = reader["invoiceShipCity"].ToString();
-                    worksheet.Cell(currentRow, 2).Value = reader["invoiceShipRegion"].ToString();
-                    worksheet.Cell(currentRow, 2).Value = reader["invoiceShipPostalCode"].ToString();
-                    worksheet.Cell(currentRow, 2).Value = reader["invoiceShipCountry"].ToString();
+                    worksheet.Cell(currentRow, 3).Value = reader["employeeLastName"].ToString();
+                    worksheet.Cell(currentRow, 4).Value = reader["invoiceOrderDate"].ToString();
+                    worksheet.Cell(currentRow, 5).Value = reader["invoiceRequiredDate"].ToString();
+                    worksheet.Cell(currentRow, 6).Value = reader["invoiceShippedDate"].ToString();
+                    worksheet.Cell(currentRow, 7).Value = reader["invoiceFreight"].ToString();
+                    worksheet.Cell(currentRow, 8).Value = reader["invoiceShipName"].ToString();
+                    worksheet.Cell(currentRow, 9).Value = reader["invoiceShipAddress"].ToString();
+                    worksheet.Cell(currentRow, 10).Value = reader["invoiceShipCity"].ToString();
+                    worksheet.Cell(currentRow, 11).Value = reader["invoiceShipRegion"].ToString();
+                    worksheet.Cell(currentRow, 12).Value = reader["invoiceShipPostalCode"].ToString();
+                    worksheet.Cell(currentRow, 13).Value = reader["invoiceShipCountry"].ToString();
                 }
             }
 

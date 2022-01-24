@@ -17,7 +17,7 @@ public class CustomerRepository
 
     public int Create(CustomerModel customerModel)
     {
-        var lastInsertKey = 0;
+        int lastInsertKey;
         var sql = string.Empty;
         List<ParameterModel> parameterModels = new();
         using var connection = SharedUtil.GetConnection();
@@ -347,20 +347,20 @@ public class CustomerRepository
                 while (reader.Read())
                 {
                     var currentRow = counter++;
-                    worksheet.Cell(currentRow, 2).Value = reader["customerId"].ToString();
+                    worksheet.Cell(currentRow, 1).Value = reader["customerId"].ToString();
                     worksheet.Cell(currentRow, 2).Value = reader["tenantId"].ToString();
-                    worksheet.Cell(currentRow, 2).Value = reader["customerCode"].ToString();
-                    worksheet.Cell(currentRow, 2).Value = reader["customerName"].ToString();
-                    worksheet.Cell(currentRow, 2).Value = reader["customerContactName"].ToString();
-                    worksheet.Cell(currentRow, 2).Value = reader["customerContactTitle"].ToString();
-                    worksheet.Cell(currentRow, 2).Value = reader["customerAddress"].ToString();
-                    worksheet.Cell(currentRow, 2).Value = reader["customerCity"].ToString();
-                    worksheet.Cell(currentRow, 2).Value = reader["customerRegion"].ToString();
-                    worksheet.Cell(currentRow, 2).Value = reader["customerPostalCode"].ToString();
-                    worksheet.Cell(currentRow, 2).Value = reader["customerCountry"].ToString();
-                    worksheet.Cell(currentRow, 2).Value = reader["customerPhone"].ToString();
-                    worksheet.Cell(currentRow, 2).Value = reader["customerFax"].ToString();
-                    worksheet.Cell(currentRow, 2).Value = reader["isDelete"].ToString();
+                    worksheet.Cell(currentRow, 3).Value = reader["customerCode"].ToString();
+                    worksheet.Cell(currentRow, 4).Value = reader["customerName"].ToString();
+                    worksheet.Cell(currentRow, 5).Value = reader["customerContactName"].ToString();
+                    worksheet.Cell(currentRow, 6).Value = reader["customerContactTitle"].ToString();
+                    worksheet.Cell(currentRow, 7).Value = reader["customerAddress"].ToString();
+                    worksheet.Cell(currentRow, 8).Value = reader["customerCity"].ToString();
+                    worksheet.Cell(currentRow, 9).Value = reader["customerRegion"].ToString();
+                    worksheet.Cell(currentRow, 10).Value = reader["customerPostalCode"].ToString();
+                    worksheet.Cell(currentRow, 11).Value = reader["customerCountry"].ToString();
+                    worksheet.Cell(currentRow, 12).Value = reader["customerPhone"].ToString();
+                    worksheet.Cell(currentRow, 13).Value = reader["customerFax"].ToString();
+                    worksheet.Cell(currentRow, 14).Value = reader["isDelete"].ToString();
                 }
             }
 

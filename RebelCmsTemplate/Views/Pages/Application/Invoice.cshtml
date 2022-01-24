@@ -12,8 +12,7 @@
     List<ProductModel> productModels = new();
     try
     {
-        InvoiceRepository invoiceRepository = new(_httpContextAccessor);
-        invoiceModels = invoiceRepository.Read();
+
         CustomerRepository customerRepository = new(_httpContextAccessor);
         customerModels = customerRepository.Read();
         ShipperRepository shipperRepository = new(_httpContextAccessor);
@@ -22,6 +21,9 @@
         employeeModels = employeeRepository.Read();
         ProductRepository productRepository = new(_httpContextAccessor);
         productModels = productRepository.Read();
+
+        InvoiceRepository invoiceRepository = new(_httpContextAccessor);
+        invoiceModels = invoiceRepository.Read();
     }
     catch (Exception ex)
     {

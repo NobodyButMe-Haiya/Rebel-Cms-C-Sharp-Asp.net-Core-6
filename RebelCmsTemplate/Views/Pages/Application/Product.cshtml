@@ -16,6 +16,7 @@
         productCategoryModels = productCategoryRepository.Read();
         ProductTypeRepository productTypeRepository = new(_httpContextAccessor);
         productTypeModels = productTypeRepository.Read();
+
         ProductRepository productRepository = new(_httpContextAccessor);
         productModels = productRepository.Read();
     }

@@ -194,10 +194,7 @@
                     </table>
                 </div>
             </div>
-
-
         </div>
-
     </div>
 </section>
 <script>
@@ -291,21 +288,21 @@
 
                     } else if (status === false) {
                       if (typeof(data.code) === 'string'){
-                                                  @{
-                                                      if (sharedUtils.GetRoleId().Equals((int) AccessEnum.ADMINISTRATOR_ACCESS))
-                                                      {
-                                                          <text>
-                                                          Swal.fire("Debugging Admin", code, "error");
-                                                          </text>
-                                                      }
-                                                      else
-                                                      {
-                                                          <text>
-                                                          Swal.fire("System", "@SharedUtil.UserErrorNotification", "error");
-                                                          </text>
-                                                      }
-                                                  }
-                                              }else   if (parseInt(code) === parseInt(@((int) ReturnCodeEnum.ACCESS_DENIED) )) {
+                          @{
+                              if (sharedUtils.GetRoleId().Equals((int) AccessEnum.ADMINISTRATOR_ACCESS))
+                              {
+                                  <text>
+                                  Swal.fire("Debugging Admin", code, "error");
+                                  </text>
+                              }
+                              else
+                              {
+                                  <text>
+                                  Swal.fire("System", "@SharedUtil.UserErrorNotification", "error");
+                                  </text>
+                              }
+                          }
+                      }else   if (parseInt(code) === parseInt(@((int) ReturnCodeEnum.ACCESS_DENIED) )) {
                             let timerInterval
                             Swal.fire({
                                 title: 'Auto close alert!',
@@ -336,11 +333,11 @@
                         location.href = "/";
                     }
             }).fail(function(xhr)  {
-                                                                     console.log(xhr.status)
-                                                                     Swal.fire("System", "@SharedUtil.UserErrorNotification", "error");
-                                                                 }).always(function (){
-                                                                     console.log("always:complete");    
-                                                                 });
+                 console.log(xhr.status)
+                 Swal.fire("System", "@SharedUtil.UserErrorNotification", "error");
+             }).always(function (){
+                 console.log("always:complete");    
+             });
         }
         function readRecord() {
             $.ajax({
@@ -427,11 +424,11 @@
                         location.href = "/";
                     }
            }).fail(function(xhr)  {
-                                                                    console.log(xhr.status)
-                                                                    Swal.fire("System", "@SharedUtil.UserErrorNotification", "error");
-                                                                }).always(function (){
-                                                                    console.log("always:complete");    
-                                                                });
+                console.log(xhr.status)
+                Swal.fire("System", "@SharedUtil.UserErrorNotification", "error");
+            }).always(function (){
+                console.log("always:complete");    
+            });
         }
         function searchRecord() {
             $.ajax({

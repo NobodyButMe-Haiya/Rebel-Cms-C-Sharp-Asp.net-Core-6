@@ -17,16 +17,16 @@ public class EmployeeRepository
 
     public int Create(EmployeeModel employeeModel)
     {
-        var lastInsertKey = 0;
+        int lastInsertKey;
         var sql = string.Empty;
         List<ParameterModel> parameterModels = new();
         using var connection = SharedUtil.GetConnection();
         try
         {
             connection.Open();
-            var mySqlTransaction = connection.BeginTransaction();
+            MySqlTransaction mySqlTransaction = connection.BeginTransaction();
             sql +=
-                @"INSERT INTO employee (employeeId,tenantId,employeeLastName,employeeFirstName,employeeTitle,employeeTitleOfCourtesy,employeeBirthDate,employeeHireDate,employeeAddress,employeeCity,employeeRegion,employeePostalCode,employeeCountry,employeeHomePhone,employeeExtension,employeePhoto,employeeNotes,employeePhotoPath,employeeSalary,isDelete) VALUES (null,@tenantId,@employeeLastName,@employeeFirstName,@employeeTitle,@employeeTitleOfCourtesy,@employeeBirthDate,@employeeHireDate,@employeeAddress,@employeeCity,@employeeRegion,@employeePostalCode,@employeeCountry,@employeeHomePhone,@employeeExtension,@employeePhoto,@employeeNotes,@employeePhotoPath,@employeeSalary,@isDelete);";
+                @"INSERT INTO employee (employeeId,tenantId,employeeFirstName,employeeLastName,employeeTitle,employeeTitleOfCourtesy,employeeBirthDate,employeeHireDate,employeeAddress,employeeCity,employeeRegion,employeePostalCode,employeeCountry,employeeHomePhone,employeeExtension,employeePhoto,employeeNotes,employeePhotoPath,employeeSalary,isDelete) VALUES (null,@tenantId,@employeeFirstName,@employeeLastName,@employeeTitle,@employeeTitleOfCourtesy,@employeeBirthDate,@employeeHireDate,@employeeAddress,@employeeCity,@employeeRegion,@employeePostalCode,@employeeCountry,@employeeHomePhone,@employeeExtension,@employeePhoto,@employeeNotes,@employeePhotoPath,@employeeSalary,@isDelete);";
             MySqlCommand mySqlCommand = new(sql, connection);
             parameterModels = new List<ParameterModel>
             {
@@ -37,13 +37,13 @@ public class EmployeeRepository
                 },
                 new()
                 {
-                    Key = "@employeeLastName",
-                    Value = employeeModel.EmployeeLastName
+                    Key = "@employeeFirstName",
+                    Value = employeeModel.EmployeeFirstName
                 },
                 new()
                 {
-                    Key = "@employeeFirstName",
-                    Value = employeeModel.EmployeeFirstName
+                    Key = "@employeeLastName",
+                    Value = employeeModel.EmployeeLastName
                 },
                 new()
                 {
@@ -124,7 +124,7 @@ public class EmployeeRepository
                 {
                     Key = "@isDelete",
                     Value = 0
-                }
+                },
             };
             foreach (var parameter in parameterModels)
             {
@@ -158,7 +158,7 @@ public class EmployeeRepository
             sql = @"
                 SELECT      *
                 FROM        employee 
-                WHERE       isDelete !=1
+	 WHERE   employee.isDelete != 1
                 ORDER BY    employeeId DESC ";
             MySqlCommand mySqlCommand = new(sql, connection);
             _sharedUtil.SetSqlSession(sql, parameterModels);
@@ -169,15 +169,14 @@ public class EmployeeRepository
                     employeeModels.Add(new EmployeeModel
                     {
                         EmployeeKey = Convert.ToInt32(reader["employeeId"]),
-                        TenantKey = Convert.ToInt32(reader["tenantId"]),
-                        EmployeeLastName = reader["employeeLastName"].ToString(),
                         EmployeeFirstName = reader["employeeFirstName"].ToString(),
+                        EmployeeLastName = reader["employeeLastName"].ToString(),
                         EmployeeTitle = reader["employeeTitle"].ToString(),
                         EmployeeTitleOfCourtesy = reader["employeeTitleOfCourtesy"].ToString(),
-                        EmployeeBirthDate = reader["employeeBirthDate"] != DBNull.Value
+                        EmployeeBirthDate = (reader["employeeBirthDate"] != DBNull.Value)
                             ? CustomDateTimeConvert.ConvertToDate((DateTime) reader["employeeBirthDate"])
                             : null,
-                        EmployeeHireDate = reader["employeeHireDate"] != DBNull.Value
+                        EmployeeHireDate = (reader["employeeHireDate"] != DBNull.Value)
                             ? CustomDateTimeConvert.ConvertToDate((DateTime) reader["employeeHireDate"])
                             : null,
                         EmployeeAddress = reader["employeeAddress"].ToString(),
@@ -188,11 +187,9 @@ public class EmployeeRepository
                         EmployeeHomePhone = reader["employeeHomePhone"].ToString(),
                         EmployeeExtension = reader["employeeExtension"].ToString(),
                         EmployeePhoto = (byte[]) reader["employeePhoto"],
-                        EmployeePhotoBase64String = Convert.ToBase64String((byte[]) reader["employeePhoto"]),
                         EmployeeNotes = reader["employeeNotes"].ToString(),
                         EmployeePhotoPath = reader["employeePhotoPath"].ToString(),
                         EmployeeSalary = Convert.ToDouble(reader["employeeSalary"]),
-                        IsDelete = Convert.ToInt32(reader["isDelete"])
                     });
                 }
             }
@@ -223,23 +220,23 @@ public class EmployeeRepository
                 FROM    employee 
 	 WHERE   employee.isDelete != 1
 	 AND (
-	 employee.employeeLastName like concat('%',@search,'%') OR
-	 employee.employeeFirstName like concat('%',@search,'%') OR
-	 employee.employeeTitle like concat('%',@search,'%') OR
-	 employee.employeeTitleOfCourtesy like concat('%',@search,'%') OR
-	 employee.employeeBirthDate like concat('%',@search,'%') OR
-	 employee.employeeHireDate like concat('%',@search,'%') OR
-	 employee.employeeAddress like concat('%',@search,'%') OR
-	 employee.employeeCity like concat('%',@search,'%') OR
-	 employee.employeeRegion like concat('%',@search,'%') OR
-	 employee.employeePostalCode like concat('%',@search,'%') OR
-	 employee.employeeCountry like concat('%',@search,'%') OR
-	 employee.employeeHomePhone like concat('%',@search,'%') OR
-	 employee.employeeExtension like concat('%',@search,'%') OR
-	 employee.employeePhoto like concat('%',@search,'%') OR
-	 employee.employeeNotes like concat('%',@search,'%') OR
-	 employee.employeePhotoPath like concat('%',@search,'%') OR
-	 employee.employeeSalary like concat('%',@search,'%') )";
+	 employee.employeeFirstName LIKE CONCAT('%',@search,'%') OR
+	 employee.employeeLastName LIKE CONCAT('%',@search,'%') OR
+	 employee.employeeTitle LIKE CONCAT('%',@search,'%') OR
+	 employee.employeeTitleOfCourtesy LIKE CONCAT('%',@search,'%') OR
+	 employee.employeeBirthDate LIKE CONCAT('%',@search,'%') OR
+	 employee.employeeHireDate LIKE CONCAT('%',@search,'%') OR
+	 employee.employeeAddress LIKE CONCAT('%',@search,'%') OR
+	 employee.employeeCity LIKE CONCAT('%',@search,'%') OR
+	 employee.employeeRegion LIKE CONCAT('%',@search,'%') OR
+	 employee.employeePostalCode LIKE CONCAT('%',@search,'%') OR
+	 employee.employeeCountry LIKE CONCAT('%',@search,'%') OR
+	 employee.employeeHomePhone LIKE CONCAT('%',@search,'%') OR
+	 employee.employeeExtension LIKE CONCAT('%',@search,'%') OR
+	 employee.employeePhoto LIKE CONCAT('%',@search,'%') OR
+	 employee.employeeNotes LIKE CONCAT('%',@search,'%') OR
+	 employee.employeePhotoPath LIKE CONCAT('%',@search,'%') OR
+	 employee.employeeSalary LIKE CONCAT('%',@search,'%') )";
             MySqlCommand mySqlCommand = new(sql, connection);
             parameterModels = new List<ParameterModel>
             {
@@ -261,16 +258,14 @@ public class EmployeeRepository
                 {
                     employeeModels.Add(new EmployeeModel
                     {
-                        EmployeeKey = Convert.ToInt32(reader["employeeId"]),
-                        TenantKey = Convert.ToInt32(reader["tenantId"]),
-                        EmployeeLastName = reader["employeeLastName"].ToString(),
                         EmployeeFirstName = reader["employeeFirstName"].ToString(),
+                        EmployeeLastName = reader["employeeLastName"].ToString(),
                         EmployeeTitle = reader["employeeTitle"].ToString(),
                         EmployeeTitleOfCourtesy = reader["employeeTitleOfCourtesy"].ToString(),
-                        EmployeeBirthDate = reader["employeeBirthDate"] != DBNull.Value
+                        EmployeeBirthDate = (reader["employeeBirthDate"] != DBNull.Value)
                             ? CustomDateTimeConvert.ConvertToDate((DateTime) reader["employeeBirthDate"])
                             : null,
-                        EmployeeHireDate = reader["employeeHireDate"] != DBNull.Value
+                        EmployeeHireDate = (reader["employeeHireDate"] != DBNull.Value)
                             ? CustomDateTimeConvert.ConvertToDate((DateTime) reader["employeeHireDate"])
                             : null,
                         EmployeeAddress = reader["employeeAddress"].ToString(),
@@ -284,7 +279,6 @@ public class EmployeeRepository
                         EmployeeNotes = reader["employeeNotes"].ToString(),
                         EmployeePhotoPath = reader["employeePhotoPath"].ToString(),
                         EmployeeSalary = Convert.ToDouble(reader["employeeSalary"]),
-                        IsDelete = Convert.ToInt32(reader["isDelete"])
                     });
                 }
             }
@@ -312,7 +306,7 @@ public class EmployeeRepository
             sql += @"
                 SELECT  *
                 FROM    employee 
-	            WHERE   employee.isDelete != 1
+                WHERE   employee.isDelete != 1
                 AND   employee.employeeId    =   @employeeId LIMIT 1";
             MySqlCommand mySqlCommand = new(sql, connection);
             parameterModels = new List<ParameterModel>
@@ -333,18 +327,17 @@ public class EmployeeRepository
             {
                 while (reader.Read())
                 {
-                    employeeModel = new EmployeeModel
+                    employeeModel = new EmployeeModel()
                     {
                         EmployeeKey = Convert.ToInt32(reader["employeeId"]),
-                        TenantKey = Convert.ToInt32(reader["tenantId"]),
-                        EmployeeLastName = reader["employeeLastName"].ToString(),
                         EmployeeFirstName = reader["employeeFirstName"].ToString(),
+                        EmployeeLastName = reader["employeeLastName"].ToString(),
                         EmployeeTitle = reader["employeeTitle"].ToString(),
                         EmployeeTitleOfCourtesy = reader["employeeTitleOfCourtesy"].ToString(),
-                        EmployeeBirthDate = reader["employeeBirthDate"] != DBNull.Value
+                        EmployeeBirthDate = (reader["employeeBirthDate"] != DBNull.Value)
                             ? CustomDateTimeConvert.ConvertToDate((DateTime) reader["employeeBirthDate"])
                             : null,
-                        EmployeeHireDate = reader["employeeHireDate"] != DBNull.Value
+                        EmployeeHireDate = (reader["employeeHireDate"] != DBNull.Value)
                             ? CustomDateTimeConvert.ConvertToDate((DateTime) reader["employeeHireDate"])
                             : null,
                         EmployeeAddress = reader["employeeAddress"].ToString(),
@@ -358,7 +351,6 @@ public class EmployeeRepository
                         EmployeeNotes = reader["employeeNotes"].ToString(),
                         EmployeePhotoPath = reader["employeePhotoPath"].ToString(),
                         EmployeeSalary = Convert.ToDouble(reader["employeeSalary"]),
-                        IsDelete = Convert.ToInt32(reader["isDelete"])
                     };
                 }
             }
@@ -379,26 +371,23 @@ public class EmployeeRepository
     {
         using var workbook = new XLWorkbook();
         var worksheet = workbook.Worksheets.Add("Administrator > Employee ");
-        worksheet.Cell(1, 1).Value = "employeeId";
-        worksheet.Cell(1, 2).Value = "tenantId";
-        worksheet.Cell(1, 3).Value = "employeeLastName";
-        worksheet.Cell(1, 4).Value = "employeeFirstName";
-        worksheet.Cell(1, 5).Value = "employeeTitle";
-        worksheet.Cell(1, 6).Value = "employeeTitleOfCourtesy";
-        worksheet.Cell(1, 7).Value = "employeeBirthDate";
-        worksheet.Cell(1, 8).Value = "employeeHireDate";
-        worksheet.Cell(1, 9).Value = "employeeAddress";
-        worksheet.Cell(1, 10).Value = "employeeCity";
-        worksheet.Cell(1, 11).Value = "employeeRegion";
-        worksheet.Cell(1, 12).Value = "employeePostalCode";
-        worksheet.Cell(1, 13).Value = "employeeCountry";
-        worksheet.Cell(1, 14).Value = "employeeHomePhone";
-        worksheet.Cell(1, 15).Value = "employeeExtension";
-        worksheet.Cell(1, 16).Value = "employeePhoto";
-        worksheet.Cell(1, 17).Value = "employeeNotes";
-        worksheet.Cell(1, 18).Value = "employeePhotoPath";
-        worksheet.Cell(1, 19).Value = "employeeSalary";
-        worksheet.Cell(1, 20).Value = "isDelete";
+        worksheet.Cell(1, 1).Value = "First Name";
+        worksheet.Cell(1, 2).Value = "Last Name";
+        worksheet.Cell(1, 3).Value = "Title";
+        worksheet.Cell(1, 4).Value = "Title Of Courtesy";
+        worksheet.Cell(1, 5).Value = "Birth Date";
+        worksheet.Cell(1, 6).Value = "Hire Date";
+        worksheet.Cell(1, 7).Value = "Address";
+        worksheet.Cell(1, 8).Value = "City";
+        worksheet.Cell(1, 9).Value = "Region";
+        worksheet.Cell(1, 10).Value = "Postal Code";
+        worksheet.Cell(1, 11).Value = "Country";
+        worksheet.Cell(1, 12).Value = "Home Phone";
+        worksheet.Cell(1, 13).Value = "Extension";
+        worksheet.Cell(1, 14).Value = "Photo";
+        worksheet.Cell(1, 15).Value = "Notes";
+        worksheet.Cell(1, 16).Value = "Photo Path";
+        worksheet.Cell(1, 17).Value = "Salary";
         var sql = _sharedUtil.GetSqlSession();
         var parameterModels = _sharedUtil.GetListSqlParameter();
         using var connection = SharedUtil.GetConnection();
@@ -416,30 +405,27 @@ public class EmployeeRepository
 
             using (var reader = mySqlCommand.ExecuteReader())
             {
-                var counter = 1;
+                var counter = 3;
                 while (reader.Read())
                 {
                     var currentRow = counter++;
-                    worksheet.Cell(currentRow, 2).Value = reader["employeeId"].ToString();
-                    worksheet.Cell(currentRow, 2).Value = reader["tenantId"].ToString();
+                    worksheet.Cell(currentRow, 1).Value = reader["employeeFirstName"].ToString();
                     worksheet.Cell(currentRow, 2).Value = reader["employeeLastName"].ToString();
-                    worksheet.Cell(currentRow, 2).Value = reader["employeeFirstName"].ToString();
-                    worksheet.Cell(currentRow, 2).Value = reader["employeeTitle"].ToString();
-                    worksheet.Cell(currentRow, 2).Value = reader["employeeTitleOfCourtesy"].ToString();
-                    worksheet.Cell(currentRow, 2).Value = reader["employeeBirthDate"].ToString();
-                    worksheet.Cell(currentRow, 2).Value = reader["employeeHireDate"].ToString();
-                    worksheet.Cell(currentRow, 2).Value = reader["employeeAddress"].ToString();
-                    worksheet.Cell(currentRow, 2).Value = reader["employeeCity"].ToString();
-                    worksheet.Cell(currentRow, 2).Value = reader["employeeRegion"].ToString();
-                    worksheet.Cell(currentRow, 2).Value = reader["employeePostalCode"].ToString();
-                    worksheet.Cell(currentRow, 2).Value = reader["employeeCountry"].ToString();
-                    worksheet.Cell(currentRow, 2).Value = reader["employeeHomePhone"].ToString();
-                    worksheet.Cell(currentRow, 2).Value = reader["employeeExtension"].ToString();
-                    worksheet.Cell(currentRow, 2).Value = reader["employeePhoto"].ToString();
-                    worksheet.Cell(currentRow, 2).Value = reader["employeeNotes"].ToString();
-                    worksheet.Cell(currentRow, 2).Value = reader["employeePhotoPath"].ToString();
-                    worksheet.Cell(currentRow, 2).Value = reader["employeeSalary"].ToString();
-                    worksheet.Cell(currentRow, 2).Value = reader["isDelete"].ToString();
+                    worksheet.Cell(currentRow, 3).Value = reader["employeeTitle"].ToString();
+                    worksheet.Cell(currentRow, 4).Value = reader["employeeTitleOfCourtesy"].ToString();
+                    worksheet.Cell(currentRow, 5).Value = reader["employeeBirthDate"].ToString();
+                    worksheet.Cell(currentRow, 6).Value = reader["employeeHireDate"].ToString();
+                    worksheet.Cell(currentRow, 7).Value = reader["employeeAddress"].ToString();
+                    worksheet.Cell(currentRow, 8).Value = reader["employeeCity"].ToString();
+                    worksheet.Cell(currentRow, 9).Value = reader["employeeRegion"].ToString();
+                    worksheet.Cell(currentRow, 10).Value = reader["employeePostalCode"].ToString();
+                    worksheet.Cell(currentRow, 11).Value = reader["employeeCountry"].ToString();
+                    worksheet.Cell(currentRow, 12).Value = reader["employeeHomePhone"].ToString();
+                    worksheet.Cell(currentRow, 13).Value = reader["employeeExtension"].ToString();
+                    worksheet.Cell(currentRow, 14).Value = reader["employeePhoto"].ToString();
+                    worksheet.Cell(currentRow, 15).Value = reader["employeeNotes"].ToString();
+                    worksheet.Cell(currentRow, 16).Value = reader["employeePhotoPath"].ToString();
+                    worksheet.Cell(currentRow, 17).Value = reader["employeeSalary"].ToString();
                 }
             }
 
@@ -469,8 +455,8 @@ public class EmployeeRepository
                 UPDATE  employee 
                 SET     
 tenantId=@tenantId,
-employeeLastName=@employeeLastName,
 employeeFirstName=@employeeFirstName,
+employeeLastName=@employeeLastName,
 employeeTitle=@employeeTitle,
 employeeTitleOfCourtesy=@employeeTitleOfCourtesy,
 employeeBirthDate=@employeeBirthDate,
@@ -504,13 +490,13 @@ isDelete=@isDelete
                 },
                 new()
                 {
-                    Key = "@employeeLastName",
-                    Value = employeeModel.EmployeeLastName
+                    Key = "@employeeFirstName",
+                    Value = employeeModel.EmployeeFirstName
                 },
                 new()
                 {
-                    Key = "@employeeFirstName",
-                    Value = employeeModel.EmployeeFirstName
+                    Key = "@employeeLastName",
+                    Value = employeeModel.EmployeeLastName
                 },
                 new()
                 {
@@ -591,7 +577,7 @@ isDelete=@isDelete
                 {
                     Key = "@isDelete",
                     Value = 0
-                }
+                },
             };
             foreach (var parameter in parameterModels)
             {
@@ -618,7 +604,7 @@ isDelete=@isDelete
         try
         {
             connection.Open();
-            var mySqlTransaction = connection.BeginTransaction();
+            MySqlTransaction mySqlTransaction = connection.BeginTransaction();
             sql = @"
                 UPDATE  employee 
                 SET     isDelete    =   1

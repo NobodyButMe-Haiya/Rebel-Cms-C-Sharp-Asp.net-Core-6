@@ -45,13 +45,14 @@ public class RouteController : Controller
                 {
                     connection.Open();
                     const string sql = @"
-                        SELECT  leafName,
-                                folderName,
-                                leafFilename
-                        FROM    leaf
-                        JOIN    folder
-                        USING(folderId)
-                        WHERE   leafId =@leafId ";
+                    SELECT  leafName,
+                            folderName,
+                            leafFilename
+                    FROM    leaf
+                    JOIN    folder
+                    USING   (folderId)
+                    WHERE   leaf.leafId =@leafId
+                    LIMIT 1";
                     MySqlCommand mySqlCommand = new(sql, connection);
                     mySqlCommand.Parameters.AddWithValue("@leafId", leafId);
                     await using (var reader = mySqlCommand.ExecuteReader())

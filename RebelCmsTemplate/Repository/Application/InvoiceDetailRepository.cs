@@ -283,13 +283,13 @@ public class InvoiceDetailRepository
                 while (reader.Read())
                 {
                     var currentRow = counter++;
-                    worksheet.Cell(currentRow, 2).Value = reader["invoiceDetailId"].ToString();
+                    worksheet.Cell(currentRow, 1).Value = reader["invoiceDetailId"].ToString();
                     worksheet.Cell(currentRow, 2).Value = reader["invoiceId"].ToString();
-                    worksheet.Cell(currentRow, 2).Value = reader["productId"].ToString();
-                    worksheet.Cell(currentRow, 2).Value = reader["invoiceDetailUnitPrice"].ToString();
-                    worksheet.Cell(currentRow, 2).Value = reader["invoiceDetailQuantity"].ToString();
-                    worksheet.Cell(currentRow, 2).Value = reader["invoiceDetailDiscount"].ToString();
-                    worksheet.Cell(currentRow, 2).Value = reader["isDelete"].ToString();
+                    worksheet.Cell(currentRow, 3).Value = reader["productId"].ToString();
+                    worksheet.Cell(currentRow, 4).Value = reader["invoiceDetailUnitPrice"].ToString();
+                    worksheet.Cell(currentRow, 5).Value = reader["invoiceDetailQuantity"].ToString();
+                    worksheet.Cell(currentRow, 6).Value = reader["invoiceDetailDiscount"].ToString();
+                    worksheet.Cell(currentRow, 7).Value = reader["isDelete"].ToString();
                 }
             }
 

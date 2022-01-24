@@ -170,6 +170,9 @@ public class SharedUtil
 
     public void SetSqlSession(string sql, List<ParameterModel> parameterModels)
     {
+        _httpContextAccessor.HttpContext?.Session.Remove("sql");
+        _httpContextAccessor.HttpContext?.Session.Remove("parameter");
+
         _httpContextAccessor.HttpContext?.Session.SetString("sql", sql);
         _httpContextAccessor.HttpContext?.Session.SetString("parameter", JsonSerializer.Serialize(parameterModels));
     }
