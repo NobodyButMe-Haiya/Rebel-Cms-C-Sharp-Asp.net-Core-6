@@ -38,7 +38,15 @@
       "Piatok",
       "Sobota"
     ],
-    "shortDays": ["Ne", "Po", "Ut", "St", "Št", "Pi", "So"],
+    "shortDays": [
+      "Ne",
+      "Po",
+      "Ut",
+      "St",
+      "Št",
+      "Pi",
+      "So"
+    ],
     "toolbar": {
       "exportToSVG": "Stiahnuť SVG",
       "exportToPNG": "Stiahnuť PNG",

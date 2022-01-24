@@ -1,6 +1,5 @@
-﻿@inject Microsoft.AspNetCore.Http.IHttpContextAccessor _httpContextAccessor
+﻿@inject IHttpContextAccessor _httpContextAccessor
 @using RebelCmsTemplate.Models.Administrator
-@using RebelCmsTemplate.Models.Shared
 @using RebelCmsTemplate.Repository.Administrator;
 @using RebelCmsTemplate.Util;
 @using RebelCmsTemplate.Enum;
@@ -19,103 +18,103 @@
     var fileInfo = ViewContext.ExecutingFilePath?.Split("/");
     var filename = fileInfo != null ? fileInfo[4] : "";
     var name = filename.Split(".")[0];
-    NavigationModel navigationModel = sharedUtils.GetNavigation(name);
+    var navigationModel = sharedUtils.GetNavigation(name);
 }
 
-    <div class="page-title">
-        <div class="row">
-            <div class="col-12 col-md-6 order-md-1 order-last">
-                <h3>@navigationModel.LeafName</h3>
-            </div>
-            <div class="col-12 col-md-6 order-md-2 order-first">
-                <nav aria-label="breadcrumb" class="breadcrumb-header float-start float-lg-end">
-                    <ol class="breadcrumb">
-                        <li class="breadcrumb-item">
-                            <a href="#">
-                                <i class="@navigationModel.FolderIcon"></i>
-                                @navigationModel.FolderName
-                            </a>
-                        </li>
-                        <li class="breadcrumb-item active" aria-current="page">
-                            <i class="@navigationModel.LeafIcon"></i>
-                            @navigationModel.LeafName
-                        </li>
-                        <li class="breadcrumb-item active" aria-current="page">
-                            <i class="fas fa-sign-out-alt"></i>
-                            <a href="/logout">Logout</a>
-                        </li>
-                    </ol>
-                </nav>
-            </div>
+<div class="page-title">
+    <div class="row">
+        <div class="col-12 col-md-6 order-md-1 order-last">
+            <h3>@navigationModel.LeafName</h3>
+        </div>
+        <div class="col-12 col-md-6 order-md-2 order-first">
+            <nav aria-label="breadcrumb" class="breadcrumb-header float-start float-lg-end">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item">
+                        <a href="#">
+                            <i class="@navigationModel.FolderIcon"></i>
+                            @navigationModel.FolderName
+                        </a>
+                    </li>
+                    <li class="breadcrumb-item active" aria-current="page">
+                        <i class="@navigationModel.LeafIcon"></i>
+                        @navigationModel.LeafName
+                    </li>
+                    <li class="breadcrumb-item active" aria-current="page">
+                        <i class="fas fa-sign-out-alt"></i>
+                        <a href="/logout">Logout</a>
+                    </li>
+                </ol>
+            </nav>
         </div>
     </div>
-    <section class="content">
-        <div class="container-fluid">
-            <div class="row">
-                <div class="col-xs-12 col-sm-12 col-md-12">&nbsp;</div>
-            </div>
-            <div class="row">
-                <div class="col-xs-12 col-sm-12 col-md-12">
-                    <div class="card">
-                        <table class="table table-bordered table-striped table-condensed table-hover" id="tableData">
-                            @foreach (var row in configurationModels)
-                            {
-                                <tr>
-                                    <th>Email Host</th>
-                                    <th>Email</th>
-                                    <th>Email Password</th>
-                                    <th>Email Port</th>
-                                    <th>Email Secures</th>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        <input type="hidden" id="configurationKey" value="@row.ConfigurationKey" />
-                                        <label>
-                                            <input type="text" class="form-control" id='configurationEmailHost'
-                                            value='@row.ConfigurationEmailHost' />
-                                        </label>
-                                    </td>
-                                    <td>
-                                        <label>
-                                            <input type="text" class="form-control" id='configurationEmail'
-                                            value='@row.ConfigurationEmail' />
-                                        </label>
-                                    </td>
-                                    <td>
-                                        <label>
-                                            <input type="text" class="form-control" id='configurationEmailPassword'
-                                            value='@row.ConfigurationEmailPassword' />
-                                        </label>
-                                    </td>
-                                    <td>
-                                        <label>
-                                            <input type="text" class="form-control" id='configurationEmailPort'
-                                            value='@row.ConfigurationEmailPort' />
-                                        </label>
-                                    </td>
-                                    <td>
-                                        <label>
-                                            <input type="text" class="form-control" id='configurationEmailSecure'
-                                            value='@row.ConfigurationEmailSecure' />
-                                        </label>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td style='text-align: center' colspan="4">
-                                        <Button type="button" class="btn btn-warning"
-                                        onclick='updateRecord(@row.ConfigurationKey)'>
-                                            <i class="fas fa-edit"></i>&nbsp;UPDATE
-                                        </Button>
-                                    </td>
-                                </tr>
-                            }
-                        </table>
-                    </div>
+</div>
+<section class="content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-xs-12 col-sm-12 col-md-12">&nbsp;</div>
+        </div>
+        <div class="row">
+            <div class="col-xs-12 col-sm-12 col-md-12">
+                <div class="card">
+                    <table class="table table-bordered table-striped table-condensed table-hover" id="tableData">
+                        @foreach (var row in configurationModels)
+                        {
+                            <tr>
+                                <th>Email Host</th>
+                                <th>Email</th>
+                                <th>Email Password</th>
+                                <th>Email Port</th>
+                                <th>Email Secures</th>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <input type="hidden" id="configurationKey" value="@row.ConfigurationKey"/>
+                                    <label>
+                                        <input type="text" class="form-control" id='configurationEmailHost'
+                                               value='@row.ConfigurationEmailHost'/>
+                                    </label>
+                                </td>
+                                <td>
+                                    <label>
+                                        <input type="text" class="form-control" id='configurationEmail'
+                                               value='@row.ConfigurationEmail'/>
+                                    </label>
+                                </td>
+                                <td>
+                                    <label>
+                                        <input type="text" class="form-control" id='configurationEmailPassword'
+                                               value='@row.ConfigurationEmailPassword'/>
+                                    </label>
+                                </td>
+                                <td>
+                                    <label>
+                                        <input type="text" class="form-control" id='configurationEmailPort'
+                                               value='@row.ConfigurationEmailPort'/>
+                                    </label>
+                                </td>
+                                <td>
+                                    <label>
+                                        <input type="text" class="form-control" id='configurationEmailSecure'
+                                               value='@row.ConfigurationEmailSecure'/>
+                                    </label>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style='text-align: center' colspan="4">
+                                    <Button type="button" class="btn btn-warning"
+                                            onclick='updateRecord(@row.ConfigurationKey)'>
+                                        <i class="fas fa-edit"></i>&nbsp;UPDATE
+                                    </Button>
+                                </td>
+                            </tr>
+                        }
+                    </table>
                 </div>
             </div>
         </div>
-    </section>
-    <script>
+    </div>
+</section>
+<script>
         function updateRecord() {
             $.ajax({
                 type: 'POST',
@@ -151,7 +150,7 @@
                 } else if (status === false) {
                  if (typeof(code) === 'string'){
                     @{
-                        if (sharedUtils.GetRoleId().Equals( (int)AccessEnum.ADMINISTRATOR_ACCESS ))
+                        if (sharedUtils.GetRoleId().Equals((int) AccessEnum.ADMINISTRATOR_ACCESS))
                         {
                             <text>
                             Swal.fire("Debugging Admin", code, "error");
@@ -164,7 +163,7 @@
                             </text>
                         }
                     }
-                }else    if (parseInt(code) === parseInt(@((int)ReturnCodeEnum.ACCESS_DENIED) )) {
+                }else    if (parseInt(code) === parseInt(@((int) ReturnCodeEnum.ACCESS_DENIED) )) {
                         let timerInterval
                         Swal.fire({
                             title: 'Auto close alert!',

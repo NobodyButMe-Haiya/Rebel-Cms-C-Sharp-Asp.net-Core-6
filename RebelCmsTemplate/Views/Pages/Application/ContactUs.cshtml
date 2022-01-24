@@ -1,6 +1,5 @@
-﻿@inject Microsoft.AspNetCore.Http.IHttpContextAccessor _httpContextAccessor
+﻿@inject IHttpContextAccessor _httpContextAccessor
 @using RebelCmsTemplate.Models.Application
-@using RebelCmsTemplate.Models.Shared
 @using RebelCmsTemplate.Repository.Application;
 @using RebelCmsTemplate.Util;
 @{
@@ -18,7 +17,7 @@
     var fileInfo = ViewContext.ExecutingFilePath?.Split("/");
     var filename = fileInfo != null ? fileInfo[4] : "";
     var name = filename.Split(".")[0];
-    NavigationModel navigationModel = sharedUtils.GetNavigation(name);
+    var navigationModel = sharedUtils.GetNavigation(name);
 }
 
 <div class="page-title">
@@ -29,10 +28,16 @@
         <div class="col-12 col-md-6 order-md-2 order-first">
             <nav aria-label="breadcrumb" class="breadcrumb-header float-start float-lg-end">
                 <ol class="breadcrumb">
-                    <li class="breadcrumb-item"><a href="#"><i class="@navigationModel.FolderIcon"></i>
-                            @navigationModel.FolderName</a></li>
-                    <li class="breadcrumb-item active" aria-current="page"><i class="@navigationModel.LeafIcon"></i>
-                        @navigationModel.LeafName</li>
+                    <li class="breadcrumb-item">
+                        <a href="#">
+                            <i class="@navigationModel.FolderIcon"></i>
+                            @navigationModel.FolderName
+                        </a>
+                    </li>
+                    <li class="breadcrumb-item active" aria-current="page">
+                        <i class="@navigationModel.LeafIcon"></i>
+                        @navigationModel.LeafName
+                    </li>
                     <li class="breadcrumb-item active" aria-current="page">
                         <i class="fas fa-sign-out-alt"></i>
                         <a href="/logout">Logout</a>
@@ -49,35 +54,35 @@
                 <div class="card">
                     <table class="table table-bordered table-striped table-condensed table-hover" id="tableData">
                         <thead>
-                            <tr>
-                                <th style="width: 25px; text-align: center">
-                                    <div style="text-align: center">#</div>
-                                </th>
-                                <th style="width: 25px">ID</th>
-                                <th>NAME</th>
-                                <th>EMAIL</th>
-                                <th>MESSAGE</th>
-                            </tr>
+                        <tr>
+                            <th style="width: 25px; text-align: center">
+                                <div style="text-align: center">#</div>
+                            </th>
+                            <th style="width: 25px">ID</th>
+                            <th>NAME</th>
+                            <th>EMAIL</th>
+                            <th>MESSAGE</th>
+                        </tr>
                         </thead>
                         <tbody id="tableBody">
-                            @foreach (var row in contactUsModels)
-                            {
-                                <tr id='contact-@row.ContactUsKey'>
-                                    <td class="code">@row.ContactUsKey</td>
-                                    <td class="tdNormalAlign">@row.ContactUsName</td>
-                                    <td class="tdNormalAlign">@row.ContactUsEmail</td>
-                                    <td class="tdNormalAlign">@row.ContactUsMessage</td>
-                                </tr>
-                            }
+                        @foreach (var row in contactUsModels)
+                        {
+                            <tr id='contact-@row.ContactUsKey'>
+                                <td class="code">@row.ContactUsKey</td>
+                                <td class="tdNormalAlign">@row.ContactUsName</td>
+                                <td class="tdNormalAlign">@row.ContactUsEmail</td>
+                                <td class="tdNormalAlign">@row.ContactUsMessage</td>
+                            </tr>
+                        }
 
-                            @if (contactUsModels.Count == 0)
-                            {
-                                <tr>
-                                    <td colspan="7" class="noRecord">
-                                        @SharedUtil.NoRecord
-                                    </td>
-                                </tr>
-                            }
+                        @if (contactUsModels.Count == 0)
+                        {
+                            <tr>
+                                <td colspan="7" class="noRecord">
+                                    @SharedUtil.NoRecord
+                                </td>
+                            </tr>
+                        }
                         </tbody>
                     </table>
                 </div>

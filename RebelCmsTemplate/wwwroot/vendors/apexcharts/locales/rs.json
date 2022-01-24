@@ -38,7 +38,15 @@
       "Petak",
       "Subota"
     ],
-    "shortDays": ["Ned", "Pon", "Uto", "Sre", "Čet", "Pet", "Sub"],
+    "shortDays": [
+      "Ned",
+      "Pon",
+      "Uto",
+      "Sre",
+      "Čet",
+      "Pet",
+      "Sub"
+    ],
     "toolbar": {
       "exportToSVG": "Preuzmi SVG",
       "exportToPNG": "Preuzmi PNG",

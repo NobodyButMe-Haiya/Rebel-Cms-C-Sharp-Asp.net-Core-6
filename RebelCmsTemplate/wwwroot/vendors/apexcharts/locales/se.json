@@ -38,7 +38,15 @@
       "Fredag",
       "Lördag"
     ],
-    "shortDays": ["Sön", "Mån", "Tis", "Ons", "Tor", "Fre", "Lör"],
+    "shortDays": [
+      "Sön",
+      "Mån",
+      "Tis",
+      "Ons",
+      "Tor",
+      "Fre",
+      "Lör"
+    ],
     "toolbar": {
       "exportToSVG": "Ladda SVG",
       "exportToPNG": "Ladda PNG",

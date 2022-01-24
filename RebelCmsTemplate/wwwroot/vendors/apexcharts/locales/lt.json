@@ -38,7 +38,15 @@
       "Penktadienis",
       "Šeštadienis"
     ],
-    "shortDays": ["Sk", "Per", "An", "Tr", "Kt", "Pn", "Št"],
+    "shortDays": [
+      "Sk",
+      "Per",
+      "An",
+      "Tr",
+      "Kt",
+      "Pn",
+      "Št"
+    ],
     "toolbar": {
       "exportToSVG": "Atsisiųsti SVG",
       "exportToPNG": "Atsisiųsti PNG",

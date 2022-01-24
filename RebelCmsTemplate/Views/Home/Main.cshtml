@@ -1,4 +1,4 @@
-﻿@inject Microsoft.AspNetCore.Http.IHttpContextAccessor _httpContextAccessor
+﻿@inject IHttpContextAccessor _httpContextAccessor
 @using RebelCmsTemplate.Models.Menu
 @using RebelCmsTemplate.Util;
 @using RebelCmsTemplate.Enum;
@@ -40,16 +40,20 @@
             <div class="sidebar-header">
                 <div class="d-flex justify-content-between">
                     <div class="logo">
-                        <a href=""><img src="~/images/logo/logo.png" alt="Logo" srcset=""></a>
+                        <a href="">
+                            <img src="~/images/logo/logo.png" alt="Logo" srcset="">
+                        </a>
                     </div>
                     <div class="toggler">
-                        <a href="#" class="sidebar-hide d-xl-none d-block"><i class="bi bi-x bi-middle"></i></a>
+                        <a href="#" class="sidebar-hide d-xl-none d-block">
+                            <i class="bi bi-x bi-middle"></i>
+                        </a>
                     </div>
                 </div>
             </div>
             <div class="sidebar-menu">
                 <ul class="menu">
-                    @foreach (MenuModel menuModel in menuModels)
+                    @foreach (var menuModel in menuModels)
                     {
                         <li class="sidebar-item active has-sub ">
                             <a href="#" class='sidebar-link'>
@@ -59,7 +63,7 @@
                         </li>
                         @if (menuModel.Details?.Count > 0)
                         {
-                            foreach (MenuDetailModel menuDetailModel in menuModel.Details)
+                            foreach (var menuDetailModel in menuModel.Details)
                             {
                                 <li class="sidebar-item ">
                                     <a href="#" class='sidebar-link' onclick="route(@menuDetailModel.LeafKey)">
@@ -69,12 +73,13 @@
                                 </li>
                             }
                         }
-
                     }
 
                 </ul>
             </div>
-            <button class="sidebar-toggler btn x"><i data-feather="x"></i></button>
+            <button class="sidebar-toggler btn x">
+                <i data-feather="x"></i>
+            </button>
         </div>
     </div>
     <div id="main">
@@ -104,20 +109,28 @@
                 </div>
                 <div class="float-end">
                     <p>
-                        Crafted with Rebels Developer And Mazer <span class="text-danger"><i
-                                class="bi bi-heart"></i></span>
+                        Crafted with Rebels Developer And Mazer
+                        <span class="text-danger">
+                            <i
+                                class="bi bi-heart">
+                            </i>
+                        </span>
                         by
                         <a href="https://ahmadsaugi.com">A. Saugi</a>
                         .
                     </p>
                 </div>
                 <div class="row col-md-12">
-                    <a rel="license" href="https://creativecommons.org/licenses/by-nc/4.0/"><img
+                    <a rel="license" href="https://creativecommons.org/licenses/by-nc/4.0/">
+                        <img
                             alt="Creative Commons License" style="border-width:0"
-                            src="https://i.creativecommons.org/l/by-nc/4.0/88x31.png" /></a>
-                    <br />This work is licensed under a
-                    <a rel="license" href="https://creativecommons.org/licenses/by-nc/4.0/">Creative Commons
-                        Attribution-NonCommercial 4.0 International License</a>
+                            src="https://i.creativecommons.org/l/by-nc/4.0/88x31.png"/>
+                    </a>
+                    <br/>This work is licensed under a
+                    <a rel="license" href="https://creativecommons.org/licenses/by-nc/4.0/">
+                        Creative Commons
+                        Attribution-NonCommercial 4.0 International License
+                    </a>
 
                 </div>
             </div>
@@ -145,7 +158,7 @@
                 // possible future history.pushState(null, data.title, data.url);
                 $("#page-content").html("").html(data.page)
             } else if (status === false) {
-                if (parseInt(code) === parseInt(@((int)ReturnCodeEnum.ACCESS_DENIED) )) {
+                if (parseInt(code) === parseInt(@((int) ReturnCodeEnum.ACCESS_DENIED) )) {
                     let timerInterval
                     Swal.fire({
                         title: 'Auto close alert!',

@@ -1,375 +1,376 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Text;
+﻿using System.Text;
 using ClosedXML.Excel;
-using Microsoft.AspNetCore.Http;
 using MySql.Data.MySqlClient;
 using RebelCmsTemplate.Models.Administrator;
 using RebelCmsTemplate.Models.Shared;
 using RebelCmsTemplate.Util;
 
-namespace RebelCmsTemplate.Repository.Administrator
+namespace RebelCmsTemplate.Repository.Administrator;
+
+public class RoleRepository
 {
-    public class RoleRepository
+    private readonly SharedUtil _sharedUtil;
+
+    public RoleRepository(IHttpContextAccessor httpContextAccessor)
     {
-        private readonly SharedUtil _sharedUtil;
+        _sharedUtil = new SharedUtil(httpContextAccessor);
+    }
 
-        public RoleRepository(IHttpContextAccessor httpContextAccessor)
+    public int Create(RoleModel roleModel)
+    {
+        // okay next we create skeleton for the code
+        int lastInsertKey;
+        var sql = string.Empty;
+        List<ParameterModel> parameterModels = new();
+
+        using var connection = SharedUtil.GetConnection();
+        try
         {
-            _sharedUtil = new SharedUtil(httpContextAccessor);
-        }
+            connection.Open();
 
-        public int Create(RoleModel roleModel)
-        {
-            // okay next we create skeleton for the code
-            int lastInsertKey;
-            string sql = string.Empty;
-            List<ParameterModel> parameterModels = new();
+            var mySqlTransaction = connection.BeginTransaction();
 
-            using MySqlConnection connection = SharedUtil.GetConnection();
-            try
-            {
-                connection.Open();
-
-                MySqlTransaction mySqlTransaction = connection.BeginTransaction();
-
-                sql += @"
+            sql += @"
                 INSERT INTO role (roleId,tenantId, roleName, isDelete, executeBy) VALUES (null,@tenantId,@roleName,0,@executeBy);";
-                MySqlCommand mySqlCommand = new(sql, connection);
-                parameterModels = new List<ParameterModel>
-                {
-                    new()
-                    {
-                        Key = "@tenantId",
-                        Value = _sharedUtil.GetTenantId()
-                    },
-                    new()
-                    {
-                        Key = "@roleName",
-                        Value = roleModel.RoleName
-                    },
-                    new()
-                    {
-                        Key = "@executeBy",
-                        Value = _sharedUtil.GetUserName()
-                    }
-                };
-                foreach (ParameterModel parameter in parameterModels)
-                {
-                    mySqlCommand.Parameters.AddWithValue(parameter.Key, parameter.Value);
-                }
-                mySqlCommand.ExecuteNonQuery();
-
-              
-
-                lastInsertKey = (int)mySqlCommand.LastInsertedId;
-
-                mySqlCommand.Dispose();
-                SetLeafAccess(connection,lastInsertKey);
-                mySqlTransaction.Commit();
-            }
-            catch (MySqlException ex)
+            MySqlCommand mySqlCommand = new(sql, connection);
+            parameterModels = new List<ParameterModel>
             {
-                System.Diagnostics.Debug.WriteLine(ex.Message);
-                _sharedUtil.SetQueryException(SharedUtil.GetSqlSessionValue(sql, parameterModels), ex);
-                throw new Exception(ex.Message);
+                new()
+                {
+                    Key = "@tenantId",
+                    Value = _sharedUtil.GetTenantId()
+                },
+                new()
+                {
+                    Key = "@roleName",
+                    Value = roleModel.RoleName
+                },
+                new()
+                {
+                    Key = "@executeBy",
+                    Value = _sharedUtil.GetUserName()
+                }
+            };
+            foreach (var parameter in parameterModels)
+            {
+                mySqlCommand.Parameters.AddWithValue(parameter.Key, parameter.Value);
             }
 
-            return lastInsertKey;
+            mySqlCommand.ExecuteNonQuery();
+
+
+            lastInsertKey = (int) mySqlCommand.LastInsertedId;
+
+            mySqlCommand.Dispose();
+            SetLeafAccess(connection, lastInsertKey);
+            mySqlTransaction.Commit();
+        }
+        catch (MySqlException ex)
+        {
+            System.Diagnostics.Debug.WriteLine(ex.Message);
+            _sharedUtil.SetQueryException(SharedUtil.GetSqlSessionValue(sql, parameterModels), ex);
+            throw new Exception(ex.Message);
         }
 
-        public List<RoleModel> Read()
-        {
-            List<RoleModel> roleModels = new();
-            string sql = string.Empty;
-            List<ParameterModel> parameterModels = new();
+        return lastInsertKey;
+    }
 
-            using MySqlConnection connection = SharedUtil.GetConnection();
-            try
-            {
-                connection.Open();
-                sql += @"
+    public List<RoleModel> Read()
+    {
+        List<RoleModel> roleModels = new();
+        var sql = string.Empty;
+        List<ParameterModel> parameterModels = new();
+
+        using var connection = SharedUtil.GetConnection();
+        try
+        {
+            connection.Open();
+            sql += @"
                 SELECT      *
                 FROM        role
                 WHERE       tenantId = @tenantId
                 AND         isDelete !=1
                 ORDER BY    roleId DESC ";
-                MySqlCommand mySqlCommand = new(sql, connection);
-                parameterModels = new List<ParameterModel>
-                {
-                    new()
-                    {
-                        Key = "@tenantId",
-                        Value = _sharedUtil.GetTenantId()
-                    }
-                };
-                foreach (ParameterModel parameter in parameterModels)
-                {
-                    mySqlCommand.Parameters.AddWithValue(parameter.Key, parameter.Value);
-                }
-
-                _sharedUtil.SetSqlSession(sql, parameterModels);
-
-                using (var reader = mySqlCommand.ExecuteReader())
-                {
-                    while (reader.Read())
-                    {
-                        roleModels.Add(new RoleModel
-                        {
-                            RoleName = reader["roleName"].ToString(),
-                            RoleKey = Convert.ToInt32(reader["roleId"])
-                        });
-                    }
-                }
-
-                mySqlCommand.Dispose();
-            }
-            catch (MySqlException ex)
+            MySqlCommand mySqlCommand = new(sql, connection);
+            parameterModels = new List<ParameterModel>
             {
-                System.Diagnostics.Debug.WriteLine(ex.Message);
-                _sharedUtil.SetQueryException(SharedUtil.GetSqlSessionValue(sql, parameterModels), ex);
-                throw new Exception(ex.Message);
+                new()
+                {
+                    Key = "@tenantId",
+                    Value = _sharedUtil.GetTenantId()
+                }
+            };
+            foreach (var parameter in parameterModels)
+            {
+                mySqlCommand.Parameters.AddWithValue(parameter.Key, parameter.Value);
             }
 
+            _sharedUtil.SetSqlSession(sql, parameterModels);
 
-            return roleModels;
+            using (var reader = mySqlCommand.ExecuteReader())
+            {
+                while (reader.Read())
+                {
+                    roleModels.Add(new RoleModel
+                    {
+                        RoleName = reader["roleName"].ToString(),
+                        RoleKey = Convert.ToInt32(reader["roleId"])
+                    });
+                }
+            }
+
+            mySqlCommand.Dispose();
+        }
+        catch (MySqlException ex)
+        {
+            System.Diagnostics.Debug.WriteLine(ex.Message);
+            _sharedUtil.SetQueryException(SharedUtil.GetSqlSessionValue(sql, parameterModels), ex);
+            throw new Exception(ex.Message);
         }
 
-        public List<RoleModel> Search(string search)
-        {
-            List<RoleModel> roleModels = new();
-            string sql = string.Empty;
-            List<ParameterModel> parameterModels = new();
 
-            using MySqlConnection connection = SharedUtil.GetConnection();
-            try
-            {
-                connection.Open();
-                sql += @"
+        return roleModels;
+    }
+
+    public List<RoleModel> Search(string search)
+    {
+        List<RoleModel> roleModels = new();
+        var sql = string.Empty;
+        List<ParameterModel> parameterModels = new();
+
+        using var connection = SharedUtil.GetConnection();
+        try
+        {
+            connection.Open();
+            sql += @"
                 SELECT  *
                 FROM    role
                 WHERE   tenantId = @tenantId
                 AND     isDelete != 1
                 AND     roleName like concat('%',@search,'%'); ";
-                MySqlCommand mySqlCommand = new(sql, connection);
+            MySqlCommand mySqlCommand = new(sql, connection);
 
-                parameterModels = new List<ParameterModel>
+            parameterModels = new List<ParameterModel>
+            {
+                new()
                 {
-                    new()
+                    Key = "@tenantId",
+                    Value = _sharedUtil.GetTenantId()
+                },
+                new()
+                {
+                    Key = "@search",
+                    Value = search
+                }
+            };
+            foreach (var parameter in parameterModels)
+            {
+                mySqlCommand.Parameters.AddWithValue(parameter.Key, parameter.Value);
+            }
+
+            _sharedUtil.SetSqlSession(sql, parameterModels);
+
+            using (var reader = mySqlCommand.ExecuteReader())
+            {
+                while (reader.Read())
+                {
+                    roleModels.Add(new RoleModel
                     {
-                        Key = "@tenantId",
-                        Value = _sharedUtil.GetTenantId()
-                    },
-                    new()
-                    {
-                        Key = "@search",
-                        Value = search
-                    }
-                };
-                foreach (ParameterModel parameter in parameterModels)
+                        RoleName = reader["roleName"].ToString(),
+                        RoleKey = Convert.ToInt32(reader["roleId"])
+                    });
+                }
+            }
+
+            mySqlCommand.Dispose();
+        }
+        catch (MySqlException ex)
+        {
+            System.Diagnostics.Debug.WriteLine(ex.Message);
+            _sharedUtil.SetQueryException(SharedUtil.GetSqlSessionValue(sql, parameterModels), ex);
+            throw new Exception(ex.Message);
+        }
+
+
+        return roleModels;
+    }
+
+    public byte[] GetExcel()
+    {
+        using var workbook = new XLWorkbook();
+        var worksheet = workbook.Worksheets.Add("Administrator > Role");
+        worksheet.Cell(1, 1).Value = "No";
+        worksheet.Cell(1, 2).Value = "Role";
+        var sql = _sharedUtil.GetSqlSession();
+        var parameterModels = _sharedUtil.GetListSqlParameter();
+        using var connection = SharedUtil.GetConnection();
+
+        try
+        {
+            connection.Open();
+            MySqlCommand mySqlCommand = new(sql, connection);
+            if (parameterModels != null)
+            {
+                foreach (var parameter in parameterModels)
                 {
                     mySqlCommand.Parameters.AddWithValue(parameter.Key, parameter.Value);
                 }
-                _sharedUtil.SetSqlSession(sql, parameterModels);
-
-                using (var reader = mySqlCommand.ExecuteReader())
-                {
-                    while (reader.Read())
-                    {
-                        roleModels.Add(new RoleModel
-                        {
-                            RoleName = reader["roleName"].ToString(),
-                            RoleKey = Convert.ToInt32(reader["roleId"])
-                        });
-                    }
-                }
-
-                mySqlCommand.Dispose();
             }
-            catch (MySqlException ex)
+
+            using (var reader = mySqlCommand.ExecuteReader())
             {
-                System.Diagnostics.Debug.WriteLine(ex.Message);
-                _sharedUtil.SetQueryException(SharedUtil.GetSqlSessionValue(sql, parameterModels), ex);
-                throw new Exception(ex.Message);
+                var counter = 1;
+                while (reader.Read())
+                {
+                    var currentRow = counter++;
+                    worksheet.Cell(currentRow, 1).Value = counter - 1;
+                    worksheet.Cell(currentRow, 2).Value = reader["roleName"].ToString();
+                }
             }
 
-
-            return roleModels;
+            mySqlCommand.Dispose();
+        }
+        catch (MySqlException ex)
+        {
+            System.Diagnostics.Debug.WriteLine(ex.Message);
+            throw new Exception(ex.Message);
         }
 
-        public byte[] GetExcel()
+        using var stream = new MemoryStream();
+        workbook.SaveAs(stream);
+        return stream.ToArray();
+    }
+
+    public void Update(RoleModel roleModel)
+    {
+        var sql = string.Empty;
+        List<ParameterModel> parameterModels = new();
+
+        using var connection = SharedUtil.GetConnection();
+        try
         {
+            connection.Open();
+            var mySqlTransaction = connection.BeginTransaction();
 
-            using var workbook = new XLWorkbook();
-            var worksheet = workbook.Worksheets.Add("Administrator > Role");
-            worksheet.Cell(1, 1).Value = "No";
-            worksheet.Cell(1, 2).Value = "Role";
-            var sql = _sharedUtil.GetSqlSession();
-            var parameterModels = _sharedUtil.GetListSqlParameter();
-            using MySqlConnection connection = SharedUtil.GetConnection();
-
-            try
-            {
-                connection.Open();
-                MySqlCommand mySqlCommand = new(sql, connection);
-                if (parameterModels != null)
-                {
-                    foreach (ParameterModel parameter in parameterModels)
-                    {
-                        mySqlCommand.Parameters.AddWithValue(parameter.Key, parameter.Value);
-                    }
-                }
-                using (var reader = mySqlCommand.ExecuteReader())
-                {
-                    var counter = 1;
-                    while (reader.Read())
-                    {
-                        var currentRow = counter++;
-                        worksheet.Cell(currentRow, 1).Value =  counter-1;
-                        worksheet.Cell(currentRow, 2).Value = reader["roleName"].ToString();
-                    }
-                }
-
-                mySqlCommand.Dispose();
-            }
-            catch (MySqlException ex)
-            {
-                System.Diagnostics.Debug.WriteLine(ex.Message);
-                throw new Exception(ex.Message);
-            }
-            using var stream = new MemoryStream();
-            workbook.SaveAs(stream);
-            return stream.ToArray();
-        }
-        public void Update(RoleModel roleModel)
-        {
-            string sql = string.Empty;
-            List<ParameterModel> parameterModels = new();
-
-            using MySqlConnection connection = SharedUtil.GetConnection();
-            try
-            {
-                connection.Open();
-                MySqlTransaction mySqlTransaction = connection.BeginTransaction();
-
-                sql += @"
+            sql += @"
                 UPDATE  role
                 SET     roleName = @roleName,
                         executeBy = @executeBy
                 WHERE   roleId = @roleId ";
-                MySqlCommand mySqlCommand = new(sql, connection);
-                parameterModels = new List<ParameterModel>
+            MySqlCommand mySqlCommand = new(sql, connection);
+            parameterModels = new List<ParameterModel>
+            {
+                new()
                 {
-                    new()
-                    {
-                        Key = "@roleName",
-                        Value = roleModel.RoleName
-                    },
-                    new()
-                    {
-                        Key = "@executeBy",
-                        Value = _sharedUtil.GetUserName()
-                    },
-                    new()
-                    {
-                        Key = "@roleId",
-                        Value = roleModel.RoleKey
-                    }
-                };
-                foreach (ParameterModel parameter in parameterModels)
+                    Key = "@roleName",
+                    Value = roleModel.RoleName
+                },
+                new()
                 {
-                    mySqlCommand.Parameters.AddWithValue(parameter.Key, parameter.Value);
+                    Key = "@executeBy",
+                    Value = _sharedUtil.GetUserName()
+                },
+                new()
+                {
+                    Key = "@roleId",
+                    Value = roleModel.RoleKey
                 }
-                mySqlCommand.ExecuteNonQuery();
-                mySqlTransaction.Commit();
-                mySqlCommand.Dispose();
-            }
-            catch (MySqlException ex)
+            };
+            foreach (var parameter in parameterModels)
             {
-                System.Diagnostics.Debug.WriteLine(ex.Message);
-                _sharedUtil.SetQueryException(SharedUtil.GetSqlSessionValue(sql, parameterModels), ex);
-                throw new Exception(ex.Message);
+                mySqlCommand.Parameters.AddWithValue(parameter.Key, parameter.Value);
             }
+
+            mySqlCommand.ExecuteNonQuery();
+            mySqlTransaction.Commit();
+            mySqlCommand.Dispose();
         }
-
-        public void Delete(RoleModel roleModel)
+        catch (MySqlException ex)
         {
-            string sql = string.Empty;
-            List<ParameterModel> parameterModels = new();
+            System.Diagnostics.Debug.WriteLine(ex.Message);
+            _sharedUtil.SetQueryException(SharedUtil.GetSqlSessionValue(sql, parameterModels), ex);
+            throw new Exception(ex.Message);
+        }
+    }
 
-            using MySqlConnection connection = SharedUtil.GetConnection();
-            try
-            {
-                connection.Open();
-                MySqlTransaction mySqlTransaction = connection.BeginTransaction();
+    public void Delete(RoleModel roleModel)
+    {
+        var sql = string.Empty;
+        List<ParameterModel> parameterModels = new();
 
-                sql += @"
+        using var connection = SharedUtil.GetConnection();
+        try
+        {
+            connection.Open();
+            var mySqlTransaction = connection.BeginTransaction();
+
+            sql += @"
                 UPDATE  role
                 SET     isDelete = 1
                 WHERE   roleId  = @roleId;";
-                MySqlCommand mySqlCommand = new(sql, connection);
+            MySqlCommand mySqlCommand = new(sql, connection);
 
-                parameterModels = new List<ParameterModel>
-                {
-                    new()
-                    {
-                        Key = "@roleId",
-                        Value = roleModel.RoleKey
-                    }
-                };
-                foreach (ParameterModel parameter in parameterModels)
-                {
-                    mySqlCommand.Parameters.AddWithValue(parameter.Key, parameter.Value);
-                }
-                mySqlCommand.ExecuteNonQuery();
-
-                mySqlTransaction.Commit();
-
-                mySqlCommand.Dispose();
-            }
-            catch (MySqlException ex)
+            parameterModels = new List<ParameterModel>
             {
-                System.Diagnostics.Debug.WriteLine(ex.Message);
-                _sharedUtil.SetQueryException(SharedUtil.GetSqlSessionValue(sql, parameterModels), ex);
-                throw new Exception(ex.Message);
+                new()
+                {
+                    Key = "@roleId",
+                    Value = roleModel.RoleKey
+                }
+            };
+            foreach (var parameter in parameterModels)
+            {
+                mySqlCommand.Parameters.AddWithValue(parameter.Key, parameter.Value);
             }
+
+            mySqlCommand.ExecuteNonQuery();
+
+            mySqlTransaction.Commit();
+
+            mySqlCommand.Dispose();
         }
-        private static void  SetLeafAccess(MySqlConnection connection,int roleId)
+        catch (MySqlException ex)
         {
-            StringBuilder stringBuilder = new();
-            try
-            {
-                const string sql = @"SELECT * FROM leaf WHERE isDelete != 1 ";
-                MySqlCommand mySqlCommand = new(sql, connection);
-                
-                using (var reader = mySqlCommand.ExecuteReader())
-                {
-                    while (reader.Read())
-                    {
-                        stringBuilder.Append("(null, "+reader["leafId"]+", "+roleId+", 0, 0, 0, 0, 0, 0),");
-                    }
-                }
+            System.Diagnostics.Debug.WriteLine(ex.Message);
+            _sharedUtil.SetQueryException(SharedUtil.GetSqlSessionValue(sql, parameterModels), ex);
+            throw new Exception(ex.Message);
+        }
+    }
 
-                mySqlCommand.Dispose();
-                string sqlValues = stringBuilder.ToString().TrimEnd(',');
-                // re loop  the access  
-                string sqlConcat =
-                    $@" INSERT INTO leaf_access (
+    private static void SetLeafAccess(MySqlConnection connection, int roleId)
+    {
+        StringBuilder stringBuilder = new();
+        try
+        {
+            const string sql = @"SELECT * FROM leaf WHERE isDelete != 1 ";
+            MySqlCommand mySqlCommand = new(sql, connection);
+
+            using (var reader = mySqlCommand.ExecuteReader())
+            {
+                while (reader.Read())
+                {
+                    stringBuilder.Append("(null, " + reader["leafId"] + ", " + roleId + ", 0, 0, 0, 0, 0, 0),");
+                }
+            }
+
+            mySqlCommand.Dispose();
+            var sqlValues = stringBuilder.ToString().TrimEnd(',');
+            // re loop  the access  
+            var sqlConcat =
+                $@" INSERT INTO leaf_access (
                         leafAccessId,           leafId,                     roleId, 
                         leafAccessCreateValue,  leafAccessReadValue,        leafAccessUpdateValue,
                         leafAccessDeleteValue,  leafAccessExtraOneValue,    leafAccessExtraTwoValue
                     ) VALUES {sqlValues}";
-                
-                mySqlCommand = new MySqlCommand(sqlConcat, connection);
-                mySqlCommand.ExecuteNonQuery();
-                mySqlCommand.Dispose();
-            }
-            catch (MySqlException ex)
-            {
-                System.Diagnostics.Debug.WriteLine(ex.Message);
-                throw new Exception(ex.Message);
-            }
+
+            mySqlCommand = new MySqlCommand(sqlConcat, connection);
+            mySqlCommand.ExecuteNonQuery();
+            mySqlCommand.Dispose();
+        }
+        catch (MySqlException ex)
+        {
+            System.Diagnostics.Debug.WriteLine(ex.Message);
+            throw new Exception(ex.Message);
         }
     }
 }

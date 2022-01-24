@@ -1,8 +1,7 @@
-namespace RebelCmsTemplate.Models.Setting
+namespace RebelCmsTemplate.Models.Setting;
+
+public class VendorTypeModel
 {
-    public class VendorTypeModel
-    {
-        public int VendorTypeKey { get; init; }
-        public string? VendorTypeName { get; init; }
-    }
+    public int VendorTypeKey { get; init; }
+    public string? VendorTypeName { get; init; }
 }

@@ -1,6 +1,5 @@
-﻿@inject Microsoft.AspNetCore.Http.IHttpContextAccessor _httpContextAccessor
+﻿@inject IHttpContextAccessor _httpContextAccessor
 @using RebelCmsTemplate.Models.Administrator
-@using RebelCmsTemplate.Models.Shared
 @using RebelCmsTemplate.Repository.Administrator;
 @using RebelCmsTemplate.Util;
 @using RebelCmsTemplate.Enum;
@@ -19,76 +18,76 @@
     var fileInfo = ViewContext.ExecutingFilePath?.Split("/");
     var filename = fileInfo != null ? fileInfo[4] : "";
     var name = filename.Split(".")[0];
-    NavigationModel navigationModel = sharedUtils.GetNavigation(name);
+    var navigationModel = sharedUtils.GetNavigation(name);
 }
 
-    <div class="page-title">
-        <div class="row">
-            <div class="col-12 col-md-6 order-md-1 order-last">
-                <h3>@navigationModel.LeafName</h3>
-            </div>
-            <div class="col-12 col-md-6 order-md-2 order-first">
-                <nav aria-label="breadcrumb" class="breadcrumb-header float-start float-lg-end">
-                    <ol class="breadcrumb">
-                        <li class="breadcrumb-item">
-                            <a href="#">
-                                <i class="@navigationModel.FolderIcon"></i>
-                                @navigationModel.FolderName
-                            </a>
-                        </li>
-                        <li class="breadcrumb-item active" aria-current="page">
-                            <i class="@navigationModel.LeafIcon"></i>
-                            @navigationModel.LeafName
-                        </li>
-                        <li class="breadcrumb-item active" aria-current="page">
-                            <i class="fas fa-sign-out-alt"></i>
-                            <a href="/logout">Logout</a>
-                        </li>
-                    </ol>
-                </nav>
-            </div>
+<div class="page-title">
+    <div class="row">
+        <div class="col-12 col-md-6 order-md-1 order-last">
+            <h3>@navigationModel.LeafName</h3>
+        </div>
+        <div class="col-12 col-md-6 order-md-2 order-first">
+            <nav aria-label="breadcrumb" class="breadcrumb-header float-start float-lg-end">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item">
+                        <a href="#">
+                            <i class="@navigationModel.FolderIcon"></i>
+                            @navigationModel.FolderName
+                        </a>
+                    </li>
+                    <li class="breadcrumb-item active" aria-current="page">
+                        <i class="@navigationModel.LeafIcon"></i>
+                        @navigationModel.LeafName
+                    </li>
+                    <li class="breadcrumb-item active" aria-current="page">
+                        <i class="fas fa-sign-out-alt"></i>
+                        <a href="/logout">Logout</a>
+                    </li>
+                </ol>
+            </nav>
         </div>
     </div>
-    <section class="content">
-        <div class="container-fluid">
-            <div class="row">
-                <div class="col-xs-12 col-sm-12 col-md-12">
-                    <div class="card">
-                        <table class="table table-bordered table-striped table-condensed table-hover" id="tableData">
-                            <thead>
-                                <tr>
-                                    <th scope="col" style="width: 25px; text-align: center">
-                                        <div style="text-align: center">#</div>
-                                    </th>
-                                    <th scope="col">Log Query</th>
-                                    <th scope="col">TimeStamp</th>
-                                </tr>
-                            </thead>
-                            <tbody id="tableBody">
-                                @foreach (var row in logSystemModels)
-                                {
-                                    <tr id="log-@row.LogSystemKey">
-                                        <td>@row.LogSystemQuery</td>
-                                        <td>@row.LogSystemDateTime</td>
-                                    </tr>
-                                }
+</div>
+<section class="content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-xs-12 col-sm-12 col-md-12">
+                <div class="card">
+                    <table class="table table-bordered table-striped table-condensed table-hover" id="tableData">
+                        <thead>
+                        <tr>
+                            <th scope="col" style="width: 25px; text-align: center">
+                                <div style="text-align: center">#</div>
+                            </th>
+                            <th scope="col">Log Query</th>
+                            <th scope="col">TimeStamp</th>
+                        </tr>
+                        </thead>
+                        <tbody id="tableBody">
+                        @foreach (var row in logSystemModels)
+                        {
+                            <tr id="log-@row.LogSystemKey">
+                                <td>@row.LogSystemQuery</td>
+                                <td>@row.LogSystemDateTime</td>
+                            </tr>
+                        }
 
-                                @if (logSystemModels.Count == 0)
-                                {
-                                    <tr>
-                                        <td colspan="7" class="noRecord">
-                                            @SharedUtil.NoRecord
-                                        </td>
-                                    </tr>
-                                }
-                            </tbody>
-                        </table>
-                    </div>
+                        @if (logSystemModels.Count == 0)
+                        {
+                            <tr>
+                                <td colspan="7" class="noRecord">
+                                    @SharedUtil.NoRecord
+                                </td>
+                            </tr>
+                        }
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </div>
-    </section>
-    <script>
+    </div>
+</section>
+<script>
         function resetRecord() {
             readRecord();
             $("#search").val("");
@@ -146,7 +145,7 @@
                     } else if (status === false) {
                 if (typeof(code) === 'string'){
                                             @{
-                                                if (sharedUtils.GetRoleId().Equals( (int)AccessEnum.ADMINISTRATOR_ACCESS ))
+                                                if (sharedUtils.GetRoleId().Equals((int) AccessEnum.ADMINISTRATOR_ACCESS))
                                                 {
                                                     <text>
                                                     Swal.fire("Debugging Admin", code, "error");
@@ -159,7 +158,7 @@
                                                     </text>
                                                 }
                                             }
-                                        }else        if (parseInt(code) === parseInt(@((int)ReturnCodeEnum.ACCESS_DENIED) )) {
+                                        }else        if (parseInt(code) === parseInt(@((int) ReturnCodeEnum.ACCESS_DENIED) )) {
                             let timerInterval
                             Swal.fire({
                                 title: 'Auto close alert!',
@@ -239,7 +238,7 @@
                     } else if (status === false) {
                        if (typeof(code) === 'string'){
                                                    @{
-                                                       if (sharedUtils.GetRoleId().Equals( (int)AccessEnum.ADMINISTRATOR_ACCESS ))
+                                                       if (sharedUtils.GetRoleId().Equals((int) AccessEnum.ADMINISTRATOR_ACCESS))
                                                        {
                                                            <text>
                                                            Swal.fire("Debugging Admin", code, "error");
@@ -252,7 +251,7 @@
                                                            </text>
                                                        }
                                                    }
-                                               }else  if (parseInt(code) === parseInt(@((int)ReturnCodeEnum.ACCESS_DENIED) )) {
+                                               }else  if (parseInt(code) === parseInt(@((int) ReturnCodeEnum.ACCESS_DENIED) )) {
                             let timerInterval
                             Swal.fire({
                                 title: 'Auto close alert!',

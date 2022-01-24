@@ -38,7 +38,15 @@
       "Petek",
       "Sobota"
     ],
-    "shortDays": ["Ne", "Po", "To", "Sr", "Če", "Pe", "So"],
+    "shortDays": [
+      "Ne",
+      "Po",
+      "To",
+      "Sr",
+      "Če",
+      "Pe",
+      "So"
+    ],
     "toolbar": {
       "exportToSVG": "Prenesi SVG",
       "exportToPNG": "Prenesi PNG",

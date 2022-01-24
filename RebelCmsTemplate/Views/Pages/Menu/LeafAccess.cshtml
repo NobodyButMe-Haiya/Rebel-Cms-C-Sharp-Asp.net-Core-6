@@ -1,7 +1,6 @@
-﻿@inject Microsoft.AspNetCore.Http.IHttpContextAccessor _httpContextAccessor
+﻿@inject IHttpContextAccessor _httpContextAccessor
 @using RebelCmsTemplate.Models.Menu
 @using RebelCmsTemplate.Models.Administrator
-@using RebelCmsTemplate.Models.Shared
 @using RebelCmsTemplate.Repository.Menu
 @using RebelCmsTemplate.Repository.Administrator
 @using RebelCmsTemplate.Util
@@ -30,7 +29,7 @@
     var fileInfo = ViewContext.ExecutingFilePath?.Split("/");
     var filename = fileInfo != null ? fileInfo[4] : "";
     var name = filename.Split(".")[0];
-    NavigationModel navigationModel = sharedUtils.GetNavigation(name);
+    var navigationModel = sharedUtils.GetNavigation(name);
 }
 
 <div class="page-title">
@@ -372,7 +371,7 @@
                   } else if (status === false) {
                       if (typeof(code) === 'string'){
                                                   @{
-                                                      if (sharedUtils.GetRoleId().Equals( (int)AccessEnum.ADMINISTRATOR_ACCESS ))
+                                                      if (sharedUtils.GetRoleId().Equals((int) AccessEnum.ADMINISTRATOR_ACCESS))
                                                       {
                                                           <text>
                                                           Swal.fire("Debugging Admin", code, "error");
@@ -385,7 +384,7 @@
                                                           </text>
                                                       }
                                                   }
-                                              }else   if (parseInt(code) === parseInt(@((int)ReturnCodeEnum.ACCESS_DENIED) )) {
+                                              }else   if (parseInt(code) === parseInt(@((int) ReturnCodeEnum.ACCESS_DENIED) )) {
                             let timerInterval
                             Swal.fire({
                                 title: 'Auto close alert!',
@@ -474,7 +473,7 @@
                     } else if (status === false) {
                           if (typeof(code) === 'string'){
                                                       @{
-                                                          if (sharedUtils.GetRoleId().Equals( (int)AccessEnum.ADMINISTRATOR_ACCESS ))
+                                                          if (sharedUtils.GetRoleId().Equals((int) AccessEnum.ADMINISTRATOR_ACCESS))
                                                           {
                                                               <text>
                                                               Swal.fire("Debugging Admin", code, "error");
@@ -487,7 +486,7 @@
                                                               </text>
                                                           }
                                                       }
-                                                  }else   if (parseInt(code) === parseInt(@((int)ReturnCodeEnum.ACCESS_DENIED) )) {
+                                                  }else   if (parseInt(code) === parseInt(@((int) ReturnCodeEnum.ACCESS_DENIED) )) {
                                 let timerInterval
                                 Swal.fire({
                                     title: 'Auto close alert!',

@@ -38,7 +38,15 @@
       "e Premte",
       "e Shtunë"
     ],
-    "shortDays": ["Die", "Hën", "Mar", "Mër", "Enj", "Pre", "Sht"],
+    "shortDays": [
+      "Die",
+      "Hën",
+      "Mar",
+      "Mër",
+      "Enj",
+      "Pre",
+      "Sht"
+    ],
     "toolbar": {
       "exportToSVG": "Shkarko SVG",
       "exportToPNG": "Shkarko PNG",

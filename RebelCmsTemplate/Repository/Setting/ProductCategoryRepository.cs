@@ -1,39 +1,35 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using ClosedXML.Excel;
-using Microsoft.AspNetCore.Http;
+﻿using ClosedXML.Excel;
 using MySql.Data.MySqlClient;
 using RebelCmsTemplate.Models.Setting;
 using RebelCmsTemplate.Models.Shared;
 using RebelCmsTemplate.Util;
 
-namespace RebelCmsTemplate.Repository.Setting
+namespace RebelCmsTemplate.Repository.Setting;
+
+public class ProductCategoryRepository
 {
-    public class ProductCategoryRepository
+    private readonly SharedUtil _sharedUtil;
+
+    public ProductCategoryRepository(IHttpContextAccessor httpContextAccessor)
     {
+        _sharedUtil = new SharedUtil(httpContextAccessor);
+    }
 
-        private readonly SharedUtil _sharedUtil;
-        public ProductCategoryRepository(IHttpContextAccessor httpContextAccessor)
+    public int Create(ProductCategoryModel productCategoryModel)
+    {
+        // okay next we create skeleton for the code
+        int lastInsertKey;
+        var sql = string.Empty;
+        List<ParameterModel> parameterModels = new();
+
+        using var connection = SharedUtil.GetConnection();
+        try
         {
-            _sharedUtil = new SharedUtil(httpContextAccessor);
-        }
-        public int Create(ProductCategoryModel productCategoryModel)
-        {
-            // okay next we create skeleton for the code
-            int lastInsertKey;
-            string sql = string.Empty;
-            List<ParameterModel> parameterModels = new ();
+            connection.Open();
 
-            using MySqlConnection connection = SharedUtil.GetConnection();
-            try
-            {
+            var mySqlTransaction = connection.BeginTransaction();
 
-                connection.Open();
-
-                MySqlTransaction mySqlTransaction = connection.BeginTransaction();
-
-                sql += @"
+            sql += @"
                 INSERT INTO product_category  (
                     productCategoryId,      tenantId,
                     productCategoryName,   isDelete,
@@ -43,310 +39,309 @@ namespace RebelCmsTemplate.Repository.Setting
                     @productCategoryName,   0,
                     @executeBy
                 );";
-                MySqlCommand mySqlCommand = new(sql, connection);
+            MySqlCommand mySqlCommand = new(sql, connection);
 
-                parameterModels = new List<ParameterModel>
+            parameterModels = new List<ParameterModel>
+            {
+                new()
                 {
-                    new ()
-                    {
-                        Key = "@tenantId",
-                        Value = _sharedUtil.GetTenantId()
-                    },
-                    new ()
-                    {
-                        Key = "@productCategoryName",
-                        Value = productCategoryModel.ProductCategoryName
-                    },
-                    new ()
-                    {
-                        Key = "@executeBy",
-                        Value = _sharedUtil.GetUserName()
-                    }
-                };
-                foreach (ParameterModel parameter in parameterModels)
+                    Key = "@tenantId",
+                    Value = _sharedUtil.GetTenantId()
+                },
+                new()
                 {
-                    mySqlCommand.Parameters.AddWithValue(parameter.Key, parameter.Value);
+                    Key = "@productCategoryName",
+                    Value = productCategoryModel.ProductCategoryName
+                },
+                new()
+                {
+                    Key = "@executeBy",
+                    Value = _sharedUtil.GetUserName()
                 }
-                mySqlCommand.ExecuteNonQuery();
-
-                mySqlTransaction.Commit();
-
-                lastInsertKey = (int)mySqlCommand.LastInsertedId;
-
-                mySqlCommand.Dispose();
-
-            }
-            catch (MySqlException ex)
+            };
+            foreach (var parameter in parameterModels)
             {
-                System.Diagnostics.Debug.WriteLine(ex.Message);
-                _sharedUtil.SetQueryException(SharedUtil.GetSqlSessionValue(sql, parameterModels), ex);
-                throw new Exception(ex.Message);
+                mySqlCommand.Parameters.AddWithValue(parameter.Key, parameter.Value);
             }
 
-            return lastInsertKey;
+            mySqlCommand.ExecuteNonQuery();
 
+            mySqlTransaction.Commit();
 
+            lastInsertKey = (int) mySqlCommand.LastInsertedId;
+
+            mySqlCommand.Dispose();
         }
-        public List<ProductCategoryModel> Read()
+        catch (MySqlException ex)
         {
-            List<ProductCategoryModel> productCategoryModels = new();
-            string sql = string.Empty;
-            List<ParameterModel> parameterModels = new ();
+            System.Diagnostics.Debug.WriteLine(ex.Message);
+            _sharedUtil.SetQueryException(SharedUtil.GetSqlSessionValue(sql, parameterModels), ex);
+            throw new Exception(ex.Message);
+        }
 
-            using MySqlConnection connection = SharedUtil.GetConnection();
-            try
-            {
+        return lastInsertKey;
+    }
 
-                connection.Open();
-                sql += @"
+    public List<ProductCategoryModel> Read()
+    {
+        List<ProductCategoryModel> productCategoryModels = new();
+        var sql = string.Empty;
+        List<ParameterModel> parameterModels = new();
+
+        using var connection = SharedUtil.GetConnection();
+        try
+        {
+            connection.Open();
+            sql += @"
                 SELECT      *
                 FROM        product_category
                 WHERE       isDelete != 1
                 AND         tenantId = @tenantId
                 ORDER BY    productCategoryId DESC ";
-                MySqlCommand mySqlCommand = new(sql, connection);
-                parameterModels = new List<ParameterModel>
-                {
-                    new ()
-                    {
-                        Key = "@tenantId",
-                        Value = _sharedUtil.GetTenantId()
-                    }
-                };
-                foreach (ParameterModel parameter in parameterModels)
-                {
-                    mySqlCommand.Parameters.AddWithValue(parameter.Key, parameter.Value);
-                }
-                _sharedUtil.SetSqlSession(sql, parameterModels);
-
-                using (var reader = mySqlCommand.ExecuteReader())
-                {
-                    
-                    while (reader.Read())
-                    {
-                        productCategoryModels.Add(new ProductCategoryModel
-                        {
-
-                            ProductCategoryName = reader["productCategoryName"].ToString(),
-                            ProductCategoryKey = Convert.ToInt32(reader["productCategoryId"])
-                        });
-                    }
-                }
-
-                mySqlCommand.Dispose();
-
-            }
-            catch (MySqlException ex)
+            MySqlCommand mySqlCommand = new(sql, connection);
+            parameterModels = new List<ParameterModel>
             {
-                System.Diagnostics.Debug.WriteLine(ex.Message);
-                _sharedUtil.SetQueryException(SharedUtil.GetSqlSessionValue(sql, parameterModels), ex);
-                throw new Exception(ex.Message);
+                new()
+                {
+                    Key = "@tenantId",
+                    Value = _sharedUtil.GetTenantId()
+                }
+            };
+            foreach (var parameter in parameterModels)
+            {
+                mySqlCommand.Parameters.AddWithValue(parameter.Key, parameter.Value);
             }
 
+            _sharedUtil.SetSqlSession(sql, parameterModels);
 
-            return productCategoryModels;
+            using (var reader = mySqlCommand.ExecuteReader())
+            {
+                while (reader.Read())
+                {
+                    productCategoryModels.Add(new ProductCategoryModel
+                    {
+                        ProductCategoryName = reader["productCategoryName"].ToString(),
+                        ProductCategoryKey = Convert.ToInt32(reader["productCategoryId"])
+                    });
+                }
+            }
+
+            mySqlCommand.Dispose();
         }
-        public List<ProductCategoryModel> Search(string search)
+        catch (MySqlException ex)
         {
-            List<ProductCategoryModel> productCategoryModels = new();
-            string sql = string.Empty;
-            List<ParameterModel> parameterModels = new ();
+            System.Diagnostics.Debug.WriteLine(ex.Message);
+            _sharedUtil.SetQueryException(SharedUtil.GetSqlSessionValue(sql, parameterModels), ex);
+            throw new Exception(ex.Message);
+        }
 
-            using MySqlConnection connection = SharedUtil.GetConnection();
-            try
-            {
 
-                connection.Open();
-                sql += @"
+        return productCategoryModels;
+    }
+
+    public List<ProductCategoryModel> Search(string search)
+    {
+        List<ProductCategoryModel> productCategoryModels = new();
+        var sql = string.Empty;
+        List<ParameterModel> parameterModels = new();
+
+        using var connection = SharedUtil.GetConnection();
+        try
+        {
+            connection.Open();
+            sql += @"
                 SELECT  *
                 FROM    product_category
                 WHERE   tenantId = @tenantId
                 AND     isDelete != 1
                 AND     productCategoryName like concat('%',@search,'%') ";
-                MySqlCommand mySqlCommand = new(sql, connection);
-                parameterModels = new List<ParameterModel>
+            MySqlCommand mySqlCommand = new(sql, connection);
+            parameterModels = new List<ParameterModel>
+            {
+                new()
                 {
-                    new ()
+                    Key = "@tenantId",
+                    Value = _sharedUtil.GetTenantId()
+                },
+                new()
+                {
+                    Key = "@search",
+                    Value = search
+                }
+            };
+            foreach (var parameter in parameterModels)
+            {
+                mySqlCommand.Parameters.AddWithValue(parameter.Key, parameter.Value);
+            }
+
+            _sharedUtil.SetSqlSession(sql, parameterModels);
+
+            using (var reader = mySqlCommand.ExecuteReader())
+            {
+                while (reader.Read())
+                {
+                    productCategoryModels.Add(new ProductCategoryModel
                     {
-                        Key = "@tenantId",
-                        Value = _sharedUtil.GetTenantId()
-                    },
-                    new ()
-                    {
-                        Key = "@search",
-                        Value = search
-                    }
-                };
-                foreach (ParameterModel parameter in parameterModels)
+                        ProductCategoryName = reader["productCategoryName"].ToString(),
+                        ProductCategoryKey = Convert.ToInt32(reader["productCategoryId"])
+                    });
+                }
+            }
+
+            mySqlCommand.Dispose();
+        }
+        catch (MySqlException ex)
+        {
+            System.Diagnostics.Debug.WriteLine(ex.Message);
+            _sharedUtil.SetQueryException(SharedUtil.GetSqlSessionValue(sql, parameterModels), ex);
+            throw new Exception(ex.Message);
+        }
+
+
+        return productCategoryModels;
+    }
+
+    public byte[] GetExcel()
+    {
+        using var workbook = new XLWorkbook();
+        var worksheet = workbook.Worksheets.Add("Setting > Product Category");
+
+        worksheet.Cell(1, 1).Value = "No";
+        worksheet.Cell(1, 2).Value = "Category";
+        var sql = _sharedUtil.GetSqlSession();
+        var parameterModels = _sharedUtil.GetListSqlParameter();
+        using var connection = SharedUtil.GetConnection();
+
+        try
+        {
+            connection.Open();
+            MySqlCommand mySqlCommand = new(sql, connection);
+            if (parameterModels != null)
+            {
+                foreach (var parameter in parameterModels)
                 {
                     mySqlCommand.Parameters.AddWithValue(parameter.Key, parameter.Value);
                 }
-                _sharedUtil.SetSqlSession(sql, parameterModels);
-
-                using (var reader = mySqlCommand.ExecuteReader())
-                {
-                    while (reader.Read())
-                    {
-                        productCategoryModels.Add(new ProductCategoryModel
-                        {
-                            ProductCategoryName = reader["productCategoryName"].ToString(),
-                            ProductCategoryKey = Convert.ToInt32(reader["productCategoryId"])
-                        });
-                    }
-                }
-                mySqlCommand.Dispose();
             }
-            catch (MySqlException ex)
+
+            using (var reader = mySqlCommand.ExecuteReader())
             {
-                System.Diagnostics.Debug.WriteLine(ex.Message);
-                _sharedUtil.SetQueryException(SharedUtil.GetSqlSessionValue(sql, parameterModels), ex);
-                throw new Exception(ex.Message);
+                var counter = 1;
+                while (reader.Read())
+                {
+                    var currentRow = counter++;
+                    worksheet.Cell(currentRow, 1).Value = counter - 1;
+                    worksheet.Cell(currentRow, 2).Value = reader["productCategoryName"].ToString();
+                }
             }
 
-
-            return productCategoryModels;
+            mySqlCommand.Dispose();
         }
-        public byte[] GetExcel()
+        catch (MySqlException ex)
         {
-
-            using var workbook = new XLWorkbook();
-            var worksheet = workbook.Worksheets.Add("Setting > Product Category");
-  
-            worksheet.Cell(1, 1).Value = "No";
-            worksheet.Cell(1, 2).Value = "Category";
-            var sql = _sharedUtil.GetSqlSession();
-            var parameterModels = _sharedUtil.GetListSqlParameter();
-            using MySqlConnection connection = SharedUtil.GetConnection();
-
-            try
-            {
-                connection.Open();
-                MySqlCommand mySqlCommand = new(sql, connection);
-                if (parameterModels != null)
-                {
-                    foreach (ParameterModel parameter in parameterModels)
-                    {
-                        mySqlCommand.Parameters.AddWithValue(parameter.Key, parameter.Value);
-                    }
-                }
-                using (var reader = mySqlCommand.ExecuteReader())
-                {
-                    var counter = 1;
-                    while (reader.Read())
-                    {
-                        var currentRow = counter++;
-                        worksheet.Cell(currentRow, 1).Value = counter -1 ;
-                        worksheet.Cell(currentRow, 2).Value = reader["productCategoryName"].ToString();
-                    }
-                }
-
-                mySqlCommand.Dispose();
-            }
-            catch (MySqlException ex)
-            {
-                System.Diagnostics.Debug.WriteLine(ex.Message);
-                throw new Exception(ex.Message);
-            }
-            using var stream = new MemoryStream();
-            workbook.SaveAs(stream);
-            return stream.ToArray();
+            System.Diagnostics.Debug.WriteLine(ex.Message);
+            throw new Exception(ex.Message);
         }
-        public void Update(ProductCategoryModel productCategoryModel)
+
+        using var stream = new MemoryStream();
+        workbook.SaveAs(stream);
+        return stream.ToArray();
+    }
+
+    public void Update(ProductCategoryModel productCategoryModel)
+    {
+        var sql = string.Empty;
+        List<ParameterModel> parameterModels = new();
+
+        using var connection = SharedUtil.GetConnection();
+        try
         {
-            string sql = string.Empty;
-            List<ParameterModel> parameterModels = new ();
+            connection.Open();
+            var mySqlTransaction = connection.BeginTransaction();
 
-            using MySqlConnection connection = SharedUtil.GetConnection();
-            try
-            {
-
-                connection.Open();
-                MySqlTransaction mySqlTransaction = connection.BeginTransaction();
-
-                sql += @"
+            sql += @"
                 UPDATE  product_category
                 SET     productCategoryName =   @productCategoryName,
                         executeBy           =   @executeBy
                 WHERE   productCategoryId   =   @productCategoryId ";
-                MySqlCommand mySqlCommand = new(sql, connection);
+            MySqlCommand mySqlCommand = new(sql, connection);
 
-                parameterModels = new List<ParameterModel>
+            parameterModels = new List<ParameterModel>
+            {
+                new()
                 {
-                    new ()
-                    {
-                        Key = "@productCategoryName",
-                        Value = productCategoryModel.ProductCategoryName
-                    },
-                    new ()
-                    {
-                        Key = "@executeBy",
-                        Value = _sharedUtil.GetUserName()
-                    },
-                    new ()
-                    {
-                        Key = "@productCategoryId",
-                        Value = productCategoryModel.ProductCategoryKey
-                    }
-                };
-                foreach (ParameterModel parameter in parameterModels)
+                    Key = "@productCategoryName",
+                    Value = productCategoryModel.ProductCategoryName
+                },
+                new()
                 {
-                    mySqlCommand.Parameters.AddWithValue(parameter.Key, parameter.Value);
+                    Key = "@executeBy",
+                    Value = _sharedUtil.GetUserName()
+                },
+                new()
+                {
+                    Key = "@productCategoryId",
+                    Value = productCategoryModel.ProductCategoryKey
                 }
-                mySqlCommand.ExecuteNonQuery();
-                mySqlTransaction.Commit();
-                mySqlCommand.Dispose();
-
-            }
-            catch (MySqlException ex)
+            };
+            foreach (var parameter in parameterModels)
             {
-                System.Diagnostics.Debug.WriteLine(ex.Message);
-                _sharedUtil.SetQueryException(SharedUtil.GetSqlSessionValue(sql, parameterModels), ex);
-                throw new Exception(ex.Message);
+                mySqlCommand.Parameters.AddWithValue(parameter.Key, parameter.Value);
             }
+
+            mySqlCommand.ExecuteNonQuery();
+            mySqlTransaction.Commit();
+            mySqlCommand.Dispose();
         }
-        public void Delete(ProductCategoryModel productCategoryModel)
+        catch (MySqlException ex)
         {
-            string sql = string.Empty;
-            List<ParameterModel> parameterModels = new ();
+            System.Diagnostics.Debug.WriteLine(ex.Message);
+            _sharedUtil.SetQueryException(SharedUtil.GetSqlSessionValue(sql, parameterModels), ex);
+            throw new Exception(ex.Message);
+        }
+    }
 
-            using MySqlConnection connection = SharedUtil.GetConnection();
-            try
-            {
+    public void Delete(ProductCategoryModel productCategoryModel)
+    {
+        var sql = string.Empty;
+        List<ParameterModel> parameterModels = new();
 
-                connection.Open();
-                MySqlTransaction mySqlTransaction = connection.BeginTransaction();
+        using var connection = SharedUtil.GetConnection();
+        try
+        {
+            connection.Open();
+            var mySqlTransaction = connection.BeginTransaction();
 
-                sql += @"
+            sql += @"
                 UPDATE  product_category
                 SET     isDelete = 1
                 WHERE   productCategoryId  = @productCategoryId;";
-                MySqlCommand mySqlCommand = new(sql, connection);
+            MySqlCommand mySqlCommand = new(sql, connection);
 
-                parameterModels = new List<ParameterModel>
-                {
-                    new ()
-                    {
-                        Key = "@productCategoryId",
-                        Value = productCategoryModel.ProductCategoryKey
-                    }
-                };
-                foreach (ParameterModel parameter in parameterModels)
-                {
-                    mySqlCommand.Parameters.AddWithValue(parameter.Key, parameter.Value);
-                }
-                mySqlCommand.ExecuteNonQuery();
-
-                mySqlTransaction.Commit();
-
-                mySqlCommand.Dispose();
-
-            }
-            catch (MySqlException ex)
+            parameterModels = new List<ParameterModel>
             {
-                System.Diagnostics.Debug.WriteLine(ex.Message);
-                _sharedUtil.SetQueryException(SharedUtil.GetSqlSessionValue(sql, parameterModels), ex);
-                throw new Exception(ex.Message);
+                new()
+                {
+                    Key = "@productCategoryId",
+                    Value = productCategoryModel.ProductCategoryKey
+                }
+            };
+            foreach (var parameter in parameterModels)
+            {
+                mySqlCommand.Parameters.AddWithValue(parameter.Key, parameter.Value);
             }
+
+            mySqlCommand.ExecuteNonQuery();
+
+            mySqlTransaction.Commit();
+
+            mySqlCommand.Dispose();
+        }
+        catch (MySqlException ex)
+        {
+            System.Diagnostics.Debug.WriteLine(ex.Message);
+            _sharedUtil.SetQueryException(SharedUtil.GetSqlSessionValue(sql, parameterModels), ex);
+            throw new Exception(ex.Message);
         }
     }
 }

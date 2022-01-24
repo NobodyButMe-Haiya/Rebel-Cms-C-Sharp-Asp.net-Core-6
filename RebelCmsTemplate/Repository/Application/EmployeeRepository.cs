@@ -1,138 +1,139 @@
-using System;
-using System.Collections.Generic;
-using System.IO;
 using ClosedXML.Excel;
-using Microsoft.AspNetCore.Http;
 using MySql.Data.MySqlClient;
 using RebelCmsTemplate.Models.Application;
 using RebelCmsTemplate.Models.Shared;
 using RebelCmsTemplate.Util;
+
 namespace RebelCmsTemplate.Repository.Application;
+
 public class EmployeeRepository
 {
     private readonly SharedUtil _sharedUtil;
+
     public EmployeeRepository(IHttpContextAccessor httpContextAccessor)
     {
         _sharedUtil = new SharedUtil(httpContextAccessor);
     }
+
     public int Create(EmployeeModel employeeModel)
     {
         var lastInsertKey = 0;
-        string sql = string.Empty;
+        var sql = string.Empty;
         List<ParameterModel> parameterModels = new();
-        using MySqlConnection connection = SharedUtil.GetConnection();
+        using var connection = SharedUtil.GetConnection();
         try
         {
             connection.Open();
-            MySqlTransaction mySqlTransaction = connection.BeginTransaction();
-            sql += @"INSERT INTO employee (employeeId,tenantId,employeeLastName,employeeFirstName,employeeTitle,employeeTitleOfCourtesy,employeeBirthDate,employeeHireDate,employeeAddress,employeeCity,employeeRegion,employeePostalCode,employeeCountry,employeeHomePhone,employeeExtension,employeePhoto,employeeNotes,employeePhotoPath,employeeSalary,isDelete) VALUES (null,@tenantId,@employeeLastName,@employeeFirstName,@employeeTitle,@employeeTitleOfCourtesy,@employeeBirthDate,@employeeHireDate,@employeeAddress,@employeeCity,@employeeRegion,@employeePostalCode,@employeeCountry,@employeeHomePhone,@employeeExtension,@employeePhoto,@employeeNotes,@employeePhotoPath,@employeeSalary,@isDelete);";
+            var mySqlTransaction = connection.BeginTransaction();
+            sql +=
+                @"INSERT INTO employee (employeeId,tenantId,employeeLastName,employeeFirstName,employeeTitle,employeeTitleOfCourtesy,employeeBirthDate,employeeHireDate,employeeAddress,employeeCity,employeeRegion,employeePostalCode,employeeCountry,employeeHomePhone,employeeExtension,employeePhoto,employeeNotes,employeePhotoPath,employeeSalary,isDelete) VALUES (null,@tenantId,@employeeLastName,@employeeFirstName,@employeeTitle,@employeeTitleOfCourtesy,@employeeBirthDate,@employeeHireDate,@employeeAddress,@employeeCity,@employeeRegion,@employeePostalCode,@employeeCountry,@employeeHomePhone,@employeeExtension,@employeePhoto,@employeeNotes,@employeePhotoPath,@employeeSalary,@isDelete);";
             MySqlCommand mySqlCommand = new(sql, connection);
             parameterModels = new List<ParameterModel>
+            {
+                new()
                 {
-                    new ()
-                    {
-                        Key = "@tenantId",
-                        Value = _sharedUtil.GetTenantId()
-                    },
-                    new ()
-                    {
-                        Key = "@employeeLastName",
-                        Value = employeeModel.EmployeeLastName
-                    },
-                    new ()
-                    {
-                        Key = "@employeeFirstName",
-                        Value = employeeModel.EmployeeFirstName
-                    },
-                    new ()
-                    {
-                        Key = "@employeeTitle",
-                        Value = employeeModel.EmployeeTitle
-                    },
-                    new ()
-                    {
-                        Key = "@employeeTitleOfCourtesy",
-                        Value = employeeModel.EmployeeTitleOfCourtesy
-                    },
-                    new ()
-                    {
-                        Key = "@employeeBirthDate",
-                        Value = employeeModel.EmployeeBirthDate?.ToString("yyyy-MM-dd")
-                    },
-                    new ()
-                    {
-                        Key = "@employeeHireDate",
-                        Value = employeeModel.EmployeeHireDate?.ToString("yyyy-MM-dd")
-                    },
-                    new ()
-                    {
-                        Key = "@employeeAddress",
-                        Value = employeeModel.EmployeeAddress
-                    },
-                    new ()
-                    {
-                        Key = "@employeeCity",
-                        Value = employeeModel.EmployeeCity
-                    },
-                    new ()
-                    {
-                        Key = "@employeeRegion",
-                        Value = employeeModel.EmployeeRegion
-                    },
-                    new ()
-                    {
-                        Key = "@employeePostalCode",
-                        Value = employeeModel.EmployeePostalCode
-                    },
-                    new ()
-                    {
-                        Key = "@employeeCountry",
-                        Value = employeeModel.EmployeeCountry
-                    },
-                    new ()
-                    {
-                        Key = "@employeeHomePhone",
-                        Value = employeeModel.EmployeeHomePhone
-                    },
-                    new ()
-                    {
-                        Key = "@employeeExtension",
-                        Value = employeeModel.EmployeeExtension
-                    },
-                    new ()
-                    {
-                        Key = "@employeePhoto",
-                        Value = employeeModel.EmployeePhoto
-                    },
-                    new ()
-                    {
-                        Key = "@employeeNotes",
-                        Value = employeeModel.EmployeeNotes
-                    },
-                    new ()
-                    {
-                        Key = "@employeePhotoPath",
-                        Value = employeeModel.EmployeePhotoPath
-                    },
-                    new ()
-                    {
-                        Key = "@employeeSalary",
-                        Value = employeeModel.EmployeeSalary
-                    },
-                    new ()
-                    {
-                        Key = "@isDelete",
-                        Value = 0
-                    },
-
-                };
-            foreach (ParameterModel parameter in parameterModels)
+                    Key = "@tenantId",
+                    Value = _sharedUtil.GetTenantId()
+                },
+                new()
+                {
+                    Key = "@employeeLastName",
+                    Value = employeeModel.EmployeeLastName
+                },
+                new()
+                {
+                    Key = "@employeeFirstName",
+                    Value = employeeModel.EmployeeFirstName
+                },
+                new()
+                {
+                    Key = "@employeeTitle",
+                    Value = employeeModel.EmployeeTitle
+                },
+                new()
+                {
+                    Key = "@employeeTitleOfCourtesy",
+                    Value = employeeModel.EmployeeTitleOfCourtesy
+                },
+                new()
+                {
+                    Key = "@employeeBirthDate",
+                    Value = employeeModel.EmployeeBirthDate?.ToString("yyyy-MM-dd")
+                },
+                new()
+                {
+                    Key = "@employeeHireDate",
+                    Value = employeeModel.EmployeeHireDate?.ToString("yyyy-MM-dd")
+                },
+                new()
+                {
+                    Key = "@employeeAddress",
+                    Value = employeeModel.EmployeeAddress
+                },
+                new()
+                {
+                    Key = "@employeeCity",
+                    Value = employeeModel.EmployeeCity
+                },
+                new()
+                {
+                    Key = "@employeeRegion",
+                    Value = employeeModel.EmployeeRegion
+                },
+                new()
+                {
+                    Key = "@employeePostalCode",
+                    Value = employeeModel.EmployeePostalCode
+                },
+                new()
+                {
+                    Key = "@employeeCountry",
+                    Value = employeeModel.EmployeeCountry
+                },
+                new()
+                {
+                    Key = "@employeeHomePhone",
+                    Value = employeeModel.EmployeeHomePhone
+                },
+                new()
+                {
+                    Key = "@employeeExtension",
+                    Value = employeeModel.EmployeeExtension
+                },
+                new()
+                {
+                    Key = "@employeePhoto",
+                    Value = employeeModel.EmployeePhoto
+                },
+                new()
+                {
+                    Key = "@employeeNotes",
+                    Value = employeeModel.EmployeeNotes
+                },
+                new()
+                {
+                    Key = "@employeePhotoPath",
+                    Value = employeeModel.EmployeePhotoPath
+                },
+                new()
+                {
+                    Key = "@employeeSalary",
+                    Value = employeeModel.EmployeeSalary
+                },
+                new()
+                {
+                    Key = "@isDelete",
+                    Value = 0
+                }
+            };
+            foreach (var parameter in parameterModels)
             {
                 mySqlCommand.Parameters.AddWithValue(parameter.Key, parameter.Value);
             }
+
             mySqlCommand.ExecuteNonQuery();
             mySqlTransaction.Commit();
-            lastInsertKey = (int)mySqlCommand.LastInsertedId;
+            lastInsertKey = (int) mySqlCommand.LastInsertedId;
             mySqlCommand.Dispose();
         }
         catch (MySqlException ex)
@@ -141,14 +142,16 @@ public class EmployeeRepository
             _sharedUtil.SetQueryException(SharedUtil.GetSqlSessionValue(sql, parameterModels), ex);
             throw new Exception(ex.Message);
         }
+
         return lastInsertKey;
     }
+
     public List<EmployeeModel> Read()
     {
         List<EmployeeModel> employeeModels = new();
-        string sql = string.Empty;
+        var sql = string.Empty;
         List<ParameterModel> parameterModels = new();
-        using MySqlConnection connection = SharedUtil.GetConnection();
+        using var connection = SharedUtil.GetConnection();
         try
         {
             connection.Open();
@@ -158,6 +161,7 @@ public class EmployeeRepository
                 WHERE       isDelete !=1
                 ORDER BY    employeeId DESC ";
             MySqlCommand mySqlCommand = new(sql, connection);
+            _sharedUtil.SetSqlSession(sql, parameterModels);
             using (var reader = mySqlCommand.ExecuteReader())
             {
                 while (reader.Read())
@@ -170,8 +174,12 @@ public class EmployeeRepository
                         EmployeeFirstName = reader["employeeFirstName"].ToString(),
                         EmployeeTitle = reader["employeeTitle"].ToString(),
                         EmployeeTitleOfCourtesy = reader["employeeTitleOfCourtesy"].ToString(),
-                        EmployeeBirthDate = (reader["employeeBirthDate"] != DBNull.Value)?CustomDateTimeConvert.ConvertToDate((DateTime)reader["employeeBirthDate"]): null,
-                        EmployeeHireDate = (reader["employeeHireDate"] != DBNull.Value) ? CustomDateTimeConvert.ConvertToDate((DateTime)reader["employeeHireDate"]) : null,
+                        EmployeeBirthDate = reader["employeeBirthDate"] != DBNull.Value
+                            ? CustomDateTimeConvert.ConvertToDate((DateTime) reader["employeeBirthDate"])
+                            : null,
+                        EmployeeHireDate = reader["employeeHireDate"] != DBNull.Value
+                            ? CustomDateTimeConvert.ConvertToDate((DateTime) reader["employeeHireDate"])
+                            : null,
                         EmployeeAddress = reader["employeeAddress"].ToString(),
                         EmployeeCity = reader["employeeCity"].ToString(),
                         EmployeeRegion = reader["employeeRegion"].ToString(),
@@ -179,15 +187,16 @@ public class EmployeeRepository
                         EmployeeCountry = reader["employeeCountry"].ToString(),
                         EmployeeHomePhone = reader["employeeHomePhone"].ToString(),
                         EmployeeExtension = reader["employeeExtension"].ToString(),
-                        EmployeePhoto = (byte[])reader["employeePhoto"],
-                        EmployeePhotoBase64String = Convert.ToBase64String((byte[])reader["employeePhoto"]),
+                        EmployeePhoto = (byte[]) reader["employeePhoto"],
+                        EmployeePhotoBase64String = Convert.ToBase64String((byte[]) reader["employeePhoto"]),
                         EmployeeNotes = reader["employeeNotes"].ToString(),
                         EmployeePhotoPath = reader["employeePhotoPath"].ToString(),
                         EmployeeSalary = Convert.ToDouble(reader["employeeSalary"]),
-                        IsDelete = Convert.ToInt32(reader["isDelete"]),
+                        IsDelete = Convert.ToInt32(reader["isDelete"])
                     });
                 }
             }
+
             mySqlCommand.Dispose();
         }
         catch (MySqlException ex)
@@ -196,14 +205,16 @@ public class EmployeeRepository
             _sharedUtil.SetQueryException(SharedUtil.GetSqlSessionValue(sql, parameterModels), ex);
             throw new Exception(ex.Message);
         }
+
         return employeeModels;
     }
+
     public List<EmployeeModel> Search(string search)
     {
         List<EmployeeModel> employeeModels = new();
-        string sql = string.Empty;
+        var sql = string.Empty;
         List<ParameterModel> parameterModels = new();
-        using MySqlConnection connection = SharedUtil.GetConnection();
+        using var connection = SharedUtil.GetConnection();
         try
         {
             connection.Open();
@@ -231,17 +242,18 @@ public class EmployeeRepository
 	 employee.employeeSalary like concat('%',@search,'%') )";
             MySqlCommand mySqlCommand = new(sql, connection);
             parameterModels = new List<ParameterModel>
+            {
+                new()
                 {
-                    new ()
-                    {
-                        Key = "@search",
-                        Value = search
-                    }
-                };
-            foreach (ParameterModel parameter in parameterModels)
+                    Key = "@search",
+                    Value = search
+                }
+            };
+            foreach (var parameter in parameterModels)
             {
                 mySqlCommand.Parameters.AddWithValue(parameter.Key, parameter.Value);
             }
+
             _sharedUtil.SetSqlSession(sql, parameterModels);
             using (var reader = mySqlCommand.ExecuteReader())
             {
@@ -255,8 +267,12 @@ public class EmployeeRepository
                         EmployeeFirstName = reader["employeeFirstName"].ToString(),
                         EmployeeTitle = reader["employeeTitle"].ToString(),
                         EmployeeTitleOfCourtesy = reader["employeeTitleOfCourtesy"].ToString(),
-                        EmployeeBirthDate = (reader["employeeBirthDate"] != DBNull.Value) ? CustomDateTimeConvert.ConvertToDate((DateTime)reader["employeeBirthDate"]) : null,
-                        EmployeeHireDate = (reader["employeeHireDate"] != DBNull.Value) ? CustomDateTimeConvert.ConvertToDate((DateTime)reader["employeeHireDate"]) : null,
+                        EmployeeBirthDate = reader["employeeBirthDate"] != DBNull.Value
+                            ? CustomDateTimeConvert.ConvertToDate((DateTime) reader["employeeBirthDate"])
+                            : null,
+                        EmployeeHireDate = reader["employeeHireDate"] != DBNull.Value
+                            ? CustomDateTimeConvert.ConvertToDate((DateTime) reader["employeeHireDate"])
+                            : null,
                         EmployeeAddress = reader["employeeAddress"].ToString(),
                         EmployeeCity = reader["employeeCity"].ToString(),
                         EmployeeRegion = reader["employeeRegion"].ToString(),
@@ -264,14 +280,15 @@ public class EmployeeRepository
                         EmployeeCountry = reader["employeeCountry"].ToString(),
                         EmployeeHomePhone = reader["employeeHomePhone"].ToString(),
                         EmployeeExtension = reader["employeeExtension"].ToString(),
-                        EmployeePhoto = (byte[])reader["employeePhoto"],
+                        EmployeePhoto = (byte[]) reader["employeePhoto"],
                         EmployeeNotes = reader["employeeNotes"].ToString(),
                         EmployeePhotoPath = reader["employeePhotoPath"].ToString(),
                         EmployeeSalary = Convert.ToDouble(reader["employeeSalary"]),
-                        IsDelete = Convert.ToInt32(reader["isDelete"]),
+                        IsDelete = Convert.ToInt32(reader["isDelete"])
                     });
                 }
             }
+
             mySqlCommand.Dispose();
         }
         catch (MySqlException ex)
@@ -280,13 +297,15 @@ public class EmployeeRepository
             _sharedUtil.SetQueryException(SharedUtil.GetSqlSessionValue(sql, parameterModels), ex);
             throw new Exception(ex.Message);
         }
+
         return employeeModels;
     }
+
     public EmployeeModel GetSingle(EmployeeModel employeeModel)
     {
-        string sql = string.Empty;
+        var sql = string.Empty;
         List<ParameterModel> parameterModels = new();
-        using MySqlConnection connection = SharedUtil.GetConnection();
+        using var connection = SharedUtil.GetConnection();
         try
         {
             connection.Open();
@@ -297,23 +316,24 @@ public class EmployeeRepository
                 AND   employee.employeeId    =   @employeeId LIMIT 1";
             MySqlCommand mySqlCommand = new(sql, connection);
             parameterModels = new List<ParameterModel>
+            {
+                new()
                 {
-                    new ()
-                    {
-                        Key = "@employeeId",
-                        Value = employeeModel.EmployeeKey
-                   }
-                };
-            foreach (ParameterModel parameter in parameterModels)
+                    Key = "@employeeId",
+                    Value = employeeModel.EmployeeKey
+                }
+            };
+            foreach (var parameter in parameterModels)
             {
                 mySqlCommand.Parameters.AddWithValue(parameter.Key, parameter.Value);
             }
+
             _sharedUtil.SetSqlSession(sql, parameterModels);
             using (var reader = mySqlCommand.ExecuteReader())
             {
                 while (reader.Read())
                 {
-                    employeeModel = new EmployeeModel()
+                    employeeModel = new EmployeeModel
                     {
                         EmployeeKey = Convert.ToInt32(reader["employeeId"]),
                         TenantKey = Convert.ToInt32(reader["tenantId"]),
@@ -321,8 +341,12 @@ public class EmployeeRepository
                         EmployeeFirstName = reader["employeeFirstName"].ToString(),
                         EmployeeTitle = reader["employeeTitle"].ToString(),
                         EmployeeTitleOfCourtesy = reader["employeeTitleOfCourtesy"].ToString(),
-                        EmployeeBirthDate = (reader["employeeBirthDate"] != DBNull.Value) ? CustomDateTimeConvert.ConvertToDate((DateTime)reader["employeeBirthDate"]) : null,
-                        EmployeeHireDate = (reader["employeeHireDate"] != DBNull.Value) ? CustomDateTimeConvert.ConvertToDate((DateTime)reader["employeeHireDate"]) : null,
+                        EmployeeBirthDate = reader["employeeBirthDate"] != DBNull.Value
+                            ? CustomDateTimeConvert.ConvertToDate((DateTime) reader["employeeBirthDate"])
+                            : null,
+                        EmployeeHireDate = reader["employeeHireDate"] != DBNull.Value
+                            ? CustomDateTimeConvert.ConvertToDate((DateTime) reader["employeeHireDate"])
+                            : null,
                         EmployeeAddress = reader["employeeAddress"].ToString(),
                         EmployeeCity = reader["employeeCity"].ToString(),
                         EmployeeRegion = reader["employeeRegion"].ToString(),
@@ -330,14 +354,15 @@ public class EmployeeRepository
                         EmployeeCountry = reader["employeeCountry"].ToString(),
                         EmployeeHomePhone = reader["employeeHomePhone"].ToString(),
                         EmployeeExtension = reader["employeeExtension"].ToString(),
-                        EmployeePhoto = (byte[])reader["employeePhoto"],
+                        EmployeePhoto = (byte[]) reader["employeePhoto"],
                         EmployeeNotes = reader["employeeNotes"].ToString(),
                         EmployeePhotoPath = reader["employeePhotoPath"].ToString(),
                         EmployeeSalary = Convert.ToDouble(reader["employeeSalary"]),
-                        IsDelete = Convert.ToInt32(reader["isDelete"]),
+                        IsDelete = Convert.ToInt32(reader["isDelete"])
                     };
                 }
             }
+
             mySqlCommand.Dispose();
         }
         catch (MySqlException ex)
@@ -346,8 +371,10 @@ public class EmployeeRepository
             _sharedUtil.SetQueryException(SharedUtil.GetSqlSessionValue(sql, parameterModels), ex);
             throw new Exception(ex.Message);
         }
+
         return employeeModel;
     }
+
     public byte[] GetExcel()
     {
         using var workbook = new XLWorkbook();
@@ -374,18 +401,19 @@ public class EmployeeRepository
         worksheet.Cell(1, 20).Value = "isDelete";
         var sql = _sharedUtil.GetSqlSession();
         var parameterModels = _sharedUtil.GetListSqlParameter();
-        using MySqlConnection connection = SharedUtil.GetConnection();
+        using var connection = SharedUtil.GetConnection();
         try
         {
             connection.Open();
             MySqlCommand mySqlCommand = new(sql, connection);
             if (parameterModels != null)
             {
-                foreach (ParameterModel parameter in parameterModels)
+                foreach (var parameter in parameterModels)
                 {
                     mySqlCommand.Parameters.AddWithValue(parameter.Key, parameter.Value);
                 }
             }
+
             using (var reader = mySqlCommand.ExecuteReader())
             {
                 var counter = 1;
@@ -414,6 +442,7 @@ public class EmployeeRepository
                     worksheet.Cell(currentRow, 2).Value = reader["isDelete"].ToString();
                 }
             }
+
             mySqlCommand.Dispose();
         }
         catch (MySqlException ex)
@@ -421,19 +450,21 @@ public class EmployeeRepository
             System.Diagnostics.Debug.WriteLine(ex.Message);
             throw new Exception(ex.Message);
         }
+
         using var stream = new MemoryStream();
         workbook.SaveAs(stream);
         return stream.ToArray();
     }
+
     public void Update(EmployeeModel employeeModel)
     {
-        string sql = string.Empty;
+        var sql = string.Empty;
         List<ParameterModel> parameterModels = new();
-        using MySqlConnection connection = SharedUtil.GetConnection();
+        using var connection = SharedUtil.GetConnection();
         try
         {
             connection.Open();
-            MySqlTransaction mySqlTransaction = connection.BeginTransaction();
+            var mySqlTransaction = connection.BeginTransaction();
             sql = @"
                 UPDATE  employee 
                 SET     
@@ -460,113 +491,113 @@ isDelete=@isDelete
                 WHERE   employeeId    =   @employeeId";
             MySqlCommand mySqlCommand = new(sql, connection);
             parameterModels = new List<ParameterModel>
+            {
+                new()
                 {
-                    new ()
-                    {
-                        Key = "@employeeId",
-                        Value = employeeModel.EmployeeKey
-                   },
-                    new ()
-                    {
-                        Key = "@tenantId",
-                        Value = _sharedUtil.GetTenantId()
-                    },
-                    new ()
-                    {
-                        Key = "@employeeLastName",
-                        Value = employeeModel.EmployeeLastName
-                    },
-                    new ()
-                    {
-                        Key = "@employeeFirstName",
-                        Value = employeeModel.EmployeeFirstName
-                    },
-                    new ()
-                    {
-                        Key = "@employeeTitle",
-                        Value = employeeModel.EmployeeTitle
-                    },
-                    new ()
-                    {
-                        Key = "@employeeTitleOfCourtesy",
-                        Value = employeeModel.EmployeeTitleOfCourtesy
-                    },
-                    new ()
-                    {
-                        Key = "@employeeBirthDate",
-                        Value = employeeModel.EmployeeBirthDate?.ToString("yyyy-MM-dd")
-                    },
-                    new ()
-                    {
-                        Key = "@employeeHireDate",
-                        Value = employeeModel.EmployeeHireDate?.ToString("yyyy-MM-dd")
-                    },
-                    new ()
-                    {
-                        Key = "@employeeAddress",
-                        Value = employeeModel.EmployeeAddress
-                    },
-                    new ()
-                    {
-                        Key = "@employeeCity",
-                        Value = employeeModel.EmployeeCity
-                    },
-                    new ()
-                    {
-                        Key = "@employeeRegion",
-                        Value = employeeModel.EmployeeRegion
-                    },
-                    new ()
-                    {
-                        Key = "@employeePostalCode",
-                        Value = employeeModel.EmployeePostalCode
-                    },
-                    new ()
-                    {
-                        Key = "@employeeCountry",
-                        Value = employeeModel.EmployeeCountry
-                    },
-                    new ()
-                    {
-                        Key = "@employeeHomePhone",
-                        Value = employeeModel.EmployeeHomePhone
-                    },
-                    new ()
-                    {
-                        Key = "@employeeExtension",
-                        Value = employeeModel.EmployeeExtension
-                    },
-                    new ()
-                    {
-                        Key = "@employeePhoto",
-                        Value = employeeModel.EmployeePhoto
-                    },
-                    new ()
-                    {
-                        Key = "@employeeNotes",
-                        Value = employeeModel.EmployeeNotes
-                    },
-                    new ()
-                    {
-                        Key = "@employeePhotoPath",
-                        Value = employeeModel.EmployeePhotoPath
-                    },
-                    new ()
-                    {
-                        Key = "@employeeSalary",
-                        Value = employeeModel.EmployeeSalary
-                    },
-                    new ()
-                    {
-                        Key = "@isDelete",
-                        Value = 0
-                    },
-
-                };
-            foreach (ParameterModel parameter in parameterModels)
+                    Key = "@employeeId",
+                    Value = employeeModel.EmployeeKey
+                },
+                new()
+                {
+                    Key = "@tenantId",
+                    Value = _sharedUtil.GetTenantId()
+                },
+                new()
+                {
+                    Key = "@employeeLastName",
+                    Value = employeeModel.EmployeeLastName
+                },
+                new()
+                {
+                    Key = "@employeeFirstName",
+                    Value = employeeModel.EmployeeFirstName
+                },
+                new()
+                {
+                    Key = "@employeeTitle",
+                    Value = employeeModel.EmployeeTitle
+                },
+                new()
+                {
+                    Key = "@employeeTitleOfCourtesy",
+                    Value = employeeModel.EmployeeTitleOfCourtesy
+                },
+                new()
+                {
+                    Key = "@employeeBirthDate",
+                    Value = employeeModel.EmployeeBirthDate?.ToString("yyyy-MM-dd")
+                },
+                new()
+                {
+                    Key = "@employeeHireDate",
+                    Value = employeeModel.EmployeeHireDate?.ToString("yyyy-MM-dd")
+                },
+                new()
+                {
+                    Key = "@employeeAddress",
+                    Value = employeeModel.EmployeeAddress
+                },
+                new()
+                {
+                    Key = "@employeeCity",
+                    Value = employeeModel.EmployeeCity
+                },
+                new()
+                {
+                    Key = "@employeeRegion",
+                    Value = employeeModel.EmployeeRegion
+                },
+                new()
+                {
+                    Key = "@employeePostalCode",
+                    Value = employeeModel.EmployeePostalCode
+                },
+                new()
+                {
+                    Key = "@employeeCountry",
+                    Value = employeeModel.EmployeeCountry
+                },
+                new()
+                {
+                    Key = "@employeeHomePhone",
+                    Value = employeeModel.EmployeeHomePhone
+                },
+                new()
+                {
+                    Key = "@employeeExtension",
+                    Value = employeeModel.EmployeeExtension
+                },
+                new()
+                {
+                    Key = "@employeePhoto",
+                    Value = employeeModel.EmployeePhoto
+                },
+                new()
+                {
+                    Key = "@employeeNotes",
+                    Value = employeeModel.EmployeeNotes
+                },
+                new()
+                {
+                    Key = "@employeePhotoPath",
+                    Value = employeeModel.EmployeePhotoPath
+                },
+                new()
+                {
+                    Key = "@employeeSalary",
+                    Value = employeeModel.EmployeeSalary
+                },
+                new()
+                {
+                    Key = "@isDelete",
+                    Value = 0
+                }
+            };
+            foreach (var parameter in parameterModels)
             {
                 mySqlCommand.Parameters.AddWithValue(parameter.Key, parameter.Value);
             }
+
             mySqlCommand.ExecuteNonQuery();
             mySqlTransaction.Commit();
             mySqlCommand.Dispose();
@@ -578,32 +609,34 @@ isDelete=@isDelete
             throw new Exception(ex.Message);
         }
     }
+
     public void Delete(EmployeeModel employeeModel)
     {
-        string sql = string.Empty;
+        var sql = string.Empty;
         List<ParameterModel> parameterModels = new();
-        using MySqlConnection connection = SharedUtil.GetConnection();
+        using var connection = SharedUtil.GetConnection();
         try
         {
             connection.Open();
-            MySqlTransaction mySqlTransaction = connection.BeginTransaction();
+            var mySqlTransaction = connection.BeginTransaction();
             sql = @"
                 UPDATE  employee 
                 SET     isDelete    =   1
                 WHERE   employeeId    =   @employeeId";
             MySqlCommand mySqlCommand = new(sql, connection);
             parameterModels = new List<ParameterModel>
+            {
+                new()
                 {
-                    new ()
-                    {
-                        Key = "@employeeId",
-                        Value = employeeModel.EmployeeKey
-                   }
-                };
-            foreach (ParameterModel parameter in parameterModels)
+                    Key = "@employeeId",
+                    Value = employeeModel.EmployeeKey
+                }
+            };
+            foreach (var parameter in parameterModels)
             {
                 mySqlCommand.Parameters.AddWithValue(parameter.Key, parameter.Value);
             }
+
             mySqlCommand.ExecuteNonQuery();
             mySqlTransaction.Commit();
             mySqlCommand.Dispose();

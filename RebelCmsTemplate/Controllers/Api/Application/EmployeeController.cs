@@ -3,19 +3,22 @@ using RebelCmsTemplate.Enum;
 using RebelCmsTemplate.Models.Application;
 using RebelCmsTemplate.Repository.Application;
 using RebelCmsTemplate.Util;
-using System.Globalization;
+
 namespace RebelCmsTemplate.Controllers.Api.Application;
+
 [Route("api/application/[controller]")]
 [ApiController]
 public class EmployeeController : Controller
 {
     private readonly IHttpContextAccessor _httpContextAccessor;
     private readonly RenderViewToStringUtil _renderViewToStringUtil;
+
     public EmployeeController(RenderViewToStringUtil renderViewToStringUtil, IHttpContextAccessor httpContextAccessor)
     {
         _renderViewToStringUtil = renderViewToStringUtil;
         _httpContextAccessor = httpContextAccessor;
     }
+
     [HttpGet]
     public async Task<IActionResult> Get()
     {
@@ -26,10 +29,12 @@ public class EmployeeController : Controller
             var page = await _renderViewToStringUtil.RenderViewToStringAsync(ControllerContext, templatePath);
             return Ok(page);
         }
+
         EmployeeRepository employeeRepository = new(_httpContextAccessor);
         var content = employeeRepository.GetExcel();
         return File(content, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "employee94.xlsx");
     }
+
     [HttpPost]
     public async Task<ActionResult> Post()
     {
@@ -39,23 +44,29 @@ public class EmployeeController : Controller
         EmployeeRepository employeeRepository = new(_httpContextAccessor);
         SharedUtil sharedUtil = new(_httpContextAccessor);
         CheckAccessUtil checkAccessUtil = new(_httpContextAccessor);
-        int employeeKey = !string.IsNullOrEmpty(Request.Form["employeeKey"]) ? Convert.ToInt32(Request.Form["employeeKey"]) : 0;
+        var employeeKey = !string.IsNullOrEmpty(Request.Form["employeeKey"])
+            ? Convert.ToInt32(Request.Form["employeeKey"])
+            : 0;
         var employeeLastName = Request.Form["employeeLastName"];
         var employeeFirstName = Request.Form["employeeFirstName"];
         var employeeTitle = Request.Form["employeeTitle"];
         var employeeTitleOfCourtesy = Request.Form["employeeTitleOfCourtesy"];
-        DateOnly employeeBirthDate = DateOnly.FromDateTime(DateTime.Now);
+        var employeeBirthDate = DateOnly.FromDateTime(DateTime.Now);
         if (!string.IsNullOrEmpty(Request.Form["employeeBirthDate"]))
         {
             var dateString = Request.Form["employeeBirthDate"].ToString().Split("-");
-            employeeBirthDate = new DateOnly(Convert.ToInt32(dateString[0]), Convert.ToInt32(dateString[1]), Convert.ToInt32(dateString[2]));
+            employeeBirthDate = new DateOnly(Convert.ToInt32(dateString[0]), Convert.ToInt32(dateString[1]),
+                Convert.ToInt32(dateString[2]));
         }
-        DateOnly employeeHireDate = DateOnly.FromDateTime(DateTime.Now);
+
+        var employeeHireDate = DateOnly.FromDateTime(DateTime.Now);
         if (!string.IsNullOrEmpty(Request.Form["employeeHireDate"]))
         {
             var dateString = Request.Form["employeeHireDate"].ToString().Split("-");
-            employeeHireDate = new DateOnly(Convert.ToInt32(dateString[0]), Convert.ToInt32(dateString[1]), Convert.ToInt32(dateString[2]));
+            employeeHireDate = new DateOnly(Convert.ToInt32(dateString[0]), Convert.ToInt32(dateString[1]),
+                Convert.ToInt32(dateString[2]));
         }
+
         var employeeAddress = Request.Form["employeeAddress"];
         var employeeCity = Request.Form["employeeCity"];
         var employeeRegion = Request.Form["employeeRegion"];
@@ -63,17 +74,20 @@ public class EmployeeController : Controller
         var employeeCountry = Request.Form["employeeCountry"];
         var employeeHomePhone = Request.Form["employeeHomePhone"];
         var employeeExtension = Request.Form["employeeExtension"];
-        byte[] employeePhoto = new byte[100];
+        var employeePhoto = new byte[100];
         foreach (var formFile in Request.Form.Files)
         {
             if (formFile.Name.Equals("employeePhoto"))
             {
-                employeePhoto = await sharedUtil.GetByteArrayFromImageAsync(formFile);
+                employeePhoto = await SharedUtil.GetByteArrayFromImageAsync(formFile);
             }
         }
+
         var employeeNotes = Request.Form["employeeNotes"];
         var employeePhotoPath = Request.Form["employeePhotoPath"];
-        double employeeSalary = !string.IsNullOrEmpty(Request.Form["employeeSalary"]) ? Convert.ToDouble(Request.Form["employeeSalary"]) : 0;
+        var employeeSalary = !string.IsNullOrEmpty(Request.Form["employeeSalary"])
+            ? Convert.ToDouble(Request.Form["employeeSalary"])
+            : 0;
         var search = Request.Form["search"];
         List<EmployeeModel> data = new();
         EmployeeModel dataSingle = new();
@@ -84,7 +98,7 @@ public class EmployeeController : Controller
             case "create":
                 if (!checkAccessUtil.GetPermission(leafCheckKey, AuthenticationEnum.CREATE_ACCESS))
                 {
-                    code = ((int)ReturnCodeEnum.ACCESS_DENIED).ToString();
+                    code = ((int) ReturnCodeEnum.ACCESS_DENIED).ToString();
                 }
                 else
                 {
@@ -108,22 +122,25 @@ public class EmployeeController : Controller
                             EmployeePhoto = employeePhoto,
                             EmployeeNotes = employeeNotes,
                             EmployeePhotoPath = employeePhotoPath,
-                            EmployeeSalary = employeeSalary,
+                            EmployeeSalary = employeeSalary
                         };
                         lastInsertKey = employeeRepository.Create(employeeModel);
-                        code = ((int)ReturnCodeEnum.CREATE_SUCCESS).ToString();
+                        code = ((int) ReturnCodeEnum.CREATE_SUCCESS).ToString();
                         status = true;
                     }
                     catch (Exception ex)
                     {
-                        code = sharedUtil.GetRoleId() == (int)AccessEnum.ADMINISTRATOR_ACCESS ? ex.Message : ((int)ReturnCodeEnum.SYSTEM_ERROR).ToString();
+                        code = sharedUtil.GetRoleId() == (int) AccessEnum.ADMINISTRATOR_ACCESS
+                            ? ex.Message
+                            : ((int) ReturnCodeEnum.SYSTEM_ERROR).ToString();
                     }
                 }
+
                 break;
             case "read":
                 if (!checkAccessUtil.GetPermission(leafCheckKey, AuthenticationEnum.READ_ACCESS))
                 {
-                    code = ((int)ReturnCodeEnum.ACCESS_DENIED).ToString();
+                    code = ((int) ReturnCodeEnum.ACCESS_DENIED).ToString();
                 }
                 else
                 {
@@ -131,19 +148,22 @@ public class EmployeeController : Controller
                     {
                         data = employeeRepository.Read();
 
-                        code = ((int)ReturnCodeEnum.CREATE_SUCCESS).ToString();
+                        code = ((int) ReturnCodeEnum.CREATE_SUCCESS).ToString();
                         status = true;
                     }
                     catch (Exception ex)
                     {
-                        code = sharedUtil.GetRoleId() == (int)AccessEnum.ADMINISTRATOR_ACCESS ? ex.Message : ((int)ReturnCodeEnum.SYSTEM_ERROR).ToString();
+                        code = sharedUtil.GetRoleId() == (int) AccessEnum.ADMINISTRATOR_ACCESS
+                            ? ex.Message
+                            : ((int) ReturnCodeEnum.SYSTEM_ERROR).ToString();
                     }
                 }
+
                 break;
             case "search":
                 if (!checkAccessUtil.GetPermission(leafCheckKey, AuthenticationEnum.READ_ACCESS))
                 {
-                    code = ((int)ReturnCodeEnum.ACCESS_DENIED).ToString();
+                    code = ((int) ReturnCodeEnum.ACCESS_DENIED).ToString();
                 }
                 else
                 {
@@ -151,19 +171,22 @@ public class EmployeeController : Controller
                     {
                         data = employeeRepository.Search(search);
 
-                        code = ((int)ReturnCodeEnum.READ_SUCCESS).ToString();
+                        code = ((int) ReturnCodeEnum.READ_SUCCESS).ToString();
                         status = true;
                     }
                     catch (Exception ex)
                     {
-                        code = sharedUtil.GetRoleId() == (int)AccessEnum.ADMINISTRATOR_ACCESS ? ex.Message : ((int)ReturnCodeEnum.SYSTEM_ERROR).ToString();
+                        code = sharedUtil.GetRoleId() == (int) AccessEnum.ADMINISTRATOR_ACCESS
+                            ? ex.Message
+                            : ((int) ReturnCodeEnum.SYSTEM_ERROR).ToString();
                     }
                 }
+
                 break;
             case "single":
                 if (!checkAccessUtil.GetPermission(leafCheckKey, AuthenticationEnum.READ_ACCESS))
                 {
-                    code = ((int)ReturnCodeEnum.ACCESS_DENIED).ToString();
+                    code = ((int) ReturnCodeEnum.ACCESS_DENIED).ToString();
                 }
                 else
                 {
@@ -176,20 +199,23 @@ public class EmployeeController : Controller
                         dataSingle = employeeRepository.GetSingle(employeeModel);
                         if (dataSingle.EmployeePhoto != null)
                             dataSingle.EmployeePhotoBase64String = SharedUtil.GetImageString(dataSingle.EmployeePhoto);
-                        dataSingle.EmployeePhoto = new byte[0];
-                        code = ((int)ReturnCodeEnum.READ_SUCCESS).ToString();
+                        dataSingle.EmployeePhoto = Array.Empty<byte>();
+                        code = ((int) ReturnCodeEnum.READ_SUCCESS).ToString();
                         status = true;
                     }
                     catch (Exception ex)
                     {
-                        code = sharedUtil.GetRoleId() == (int)AccessEnum.ADMINISTRATOR_ACCESS ? ex.Message : ((int)ReturnCodeEnum.SYSTEM_ERROR).ToString();
+                        code = sharedUtil.GetRoleId() == (int) AccessEnum.ADMINISTRATOR_ACCESS
+                            ? ex.Message
+                            : ((int) ReturnCodeEnum.SYSTEM_ERROR).ToString();
                     }
                 }
+
                 break;
             case "update":
                 if (!checkAccessUtil.GetPermission(leafCheckKey, AuthenticationEnum.UPDATE_ACCESS))
                 {
-                    code = ((int)ReturnCodeEnum.ACCESS_DENIED).ToString();
+                    code = ((int) ReturnCodeEnum.ACCESS_DENIED).ToString();
                 }
                 else
                 {
@@ -214,22 +240,25 @@ public class EmployeeController : Controller
                             EmployeePhoto = employeePhoto,
                             EmployeeNotes = employeeNotes,
                             EmployeePhotoPath = employeePhotoPath,
-                            EmployeeSalary = employeeSalary,
+                            EmployeeSalary = employeeSalary
                         };
                         employeeRepository.Update(employeeModel);
-                        code = ((int)ReturnCodeEnum.UPDATE_SUCCESS).ToString();
+                        code = ((int) ReturnCodeEnum.UPDATE_SUCCESS).ToString();
                         status = true;
                     }
                     catch (Exception ex)
                     {
-                        code = sharedUtil.GetRoleId() == (int)AccessEnum.ADMINISTRATOR_ACCESS ? ex.Message : ((int)ReturnCodeEnum.SYSTEM_ERROR).ToString();
+                        code = sharedUtil.GetRoleId() == (int) AccessEnum.ADMINISTRATOR_ACCESS
+                            ? ex.Message
+                            : ((int) ReturnCodeEnum.SYSTEM_ERROR).ToString();
                     }
                 }
+
                 break;
             case "delete":
                 if (!checkAccessUtil.GetPermission(leafCheckKey, AuthenticationEnum.DELETE_ACCESS))
                 {
-                    code = ((int)ReturnCodeEnum.ACCESS_DENIED).ToString();
+                    code = ((int) ReturnCodeEnum.ACCESS_DENIED).ToString();
                 }
                 else
                 {
@@ -240,28 +269,33 @@ public class EmployeeController : Controller
                             EmployeeKey = employeeKey
                         };
                         employeeRepository.Delete(employeeModel);
-                        code = ((int)ReturnCodeEnum.DELETE_SUCCESS).ToString();
+                        code = ((int) ReturnCodeEnum.DELETE_SUCCESS).ToString();
                         status = true;
                     }
                     catch (Exception ex)
                     {
-                        code = sharedUtil.GetRoleId() == (int)AccessEnum.ADMINISTRATOR_ACCESS ? ex.Message : ((int)ReturnCodeEnum.SYSTEM_ERROR).ToString();
+                        code = sharedUtil.GetRoleId() == (int) AccessEnum.ADMINISTRATOR_ACCESS
+                            ? ex.Message
+                            : ((int) ReturnCodeEnum.SYSTEM_ERROR).ToString();
                     }
                 }
+
                 break;
             default:
-                code = ((int)ReturnCodeEnum.ACCESS_DENIED_NO_MODE).ToString();
+                code = ((int) ReturnCodeEnum.ACCESS_DENIED_NO_MODE).ToString();
                 break;
         }
+
         if (data.Count > 0)
         {
-            return Ok(new { status, code, data });
+            return Ok(new {status, code, data});
         }
+
         if (mode.Equals("single"))
         {
-            return Ok(new { status, code, dataSingle });
+            return Ok(new {status, code, dataSingle});
         }
-        return lastInsertKey > 0 ? Ok(new { status, code, lastInsertKey }) : Ok(new { status, code });
-    }
 
+        return lastInsertKey > 0 ? Ok(new {status, code, lastInsertKey}) : Ok(new {status, code});
+    }
 }

@@ -1,15 +1,13 @@
-﻿using System.Collections.Generic;
+﻿namespace RebelCmsTemplate.Models.Menu;
 
-namespace RebelCmsTemplate.Models.Menu
+public class MenuModel
 {
-    public class MenuModel
-    {
-        public string? FolderName { get; init; }
-        public List<MenuDetailModel>? Details { get; set; }  
-    }
-    public class MenuDetailModel
-    {
-        public int LeafKey { get; init; }
-        public string? LeafName { get; init; }
-    }
+    public string? FolderName { get; init; }
+    public List<MenuDetailModel>? Details { get; set; }
+}
+
+public class MenuDetailModel
+{
+    public int LeafKey { get; init; }
+    public string? LeafName { get; init; }
 }

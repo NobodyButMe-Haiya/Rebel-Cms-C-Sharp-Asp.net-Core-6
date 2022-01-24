@@ -38,7 +38,15 @@
       "Venerdì",
       "Sabato"
     ],
-    "shortDays": ["Dom", "Lun", "Mar", "Mer", "Gio", "Ven", "Sab"],
+    "shortDays": [
+      "Dom",
+      "Lun",
+      "Mar",
+      "Mer",
+      "Gio",
+      "Ven",
+      "Sab"
+    ],
     "toolbar": {
       "exportToSVG": "Scarica SVG",
       "exportToPNG": "Scarica PNG",

@@ -1,12 +1,7 @@
-﻿namespace RebelCmsTemplate.Models.Setting
+﻿namespace RebelCmsTemplate.Models.Setting;
+
+public class FollowUpModel
 {
-    public class FollowUpModel
-    {
-     
-            public int FollowUpKey { get; init; }
-            public string? FollowUpName { get; init; }
-        
-    }
+    public int FollowUpKey { get; init; }
+    public string? FollowUpName { get; init; }
 }
-
-

@@ -1,71 +1,67 @@
-﻿using System;
-using System.IO;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.AspNetCore.Mvc.Razor;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 
-namespace RebelCmsTemplate.Util
+namespace RebelCmsTemplate.Util;
+
+public class RenderViewToStringUtil
 {
-    public class RenderViewToStringUtil
+    private readonly IRazorViewEngine _razorViewEngine;
+    private readonly ITempDataProvider _tempDataProvider;
+
+    public RenderViewToStringUtil(
+        IRazorViewEngine razorViewEngine,
+        ITempDataProvider tempDataProvider)
     {
-        private readonly IRazorViewEngine _razorViewEngine;
-        private readonly ITempDataProvider _tempDataProvider;
+        _razorViewEngine = razorViewEngine;
+        _tempDataProvider = tempDataProvider;
+    }
 
-        public RenderViewToStringUtil(
-            IRazorViewEngine razorViewEngine,
-            ITempDataProvider tempDataProvider)
+    public async Task<string> RenderViewToStringAsync(ControllerContext actionContext, string viewPath,
+        object model)
+    {
+        var viewEngineResult = _razorViewEngine.GetView(viewPath, viewPath, false);
+
+        if (viewEngineResult.View == null || !viewEngineResult.Success)
         {
-            _razorViewEngine = razorViewEngine;
-            _tempDataProvider = tempDataProvider;
+            throw new ArgumentNullException($"Unable to find view '{viewPath}'");
         }
 
-        public async Task<string> RenderViewToStringAsync(ControllerContext actionContext, string viewPath,
-            object model)
+        var viewDictionary = new ViewDataDictionary(new EmptyModelMetadataProvider(), actionContext.ModelState)
         {
-            var viewEngineResult = _razorViewEngine.GetView(viewPath, viewPath, false);
+            Model = model
+        };
 
-            if (viewEngineResult.View == null || !viewEngineResult.Success)
-            {
-                throw new ArgumentNullException($"Unable to find view '{viewPath}'");
-            }
+        var view = viewEngineResult.View;
+        var tempData = new TempDataDictionary(actionContext.HttpContext, _tempDataProvider);
 
-            var viewDictionary = new ViewDataDictionary(new EmptyModelMetadataProvider(), actionContext.ModelState)
-            {
-                Model = model
-            };
+        await using var sw = new StringWriter();
+        var viewContext =
+            new ViewContext(actionContext, view, viewDictionary, tempData, sw, new HtmlHelperOptions());
+        await view.RenderAsync(viewContext);
+        return sw.ToString();
+    }
 
-            var view = viewEngineResult.View;
-            var tempData = new TempDataDictionary(actionContext.HttpContext, _tempDataProvider);
+    public async Task<string> RenderViewToStringAsync(ControllerContext actionContext, string viewPath)
+    {
+        var viewEngineResult = _razorViewEngine.GetView(viewPath, viewPath, false);
 
-            await using var sw = new StringWriter();
-            var viewContext =
-                new ViewContext(actionContext, view, viewDictionary, tempData, sw, new HtmlHelperOptions());
-            await view.RenderAsync(viewContext);
-            return sw.ToString();
+        if (viewEngineResult.View == null || !viewEngineResult.Success)
+        {
+            throw new ArgumentNullException($"Unable to find view '{viewPath}'");
         }
 
-        public async Task<string> RenderViewToStringAsync(ControllerContext actionContext, string viewPath)
-        {
-            var viewEngineResult = _razorViewEngine.GetView(viewPath, viewPath, false);
+        var viewDictionary = new ViewDataDictionary(new EmptyModelMetadataProvider(), actionContext.ModelState);
 
-            if (viewEngineResult.View == null || !viewEngineResult.Success)
-            {
-                throw new ArgumentNullException($"Unable to find view '{viewPath}'");
-            }
+        var view = viewEngineResult.View;
+        var tempData = new TempDataDictionary(actionContext.HttpContext, _tempDataProvider);
 
-            var viewDictionary = new ViewDataDictionary(new EmptyModelMetadataProvider(), actionContext.ModelState);
-
-            var view = viewEngineResult.View;
-            var tempData = new TempDataDictionary(actionContext.HttpContext, _tempDataProvider);
-
-            await using var sw = new StringWriter();
-            var viewContext =
-                new ViewContext(actionContext, view, viewDictionary, tempData, sw, new HtmlHelperOptions());
-            await view.RenderAsync(viewContext);
-            return sw.ToString();
-        }
+        await using var sw = new StringWriter();
+        var viewContext =
+            new ViewContext(actionContext, view, viewDictionary, tempData, sw, new HtmlHelperOptions());
+        await view.RenderAsync(viewContext);
+        return sw.ToString();
     }
 }

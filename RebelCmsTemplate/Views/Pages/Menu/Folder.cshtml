@@ -1,6 +1,5 @@
-﻿@inject Microsoft.AspNetCore.Http.IHttpContextAccessor _httpContextAccessor
+﻿@inject IHttpContextAccessor _httpContextAccessor
 @using RebelCmsTemplate.Models.Menu
-@using RebelCmsTemplate.Models.Shared
 @using RebelCmsTemplate.Repository.Menu
 @using RebelCmsTemplate.Util
 @using RebelCmsTemplate.Enum;
@@ -19,34 +18,34 @@
     var fileInfo = ViewContext.ExecutingFilePath?.Split("/");
     var filename = fileInfo != null ? fileInfo[4] : "";
     var name = filename.Split(".")[0];
-    NavigationModel navigationModel = sharedUtils.GetNavigation(name);
+    var navigationModel = sharedUtils.GetNavigation(name);
 }
 
-    <div class="page-title">
-        <div class="row">
-            <div class="col-12 col-md-6 order-md-1 order-last">
-                <h3>@navigationModel.LeafName</h3>
-            </div>
-            <div class="col-12 col-md-6 order-md-2 order-first">
-                <nav aria-label="breadcrumb" class="breadcrumb-header float-start float-lg-end">
-                    <ol class="breadcrumb">
-                        <li class="breadcrumb-item">
-                            <a href="#">
-                                <i class="@navigationModel.FolderIcon"></i> @navigationModel.FolderName
-                            </a>
-                        </li>
-                        <li class="breadcrumb-item active" aria-current="page">
-                            <i class="@navigationModel.LeafIcon"></i> @navigationModel.LeafName
-                        </li>
-                        <li class="breadcrumb-item active" aria-current="page">
-                            <i class="fas fa-sign-out-alt"></i>
-                            <a href="/logout">Logout</a>
-                        </li>
-                    </ol>
-                </nav>
-            </div>
+<div class="page-title">
+    <div class="row">
+        <div class="col-12 col-md-6 order-md-1 order-last">
+            <h3>@navigationModel.LeafName</h3>
+        </div>
+        <div class="col-12 col-md-6 order-md-2 order-first">
+            <nav aria-label="breadcrumb" class="breadcrumb-header float-start float-lg-end">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item">
+                        <a href="#">
+                            <i class="@navigationModel.FolderIcon"></i> @navigationModel.FolderName
+                        </a>
+                    </li>
+                    <li class="breadcrumb-item active" aria-current="page">
+                        <i class="@navigationModel.LeafIcon"></i> @navigationModel.LeafName
+                    </li>
+                    <li class="breadcrumb-item active" aria-current="page">
+                        <i class="fas fa-sign-out-alt"></i>
+                        <a href="/logout">Logout</a>
+                    </li>
+                </ol>
+            </nav>
         </div>
     </div>
+</div>
 <section class="content">
     <div class="container-fluid">
         <div class="row">
@@ -61,7 +60,7 @@
                             <div class="col-md-10">
                                 <input name="search" id="search" class="form-control"
                                        placeholder="Please Enter Name  Or Other Here" maxlength="64"
-                                       style="width: 350px!important;" />
+                                       style="width: 350px!important;"/>
                             </div>
                         </div>
                     </div>
@@ -87,25 +86,25 @@
                             <td>
                                 <label>
                                     <input type="number" name="folderSeq[]" id="folderSeq" class="form-control"
-                                           maxlength="4" />
+                                           maxlength="4"/>
                                 </label>
                             </td>
                             <td>
                                 <label>
                                     <input type="text" name="folderName[]" id="folderName"
-                                           class="form-control" />
+                                           class="form-control"/>
                                 </label>
                             </td>
                             <td>
                                 <label>
                                     <input type="text" name="folderFilename[]" id="folderFilename"
-                                           class="form-control" />
+                                           class="form-control"/>
                                 </label>
                             </td>
                             <td>
                                 <label>
                                     <input type="text" name="folderIcon[]" id="folderIcon"
-                                           class="form-control" />
+                                           class="form-control"/>
                                 </label>
                             </td>
                             <td>
@@ -129,19 +128,19 @@
                             <tr id="folder-@row.FolderKey">
                                 <td>
                                     <input title="Sequence" type="number" class="form-control" name="folderSeq[]"
-                                           id="folderSeq-@row.FolderKey" value='@row.FolderSeq' maxlength="4" />
+                                           id="folderSeq-@row.FolderKey" value='@row.FolderSeq' maxlength="4"/>
                                 </td>
                                 <td>
                                     <input title="Folder Name" type="text" class="form-control" name="folderName[]"
-                                           id="folderName-@row.FolderKey" value="@row.FolderName" />
+                                           id="folderName-@row.FolderKey" value="@row.FolderName"/>
                                 </td>
                                 <td>
                                     <input title="Filename" type="text" class="form-control" name="folderFilename[]"
-                                           id="folderFilename-@row.FolderKey" value="@row.FolderFilename" />
+                                           id="folderFilename-@row.FolderKey" value="@row.FolderFilename"/>
                                 </td>
                                 <td>
                                     <input title="Icon" type="text" class="form-control" name="folderIcon[]"
-                                           id="folderFilename-@row.FolderIcon" value="@row.FolderIcon" />
+                                           id="folderFilename-@row.FolderIcon" value="@row.FolderIcon"/>
                                 </td>
                                 <td>
                                     <div class="btn-group">
@@ -273,7 +272,7 @@
                     } else if (status === false) {
                         if (typeof(code) === 'string'){
                             @{
-                                if (sharedUtils.GetRoleId().Equals( (int)AccessEnum.ADMINISTRATOR_ACCESS ))
+                                if (sharedUtils.GetRoleId().Equals((int) AccessEnum.ADMINISTRATOR_ACCESS))
                                 {
                                     <text>
                                     Swal.fire("Debugging Admin", code, "error");
@@ -286,7 +285,7 @@
                                     </text>
                                 }
                             }
-                        }else if (parseInt(code) === parseInt(@((int)ReturnCodeEnum.ACCESS_DENIED) )) {
+                        }else if (parseInt(code) === parseInt(@((int) ReturnCodeEnum.ACCESS_DENIED) )) {
                             let timerInterval
                             Swal.fire({
                                 title: 'Auto close alert!',
@@ -368,7 +367,7 @@
                 } else if (status === false) {
                    if (typeof(data.code) === 'string'){
                            @{
-                               if (sharedUtils.GetRoleId().Equals( (int)AccessEnum.ADMINISTRATOR_ACCESS ))
+                               if (sharedUtils.GetRoleId().Equals((int) AccessEnum.ADMINISTRATOR_ACCESS))
                                {
                                    <text>
                                    Swal.fire("Debugging Admin", code, "error");
@@ -381,7 +380,7 @@
                                    </text>
                                }
                            }
-                       }else  if (parseInt(code) === parseInt(@((int)ReturnCodeEnum.ACCESS_DENIED) )) {
+                       }else  if (parseInt(code) === parseInt(@((int) ReturnCodeEnum.ACCESS_DENIED) )) {
                         let timerInterval
                         Swal.fire({
                             title: 'Auto close alert!',
@@ -464,7 +463,7 @@
                 } else if (status === false) {
                    if (typeof(code) === 'string'){
                        @{
-                           if (sharedUtils.GetRoleId().Equals( (int)AccessEnum.ADMINISTRATOR_ACCESS ))
+                           if (sharedUtils.GetRoleId().Equals((int) AccessEnum.ADMINISTRATOR_ACCESS))
                            {
                                <text>
                                Swal.fire("Debugging Admin", code, "error");
@@ -477,7 +476,7 @@
                                </text>
                            }
                        }
-                   }else  if (parseInt(code) === parseInt(@((int)ReturnCodeEnum.ACCESS_DENIED) )) {
+                   }else  if (parseInt(code) === parseInt(@((int) ReturnCodeEnum.ACCESS_DENIED) )) {
                         let timerInterval
                         Swal.fire({
                             title: 'Auto close alert!',
@@ -545,7 +544,7 @@
                 } else if (status === false) {
                     if (typeof(code) === 'string'){
                                                                           @{
-                                                                              if (sharedUtils.GetRoleId().Equals( (int)AccessEnum.ADMINISTRATOR_ACCESS ))
+                                                                              if (sharedUtils.GetRoleId().Equals((int) AccessEnum.ADMINISTRATOR_ACCESS))
                                                                               {
                                                                                   <text>
                                                                                   Swal.fire("Debugging Admin", code, "error");
@@ -558,7 +557,7 @@
                                                                                   </text>
                                                                               }
                                                                           }
-                                                                      }else     if (parseInt(code) === parseInt(@((int)ReturnCodeEnum.ACCESS_DENIED) )) {
+                                                                      }else     if (parseInt(code) === parseInt(@((int) ReturnCodeEnum.ACCESS_DENIED) )) {
                         let timerInterval
                         Swal.fire({
                             title: 'Auto close alert!',
@@ -598,7 +597,7 @@
             Swal.fire({
                 title: 'Are you sure?',
                 text: "You won't be able to revert this!",
-                type: 'warning',
+                icon: 'warning',
                 showCancelButton: true,
                 confirmButtonText: 'Yes, delete it!',
                 cancelButtonText: 'No, cancel!',
@@ -633,7 +632,7 @@
                         } else if (status === false) {
                             if (typeof(code) === 'string'){
                                                                                   @{
-                                                                                      if (sharedUtils.GetRoleId().Equals( (int)AccessEnum.ADMINISTRATOR_ACCESS ))
+                                                                                      if (sharedUtils.GetRoleId().Equals((int) AccessEnum.ADMINISTRATOR_ACCESS))
                                                                                       {
                                                                                           <text>
                                                                                           Swal.fire("Debugging Admin", code, "error");
@@ -646,7 +645,7 @@
                                                                                           </text>
                                                                                       }
                                                                                   }
-                                                                              }else     if (parseInt(code) === parseInt(@((int)ReturnCodeEnum.ACCESS_DENIED) )) {
+                                                                              }else     if (parseInt(code) === parseInt(@((int) ReturnCodeEnum.ACCESS_DENIED) )) {
                                 let timerInterval
                                 Swal.fire({
                                     title: 'Auto close alert!',

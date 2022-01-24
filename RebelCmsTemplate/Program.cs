@@ -1,14 +1,10 @@
-using System;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
 using RebelCmsTemplate.Util;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-builder.Services.AddControllersWithViews().AddJsonOptions(options => {
+builder.Services.AddControllersWithViews().AddJsonOptions(options =>
+{
     options.JsonSerializerOptions.Converters.Add(new DateOnlyConverter());
     options.JsonSerializerOptions.Converters.Add(new TimeOnlyConverter());
 });
@@ -17,7 +13,6 @@ builder.Services.AddSession(options =>
     options.IdleTimeout = TimeSpan.FromMinutes(20);
     options.Cookie.HttpOnly = true;
     options.Cookie.IsEssential = true;
-   
 });
 builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 builder.Services.AddScoped<RenderViewToStringUtil>();
@@ -39,7 +34,7 @@ app.UseRouting();
 app.UseAuthorization();
 app.UseSession();
 app.MapControllerRoute(
-    name: "default",
-    pattern: "{controller=Home}/{action=Index}/{id?}");
+    "default",
+    "{controller=Home}/{action=Index}/{id?}");
 
 app.Run();

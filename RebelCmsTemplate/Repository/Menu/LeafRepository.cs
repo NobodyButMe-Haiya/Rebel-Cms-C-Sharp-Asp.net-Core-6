@@ -1,37 +1,34 @@
-﻿using System;
-using System.Collections.Generic;
-using Microsoft.AspNetCore.Http;
-using MySql.Data.MySqlClient;
+﻿using MySql.Data.MySqlClient;
 using RebelCmsTemplate.Models.Menu;
 using RebelCmsTemplate.Models.Shared;
 using RebelCmsTemplate.Util;
 
-namespace RebelCmsTemplate.Repository.Menu
+namespace RebelCmsTemplate.Repository.Menu;
+
+public class LeafRepository
 {
-    public class LeafRepository
+    private readonly SharedUtil _sharedUtil;
+
+    public LeafRepository(IHttpContextAccessor httpContextAccessor)
     {
-        private readonly SharedUtil _sharedUtil;
+        _sharedUtil = new SharedUtil(httpContextAccessor);
+    }
 
-        public LeafRepository(IHttpContextAccessor httpContextAccessor)
+    public int Create(LeafModel leafModel)
+    {
+        // okay next we create skeleton for the code
+        int lastInsertKey;
+        var sql = string.Empty;
+        List<ParameterModel> parameterModels = new();
+
+        using var connection = SharedUtil.GetConnection();
+        try
         {
-            _sharedUtil = new SharedUtil(httpContextAccessor);
-        }
+            connection.Open();
 
-        public int Create(LeafModel leafModel)
-        {
-            // okay next we create skeleton for the code
-            int lastInsertKey;
-            string sql = string.Empty;
-            List<ParameterModel> parameterModels = new ();
+            var mySqlTransaction = connection.BeginTransaction();
 
-            using MySqlConnection connection = SharedUtil.GetConnection();
-            try
-            {
-                connection.Open();
-
-                MySqlTransaction mySqlTransaction = connection.BeginTransaction();
-
-                sql += @"INSERT INTO leaf
+            sql += @"INSERT INTO leaf
                 ( 
                     leafId,         leafName,   folderId, 
                     leafFilename,   leafIcon,   leafSeq,
@@ -42,140 +39,142 @@ namespace RebelCmsTemplate.Repository.Menu
                     0,              @tenantId
                 )";
 
-                MySqlCommand mySqlCommand = new(sql, connection);
+            MySqlCommand mySqlCommand = new(sql, connection);
 
-                parameterModels = new List<ParameterModel>
-                {
-                    new ()
-                    {
-                        Key = "@tenantId",
-                        Value = _sharedUtil.GetTenantId()
-                    },
-                    new ()
-                    {
-                        Key = "@folderId",
-                        Value = leafModel.FolderKey
-                    },
-                    new ()
-                    {
-                        Key = "@leafName",
-                        Value = leafModel.LeafName
-                    },
-                    new ()
-                    {
-                        Key = "@leafFilename",
-                        Value = leafModel.LeafFilename
-                    },
-                    new ()
-                    {
-                        Key = "@leafIcon",
-                        Value = leafModel.LeafIcon
-                    },
-                    new ()
-                    {
-                        Key = "@leafSeq",
-                        Value = leafModel.LeafSeq
-                    },
-                    new ()
-                    {
-                        Key = "@executeBy",
-                        Value = _sharedUtil.GetUserName()
-                    }
-                };
-                foreach (ParameterModel parameter in parameterModels)
-                {
-                    mySqlCommand.Parameters.AddWithValue(parameter.Key, parameter.Value);
-                }
-                mySqlCommand.ExecuteNonQuery();
-
-                mySqlTransaction.Commit();
-
-                lastInsertKey = (int) mySqlCommand.LastInsertedId;
-
-                mySqlCommand.Dispose();
-            }
-            catch (MySqlException ex)
+            parameterModels = new List<ParameterModel>
             {
-                System.Diagnostics.Debug.WriteLine(ex.Message);
-                _sharedUtil.SetQueryException(SharedUtil.GetSqlSessionValue(sql, parameterModels), ex);
-                throw new Exception(ex.Message);
+                new()
+                {
+                    Key = "@tenantId",
+                    Value = _sharedUtil.GetTenantId()
+                },
+                new()
+                {
+                    Key = "@folderId",
+                    Value = leafModel.FolderKey
+                },
+                new()
+                {
+                    Key = "@leafName",
+                    Value = leafModel.LeafName
+                },
+                new()
+                {
+                    Key = "@leafFilename",
+                    Value = leafModel.LeafFilename
+                },
+                new()
+                {
+                    Key = "@leafIcon",
+                    Value = leafModel.LeafIcon
+                },
+                new()
+                {
+                    Key = "@leafSeq",
+                    Value = leafModel.LeafSeq
+                },
+                new()
+                {
+                    Key = "@executeBy",
+                    Value = _sharedUtil.GetUserName()
+                }
+            };
+            foreach (var parameter in parameterModels)
+            {
+                mySqlCommand.Parameters.AddWithValue(parameter.Key, parameter.Value);
             }
 
-            return lastInsertKey;
+            mySqlCommand.ExecuteNonQuery();
+
+            mySqlTransaction.Commit();
+
+            lastInsertKey = (int) mySqlCommand.LastInsertedId;
+
+            mySqlCommand.Dispose();
+        }
+        catch (MySqlException ex)
+        {
+            System.Diagnostics.Debug.WriteLine(ex.Message);
+            _sharedUtil.SetQueryException(SharedUtil.GetSqlSessionValue(sql, parameterModels), ex);
+            throw new Exception(ex.Message);
         }
 
-        public List<LeafModel> Read()
-        {
-            List<LeafModel> leafModels = new();
-            string sql = string.Empty;
-            List<ParameterModel> parameterModels = new ();
+        return lastInsertKey;
+    }
 
-            using MySqlConnection connection = SharedUtil.GetConnection();
-            try
-            {
-                connection.Open();
-                sql += @"
+    public List<LeafModel> Read()
+    {
+        List<LeafModel> leafModels = new();
+        var sql = string.Empty;
+        List<ParameterModel> parameterModels = new();
+
+        using var connection = SharedUtil.GetConnection();
+        try
+        {
+            connection.Open();
+            sql += @"
                 SELECT      *
                 FROM        leaf
                 WHERE       tenantId = @tenantId
                 AND         isDelete  !=1
                 ORDER BY    leafSeq ";
-                MySqlCommand mySqlCommand = new(sql, connection);
-                parameterModels = new List<ParameterModel>
-                {
-                    new ()
-                    {
-                        Key = "@tenantId",
-                        Value = _sharedUtil.GetTenantId()
-                    }
-                };
-                foreach (ParameterModel parameter in parameterModels)
-                {
-                    mySqlCommand.Parameters.AddWithValue(parameter.Key, parameter.Value);
-                }
-                _sharedUtil.SetSqlSession(sql, parameterModels);
-
-                using (var reader = mySqlCommand.ExecuteReader())
-                {
-                    while (reader.Read())
-                    {
-                        leafModels.Add(new LeafModel
-                        {
-                            LeafKey = Convert.ToInt32(reader["LeafId"]),
-                            FolderKey = Convert.ToInt32(reader["folderId"]),
-                            LeafName = reader["leafName"].ToString(),
-                            LeafFilename = reader["leafFilename"].ToString(),
-                            LeafSeq = Convert.ToInt32(reader["leafSeq"]),
-                            LeafIcon = reader["leafIcon"].ToString(),
-                            IsDelete = Convert.ToInt32(reader["isDelete"])
-                        });
-                    }
-                }
-
-                mySqlCommand.Dispose();
-            }
-            catch (MySqlException ex)
+            MySqlCommand mySqlCommand = new(sql, connection);
+            parameterModels = new List<ParameterModel>
             {
-                System.Diagnostics.Debug.WriteLine(ex.Message);
-                _sharedUtil.SetQueryException(SharedUtil.GetSqlSessionValue(sql, parameterModels), ex);
-                throw new Exception(ex.Message);
+                new()
+                {
+                    Key = "@tenantId",
+                    Value = _sharedUtil.GetTenantId()
+                }
+            };
+            foreach (var parameter in parameterModels)
+            {
+                mySqlCommand.Parameters.AddWithValue(parameter.Key, parameter.Value);
             }
 
+            _sharedUtil.SetSqlSession(sql, parameterModels);
 
-            return leafModels;
+            using (var reader = mySqlCommand.ExecuteReader())
+            {
+                while (reader.Read())
+                {
+                    leafModels.Add(new LeafModel
+                    {
+                        LeafKey = Convert.ToInt32(reader["LeafId"]),
+                        FolderKey = Convert.ToInt32(reader["folderId"]),
+                        LeafName = reader["leafName"].ToString(),
+                        LeafFilename = reader["leafFilename"].ToString(),
+                        LeafSeq = Convert.ToInt32(reader["leafSeq"]),
+                        LeafIcon = reader["leafIcon"].ToString(),
+                        IsDelete = Convert.ToInt32(reader["isDelete"])
+                    });
+                }
+            }
+
+            mySqlCommand.Dispose();
+        }
+        catch (MySqlException ex)
+        {
+            System.Diagnostics.Debug.WriteLine(ex.Message);
+            _sharedUtil.SetQueryException(SharedUtil.GetSqlSessionValue(sql, parameterModels), ex);
+            throw new Exception(ex.Message);
         }
 
-        public List<LeafModel> Search(string search)
-        {
-            List<LeafModel> leafModels = new();
-            string sql = string.Empty;
-            List<ParameterModel> parameterModels = new ();
 
-            using MySqlConnection connection = SharedUtil.GetConnection();
-            try
-            {
-                connection.Open();
-                sql += @"
+        return leafModels;
+    }
+
+    public List<LeafModel> Search(string search)
+    {
+        List<LeafModel> leafModels = new();
+        var sql = string.Empty;
+        List<ParameterModel> parameterModels = new();
+
+        using var connection = SharedUtil.GetConnection();
+        try
+        {
+            connection.Open();
+            sql += @"
                 SELECT  *
                 FROM    leaf
                 JOIN    folder 
@@ -185,68 +184,69 @@ namespace RebelCmsTemplate.Repository.Menu
                 AND     folder.isDelete != 1  
                 AND     leafName LIKE CONCAT('%',@search,'%') 
                 OR      folderName LIKE CONCAT('%',@search,'%') ; ";
-                MySqlCommand mySqlCommand = new(sql, connection);
-                parameterModels = new List<ParameterModel>
-                {
-                    new ()
-                    {
-                        Key = "@tenantId",
-                        Value = _sharedUtil.GetTenantId()
-                    },
-                    new ()
-                    {
-                        Key = "@search",
-                        Value = search
-                    }
-                };
-                foreach (ParameterModel parameter in parameterModels)
-                {
-                    mySqlCommand.Parameters.AddWithValue(parameter.Key, parameter.Value);
-                }
-                _sharedUtil.SetSqlSession(sql, parameterModels);
-
-                using (var reader = mySqlCommand.ExecuteReader())
-                {
-                    while (reader.Read())
-                    {
-                        leafModels.Add(new LeafModel
-                        {
-                            LeafKey = Convert.ToInt32(reader["LeafId"]),
-                            FolderKey = Convert.ToInt32(reader["folderId"]),
-                            LeafName = reader["leafName"].ToString(),
-                            LeafFilename = reader["leafFilename"].ToString(),
-                            LeafSeq = Convert.ToInt32(reader["leafSeq"]),
-                            LeafIcon = reader["leafIcon"].ToString(),
-                            IsDelete = Convert.ToInt32(reader["isDelete"])
-                        });
-                    }
-                }
-
-                mySqlCommand.Dispose();
-            }
-            catch (MySqlException ex)
+            MySqlCommand mySqlCommand = new(sql, connection);
+            parameterModels = new List<ParameterModel>
             {
-                System.Diagnostics.Debug.WriteLine(ex.Message);
-                _sharedUtil.SetQueryException(SharedUtil.GetSqlSessionValue(sql, parameterModels), ex);
-                throw new Exception(ex.Message);
+                new()
+                {
+                    Key = "@tenantId",
+                    Value = _sharedUtil.GetTenantId()
+                },
+                new()
+                {
+                    Key = "@search",
+                    Value = search
+                }
+            };
+            foreach (var parameter in parameterModels)
+            {
+                mySqlCommand.Parameters.AddWithValue(parameter.Key, parameter.Value);
             }
 
+            _sharedUtil.SetSqlSession(sql, parameterModels);
 
-            return leafModels;
+            using (var reader = mySqlCommand.ExecuteReader())
+            {
+                while (reader.Read())
+                {
+                    leafModels.Add(new LeafModel
+                    {
+                        LeafKey = Convert.ToInt32(reader["LeafId"]),
+                        FolderKey = Convert.ToInt32(reader["folderId"]),
+                        LeafName = reader["leafName"].ToString(),
+                        LeafFilename = reader["leafFilename"].ToString(),
+                        LeafSeq = Convert.ToInt32(reader["leafSeq"]),
+                        LeafIcon = reader["leafIcon"].ToString(),
+                        IsDelete = Convert.ToInt32(reader["isDelete"])
+                    });
+                }
+            }
+
+            mySqlCommand.Dispose();
+        }
+        catch (MySqlException ex)
+        {
+            System.Diagnostics.Debug.WriteLine(ex.Message);
+            _sharedUtil.SetQueryException(SharedUtil.GetSqlSessionValue(sql, parameterModels), ex);
+            throw new Exception(ex.Message);
         }
 
-        public void Update(LeafModel leafModel)
+
+        return leafModels;
+    }
+
+    public void Update(LeafModel leafModel)
+    {
+        var sql = string.Empty;
+        List<ParameterModel> parameterModels = new();
+
+        using var connection = SharedUtil.GetConnection();
+        try
         {
-            string sql = string.Empty;
-            List<ParameterModel> parameterModels = new ();
+            connection.Open();
+            var mySqlTransaction = connection.BeginTransaction();
 
-            using MySqlConnection connection = SharedUtil.GetConnection();
-            try
-            {
-                connection.Open();
-                MySqlTransaction mySqlTransaction = connection.BeginTransaction();
-
-                sql += @"
+            sql += @"
                 UPDATE  leaf
                 SET     folderId        =   @folderId,
                         leafName        =   @leafName,
@@ -255,108 +255,109 @@ namespace RebelCmsTemplate.Repository.Menu
                         leafSeq         =   @leafSeq
                 WHERE   leafId          =   @leafId ";
 
-                MySqlCommand mySqlCommand = new(sql, connection);
+            MySqlCommand mySqlCommand = new(sql, connection);
 
-                parameterModels = new List<ParameterModel>
+            parameterModels = new List<ParameterModel>
+            {
+                new()
                 {
-                    new ()
-                    {
-                        Key = "@tenantId",
-                        Value = _sharedUtil.GetTenantId()
-                    },
-                    new ()
-                    {
-                        Key = "@folderId",
-                        Value = leafModel.FolderKey
-                    },
-                    new ()
-                    {
-                        Key = "@leafName",
-                        Value = leafModel.LeafName
-                    },
-                    new ()
-                    {
-                        Key = "@leafFilename",
-                        Value = leafModel.LeafFilename
-                    },
-                    new ()
-                    {
-                        Key = "@leafIcon",
-                        Value = leafModel.LeafIcon
-                    },
-                    new ()
-                    {
-                        Key = "@leafSeq",
-                        Value = leafModel.LeafSeq
-                    },
-                    new ()
-                    {
-                        Key = "@executeBy",
-                        Value = _sharedUtil.GetUserName()
-                    },
-                    new ()
-                    {
-                        Key = "@leafId",
-                        Value = leafModel.LeafKey
-                    }
-                };
-                foreach (ParameterModel parameter in parameterModels)
+                    Key = "@tenantId",
+                    Value = _sharedUtil.GetTenantId()
+                },
+                new()
                 {
-                    mySqlCommand.Parameters.AddWithValue(parameter.Key, parameter.Value);
+                    Key = "@folderId",
+                    Value = leafModel.FolderKey
+                },
+                new()
+                {
+                    Key = "@leafName",
+                    Value = leafModel.LeafName
+                },
+                new()
+                {
+                    Key = "@leafFilename",
+                    Value = leafModel.LeafFilename
+                },
+                new()
+                {
+                    Key = "@leafIcon",
+                    Value = leafModel.LeafIcon
+                },
+                new()
+                {
+                    Key = "@leafSeq",
+                    Value = leafModel.LeafSeq
+                },
+                new()
+                {
+                    Key = "@executeBy",
+                    Value = _sharedUtil.GetUserName()
+                },
+                new()
+                {
+                    Key = "@leafId",
+                    Value = leafModel.LeafKey
                 }
-                mySqlCommand.ExecuteNonQuery();
-                mySqlTransaction.Commit();
-                mySqlCommand.Dispose();
-            }
-            catch (MySqlException ex)
+            };
+            foreach (var parameter in parameterModels)
             {
-                System.Diagnostics.Debug.WriteLine(ex.Message);
-                _sharedUtil.SetQueryException(SharedUtil.GetSqlSessionValue(sql, parameterModels), ex);
-                throw new Exception(ex.Message);
+                mySqlCommand.Parameters.AddWithValue(parameter.Key, parameter.Value);
             }
+
+            mySqlCommand.ExecuteNonQuery();
+            mySqlTransaction.Commit();
+            mySqlCommand.Dispose();
         }
-
-        public void Delete(LeafModel leafModel)
+        catch (MySqlException ex)
         {
-            string sql = string.Empty;
-            List<ParameterModel> parameterModels = new ();
+            System.Diagnostics.Debug.WriteLine(ex.Message);
+            _sharedUtil.SetQueryException(SharedUtil.GetSqlSessionValue(sql, parameterModels), ex);
+            throw new Exception(ex.Message);
+        }
+    }
 
-            using MySqlConnection connection = SharedUtil.GetConnection();
-            try
-            {
-                connection.Open();
-                MySqlTransaction mySqlTransaction = connection.BeginTransaction();
+    public void Delete(LeafModel leafModel)
+    {
+        var sql = string.Empty;
+        List<ParameterModel> parameterModels = new();
 
-                sql += @"
+        using var connection = SharedUtil.GetConnection();
+        try
+        {
+            connection.Open();
+            var mySqlTransaction = connection.BeginTransaction();
+
+            sql += @"
                 UPDATE  leaf
                 SET     isDelete    =   1
                 WHERE   leafId      =   @leafId;";
-                MySqlCommand mySqlCommand = new(sql, connection);
+            MySqlCommand mySqlCommand = new(sql, connection);
 
-                parameterModels = new List<ParameterModel>
-                {
-                    new ()
-                    {
-                        Key = "@leafId",
-                        Value = leafModel.LeafKey
-                    }
-                };
-                foreach (ParameterModel parameter in parameterModels)
-                {
-                    mySqlCommand.Parameters.AddWithValue(parameter.Key, parameter.Value);
-                }
-                mySqlCommand.ExecuteNonQuery();
-
-                mySqlTransaction.Commit();
-
-                mySqlCommand.Dispose();
-            }
-            catch (MySqlException ex)
+            parameterModels = new List<ParameterModel>
             {
-                System.Diagnostics.Debug.WriteLine(ex.Message);
-                _sharedUtil.SetQueryException(SharedUtil.GetSqlSessionValue(sql, parameterModels), ex);
-                throw new Exception(ex.Message);
+                new()
+                {
+                    Key = "@leafId",
+                    Value = leafModel.LeafKey
+                }
+            };
+            foreach (var parameter in parameterModels)
+            {
+                mySqlCommand.Parameters.AddWithValue(parameter.Key, parameter.Value);
             }
+
+            mySqlCommand.ExecuteNonQuery();
+
+            mySqlTransaction.Commit();
+
+            mySqlCommand.Dispose();
+        }
+        catch (MySqlException ex)
+        {
+            System.Diagnostics.Debug.WriteLine(ex.Message);
+            _sharedUtil.SetQueryException(SharedUtil.GetSqlSessionValue(sql, parameterModels), ex);
+            throw new Exception(ex.Message);
         }
     }
 }

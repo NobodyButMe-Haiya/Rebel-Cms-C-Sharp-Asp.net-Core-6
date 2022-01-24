@@ -1,39 +1,35 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using ClosedXML.Excel;
-using Microsoft.AspNetCore.Http;
+﻿using ClosedXML.Excel;
 using MySql.Data.MySqlClient;
 using RebelCmsTemplate.Models.Setting;
 using RebelCmsTemplate.Models.Shared;
 using RebelCmsTemplate.Util;
 
-namespace RebelCmsTemplate.Repository.Setting
+namespace RebelCmsTemplate.Repository.Setting;
+
+public class FollowUpRepository
 {
-    public class FollowUpRepository
+    private readonly SharedUtil _sharedUtil;
+
+    public FollowUpRepository(IHttpContextAccessor httpContextAccessor)
     {
+        _sharedUtil = new SharedUtil(httpContextAccessor);
+    }
 
-        private readonly SharedUtil _sharedUtil;
-        public FollowUpRepository(IHttpContextAccessor httpContextAccessor)
+    public int Create(FollowUpModel followUpModel)
+    {
+        // okay next we create skeleton for the code
+        int lastInsertKey;
+        var sql = string.Empty;
+        List<ParameterModel> parameterModels = new();
+
+        using var connection = SharedUtil.GetConnection();
+        try
         {
-            _sharedUtil = new SharedUtil(httpContextAccessor);
-        }
-        public int Create(FollowUpModel followUpModel)
-        {
-            // okay next we create skeleton for the code
-            int lastInsertKey;
-            string sql = string.Empty;
-            List<ParameterModel> parameterModels = new ();
+            connection.Open();
 
-            using MySqlConnection connection = SharedUtil.GetConnection();
-            try
-            {
+            var mySqlTransaction = connection.BeginTransaction();
 
-                connection.Open();
-
-                MySqlTransaction mySqlTransaction = connection.BeginTransaction();
-
-                sql += @"
+            sql += @"
                 INSERT INTO follow_up  (
                     followUpId,      tenantId,
                     followUpName,   isDelete,
@@ -43,310 +39,309 @@ namespace RebelCmsTemplate.Repository.Setting
                     @followUpName,   0,
                     @executeBy
                 );";
-                MySqlCommand mySqlCommand = new(sql, connection);
+            MySqlCommand mySqlCommand = new(sql, connection);
 
-                parameterModels = new List<ParameterModel>
+            parameterModels = new List<ParameterModel>
+            {
+                new()
                 {
-                    new ()
-                    {
-                        Key = "@tenantId",
-                        Value = _sharedUtil.GetTenantId()
-                    },
-                    new ()
-                    {
-                        Key = "@followUpName",
-                        Value = followUpModel.FollowUpName
-                    },
-                    new ()
-                    {
-                        Key = "@executeBy",
-                        Value = _sharedUtil.GetUserName()
-                    }
-                };
-                foreach (ParameterModel parameter in parameterModels)
+                    Key = "@tenantId",
+                    Value = _sharedUtil.GetTenantId()
+                },
+                new()
                 {
-                    mySqlCommand.Parameters.AddWithValue(parameter.Key, parameter.Value);
+                    Key = "@followUpName",
+                    Value = followUpModel.FollowUpName
+                },
+                new()
+                {
+                    Key = "@executeBy",
+                    Value = _sharedUtil.GetUserName()
                 }
-                mySqlCommand.ExecuteNonQuery();
-
-                mySqlTransaction.Commit();
-
-                lastInsertKey = (int)mySqlCommand.LastInsertedId;
-
-                mySqlCommand.Dispose();
-
-            }
-            catch (MySqlException ex)
+            };
+            foreach (var parameter in parameterModels)
             {
-                System.Diagnostics.Debug.WriteLine(ex.Message);
-                _sharedUtil.SetQueryException(SharedUtil.GetSqlSessionValue(sql, parameterModels), ex);
-                throw new Exception(ex.Message);
+                mySqlCommand.Parameters.AddWithValue(parameter.Key, parameter.Value);
             }
 
-            return lastInsertKey;
+            mySqlCommand.ExecuteNonQuery();
 
+            mySqlTransaction.Commit();
 
+            lastInsertKey = (int) mySqlCommand.LastInsertedId;
+
+            mySqlCommand.Dispose();
         }
-        public List<FollowUpModel> Read()
+        catch (MySqlException ex)
         {
-            List<FollowUpModel> followUpModels = new();
-            string sql = string.Empty;
-            List<ParameterModel> parameterModels = new ();
+            System.Diagnostics.Debug.WriteLine(ex.Message);
+            _sharedUtil.SetQueryException(SharedUtil.GetSqlSessionValue(sql, parameterModels), ex);
+            throw new Exception(ex.Message);
+        }
 
-            using MySqlConnection connection = SharedUtil.GetConnection();
-            try
-            {
+        return lastInsertKey;
+    }
 
-                connection.Open();
-                sql += @"
+    public List<FollowUpModel> Read()
+    {
+        List<FollowUpModel> followUpModels = new();
+        var sql = string.Empty;
+        List<ParameterModel> parameterModels = new();
+
+        using var connection = SharedUtil.GetConnection();
+        try
+        {
+            connection.Open();
+            sql += @"
                 SELECT      *
                 FROM        follow_up
                 WHERE       isDelete != 1
                 AND         tenantId = @tenantId
                 ORDER BY    followUpId DESC ";
-                MySqlCommand mySqlCommand = new(sql, connection);
-                parameterModels = new List<ParameterModel>
-                {
-                    new ()
-                    {
-                        Key = "@tenantId",
-                        Value = _sharedUtil.GetTenantId()
-                    }
-                };
-                foreach (ParameterModel parameter in parameterModels)
-                {
-                    mySqlCommand.Parameters.AddWithValue(parameter.Key, parameter.Value);
-                }
-                _sharedUtil.SetSqlSession(sql, parameterModels);
-
-                using (var reader = mySqlCommand.ExecuteReader())
-                {
-
-                    while (reader.Read())
-                    {
-                        followUpModels.Add(new FollowUpModel
-                        {
-
-                            FollowUpName = reader["followUpName"].ToString(),
-                            FollowUpKey = Convert.ToInt32(reader["followUpId"])
-                        });
-                    }
-                }
-
-                mySqlCommand.Dispose();
-
-            }
-            catch (MySqlException ex)
+            MySqlCommand mySqlCommand = new(sql, connection);
+            parameterModels = new List<ParameterModel>
             {
-                System.Diagnostics.Debug.WriteLine(ex.Message);
-                _sharedUtil.SetQueryException(SharedUtil.GetSqlSessionValue(sql, parameterModels), ex);
-                throw new Exception(ex.Message);
+                new()
+                {
+                    Key = "@tenantId",
+                    Value = _sharedUtil.GetTenantId()
+                }
+            };
+            foreach (var parameter in parameterModels)
+            {
+                mySqlCommand.Parameters.AddWithValue(parameter.Key, parameter.Value);
             }
 
+            _sharedUtil.SetSqlSession(sql, parameterModels);
 
-            return followUpModels;
+            using (var reader = mySqlCommand.ExecuteReader())
+            {
+                while (reader.Read())
+                {
+                    followUpModels.Add(new FollowUpModel
+                    {
+                        FollowUpName = reader["followUpName"].ToString(),
+                        FollowUpKey = Convert.ToInt32(reader["followUpId"])
+                    });
+                }
+            }
+
+            mySqlCommand.Dispose();
         }
-        public List<FollowUpModel> Search(string search)
+        catch (MySqlException ex)
         {
-            List<FollowUpModel> followUpModels = new();
-            string sql = string.Empty;
-            List<ParameterModel> parameterModels = new ();
+            System.Diagnostics.Debug.WriteLine(ex.Message);
+            _sharedUtil.SetQueryException(SharedUtil.GetSqlSessionValue(sql, parameterModels), ex);
+            throw new Exception(ex.Message);
+        }
 
-            using MySqlConnection connection = SharedUtil.GetConnection();
-            try
-            {
 
-                connection.Open();
-                sql += @"
+        return followUpModels;
+    }
+
+    public List<FollowUpModel> Search(string search)
+    {
+        List<FollowUpModel> followUpModels = new();
+        var sql = string.Empty;
+        List<ParameterModel> parameterModels = new();
+
+        using var connection = SharedUtil.GetConnection();
+        try
+        {
+            connection.Open();
+            sql += @"
                 SELECT  *
                 FROM    follow_up
                 WHERE   tenantId = @tenantId
                 AND     isDelete != 1
                 AND     followUpName like concat('%',@search,'%') ";
-                MySqlCommand mySqlCommand = new(sql, connection);
-                parameterModels = new List<ParameterModel>
+            MySqlCommand mySqlCommand = new(sql, connection);
+            parameterModels = new List<ParameterModel>
+            {
+                new()
                 {
-                    new ()
+                    Key = "@tenantId",
+                    Value = _sharedUtil.GetTenantId()
+                },
+                new()
+                {
+                    Key = "@search",
+                    Value = search
+                }
+            };
+            foreach (var parameter in parameterModels)
+            {
+                mySqlCommand.Parameters.AddWithValue(parameter.Key, parameter.Value);
+            }
+
+            _sharedUtil.SetSqlSession(sql, parameterModels);
+
+            using (var reader = mySqlCommand.ExecuteReader())
+            {
+                while (reader.Read())
+                {
+                    followUpModels.Add(new FollowUpModel
                     {
-                        Key = "@tenantId",
-                        Value = _sharedUtil.GetTenantId()
-                    },
-                    new ()
-                    {
-                        Key = "@search",
-                        Value = search
-                    }
-                };
-                foreach (ParameterModel parameter in parameterModels)
+                        FollowUpName = reader["followUpName"].ToString(),
+                        FollowUpKey = Convert.ToInt32(reader["followUpId"])
+                    });
+                }
+            }
+
+            mySqlCommand.Dispose();
+        }
+        catch (MySqlException ex)
+        {
+            System.Diagnostics.Debug.WriteLine(ex.Message);
+            _sharedUtil.SetQueryException(SharedUtil.GetSqlSessionValue(sql, parameterModels), ex);
+            throw new Exception(ex.Message);
+        }
+
+
+        return followUpModels;
+    }
+
+    public byte[] GetExcel()
+    {
+        using var workbook = new XLWorkbook();
+        var worksheet = workbook.Worksheets.Add("Setting > Follow Up ");
+        worksheet.Cell(1, 1).Value = "No";
+        worksheet.Cell(1, 2).Value = "Name";
+        var sql = _sharedUtil.GetSqlSession();
+        var parameterModels = _sharedUtil.GetListSqlParameter();
+        using var connection = SharedUtil.GetConnection();
+
+        try
+        {
+            connection.Open();
+            MySqlCommand mySqlCommand = new(sql, connection);
+            if (parameterModels != null)
+            {
+                foreach (var parameter in parameterModels)
                 {
                     mySqlCommand.Parameters.AddWithValue(parameter.Key, parameter.Value);
                 }
-                _sharedUtil.SetSqlSession(sql, parameterModels);
-
-                using (var reader = mySqlCommand.ExecuteReader())
-                {
-                    while (reader.Read())
-                    {
-                        followUpModels.Add(new FollowUpModel
-                        {
-                            FollowUpName = reader["followUpName"].ToString(),
-                            FollowUpKey = Convert.ToInt32(reader["followUpId"])
-                        });
-                    }
-                }
-                mySqlCommand.Dispose();
             }
-            catch (MySqlException ex)
+
+            using (var reader = mySqlCommand.ExecuteReader())
             {
-                System.Diagnostics.Debug.WriteLine(ex.Message);
-                _sharedUtil.SetQueryException(SharedUtil.GetSqlSessionValue(sql, parameterModels), ex);
-                throw new Exception(ex.Message);
+                var counter = 1;
+                while (reader.Read())
+                {
+                    var currentRow = counter++;
+                    worksheet.Cell(currentRow, 1).Value = counter - 1;
+                    worksheet.Cell(currentRow, 2).Value = reader["followUpName"].ToString();
+                }
             }
 
-
-            return followUpModels;
+            mySqlCommand.Dispose();
         }
-        public byte[] GetExcel()
+        catch (MySqlException ex)
         {
-
-            using var workbook = new XLWorkbook();
-            var worksheet = workbook.Worksheets.Add("Setting > Follow Up ");
-            worksheet.Cell(1, 1).Value = "No";
-            worksheet.Cell(1, 2).Value = "Name";
-            var sql = _sharedUtil.GetSqlSession();
-            var parameterModels = _sharedUtil.GetListSqlParameter();
-            using MySqlConnection connection = SharedUtil.GetConnection();
-
-            try
-            {
-                connection.Open();
-                MySqlCommand mySqlCommand = new(sql, connection);
-                if (parameterModels != null)
-                {
-                    foreach (ParameterModel parameter in parameterModels)
-                    {
-                        mySqlCommand.Parameters.AddWithValue(parameter.Key, parameter.Value);
-                    }
-                }
-                using (var reader = mySqlCommand.ExecuteReader())
-                {
-                    var counter = 1;
-                    while (reader.Read())
-                    {
-                        var currentRow = counter++;
-                        worksheet.Cell(currentRow, 1).Value =  counter -1;
-                        worksheet.Cell(currentRow, 2).Value = reader["followUpName"].ToString();
-                    }
-                }
-
-                mySqlCommand.Dispose();
-            }
-            catch (MySqlException ex)
-            {
-                System.Diagnostics.Debug.WriteLine(ex.Message);
-                throw new Exception(ex.Message);
-            }
-            using var stream = new MemoryStream();
-            workbook.SaveAs(stream);
-            return stream.ToArray();
+            System.Diagnostics.Debug.WriteLine(ex.Message);
+            throw new Exception(ex.Message);
         }
-        public void Update(FollowUpModel followUpModel)
+
+        using var stream = new MemoryStream();
+        workbook.SaveAs(stream);
+        return stream.ToArray();
+    }
+
+    public void Update(FollowUpModel followUpModel)
+    {
+        var sql = string.Empty;
+        List<ParameterModel> parameterModels = new();
+
+        using var connection = SharedUtil.GetConnection();
+        try
         {
-            string sql = string.Empty;
-            List<ParameterModel> parameterModels = new ();
+            connection.Open();
+            var mySqlTransaction = connection.BeginTransaction();
 
-            using MySqlConnection connection = SharedUtil.GetConnection();
-            try
-            {
-
-                connection.Open();
-                MySqlTransaction mySqlTransaction = connection.BeginTransaction();
-
-                sql += @"
+            sql += @"
                 UPDATE  follow_up
                 SET     followUpName =   @followUpName,
                         executeBy           =   @executeBy
                 WHERE   followUpId   =   @followUpId ";
-                MySqlCommand mySqlCommand = new(sql, connection);
+            MySqlCommand mySqlCommand = new(sql, connection);
 
-                parameterModels = new List<ParameterModel>
+            parameterModels = new List<ParameterModel>
+            {
+                new()
                 {
-                    new ()
-                    {
-                        Key = "@followUpName",
-                        Value = followUpModel.FollowUpName
-                    },
-                    new ()
-                    {
-                        Key = "@executeBy",
-                        Value = _sharedUtil.GetUserName()
-                    },
-                    new ()
-                    {
-                        Key = "@followUpId",
-                        Value = followUpModel.FollowUpKey
-                    }
-                };
-                foreach (ParameterModel parameter in parameterModels)
+                    Key = "@followUpName",
+                    Value = followUpModel.FollowUpName
+                },
+                new()
                 {
-                    mySqlCommand.Parameters.AddWithValue(parameter.Key, parameter.Value);
+                    Key = "@executeBy",
+                    Value = _sharedUtil.GetUserName()
+                },
+                new()
+                {
+                    Key = "@followUpId",
+                    Value = followUpModel.FollowUpKey
                 }
-                mySqlCommand.ExecuteNonQuery();
-                mySqlTransaction.Commit();
-                mySqlCommand.Dispose();
-
-            }
-            catch (MySqlException ex)
+            };
+            foreach (var parameter in parameterModels)
             {
-                System.Diagnostics.Debug.WriteLine(ex.Message);
-                _sharedUtil.SetQueryException(SharedUtil.GetSqlSessionValue(sql, parameterModels), ex);
-                throw new Exception(ex.Message);
+                mySqlCommand.Parameters.AddWithValue(parameter.Key, parameter.Value);
             }
+
+            mySqlCommand.ExecuteNonQuery();
+            mySqlTransaction.Commit();
+            mySqlCommand.Dispose();
         }
-        public void Delete(FollowUpModel followUpModel)
+        catch (MySqlException ex)
         {
-            string sql = string.Empty;
-            List<ParameterModel> parameterModels = new ();
+            System.Diagnostics.Debug.WriteLine(ex.Message);
+            _sharedUtil.SetQueryException(SharedUtil.GetSqlSessionValue(sql, parameterModels), ex);
+            throw new Exception(ex.Message);
+        }
+    }
 
-            using MySqlConnection connection = SharedUtil.GetConnection();
-            try
-            {
+    public void Delete(FollowUpModel followUpModel)
+    {
+        var sql = string.Empty;
+        List<ParameterModel> parameterModels = new();
 
-                connection.Open();
-                MySqlTransaction mySqlTransaction = connection.BeginTransaction();
+        using var connection = SharedUtil.GetConnection();
+        try
+        {
+            connection.Open();
+            var mySqlTransaction = connection.BeginTransaction();
 
-                sql += @"
+            sql += @"
                 UPDATE  follow_up
                 SET     isDelete = 1
                 WHERE   followUpId  = @followUpId;";
-                MySqlCommand mySqlCommand = new(sql, connection);
+            MySqlCommand mySqlCommand = new(sql, connection);
 
-                mySqlCommand.Parameters.AddWithValue("@followUpId", followUpModel.FollowUpKey);
-                parameterModels = new List<ParameterModel>
-                {
-                    new ()
-                    {
-                        Key = "@followUpId",
-                        Value = followUpModel.FollowUpKey
-                    }
-                };
-                foreach (ParameterModel parameter in parameterModels)
-                {
-                    mySqlCommand.Parameters.AddWithValue(parameter.Key, parameter.Value);
-                }
-                mySqlCommand.ExecuteNonQuery();
-
-                mySqlTransaction.Commit();
-
-                mySqlCommand.Dispose();
-
-            }
-            catch (MySqlException ex)
+            mySqlCommand.Parameters.AddWithValue("@followUpId", followUpModel.FollowUpKey);
+            parameterModels = new List<ParameterModel>
             {
-                System.Diagnostics.Debug.WriteLine(ex.Message);
-                _sharedUtil.SetQueryException(SharedUtil.GetSqlSessionValue(sql, parameterModels), ex);
-                throw new Exception(ex.Message);
+                new()
+                {
+                    Key = "@followUpId",
+                    Value = followUpModel.FollowUpKey
+                }
+            };
+            foreach (var parameter in parameterModels)
+            {
+                mySqlCommand.Parameters.AddWithValue(parameter.Key, parameter.Value);
             }
+
+            mySqlCommand.ExecuteNonQuery();
+
+            mySqlTransaction.Commit();
+
+            mySqlCommand.Dispose();
+        }
+        catch (MySqlException ex)
+        {
+            System.Diagnostics.Debug.WriteLine(ex.Message);
+            _sharedUtil.SetQueryException(SharedUtil.GetSqlSessionValue(sql, parameterModels), ex);
+            throw new Exception(ex.Message);
         }
     }
 }

@@ -1,316 +1,312 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using ClosedXML.Excel;
-using Microsoft.AspNetCore.Http;
+﻿using ClosedXML.Excel;
 using MySql.Data.MySqlClient;
 using RebelCmsTemplate.Models.Administrator;
 using RebelCmsTemplate.Models.Shared;
 using RebelCmsTemplate.Util;
-namespace RebelCmsTemplate.Repository.Administrator
+
+namespace RebelCmsTemplate.Repository.Administrator;
+
+public class TenantRepository
 {
-    public class TenantRepository
+    private readonly SharedUtil _sharedUtil;
+
+    public TenantRepository(IHttpContextAccessor httpContextAccessor)
     {
-        private readonly SharedUtil _sharedUtil;
-        public TenantRepository(IHttpContextAccessor httpContextAccessor)
+        _sharedUtil = new SharedUtil(httpContextAccessor);
+    }
+
+    public int Create(TenantModel tenantModel)
+    {
+        // okay next we create skeleton for the code
+        int lastInsertKey;
+        var sql = string.Empty;
+        List<ParameterModel> parameterModels = new();
+
+        using var connection = SharedUtil.GetConnection();
+        try
         {
-            _sharedUtil = new SharedUtil(httpContextAccessor);
+            connection.Open();
 
-        }
-        public int Create(TenantModel tenantModel)
-        {
-            // okay next we create skeleton for the code
-            var lastInsertKey = 0;
-            string sql = string.Empty;
-            List<ParameterModel> parameterModels = new ();
+            var mySqlTransaction = connection.BeginTransaction();
 
-            using MySqlConnection connection = SharedUtil.GetConnection();
-            try
-            {
-
-                connection.Open();
-
-                MySqlTransaction mySqlTransaction = connection.BeginTransaction();
-
-                sql += @"
+            sql += @"
                 INSERT INTO tenant VALUES (null,@tenantName,0,@executeBy);";
-                MySqlCommand mySqlCommand = new(sql, connection);
+            MySqlCommand mySqlCommand = new(sql, connection);
 
-                parameterModels = new List<ParameterModel>
+            parameterModels = new List<ParameterModel>
+            {
+                new()
                 {
-                    new ()
-                    {
-                        Key = "@tenantName",
-                        Value = tenantModel.TenantName
-                    },
-                    new ()
-                    {
-                        Key = "@executeBy",
-                        Value = _sharedUtil.GetUserName()
-                    }
-                };
-                foreach (ParameterModel parameter in parameterModels)
+                    Key = "@tenantName",
+                    Value = tenantModel.TenantName
+                },
+                new()
                 {
-                    mySqlCommand.Parameters.AddWithValue(parameter.Key, parameter.Value);
+                    Key = "@executeBy",
+                    Value = _sharedUtil.GetUserName()
                 }
-                mySqlCommand.ExecuteNonQuery();
-
-                mySqlTransaction.Commit();
-
-                lastInsertKey = (int)mySqlCommand.LastInsertedId;
-
-                mySqlCommand.Dispose();
-
-            }
-            catch (MySqlException ex)
+            };
+            foreach (var parameter in parameterModels)
             {
-                System.Diagnostics.Debug.WriteLine(ex.Message);
-                _sharedUtil.SetQueryException(SharedUtil.GetSqlSessionValue(sql, parameterModels), ex);
-                throw new Exception(ex.Message);
+                mySqlCommand.Parameters.AddWithValue(parameter.Key, parameter.Value);
             }
 
-            return lastInsertKey;
+            mySqlCommand.ExecuteNonQuery();
 
+            mySqlTransaction.Commit();
 
+            lastInsertKey = (int) mySqlCommand.LastInsertedId;
+
+            mySqlCommand.Dispose();
         }
-        public List<TenantModel> Read()
+        catch (MySqlException ex)
         {
-            List<TenantModel> tenantModels = new();
-            string sql = string.Empty;
-            List<ParameterModel> parameterModels = new ();
+            System.Diagnostics.Debug.WriteLine(ex.Message);
+            _sharedUtil.SetQueryException(SharedUtil.GetSqlSessionValue(sql, parameterModels), ex);
+            throw new Exception(ex.Message);
+        }
 
-            using MySqlConnection connection = SharedUtil.GetConnection();
-            try
-            {
+        return lastInsertKey;
+    }
 
-                connection.Open();
-                sql = @"
+    public List<TenantModel> Read()
+    {
+        List<TenantModel> tenantModels = new();
+        var sql = string.Empty;
+        List<ParameterModel> parameterModels = new();
+
+        using var connection = SharedUtil.GetConnection();
+        try
+        {
+            connection.Open();
+            sql = @"
                 SELECT      *
                 FROM        tenant
                 WHERE       isDelete !=1
                 ORDER BY    tenantId DESC ";
-                MySqlCommand mySqlCommand = new(sql, connection);
-                using (var reader = mySqlCommand.ExecuteReader())
+            MySqlCommand mySqlCommand = new(sql, connection);
+            using (var reader = mySqlCommand.ExecuteReader())
+            {
+                while (reader.Read())
                 {
-                    while (reader.Read())
+                    tenantModels.Add(new TenantModel
                     {
-                        tenantModels.Add(new TenantModel
-                        {
-                            TenantName = reader["tenantName"].ToString(),
-                            TenantKey = Convert.ToInt32(reader["tenantId"])
-                        });
-                    }
+                        TenantName = reader["tenantName"].ToString(),
+                        TenantKey = Convert.ToInt32(reader["tenantId"])
+                    });
                 }
-
-                mySqlCommand.Dispose();
-
-            }
-            catch (MySqlException ex)
-            {
-                System.Diagnostics.Debug.WriteLine(ex.Message);
-                _sharedUtil.SetQueryException(SharedUtil.GetSqlSessionValue(sql, parameterModels), ex);
-                throw new Exception(ex.Message);
             }
 
-
-            return tenantModels;
+            mySqlCommand.Dispose();
         }
-        public List<TenantModel> Search(string search)
+        catch (MySqlException ex)
         {
-            List<TenantModel> tenantModels = new();
-            string sql = string.Empty;
-            List<ParameterModel> parameterModels = new ();
+            System.Diagnostics.Debug.WriteLine(ex.Message);
+            _sharedUtil.SetQueryException(SharedUtil.GetSqlSessionValue(sql, parameterModels), ex);
+            throw new Exception(ex.Message);
+        }
 
-            using MySqlConnection connection = SharedUtil.GetConnection();
-            try
-            {
 
-                connection.Open();
-                sql += @"
+        return tenantModels;
+    }
+
+    public List<TenantModel> Search(string search)
+    {
+        List<TenantModel> tenantModels = new();
+        var sql = string.Empty;
+        List<ParameterModel> parameterModels = new();
+
+        using var connection = SharedUtil.GetConnection();
+        try
+        {
+            connection.Open();
+            sql += @"
                 SELECT  *
                 FROM    tenant
                 WHERE   isDelete != 1
                 AND     tenantName like concat('%',@search,'%'); ";
-                MySqlCommand mySqlCommand = new(sql, connection);
-                parameterModels = new List<ParameterModel>
+            MySqlCommand mySqlCommand = new(sql, connection);
+            parameterModels = new List<ParameterModel>
+            {
+                new()
                 {
-                    
-                    new ()
+                    Key = "@search",
+                    Value = search
+                }
+            };
+            foreach (var parameter in parameterModels)
+            {
+                mySqlCommand.Parameters.AddWithValue(parameter.Key, parameter.Value);
+            }
+
+            _sharedUtil.SetSqlSession(sql, parameterModels);
+
+            using (var reader = mySqlCommand.ExecuteReader())
+            {
+                while (reader.Read())
+                {
+                    tenantModels.Add(new TenantModel
                     {
-                        Key = "@search",
-                        Value = search
-                    }
-                };
-                foreach (ParameterModel parameter in parameterModels)
+                        TenantName = reader["tenantName"].ToString(),
+                        TenantKey = Convert.ToInt32(reader["tenantId"])
+                    });
+                }
+            }
+
+            mySqlCommand.Dispose();
+        }
+        catch (MySqlException ex)
+        {
+            System.Diagnostics.Debug.WriteLine(ex.Message);
+            _sharedUtil.SetQueryException(SharedUtil.GetSqlSessionValue(sql, parameterModels), ex);
+            throw new Exception(ex.Message);
+        }
+
+
+        return tenantModels;
+    }
+
+    public byte[] GetExcel()
+    {
+        using var workbook = new XLWorkbook();
+        var worksheet = workbook.Worksheets.Add("Administrator > Tenant ");
+        worksheet.Cell(1, 1).Value = "No";
+        worksheet.Cell(1, 2).Value = "Tenant";
+        var sql = _sharedUtil.GetSqlSession();
+        var parameterModels = _sharedUtil.GetListSqlParameter();
+        using var connection = SharedUtil.GetConnection();
+
+        try
+        {
+            connection.Open();
+            MySqlCommand mySqlCommand = new(sql, connection);
+            if (parameterModels != null)
+            {
+                foreach (var parameter in parameterModels)
                 {
                     mySqlCommand.Parameters.AddWithValue(parameter.Key, parameter.Value);
                 }
-                _sharedUtil.SetSqlSession(sql, parameterModels);
-
-                using (var reader = mySqlCommand.ExecuteReader())
-                {
-                    while (reader.Read())
-                    {
-                        tenantModels.Add(new TenantModel
-                        {
-                            TenantName = reader["tenantName"].ToString(),
-                            TenantKey = Convert.ToInt32(reader["tenantId"])
-                        });
-                    }
-                }
-                mySqlCommand.Dispose();
             }
-            catch (MySqlException ex)
+
+            using (var reader = mySqlCommand.ExecuteReader())
             {
-                System.Diagnostics.Debug.WriteLine(ex.Message);
-                _sharedUtil.SetQueryException(SharedUtil.GetSqlSessionValue(sql, parameterModels), ex);
-                throw new Exception(ex.Message);
+                var counter = 1;
+                while (reader.Read())
+                {
+                    var currentRow = counter++;
+                    worksheet.Cell(currentRow, 1).Value = counter - 1;
+                    worksheet.Cell(currentRow, 2).Value = reader["tenantName"].ToString();
+                }
             }
 
-
-            return tenantModels;
+            mySqlCommand.Dispose();
         }
-        public byte[] GetExcel()
+        catch (MySqlException ex)
         {
-
-            using var workbook = new XLWorkbook();
-            var worksheet = workbook.Worksheets.Add("Administrator > Tenant ");
-            worksheet.Cell(1, 1).Value = "No";
-            worksheet.Cell(1, 2).Value = "Tenant";
-            var sql = _sharedUtil.GetSqlSession();
-            var parameterModels = _sharedUtil.GetListSqlParameter();
-            using MySqlConnection connection = SharedUtil.GetConnection();
-
-            try
-            {
-                connection.Open();
-                MySqlCommand mySqlCommand = new(sql, connection);
-                if (parameterModels != null)
-                {
-                    foreach (ParameterModel parameter in parameterModels)
-                    {
-                        mySqlCommand.Parameters.AddWithValue(parameter.Key, parameter.Value);
-                    }
-                }
-                using (var reader = mySqlCommand.ExecuteReader())
-                {
-                    var counter = 1;
-                    while (reader.Read())
-                    {
-                        var currentRow = counter++;
-                        worksheet.Cell(currentRow, 1).Value = counter-1;
-                        worksheet.Cell(currentRow, 2).Value = reader["tenantName"].ToString();
-                    }
-                }
-
-                mySqlCommand.Dispose();
-            }
-            catch (MySqlException ex)
-            {
-                System.Diagnostics.Debug.WriteLine(ex.Message);
-                throw new Exception(ex.Message);
-            }
-            using var stream = new MemoryStream();
-            workbook.SaveAs(stream);
-            return stream.ToArray();
+            System.Diagnostics.Debug.WriteLine(ex.Message);
+            throw new Exception(ex.Message);
         }
-        public void Update(TenantModel tenantModel)
+
+        using var stream = new MemoryStream();
+        workbook.SaveAs(stream);
+        return stream.ToArray();
+    }
+
+    public void Update(TenantModel tenantModel)
+    {
+        var sql = string.Empty;
+        List<ParameterModel> parameterModels = new();
+
+        using var connection = SharedUtil.GetConnection();
+        try
         {
-            string sql = string.Empty;
-            List<ParameterModel> parameterModels = new ();
+            connection.Open();
+            var mySqlTransaction = connection.BeginTransaction();
 
-            using MySqlConnection connection = SharedUtil.GetConnection();
-            try
-            {
-
-                connection.Open();
-                MySqlTransaction mySqlTransaction = connection.BeginTransaction();
-
-                sql = @"
+            sql = @"
                 UPDATE  tenant
                 SET     tenantName  =   @tenantName
                 WHERE   tenantId    =   @tenantId ";
-                MySqlCommand mySqlCommand = new(sql, connection);
-                mySqlCommand.Parameters.AddWithValue("@tenantName", tenantModel.TenantName);
-                mySqlCommand.Parameters.AddWithValue("@tenantId", tenantModel.TenantKey);
-                parameterModels = new List<ParameterModel>
+            MySqlCommand mySqlCommand = new(sql, connection);
+            mySqlCommand.Parameters.AddWithValue("@tenantName", tenantModel.TenantName);
+            mySqlCommand.Parameters.AddWithValue("@tenantId", tenantModel.TenantKey);
+            parameterModels = new List<ParameterModel>
+            {
+                new()
                 {
-                    new ()
-                    {
-                        Key = "@tenantId",
-                        Value = _sharedUtil.GetTenantId()
-                    },
-                    new ()
-                    {
-                        Key = "@tenantName",
-                        Value = tenantModel.TenantName
-                    },
-                    new ()
-                    {
-                        Key = "@executeBy",
-                        Value = _sharedUtil.GetUserName()
-                    }
-                };
-                foreach (ParameterModel parameter in parameterModels)
+                    Key = "@tenantId",
+                    Value = _sharedUtil.GetTenantId()
+                },
+                new()
                 {
-                    mySqlCommand.Parameters.AddWithValue(parameter.Key, parameter.Value);
+                    Key = "@tenantName",
+                    Value = tenantModel.TenantName
+                },
+                new()
+                {
+                    Key = "@executeBy",
+                    Value = _sharedUtil.GetUserName()
                 }
-                mySqlCommand.ExecuteNonQuery();
-                mySqlTransaction.Commit();
-                mySqlCommand.Dispose();
-
-            }
-            catch (MySqlException ex)
+            };
+            foreach (var parameter in parameterModels)
             {
-                System.Diagnostics.Debug.WriteLine(ex.Message);
-                _sharedUtil.SetQueryException(SharedUtil.GetSqlSessionValue(sql, parameterModels), ex);
-                throw new Exception(ex.Message);
+                mySqlCommand.Parameters.AddWithValue(parameter.Key, parameter.Value);
             }
+
+            mySqlCommand.ExecuteNonQuery();
+            mySqlTransaction.Commit();
+            mySqlCommand.Dispose();
         }
-        public void Delete(TenantModel tenantModel)
+        catch (MySqlException ex)
         {
-            string sql = string.Empty;
-            List<ParameterModel> parameterModels = new ();
+            System.Diagnostics.Debug.WriteLine(ex.Message);
+            _sharedUtil.SetQueryException(SharedUtil.GetSqlSessionValue(sql, parameterModels), ex);
+            throw new Exception(ex.Message);
+        }
+    }
 
-            using MySqlConnection connection = SharedUtil.GetConnection();
-            try
-            {
+    public void Delete(TenantModel tenantModel)
+    {
+        var sql = string.Empty;
+        List<ParameterModel> parameterModels = new();
 
-                connection.Open();
-                MySqlTransaction mySqlTransaction = connection.BeginTransaction();
+        using var connection = SharedUtil.GetConnection();
+        try
+        {
+            connection.Open();
+            var mySqlTransaction = connection.BeginTransaction();
 
-                sql = @"
+            sql = @"
                 UPDATE  tenant
                 SET     isDelete    =   1
                 WHERE   tenantId    =   @tenantId;";
-                MySqlCommand mySqlCommand = new(sql, connection);
+            MySqlCommand mySqlCommand = new(sql, connection);
 
-                mySqlCommand.Parameters.AddWithValue("@tenantId", tenantModel.TenantKey);
-                parameterModels = new List<ParameterModel>
-                {
-                    new ()
-                    {
-                        Key = "@tenantId",
-                        Value = _sharedUtil.GetTenantId()
-                    }
-                };
-                foreach (ParameterModel parameter in parameterModels)
-                {
-                    mySqlCommand.Parameters.AddWithValue(parameter.Key, parameter.Value);
-                }
-                mySqlCommand.ExecuteNonQuery();
-
-                mySqlTransaction.Commit();
-
-                mySqlCommand.Dispose();
-
-            }
-            catch (MySqlException ex)
+            mySqlCommand.Parameters.AddWithValue("@tenantId", tenantModel.TenantKey);
+            parameterModels = new List<ParameterModel>
             {
-                System.Diagnostics.Debug.WriteLine(ex.Message);
-                _sharedUtil.SetQueryException(SharedUtil.GetSqlSessionValue(sql, parameterModels), ex);
-                throw new Exception(ex.Message);
+                new()
+                {
+                    Key = "@tenantId",
+                    Value = _sharedUtil.GetTenantId()
+                }
+            };
+            foreach (var parameter in parameterModels)
+            {
+                mySqlCommand.Parameters.AddWithValue(parameter.Key, parameter.Value);
             }
+
+            mySqlCommand.ExecuteNonQuery();
+
+            mySqlTransaction.Commit();
+
+            mySqlCommand.Dispose();
+        }
+        catch (MySqlException ex)
+        {
+            System.Diagnostics.Debug.WriteLine(ex.Message);
+            _sharedUtil.SetQueryException(SharedUtil.GetSqlSessionValue(sql, parameterModels), ex);
+            throw new Exception(ex.Message);
         }
     }
 }

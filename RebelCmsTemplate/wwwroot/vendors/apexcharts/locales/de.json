@@ -38,7 +38,15 @@
       "Freitag",
       "Samstag"
     ],
-    "shortDays": ["So", "Mo", "Di", "Mi", "Do", "Fr", "Sa"],
+    "shortDays": [
+      "So",
+      "Mo",
+      "Di",
+      "Mi",
+      "Do",
+      "Fr",
+      "Sa"
+    ],
     "toolbar": {
       "exportToSVG": "SVG speichern",
       "exportToPNG": "PNG speichern",

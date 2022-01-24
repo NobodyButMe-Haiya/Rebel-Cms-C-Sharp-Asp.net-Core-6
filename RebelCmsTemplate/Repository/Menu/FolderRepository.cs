@@ -1,38 +1,35 @@
-﻿using System;
-using System.Collections.Generic;
-using Microsoft.AspNetCore.Http;
-using MySql.Data.MySqlClient;
+﻿using MySql.Data.MySqlClient;
 using RebelCmsTemplate.Models.Menu;
 using RebelCmsTemplate.Models.Shared;
 using RebelCmsTemplate.Util;
 
-namespace RebelCmsTemplate.Repository.Menu
+namespace RebelCmsTemplate.Repository.Menu;
+
+public class FolderRepository
 {
-    public class FolderRepository
+    private readonly SharedUtil _sharedUtil;
+
+    public FolderRepository(IHttpContextAccessor httpContextAccessor)
     {
-        private readonly SharedUtil _sharedUtil;
+        _sharedUtil = new SharedUtil(httpContextAccessor);
+    }
 
-        public FolderRepository(IHttpContextAccessor httpContextAccessor)
+    public int Create(FolderModel folderModel)
+    {
+        var sql = string.Empty;
+        List<ParameterModel> parameterModels = new();
+
+        using var connection = SharedUtil.GetConnection();
+        // okay next we create skeleton for the code
+        int lastInsertKey;
+        try
         {
-            _sharedUtil = new SharedUtil(httpContextAccessor);
-        }
+            connection.Open();
 
-        public int Create(FolderModel folderModel)
-        {
-            string sql = string.Empty;
-            List<ParameterModel> parameterModels = new ();
+            var
+                mySqlTransaction = connection.BeginTransaction();
 
-            using MySqlConnection connection = SharedUtil.GetConnection();
-            // okay next we create skeleton for the code
-            int lastInsertKey;
-            try
-            {
-                connection.Open();
-
-                MySqlTransaction
-                    mySqlTransaction = connection.BeginTransaction();
-
-                sql += @"
+            sql += @"
                 INSERT INTO folder
                 ( 
                     folderId, folderName, 
@@ -46,200 +43,203 @@ namespace RebelCmsTemplate.Repository.Menu
                         @tenantId
                 )";
 
-                MySqlCommand mySqlCommand = new(sql, connection);
+            MySqlCommand mySqlCommand = new(sql, connection);
 
-                parameterModels = new List<ParameterModel>
-                {
-                    new ()
-                    {
-                        Key = "@tenantId",
-                        Value = _sharedUtil.GetTenantId()
-                    },
-                    new ()
-                    {
-                        Key = "@folderName",
-                        Value = folderModel.FolderName
-                    },
-                    new ()
-                    {
-                        Key = "@folderFilename",
-                        Value = folderModel.FolderFilename
-                    },
-                    new ()
-                    {
-                        Key = "@folderIcon",
-                        Value = folderModel.FolderIcon
-                    },
-                    new ()
-                    {
-                        Key = "@folderSeq",
-                        Value = folderModel.FolderSeq
-                    },
-                    new ()
-                    {
-                        Key = "@executeBy",
-                        Value = _sharedUtil.GetUserName()
-                    }
-                };
-                foreach (ParameterModel parameter in parameterModels)
-                {
-                    mySqlCommand.Parameters.AddWithValue(parameter.Key, parameter.Value);
-                }
-                mySqlCommand.ExecuteNonQuery();
-
-                mySqlTransaction.Commit();
-
-                lastInsertKey = (int)mySqlCommand.LastInsertedId;
-
-                mySqlCommand.Dispose();
-            }
-            catch (MySqlException ex)
+            parameterModels = new List<ParameterModel>
             {
-                System.Diagnostics.Debug.WriteLine(ex.Message);
-                _sharedUtil.SetQueryException(SharedUtil.GetSqlSessionValue(sql, parameterModels), ex);
-                throw new Exception(ex.Message);
+                new()
+                {
+                    Key = "@tenantId",
+                    Value = _sharedUtil.GetTenantId()
+                },
+                new()
+                {
+                    Key = "@folderName",
+                    Value = folderModel.FolderName
+                },
+                new()
+                {
+                    Key = "@folderFilename",
+                    Value = folderModel.FolderFilename
+                },
+                new()
+                {
+                    Key = "@folderIcon",
+                    Value = folderModel.FolderIcon
+                },
+                new()
+                {
+                    Key = "@folderSeq",
+                    Value = folderModel.FolderSeq
+                },
+                new()
+                {
+                    Key = "@executeBy",
+                    Value = _sharedUtil.GetUserName()
+                }
+            };
+            foreach (var parameter in parameterModels)
+            {
+                mySqlCommand.Parameters.AddWithValue(parameter.Key, parameter.Value);
             }
 
-            return lastInsertKey;
+            mySqlCommand.ExecuteNonQuery();
+
+            mySqlTransaction.Commit();
+
+            lastInsertKey = (int) mySqlCommand.LastInsertedId;
+
+            mySqlCommand.Dispose();
+        }
+        catch (MySqlException ex)
+        {
+            System.Diagnostics.Debug.WriteLine(ex.Message);
+            _sharedUtil.SetQueryException(SharedUtil.GetSqlSessionValue(sql, parameterModels), ex);
+            throw new Exception(ex.Message);
         }
 
-        public List<FolderModel> Read()
-        {
-            List<FolderModel> folderModels = new();
-            string sql = string.Empty;
-            List<ParameterModel> parameterModels = new ();
+        return lastInsertKey;
+    }
 
-            using MySqlConnection connection = SharedUtil.GetConnection();
-            try
-            {
-                connection.Open();
-                sql += @"
+    public List<FolderModel> Read()
+    {
+        List<FolderModel> folderModels = new();
+        var sql = string.Empty;
+        List<ParameterModel> parameterModels = new();
+
+        using var connection = SharedUtil.GetConnection();
+        try
+        {
+            connection.Open();
+            sql += @"
                 SELECT      *
                 FROM        folder
                 WHERE       tenantId = @tenantId
                 AND         isDelete !=1
                 ORDER BY    folderSeq  ";
-                MySqlCommand mySqlCommand = new(sql, connection);
-                parameterModels = new List<ParameterModel>
-                {
-                    new ()
-                    {
-                        Key = "@tenantId",
-                        Value = _sharedUtil.GetTenantId()
-                    }
-                };
-                foreach (ParameterModel parameter in parameterModels)
-                {
-                    mySqlCommand.Parameters.AddWithValue(parameter.Key, parameter.Value);
-                }
-                _sharedUtil.SetSqlSession(sql, parameterModels);
-
-                using (var reader = mySqlCommand.ExecuteReader())
-                {
-                    while (reader.Read())
-                    {
-                        folderModels.Add(new FolderModel
-                        {
-                            FolderKey = Convert.ToInt32(reader["folderId"]),
-                            FolderName = reader["folderName"].ToString(),
-                            FolderFilename = reader["folderFilename"].ToString(),
-                            FolderSeq = Convert.ToInt32(reader["folderSeq"]),
-                            FolderIcon = reader["folderIcon"].ToString(),
-                            IsDelete = Convert.ToInt32(reader["isDelete"])
-                        });
-                    }
-                }
-
-                mySqlCommand.Dispose();
-            }
-            catch (MySqlException ex)
+            MySqlCommand mySqlCommand = new(sql, connection);
+            parameterModels = new List<ParameterModel>
             {
-                System.Diagnostics.Debug.WriteLine(ex.Message);
-                _sharedUtil.SetQueryException(SharedUtil.GetSqlSessionValue(sql, parameterModels), ex);
-                throw new Exception(ex.Message);
+                new()
+                {
+                    Key = "@tenantId",
+                    Value = _sharedUtil.GetTenantId()
+                }
+            };
+            foreach (var parameter in parameterModels)
+            {
+                mySqlCommand.Parameters.AddWithValue(parameter.Key, parameter.Value);
             }
 
+            _sharedUtil.SetSqlSession(sql, parameterModels);
 
-            return folderModels;
+            using (var reader = mySqlCommand.ExecuteReader())
+            {
+                while (reader.Read())
+                {
+                    folderModels.Add(new FolderModel
+                    {
+                        FolderKey = Convert.ToInt32(reader["folderId"]),
+                        FolderName = reader["folderName"].ToString(),
+                        FolderFilename = reader["folderFilename"].ToString(),
+                        FolderSeq = Convert.ToInt32(reader["folderSeq"]),
+                        FolderIcon = reader["folderIcon"].ToString(),
+                        IsDelete = Convert.ToInt32(reader["isDelete"])
+                    });
+                }
+            }
+
+            mySqlCommand.Dispose();
+        }
+        catch (MySqlException ex)
+        {
+            System.Diagnostics.Debug.WriteLine(ex.Message);
+            _sharedUtil.SetQueryException(SharedUtil.GetSqlSessionValue(sql, parameterModels), ex);
+            throw new Exception(ex.Message);
         }
 
-        public List<FolderModel> Search(string search)
-        {
-            List<FolderModel> folderModels = new();
-            string sql = string.Empty;
-            List<ParameterModel> parameterModels = new ();
 
-            using MySqlConnection connection = SharedUtil.GetConnection();
-            try
-            {
-                connection.Open();
-                sql += @"
+        return folderModels;
+    }
+
+    public List<FolderModel> Search(string search)
+    {
+        List<FolderModel> folderModels = new();
+        var sql = string.Empty;
+        List<ParameterModel> parameterModels = new();
+
+        using var connection = SharedUtil.GetConnection();
+        try
+        {
+            connection.Open();
+            sql += @"
                 SELECT  *
                 FROM    folder
                 WHERE   tenantId= @tenantId 
                 AND     isDelete != 1
                 AND     folderName  LIKE CONCAT('%',@search,'%'); ";
-                MySqlCommand mySqlCommand = new(sql, connection);
-                parameterModels = new List<ParameterModel>
-                {
-                    new ()
-                    {
-                        Key = "@tenantId",
-                        Value = _sharedUtil.GetTenantId()
-                    },
-                    new ()
-                    {
-                        Key = "@search",
-                        Value = search
-                    }
-                };
-                foreach (ParameterModel parameter in parameterModels)
-                {
-                    mySqlCommand.Parameters.AddWithValue(parameter.Key, parameter.Value);
-                }
-                _sharedUtil.SetSqlSession(sql, parameterModels);
-
-                using (var reader = mySqlCommand.ExecuteReader())
-                {
-                    while (reader.Read())
-                    {
-                        folderModels.Add(new FolderModel
-                        {
-                            FolderKey = Convert.ToInt32(reader["FolderId"]),
-                            FolderName = reader["folderName"].ToString(),
-                            FolderFilename = reader["folderFilename"].ToString(),
-                            FolderSeq = Convert.ToInt32(reader["folderSeq"]),
-                            FolderIcon = reader["folderIcon"].ToString(),
-                            IsDelete = Convert.ToInt32(reader["isDelete"])
-                        });
-                    }
-                }
-
-                mySqlCommand.Dispose();
-            }
-            catch (MySqlException ex)
+            MySqlCommand mySqlCommand = new(sql, connection);
+            parameterModels = new List<ParameterModel>
             {
-                System.Diagnostics.Debug.WriteLine(ex.Message);
-                _sharedUtil.SetQueryException(SharedUtil.GetSqlSessionValue(sql, parameterModels), ex);
-                throw new Exception(ex.Message);
+                new()
+                {
+                    Key = "@tenantId",
+                    Value = _sharedUtil.GetTenantId()
+                },
+                new()
+                {
+                    Key = "@search",
+                    Value = search
+                }
+            };
+            foreach (var parameter in parameterModels)
+            {
+                mySqlCommand.Parameters.AddWithValue(parameter.Key, parameter.Value);
             }
 
+            _sharedUtil.SetSqlSession(sql, parameterModels);
 
-            return folderModels;
+            using (var reader = mySqlCommand.ExecuteReader())
+            {
+                while (reader.Read())
+                {
+                    folderModels.Add(new FolderModel
+                    {
+                        FolderKey = Convert.ToInt32(reader["FolderId"]),
+                        FolderName = reader["folderName"].ToString(),
+                        FolderFilename = reader["folderFilename"].ToString(),
+                        FolderSeq = Convert.ToInt32(reader["folderSeq"]),
+                        FolderIcon = reader["folderIcon"].ToString(),
+                        IsDelete = Convert.ToInt32(reader["isDelete"])
+                    });
+                }
+            }
+
+            mySqlCommand.Dispose();
+        }
+        catch (MySqlException ex)
+        {
+            System.Diagnostics.Debug.WriteLine(ex.Message);
+            _sharedUtil.SetQueryException(SharedUtil.GetSqlSessionValue(sql, parameterModels), ex);
+            throw new Exception(ex.Message);
         }
 
-        public void Update(FolderModel folderModel)
+
+        return folderModels;
+    }
+
+    public void Update(FolderModel folderModel)
+    {
+        var sql = string.Empty;
+        List<ParameterModel> parameterModels = new();
+
+        using var connection = SharedUtil.GetConnection();
+        try
         {
-            string sql = string.Empty;
-            List<ParameterModel> parameterModels = new ();
+            connection.Open();
+            var mySqlTransaction = connection.BeginTransaction();
 
-            using MySqlConnection connection = SharedUtil.GetConnection();
-            try
-            {
-                connection.Open();
-                MySqlTransaction mySqlTransaction = connection.BeginTransaction();
-
-                sql += @"
+            sql += @"
                 UPDATE  folder
                 SET     folderName      =   @folderName,
                         folderFilename  =   @folderFilename,
@@ -247,103 +247,104 @@ namespace RebelCmsTemplate.Repository.Menu
                         folderSeq       =   @folderSeq
                 WHERE   folderId        =   @folderId ";
 
-                MySqlCommand mySqlCommand = new(sql, connection);
+            MySqlCommand mySqlCommand = new(sql, connection);
 
-                parameterModels = new List<ParameterModel>
+            parameterModels = new List<ParameterModel>
+            {
+                new()
                 {
-                    new ()
-                    {
-                        Key = "@tenantId",
-                        Value = _sharedUtil.GetTenantId()
-                    },
-                    new ()
-                    {
-                        Key = "@folderName",
-                        Value = folderModel.FolderName
-                    },
-                    new ()
-                    {
-                        Key = "@folderFilename",
-                        Value = folderModel.FolderFilename
-                    },
-                    new ()
-                    {
-                        Key = "@folderIcon",
-                        Value = folderModel.FolderIcon
-                    },
-                    new ()
-                    {
-                        Key = "@folderSeq",
-                        Value = folderModel.FolderSeq
-                    },
-                    new ()
-                    {
-                        Key = "@executeBy",
-                        Value = _sharedUtil.GetUserName()
-                    },
-                    new ()
-                    {
-                        Key = "@folderId",
-                        Value = folderModel.FolderKey
-                    }
-                };
-                foreach (ParameterModel parameter in parameterModels)
+                    Key = "@tenantId",
+                    Value = _sharedUtil.GetTenantId()
+                },
+                new()
                 {
-                    mySqlCommand.Parameters.AddWithValue(parameter.Key, parameter.Value);
+                    Key = "@folderName",
+                    Value = folderModel.FolderName
+                },
+                new()
+                {
+                    Key = "@folderFilename",
+                    Value = folderModel.FolderFilename
+                },
+                new()
+                {
+                    Key = "@folderIcon",
+                    Value = folderModel.FolderIcon
+                },
+                new()
+                {
+                    Key = "@folderSeq",
+                    Value = folderModel.FolderSeq
+                },
+                new()
+                {
+                    Key = "@executeBy",
+                    Value = _sharedUtil.GetUserName()
+                },
+                new()
+                {
+                    Key = "@folderId",
+                    Value = folderModel.FolderKey
                 }
-                mySqlCommand.ExecuteNonQuery();
-                mySqlTransaction.Commit();
-                mySqlCommand.Dispose();
-            }
-            catch (MySqlException ex)
+            };
+            foreach (var parameter in parameterModels)
             {
-                System.Diagnostics.Debug.WriteLine(ex.Message);
-                _sharedUtil.SetQueryException(SharedUtil.GetSqlSessionValue(sql, parameterModels), ex);
-                throw new Exception(ex.Message);
+                mySqlCommand.Parameters.AddWithValue(parameter.Key, parameter.Value);
             }
+
+            mySqlCommand.ExecuteNonQuery();
+            mySqlTransaction.Commit();
+            mySqlCommand.Dispose();
         }
-
-        public void Delete(FolderModel folderModel)
+        catch (MySqlException ex)
         {
-            string sql = string.Empty;
-            List<ParameterModel> parameterModels = new ();
+            System.Diagnostics.Debug.WriteLine(ex.Message);
+            _sharedUtil.SetQueryException(SharedUtil.GetSqlSessionValue(sql, parameterModels), ex);
+            throw new Exception(ex.Message);
+        }
+    }
 
-            using MySqlConnection connection = SharedUtil.GetConnection();
-            try
-            {
-                connection.Open();
-                MySqlTransaction mySqlTransaction = connection.BeginTransaction();
+    public void Delete(FolderModel folderModel)
+    {
+        var sql = string.Empty;
+        List<ParameterModel> parameterModels = new();
 
-                sql += @"
+        using var connection = SharedUtil.GetConnection();
+        try
+        {
+            connection.Open();
+            var mySqlTransaction = connection.BeginTransaction();
+
+            sql += @"
                 UPDATE  folder
                 SET     isDelete = 1
                 WHERE   folderId  = @folderId;";
-                MySqlCommand mySqlCommand = new(sql, connection);
+            MySqlCommand mySqlCommand = new(sql, connection);
 
-                parameterModels = new List<ParameterModel>
-                {
-                    new ()
-                    {
-                        Key = "@folderId",
-                        Value = folderModel.FolderKey
-                    }
-                };
-                foreach (ParameterModel parameter in parameterModels)
-                {
-                    mySqlCommand.Parameters.AddWithValue(parameter.Key, parameter.Value);
-                }
-                mySqlCommand.ExecuteNonQuery();
-
-                mySqlTransaction.Commit();
-
-                mySqlCommand.Dispose();
-            }
-            catch (MySqlException ex)
+            parameterModels = new List<ParameterModel>
             {
-                System.Diagnostics.Debug.WriteLine(ex.Message);
-                _sharedUtil.SetQueryException(SharedUtil.GetSqlSessionValue(sql, parameterModels), ex);
-                throw new Exception(ex.Message);
+                new()
+                {
+                    Key = "@folderId",
+                    Value = folderModel.FolderKey
+                }
+            };
+            foreach (var parameter in parameterModels)
+            {
+                mySqlCommand.Parameters.AddWithValue(parameter.Key, parameter.Value);
             }
+
+            mySqlCommand.ExecuteNonQuery();
+
+            mySqlTransaction.Commit();
+
+            mySqlCommand.Dispose();
+        }
+        catch (MySqlException ex)
+        {
+            System.Diagnostics.Debug.WriteLine(ex.Message);
+            _sharedUtil.SetQueryException(SharedUtil.GetSqlSessionValue(sql, parameterModels), ex);
+            throw new Exception(ex.Message);
         }
     }
 }

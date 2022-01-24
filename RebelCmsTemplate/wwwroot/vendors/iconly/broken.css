@@ -1,327 +1,426 @@
 @font-face {
-  font-family: 'Iconly-Broken';
-  src:  url('fonts/Iconly-Broken.eot?34gwe1');
-  src:  url('fonts/Iconly-Broken.eot?34gwe1#iefix') format('embedded-opentype'),
+    font-family: 'Iconly-Broken';
+    src: url('fonts/Iconly-Broken.eot?34gwe1');
+    src: url('fonts/Iconly-Broken.eot?34gwe1#iefix') format('embedded-opentype'),
     url('fonts/Iconly-Broken.ttf?34gwe1') format('truetype'),
     url('fonts/Iconly-Broken.woff?34gwe1') format('woff'),
     url('fonts/Iconly-Broken.svg?34gwe1#Iconly-Broken') format('svg');
-  font-weight: normal;
-  font-style: normal;
-  font-display: block;
+    font-weight: normal;
+    font-style: normal;
+    font-display: block;
 }
 
 [class^="iconly-broken"], [class*=" iconly-broken"] {
-  /* use !important to prevent issues with browser extensions that change fonts */
-  font-family: 'Iconly-Broken' !important;
-  speak: never;
-  font-style: normal;
-  font-weight: normal;
-  font-variant: normal;
-  text-transform: none;
-  line-height: 1;
+    /* use !important to prevent issues with browser extensions that change fonts */
+    font-family: 'Iconly-Broken' !important;
+    speak: never;
+    font-style: normal;
+    font-weight: normal;
+    font-variant: normal;
+    text-transform: none;
+    line-height: 1;
 
-  /* Better Font Rendering =========== */
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+    /* Better Font Rendering =========== */
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
 }
 
 .iconly-brokenUser:before {
-  content: "\e900";
+    content: "\e900";
 }
+
 .iconly-brokenUser1:before {
-  content: "\e901";
+    content: "\e901";
 }
+
 .iconly-brokenActivity:before {
-  content: "\e902";
+    content: "\e902";
 }
+
 .iconly-brokenAdd-User:before {
-  content: "\e903";
+    content: "\e903";
 }
+
 .iconly-brokenArrow---Down-2:before {
-  content: "\e904";
+    content: "\e904";
 }
+
 .iconly-brokenArrow---Down-3:before {
-  content: "\e905";
+    content: "\e905";
 }
+
 .iconly-brokenArrow---Down-Circle:before {
-  content: "\e906";
+    content: "\e906";
 }
+
 .iconly-brokenArrow---Down-Square:before {
-  content: "\e907";
+    content: "\e907";
 }
+
 .iconly-brokenArrow---Down:before {
-  content: "\e908";
+    content: "\e908";
 }
+
 .iconly-brokenArrow---Left-2:before {
-  content: "\e909";
+    content: "\e909";
 }
+
 .iconly-brokenArrow---Left-3:before {
-  content: "\e90a";
+    content: "\e90a";
 }
+
 .iconly-brokenArrow---Left-Circle:before {
-  content: "\e90b";
+    content: "\e90b";
 }
+
 .iconly-brokenArrow---Left-Square:before {
-  content: "\e90c";
+    content: "\e90c";
 }
+
 .iconly-brokenArrow---Left:before {
-  content: "\e90d";
+    content: "\e90d";
 }
+
 .iconly-brokenArrow---Right-2:before {
-  content: "\e90e";
+    content: "\e90e";
 }
+
 .iconly-brokenArrow---Right-3:before {
-  content: "\e90f";
+    content: "\e90f";
 }
+
 .iconly-brokenArrow---Right-Circle:before {
-  content: "\e910";
+    content: "\e910";
 }
+
 .iconly-brokenArrow---Right-Square:before {
-  content: "\e911";
+    content: "\e911";
 }
+
 .iconly-brokenArrow---Right:before {
-  content: "\e912";
+    content: "\e912";
 }
+
 .iconly-brokenArrow---Up-2:before {
-  content: "\e913";
+    content: "\e913";
 }
+
 .iconly-brokenArrow---Up-3:before {
-  content: "\e914";
+    content: "\e914";
 }
+
 .iconly-brokenArrow---Up-Circle:before {
-  content: "\e915";
+    content: "\e915";
 }
+
 .iconly-brokenArrow---Up-Square:before {
-  content: "\e916";
+    content: "\e916";
 }
+
 .iconly-brokenArrow---Up:before {
-  content: "\e917";
+    content: "\e917";
 }
+
 .iconly-brokenBag-2:before {
-  content: "\e918";
+    content: "\e918";
 }
+
 .iconly-brokenBag:before {
-  content: "\e919";
+    content: "\e919";
 }
+
 .iconly-brokenBookmark:before {
-  content: "\e91a";
+    content: "\e91a";
 }
+
 .iconly-brokenBuy:before {
-  content: "\e91b";
+    content: "\e91b";
 }
+
 .iconly-brokenCalendar:before {
-  content: "\e91c";
+    content: "\e91c";
 }
+
 .iconly-brokenCall-Missed:before {
-  content: "\e91d";
+    content: "\e91d";
 }
+
 .iconly-brokenCall-Silent:before {
-  content: "\e91e";
+    content: "\e91e";
 }
+
 .iconly-brokenCall:before {
-  content: "\e91f";
+    content: "\e91f";
 }
+
 .iconly-brokenCalling:before {
-  content: "\e920";
+    content: "\e920";
 }
+
 .iconly-brokenCamera:before {
-  content: "\e921";
+    content: "\e921";
 }
+
 .iconly-brokenCategory:before {
-  content: "\e922";
+    content: "\e922";
 }
+
 .iconly-brokenChart:before {
-  content: "\e923";
+    content: "\e923";
 }
+
 .iconly-brokenChat:before {
-  content: "\e924";
+    content: "\e924";
 }
+
 .iconly-brokenClose-Square:before {
-  content: "\e925";
+    content: "\e925";
 }
+
 .iconly-brokenDanger:before {
-  content: "\e926";
+    content: "\e926";
 }
+
 .iconly-brokenDelete:before {
-  content: "\e927";
+    content: "\e927";
 }
+
 .iconly-brokenDiscount:before {
-  content: "\e928";
+    content: "\e928";
 }
+
 .iconly-brokenDiscovery:before {
-  content: "\e929";
+    content: "\e929";
 }
+
 .iconly-brokenDocument:before {
-  content: "\e92a";
+    content: "\e92a";
 }
+
 .iconly-brokenDownload:before {
-  content: "\e92b";
+    content: "\e92b";
 }
+
 .iconly-brokenEdit-Square:before {
-  content: "\e92c";
+    content: "\e92c";
 }
+
 .iconly-brokenEdit:before {
-  content: "\e92d";
+    content: "\e92d";
 }
+
 .iconly-brokenFilter-2:before {
-  content: "\e92e";
+    content: "\e92e";
 }
+
 .iconly-brokenFilter:before {
-  content: "\e92f";
+    content: "\e92f";
 }
+
 .iconly-brokenFolder:before {
-  content: "\e930";
+    content: "\e930";
 }
+
 .iconly-brokenGame:before {
-  content: "\e931";
+    content: "\e931";
 }
+
 .iconly-brokenGraph:before {
-  content: "\e932";
+    content: "\e932";
 }
+
 .iconly-brokenHeart:before {
-  content: "\e933";
+    content: "\e933";
 }
+
 .iconly-brokenHide:before {
-  content: "\e934";
+    content: "\e934";
 }
+
 .iconly-brokenHome:before {
-  content: "\e935";
+    content: "\e935";
 }
+
 .iconly-brokenImage-2:before {
-  content: "\e936";
+    content: "\e936";
 }
+
 .iconly-brokenImage:before {
-  content: "\e937";
+    content: "\e937";
 }
+
 .iconly-brokenInfo-Circle:before {
-  content: "\e938";
+    content: "\e938";
 }
+
 .iconly-brokenInfo-Square:before {
-  content: "\e939";
+    content: "\e939";
 }
+
 .iconly-brokenLocation:before {
-  content: "\e93a";
+    content: "\e93a";
 }
+
 .iconly-brokenLock:before {
-  content: "\e93b";
+    content: "\e93b";
 }
+
 .iconly-brokenLogin:before {
-  content: "\e93c";
+    content: "\e93c";
 }
+
 .iconly-brokenLogout:before {
-  content: "\e93d";
+    content: "\e93d";
 }
+
 .iconly-brokenMessage:before {
-  content: "\e93e";
+    content: "\e93e";
 }
+
 .iconly-brokenMore-Circle:before {
-  content: "\e93f";
+    content: "\e93f";
 }
+
 .iconly-brokenMore-Square:before {
-  content: "\e940";
+    content: "\e940";
 }
+
 .iconly-brokenNotification:before {
-  content: "\e941";
+    content: "\e941";
 }
+
 .iconly-brokenPaper-Download:before {
-  content: "\e942";
+    content: "\e942";
 }
+
 .iconly-brokenPaper-Fail:before {
-  content: "\e943";
+    content: "\e943";
 }
+
 .iconly-brokenPaper-Negative:before {
-  content: "\e944";
+    content: "\e944";
 }
+
 .iconly-brokenPaper-Plus:before {
-  content: "\e945";
+    content: "\e945";
 }
+
 .iconly-brokenPaper-Upload:before {
-  content: "\e946";
+    content: "\e946";
 }
+
 .iconly-brokenPaper:before {
-  content: "\e947";
+    content: "\e947";
 }
+
 .iconly-brokenPassword:before {
-  content: "\e948";
+    content: "\e948";
 }
+
 .iconly-brokenPlay:before {
-  content: "\e949";
+    content: "\e949";
 }
+
 .iconly-brokenPlus:before {
-  content: "\e94a";
+    content: "\e94a";
 }
+
 .iconly-brokenProfile:before {
-  content: "\e94b";
+    content: "\e94b";
 }
+
 .iconly-brokenScan:before {
-  content: "\e94c";
+    content: "\e94c";
 }
+
 .iconly-brokenSearch:before {
-  content: "\e94d";
+    content: "\e94d";
 }
+
 .iconly-brokenSend:before {
-  content: "\e94e";
+    content: "\e94e";
 }
+
 .iconly-brokenSetting:before {
-  content: "\e94f";
+    content: "\e94f";
 }
+
 .iconly-brokenShield-Done:before {
-  content: "\e950";
+    content: "\e950";
 }
+
 .iconly-brokenShield-Fail:before {
-  content: "\e951";
+    content: "\e951";
 }
+
 .iconly-brokenShow:before {
-  content: "\e952";
+    content: "\e952";
 }
+
 .iconly-brokenStar:before {
-  content: "\e953";
+    content: "\e953";
 }
+
 .iconly-brokenSwap:before {
-  content: "\e954";
+    content: "\e954";
 }
+
 .iconly-brokenTick-Square:before {
-  content: "\e955";
+    content: "\e955";
 }
+
 .iconly-brokenTicket-Star:before {
-  content: "\e956";
+    content: "\e956";
 }
+
 .iconly-brokenTicket:before {
-  content: "\e957";
+    content: "\e957";
 }
+
 .iconly-brokenTime-Circle:before {
-  content: "\e958";
+    content: "\e958";
 }
+
 .iconly-brokenTime-Square:before {
-  content: "\e959";
+    content: "\e959";
 }
+
 .iconly-brokenUnlock:before {
-  content: "\e95a";
+    content: "\e95a";
 }
+
 .iconly-brokenUpload:before {
-  content: "\e95b";
+    content: "\e95b";
 }
+
 .iconly-brokenVideo:before {
-  content: "\e95c";
+    content: "\e95c";
 }
+
 .iconly-brokenVoice-2:before {
-  content: "\e95d";
+    content: "\e95d";
 }
+
 .iconly-brokenVoice:before {
-  content: "\e95e";
+    content: "\e95e";
 }
+
 .iconly-brokenVolume-Down:before {
-  content: "\e95f";
+    content: "\e95f";
 }
+
 .iconly-brokenVolume-Off:before {
-  content: "\e960";
+    content: "\e960";
 }
+
 .iconly-brokenVolume-Up:before {
-  content: "\e961";
+    content: "\e961";
 }
+
 .iconly-brokenWallet:before {
-  content: "\e962";
+    content: "\e962";
 }
+
 .iconly-brokenWork:before {
-  content: "\e963";
+    content: "\e963";
 }

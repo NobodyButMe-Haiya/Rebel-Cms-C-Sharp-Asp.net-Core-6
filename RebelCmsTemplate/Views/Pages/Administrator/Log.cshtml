@@ -1,6 +1,5 @@
-﻿@inject Microsoft.AspNetCore.Http.IHttpContextAccessor _httpContextAccessor
+﻿@inject IHttpContextAccessor _httpContextAccessor
 @using RebelCmsTemplate.Models.Administrator
-@using RebelCmsTemplate.Models.Shared
 @using RebelCmsTemplate.Repository.Administrator;
 @using RebelCmsTemplate.Util;
 @using RebelCmsTemplate.Enum;
@@ -19,98 +18,105 @@
     var fileInfo = ViewContext.ExecutingFilePath?.Split("/");
     var filename = fileInfo != null ? fileInfo[4] : "";
     var name = filename.Split(".")[0];
-    NavigationModel navigationModel = sharedUtils.GetNavigation(name);
+    var navigationModel = sharedUtils.GetNavigation(name);
 }
-    <div class="page-title">
-        <div class="row">
-            <div class="col-12 col-md-6 order-md-1 order-last">
-                <h3>@navigationModel.LeafName</h3>
+<div class="page-title">
+    <div class="row">
+        <div class="col-12 col-md-6 order-md-1 order-last">
+            <h3>@navigationModel.LeafName</h3>
+        </div>
+        <div class="col-12 col-md-6 order-md-2 order-first">
+            <nav aria-label="breadcrumb" class="breadcrumb-header float-start float-lg-end">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item">
+                        <a href="#">
+                            <i class="@navigationModel.FolderIcon"></i>
+                            @navigationModel.FolderName
+                        </a>
+                    </li>
+                    <li class="breadcrumb-item active" aria-current="page">
+                        <i class="@navigationModel.LeafIcon"></i>
+                        @navigationModel.LeafName
+                    </li>
+                    <li class="breadcrumb-item active" aria-current="page">
+                        <i class="fas fa-sign-out-alt"></i>
+                        <a href="/LogOut">Logout</a>
+                    </li>
+                </ol>
+            </nav>
+        </div>
+    </div>
+</div>
+<section class="content">
+    <div class="container-fluid">
+        <form class="form-horizontal">
+            <div class="card card-primary">
+                <div class="card-header">Filter</div>
+                <div class="card-body">
+                    <div class="form-group">
+                        <div class="col-md-2">
+                            <label for="search">Searchs</label>
+                        </div>
+                        <div class="col-md-10">
+                            <input name="search" id="search" class="form-control"
+                                   placeholder="Please Enter Name  Or Other Here" maxlength="64"
+                                   style="width: 350px!important;"/>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-footer">
+                    <button type="button" class="btn btn-info" onclick="searchRecord()">
+                        <i class="fas fa-filter"></i> Filter
+                    </button>
+                    &nbsp;
+                    <button type="button" class="btn btn-warning" onclick="resetRecord()">
+                        <i class="fas fa-power-off"></i> Reset
+                    </button>
+                </div>
             </div>
-            <div class="col-12 col-md-6 order-md-2 order-first">
-                <nav aria-label="breadcrumb" class="breadcrumb-header float-start float-lg-end">
-                    <ol class="breadcrumb">
-                        <li class="breadcrumb-item"><a href="#"><i class="@navigationModel.FolderIcon"></i>
-                                @navigationModel.FolderName</a></li>
-                        <li class="breadcrumb-item active" aria-current="page"><i class="@navigationModel.LeafIcon"></i>
-                            @navigationModel.LeafName</li>
-                        <li class="breadcrumb-item active" aria-current="page"><i class="fas fa-sign-out-alt"></i>
-                            <a href="/LogOut">Logout</a>
-                        </li>
-                    </ol>
-                </nav>
+            <div class="row">
+                <div class="col-xs-12 col-sm-12 col-md-12">&nbsp;</div>
+            </div>
+        </form>
+        <div class="row">
+            <div class="col-xs-12 col-sm-12 col-md-12">
+                <div class="card">
+                    <table class="table table-bordered table-striped table-condensed table-hover" id="tableData">
+                        <thead>
+                        <tr>
+                            <th scope="col">Name</th>
+                            <th scope="col">Log Query</th>
+                            <th scope="col">Log Error</th>
+                            <th scope="col">TimeStamp</th>
+                        </tr>
+                        </thead>
+                        <tbody id="tableBody">
+                        @foreach (var row in logModels)
+                        {
+                            <tr id="log-@row.LogKey">
+                                <td>@row.LogUserName</td>
+                                <td>@row.LogQuery</td>
+                                <td>@row.LogError</td>
+                                <td>@row.LogDateTime</td>
+                            </tr>
+                        }
+
+                        @if (logModels.Count == 0)
+                        {
+                            <tr>
+                                <td colspan="7" class="noRecord">
+                                    @SharedUtil.NoRecord
+                                </td>
+                            </tr>
+                        }
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
     </div>
-    <section class="content">
-        <div class="container-fluid">
-            <form class="form-horizontal">
-                <div class="card card-primary">
-                    <div class="card-header">Filter</div>
-                    <div class="card-body">
-                        <div class="form-group">
-                            <div class="col-md-2">
-                                <label for="search">Searchs</label>
-                            </div>
-                            <div class="col-md-10">
-                                <input name="search" id="search" class="form-control"
-                                    placeholder="Please Enter Name  Or Other Here" maxlength="64"
-                                    style="width: 350px!important;" />
-                            </div>
-                        </div>
-                    </div>
-                    <div class="card-footer">
-                        <button type="button" class="btn btn-info" onclick="searchRecord()">
-                            <i class="fas fa-filter"></i> Filter
-                        </button>
-                        &nbsp;
-                        <button type="button" class="btn btn-warning" onclick="resetRecord()">
-                            <i class="fas fa-power-off"></i> Reset
-                        </button>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-xs-12 col-sm-12 col-md-12">&nbsp;</div>
-                </div>
-            </form>
-            <div class="row">
-                <div class="col-xs-12 col-sm-12 col-md-12">
-                    <div class="card">
-                        <table class="table table-bordered table-striped table-condensed table-hover" id="tableData">
-                            <thead>
-                                <tr>
-                                    <th scope="col">Name</th>
-                                    <th scope="col">Log Query</th>
-                                    <th scope="col">Log Error</th>
-                                    <th scope="col">TimeStamp</th>
-                                </tr>
-                            </thead>
-                            <tbody id="tableBody">
-                                @foreach (var row in logModels)
-                                {
-                                    <tr id="log-@row.LogKey">
-                                        <td>@row.LogUserName</td>
-                                        <td>@row.LogQuery</td>
-                                        <td>@row.LogError</td>
-                                        <td>@row.LogDateTime</td>
-                                    </tr>
-                                }
-
-                                @if (logModels.Count == 0)
-                                {
-                                    <tr>
-                                        <td colspan="7" class="noRecord">
-                                            @SharedUtil.NoRecord
-                                        </td>
-                                    </tr>
-                                }
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-    <script>
+</section>
+<script>
         function resetRecord() {
             readRecord();
             $("#search").val("");
@@ -170,7 +176,7 @@
                     } else if (status === false) {
                       if (typeof(code) === 'string'){
                         @{
-                            if (sharedUtils.GetRoleId().Equals( (int)AccessEnum.ADMINISTRATOR_ACCESS ))
+                            if (sharedUtils.GetRoleId().Equals((int) AccessEnum.ADMINISTRATOR_ACCESS))
                             {
                                 <text>
                                 Swal.fire("Debugging Admin", code, "error");
@@ -183,7 +189,7 @@
                                 </text>
                             }
                         }
-                    }else   if (parseInt(code) === parseInt(@((int)ReturnCodeEnum.ACCESS_DENIED) )) {
+                    }else   if (parseInt(code) === parseInt(@((int) ReturnCodeEnum.ACCESS_DENIED) )) {
                             let timerInterval
                             Swal.fire({
                                 title: 'Auto close alert!',
@@ -260,7 +266,7 @@
                     } else if (status === false) {
                     if (typeof(code) === 'string'){
                         @{
-                            if (sharedUtils.GetRoleId().Equals( (int)AccessEnum.ADMINISTRATOR_ACCESS ))
+                            if (sharedUtils.GetRoleId().Equals((int) AccessEnum.ADMINISTRATOR_ACCESS))
                             {
                                 <text>
                                 Swal.fire("Debugging Admin", code, "error");
@@ -273,7 +279,7 @@
                                 </text>
                             }
                         }
-                    } else if (parseInt(code) === parseInt(@((int)ReturnCodeEnum.ACCESS_DENIED) )) {
+                    } else if (parseInt(code) === parseInt(@((int) ReturnCodeEnum.ACCESS_DENIED) )) {
                             let timerInterval
                             Swal.fire({
                                 title: 'Auto close alert!',
@@ -311,5 +317,3 @@
                                  });
         }
     </script>
-
-

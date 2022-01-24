@@ -38,7 +38,15 @@
       "Cuma",
       "Cumartesi"
     ],
-    "shortDays": ["Paz", "Pzt", "Sal", "Çar", "Per", "Cum", "Cmt"],
+    "shortDays": [
+      "Paz",
+      "Pzt",
+      "Sal",
+      "Çar",
+      "Per",
+      "Cum",
+      "Cmt"
+    ],
     "toolbar": {
       "exportToSVG": "SVG İndir",
       "exportToPNG": "PNG İndir",

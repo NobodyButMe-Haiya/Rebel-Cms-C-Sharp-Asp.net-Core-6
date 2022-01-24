@@ -1,7 +1,7 @@
 .star-rating {
     width: 0;
     position: relative;
-    display:inline-block;
+    display: inline-block;
     background-image: url(star_0.svg);
     background-position: 0 0;
     background-repeat: repeat-x;
@@ -12,7 +12,7 @@
     position: absolute;
     height: 100%;
     width: 100%;
-    background: url('./star_1.svg') ;
+    background: url('./star_1.svg');
     background-repeat: repeat-x;
 }
 

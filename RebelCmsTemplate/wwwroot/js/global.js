@@ -1,4 +1,4 @@
-﻿function showPreview(event,imageTarget) {
+﻿function showPreview(event, imageTarget) {
     if (event.target.files.length > 0) {
         var src = URL.createObjectURL(event.target.files[0]);
         var preview = document.getElementById(imageTarget);
@@ -31,10 +31,11 @@ function toggleChecked(status) {
 
     });
 }
-function toggleRangeChecked(status,name) {
+
+function toggleRangeChecked(status, name) {
     //alert("status"+status);
     console.log("status" + status); // don't delete it..
-    $('input:checkbox[name="'+name+'"]').each(function () {
+    $('input:checkbox[name="' + name + '"]').each(function () {
         if (status === true) {
             $(this).val(1);
             $(this).checked = true;
@@ -51,6 +52,7 @@ function toggleRangeChecked(status,name) {
 
     });
 }
+
 function validateMePassword(id) {
     validateMeColor(id, 0, '', '');
     $('#' + id).keyup(function () {
@@ -178,7 +180,7 @@ function validateMeNumericBlur(id) {
 }
 
 function validateMeCurrency(id) {
-    $("#" + id).on('keydown',function(){
+    $("#" + id).on('keydown', function () {
         $(this).val($(this).val().replace(/[^,\-0-9.]/g, "").replace(/^\.,/, ""));
     }).blur(function () {
         $(this).val($(this).val().replace(/[^,\-0-9.]/g, "").replace(/^\.,/, ""));
@@ -186,7 +188,7 @@ function validateMeCurrency(id) {
 }
 
 function validateMeCurrencyRange(name) {
-    $("input:text[name='" + name + "']").on('keydown',function(){
+    $("input:text[name='" + name + "']").on('keydown', function () {
         $(this).val($(this).val().replace(/[^,\-0-9.]/g, "").replace(/^\.,/, ""));
     }).blur(function () {
         $(this).val($(this).val().replace(/[^,\-0-9.]/g, "").replace(/^\.,/, ""));

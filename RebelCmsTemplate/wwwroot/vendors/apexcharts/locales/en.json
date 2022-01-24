@@ -38,7 +38,15 @@
       "Friday",
       "Saturday"
     ],
-    "shortDays": ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"],
+    "shortDays": [
+      "Sun",
+      "Mon",
+      "Tue",
+      "Wed",
+      "Thu",
+      "Fri",
+      "Sat"
+    ],
     "toolbar": {
       "exportToSVG": "Download SVG",
       "exportToPNG": "Download PNG",

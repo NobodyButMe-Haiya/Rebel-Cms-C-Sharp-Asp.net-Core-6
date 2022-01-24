@@ -38,7 +38,15 @@
       "Perjantai",
       "Lauantai"
     ],
-    "shortDays": ["Su", "Ma", "Ti", "Ke", "To", "Pe", "La"],
+    "shortDays": [
+      "Su",
+      "Ma",
+      "Ti",
+      "Ke",
+      "To",
+      "Pe",
+      "La"
+    ],
     "toolbar": {
       "exportToSVG": "Lataa SVG",
       "exportToPNG": "Lataa PNG",

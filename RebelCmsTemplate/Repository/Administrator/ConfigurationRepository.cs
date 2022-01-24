@@ -1,82 +1,79 @@
-﻿using System;
-using System.Collections.Generic;
-using Microsoft.AspNetCore.Http;
-using MySql.Data.MySqlClient;
+﻿using MySql.Data.MySqlClient;
 using RebelCmsTemplate.Models.Administrator;
 using RebelCmsTemplate.Models.Shared;
 using RebelCmsTemplate.Util;
 
-namespace RebelCmsTemplate.Repository.Administrator
+namespace RebelCmsTemplate.Repository.Administrator;
+
+public class ConfigurationRepository
 {
-    public class ConfigurationRepository
+    private readonly SharedUtil _sharedUtil;
+
+    public ConfigurationRepository(IHttpContextAccessor httpContextAccessor)
     {
-        private readonly SharedUtil _sharedUtil;
+        _sharedUtil = new SharedUtil(httpContextAccessor);
+    }
 
-        public ConfigurationRepository(IHttpContextAccessor httpContextAccessor)
+    public List<ConfigurationModel> Read()
+    {
+        List<ConfigurationModel> configurationModels = new();
+        var sql = string.Empty;
+        List<ParameterModel> parameterModels = new();
+
+        using var connection = SharedUtil.GetConnection();
+        try
         {
-            _sharedUtil = new SharedUtil(httpContextAccessor);
-        }
-
-        public List<ConfigurationModel> Read()
-        {
-            List<ConfigurationModel> configurationModels = new();
-            string sql = string.Empty;
-            List<ParameterModel> parameterModels = new ();
-
-            using MySqlConnection connection = SharedUtil.GetConnection();
-            try
-            {
-                connection.Open();
-                sql += @"
+            connection.Open();
+            sql += @"
                 SELECT      * 
                 FROM        configuration 
                 ORDER BY    configurationId DESC ";
-                
-                // reporting purpose
-                _sharedUtil.SetSqlSession(sql);
-                MySqlCommand mySqlCommand = new(sql, connection);
-                using (var reader = mySqlCommand.ExecuteReader())
-                {
-                    while (reader.Read())
-                    {
-                        configurationModels.Add(new ConfigurationModel
-                        {
-                            ConfigurationKey = Convert.ToInt32(reader["configurationId"]),
-                            ConfigurationPortal = reader["configurationPortal"].ToString(),
-                            ConfigurationPortalLocal = reader["configurationPortalLocal"].ToString(),
-                            ConfigurationEmail = reader["configurationEmail"].ToString(),
-                            ConfigurationEmailHost = reader["configurationEmailHost"].ToString(),
-                            ConfigurationEmailPassword = reader["configurationEmailPassword"].ToString(),
-                            ConfigurationEmailPort = reader["configurationEmailPort"].ToString(),
-                            ConfigurationEmailSecure = reader["configurationEmailSecure"].ToString()
-                        });
-                    }
-                }
 
-                mySqlCommand.Dispose();
-            }
-            catch (MySqlException ex)
+            // reporting purpose
+            _sharedUtil.SetSqlSession(sql);
+            MySqlCommand mySqlCommand = new(sql, connection);
+            using (var reader = mySqlCommand.ExecuteReader())
             {
-                System.Diagnostics.Debug.WriteLine(ex.Message);
-                _sharedUtil.SetQueryException(SharedUtil.GetSqlSessionValue(sql, parameterModels), ex);
-                throw new Exception(ex.Message);
+                while (reader.Read())
+                {
+                    configurationModels.Add(new ConfigurationModel
+                    {
+                        ConfigurationKey = Convert.ToInt32(reader["configurationId"]),
+                        ConfigurationPortal = reader["configurationPortal"].ToString(),
+                        ConfigurationPortalLocal = reader["configurationPortalLocal"].ToString(),
+                        ConfigurationEmail = reader["configurationEmail"].ToString(),
+                        ConfigurationEmailHost = reader["configurationEmailHost"].ToString(),
+                        ConfigurationEmailPassword = reader["configurationEmailPassword"].ToString(),
+                        ConfigurationEmailPort = reader["configurationEmailPort"].ToString(),
+                        ConfigurationEmailSecure = reader["configurationEmailSecure"].ToString()
+                    });
+                }
             }
 
-
-            return configurationModels;
+            mySqlCommand.Dispose();
+        }
+        catch (MySqlException ex)
+        {
+            System.Diagnostics.Debug.WriteLine(ex.Message);
+            _sharedUtil.SetQueryException(SharedUtil.GetSqlSessionValue(sql, parameterModels), ex);
+            throw new Exception(ex.Message);
         }
 
-        public void Update(ConfigurationModel configurationModel)
-        {
-            string sql = string.Empty;
-            List<ParameterModel> parameterModels = new ();
-            using MySqlConnection connection = SharedUtil.GetConnection();
-            try
-            {
-                connection.Open();
-                MySqlTransaction mySqlTransaction = connection.BeginTransaction();
 
-                sql += @"
+        return configurationModels;
+    }
+
+    public void Update(ConfigurationModel configurationModel)
+    {
+        var sql = string.Empty;
+        List<ParameterModel> parameterModels = new();
+        using var connection = SharedUtil.GetConnection();
+        try
+        {
+            connection.Open();
+            var mySqlTransaction = connection.BeginTransaction();
+
+            sql += @"
                 UPDATE  configuration 
                 SET     configurationPortal         =   @configurationPortal,
                         configurationPortalLocal    =   @configurationPortalLocal,
@@ -86,61 +83,60 @@ namespace RebelCmsTemplate.Repository.Administrator
                         configurationEmailPort      =   @configurationEmailPort,
                         configurationEmailSecure    =   @configurationEmailSecure
                 WHERE   configurationId             =   @configurationId ";
-                MySqlCommand mySqlCommand = new(sql, connection);
+            MySqlCommand mySqlCommand = new(sql, connection);
 
-                parameterModels = new List<ParameterModel>
-                {
-                    new ()
-                    {
-                        Key = "@configurationPortal",
-                        Value = configurationModel.ConfigurationPortal
-                    },
-                    new ()
-                    {
-                        Key = "@configurationPortalLocal",
-                        Value = configurationModel.ConfigurationPortalLocal
-                    },
-                    new ()
-                    {
-                        Key = "@configurationEmail",
-                        Value = configurationModel.ConfigurationEmail
-                    },
-                    new ()
-                    {
-                        Key = "@configurationEmailPassword",
-                        Value = configurationModel.ConfigurationEmailPassword
-                    },
-                    new ()
-                    {
-                        Key = "@configurationEmailPort",
-                        Value = configurationModel.ConfigurationEmailPort
-                    },
-                    new ()
-                    {
-                        Key = "@configurationEmailSecure",
-                        Value = configurationModel.ConfigurationEmailSecure
-                    },
-                    new ()
-                    {
-                        Key = "@configurationId",
-                        Value = configurationModel.ConfigurationKey
-                    }
-                };
-                foreach (ParameterModel parameter in parameterModels)
-                {
-                    mySqlCommand.Parameters.AddWithValue(parameter.Key, parameter.Value);
-                }
-
-                mySqlCommand.ExecuteNonQuery();
-                mySqlTransaction.Commit();
-                mySqlCommand.Dispose();
-            }
-            catch (MySqlException ex)
+            parameterModels = new List<ParameterModel>
             {
-                System.Diagnostics.Debug.WriteLine(ex.Message);
-                _sharedUtil.SetQueryException(SharedUtil.GetSqlSessionValue(sql, parameterModels), ex);
-                throw new Exception(ex.Message);
+                new()
+                {
+                    Key = "@configurationPortal",
+                    Value = configurationModel.ConfigurationPortal
+                },
+                new()
+                {
+                    Key = "@configurationPortalLocal",
+                    Value = configurationModel.ConfigurationPortalLocal
+                },
+                new()
+                {
+                    Key = "@configurationEmail",
+                    Value = configurationModel.ConfigurationEmail
+                },
+                new()
+                {
+                    Key = "@configurationEmailPassword",
+                    Value = configurationModel.ConfigurationEmailPassword
+                },
+                new()
+                {
+                    Key = "@configurationEmailPort",
+                    Value = configurationModel.ConfigurationEmailPort
+                },
+                new()
+                {
+                    Key = "@configurationEmailSecure",
+                    Value = configurationModel.ConfigurationEmailSecure
+                },
+                new()
+                {
+                    Key = "@configurationId",
+                    Value = configurationModel.ConfigurationKey
+                }
+            };
+            foreach (var parameter in parameterModels)
+            {
+                mySqlCommand.Parameters.AddWithValue(parameter.Key, parameter.Value);
             }
+
+            mySqlCommand.ExecuteNonQuery();
+            mySqlTransaction.Commit();
+            mySqlCommand.Dispose();
+        }
+        catch (MySqlException ex)
+        {
+            System.Diagnostics.Debug.WriteLine(ex.Message);
+            _sharedUtil.SetQueryException(SharedUtil.GetSqlSessionValue(sql, parameterModels), ex);
+            throw new Exception(ex.Message);
         }
     }
 }

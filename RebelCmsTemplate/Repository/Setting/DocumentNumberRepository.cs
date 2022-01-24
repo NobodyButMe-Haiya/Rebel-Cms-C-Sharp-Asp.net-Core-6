@@ -1,369 +1,365 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using ClosedXML.Excel;
-using Microsoft.AspNetCore.Http;
+﻿using ClosedXML.Excel;
 using MySql.Data.MySqlClient;
 using RebelCmsTemplate.Models.Setting;
 using RebelCmsTemplate.Models.Shared;
 using RebelCmsTemplate.Util;
 
-namespace RebelCmsTemplate.Repository.Setting
+namespace RebelCmsTemplate.Repository.Setting;
+
+public class DocumentNumberRepository
 {
-    public class DocumentNumberRepository
+    private readonly SharedUtil _sharedUtil;
+
+    public DocumentNumberRepository(IHttpContextAccessor httpContextAccessor)
     {
-        private readonly SharedUtil _sharedUtil;
-        public DocumentNumberRepository(IHttpContextAccessor httpContextAccessor)
-        {
-            _sharedUtil = new SharedUtil(httpContextAccessor);
-        }
-        public int Create(DocumentNumberModel documentNumberModel)
-        {
-            // okay next we create skeleton for the code
-            int lastInsertKey;
-            string sql = string.Empty;
-            List<ParameterModel> parameterModels = new ();
+        _sharedUtil = new SharedUtil(httpContextAccessor);
+    }
 
-            using MySqlConnection connection = SharedUtil.GetConnection();
-            try
+    public int Create(DocumentNumberModel documentNumberModel)
+    {
+        // okay next we create skeleton for the code
+        int lastInsertKey;
+        var sql = string.Empty;
+        List<ParameterModel> parameterModels = new();
+
+        using var connection = SharedUtil.GetConnection();
+        try
+        {
+            connection.Open();
+
+            var mySqlTransaction = connection.BeginTransaction();
+
+            sql +=
+                @"INSERT INTO document_number VALUES (null,@tenantId,@documentNumberCode, @documentNumber,@documentNumberDescription,0,@executeBy);";
+            MySqlCommand mySqlCommand = new(sql, connection);
+
+            parameterModels = new List<ParameterModel>
             {
-
-                connection.Open();
-
-                MySqlTransaction mySqlTransaction = connection.BeginTransaction();
-
-                sql += @"INSERT INTO document_number VALUES (null,@tenantId,@documentNumberCode, @documentNumber,@documentNumberDescription,0,@executeBy);";
-                MySqlCommand mySqlCommand = new(sql, connection);
-
-                parameterModels = new List<ParameterModel>
+                new()
                 {
-                    new ()
-                    {
-                        Key = "@tenantId",
-                        Value = _sharedUtil.GetTenantId()
-                    },
-                    new ()
-                    {
-                        Key = "@documentNumberCode",
-                        Value = documentNumberModel.DocumentNumberCode
-                    },
-                    new ()
-                    {
-                        Key = "@documentNumber",
-                        Value = documentNumberModel.DocumentNumber
-                    },
-                    new ()
-                    {
-                        Key = "@documentNumberDescription",
-                        Value = documentNumberModel.DocumentNumberDescription
-                    },
-                    new ()
-                    {
-                        Key = "@executeBy",
-                        Value = _sharedUtil.GetUserName()
-                    }
-                };
-                foreach (ParameterModel parameter in parameterModels)
+                    Key = "@tenantId",
+                    Value = _sharedUtil.GetTenantId()
+                },
+                new()
                 {
-                    mySqlCommand.Parameters.AddWithValue(parameter.Key, parameter.Value);
+                    Key = "@documentNumberCode",
+                    Value = documentNumberModel.DocumentNumberCode
+                },
+                new()
+                {
+                    Key = "@documentNumber",
+                    Value = documentNumberModel.DocumentNumber
+                },
+                new()
+                {
+                    Key = "@documentNumberDescription",
+                    Value = documentNumberModel.DocumentNumberDescription
+                },
+                new()
+                {
+                    Key = "@executeBy",
+                    Value = _sharedUtil.GetUserName()
                 }
-                mySqlCommand.ExecuteNonQuery();
-
-                mySqlTransaction.Commit();
-
-                lastInsertKey = (int)mySqlCommand.LastInsertedId;
-
-                mySqlCommand.Dispose();
-
-            }
-            catch (MySqlException ex)
+            };
+            foreach (var parameter in parameterModels)
             {
-                System.Diagnostics.Debug.WriteLine(ex.Message);
-                _sharedUtil.SetQueryException(SharedUtil.GetSqlSessionValue(sql, parameterModels), ex);
-                throw new Exception(ex.Message);
+                mySqlCommand.Parameters.AddWithValue(parameter.Key, parameter.Value);
             }
 
-            return lastInsertKey;
+            mySqlCommand.ExecuteNonQuery();
 
+            mySqlTransaction.Commit();
 
+            lastInsertKey = (int) mySqlCommand.LastInsertedId;
+
+            mySqlCommand.Dispose();
         }
-        public List<DocumentNumberModel> Read()
+        catch (MySqlException ex)
         {
-            List<DocumentNumberModel> documentNumberModels = new();
-            string sql = string.Empty;
-            List<ParameterModel> parameterModels = new ();
+            System.Diagnostics.Debug.WriteLine(ex.Message);
+            _sharedUtil.SetQueryException(SharedUtil.GetSqlSessionValue(sql, parameterModels), ex);
+            throw new Exception(ex.Message);
+        }
 
-            using MySqlConnection connection = SharedUtil.GetConnection();
-            try
-            {
+        return lastInsertKey;
+    }
 
-                connection.Open();
-                sql += @"
+    public List<DocumentNumberModel> Read()
+    {
+        List<DocumentNumberModel> documentNumberModels = new();
+        var sql = string.Empty;
+        List<ParameterModel> parameterModels = new();
+
+        using var connection = SharedUtil.GetConnection();
+        try
+        {
+            connection.Open();
+            sql += @"
                 SELECT      *
                 FROM        document_number
                 WHERE       isDelete != 1
                 ORDER BY    documentNumberId DESC ";
-                MySqlCommand mySqlCommand = new(sql, connection);
-                parameterModels = new List<ParameterModel>
+            MySqlCommand mySqlCommand = new(sql, connection);
+            parameterModels = new List<ParameterModel>
+            {
+                new()
                 {
-                    new ()
-                    {
-                        Key = "@tenantId",
-                        Value = _sharedUtil.GetTenantId()
-                    }
-                };
-                _sharedUtil.SetSqlSession(sql, parameterModels);
-
-                using (var reader = mySqlCommand.ExecuteReader())
-                {
-                    while (reader.Read())
-                    {
-                        documentNumberModels.Add(new DocumentNumberModel
-                        {
-                            DocumentNumberCode = reader["documentNumberCode"].ToString(),
-                            DocumentNumber = reader["documentNumber"].ToString(),
-                            DocumentNumberDescription = reader["documentNumberDescription"].ToString(),
-                            DocumentNumberKey = Convert.ToInt32(reader["documentNumberId"])
-                        });
-                    }
+                    Key = "@tenantId",
+                    Value = _sharedUtil.GetTenantId()
                 }
+            };
+            _sharedUtil.SetSqlSession(sql, parameterModels);
 
-                mySqlCommand.Dispose();
-
-            }
-            catch (MySqlException ex)
+            using (var reader = mySqlCommand.ExecuteReader())
             {
-                System.Diagnostics.Debug.WriteLine(ex.Message);
-                _sharedUtil.SetQueryException(SharedUtil.GetSqlSessionValue(sql, parameterModels), ex);
-                throw new Exception(ex.Message);
+                while (reader.Read())
+                {
+                    documentNumberModels.Add(new DocumentNumberModel
+                    {
+                        DocumentNumberCode = reader["documentNumberCode"].ToString(),
+                        DocumentNumber = reader["documentNumber"].ToString(),
+                        DocumentNumberDescription = reader["documentNumberDescription"].ToString(),
+                        DocumentNumberKey = Convert.ToInt32(reader["documentNumberId"])
+                    });
+                }
             }
 
-
-            return documentNumberModels;
+            mySqlCommand.Dispose();
         }
-        public List<DocumentNumberModel> Search(string search)
+        catch (MySqlException ex)
         {
-            List<DocumentNumberModel> documentNumberModels = new();
-            string sql = string.Empty;
-            List<ParameterModel> parameterModels = new ();
+            System.Diagnostics.Debug.WriteLine(ex.Message);
+            _sharedUtil.SetQueryException(SharedUtil.GetSqlSessionValue(sql, parameterModels), ex);
+            throw new Exception(ex.Message);
+        }
 
-            using MySqlConnection connection = SharedUtil.GetConnection();
-            try
-            {
 
-                connection.Open();
-                sql += @"
+        return documentNumberModels;
+    }
+
+    public List<DocumentNumberModel> Search(string search)
+    {
+        List<DocumentNumberModel> documentNumberModels = new();
+        var sql = string.Empty;
+        List<ParameterModel> parameterModels = new();
+
+        using var connection = SharedUtil.GetConnection();
+        try
+        {
+            connection.Open();
+            sql += @"
                 SELECT  *
                 FROM    document_number
                 WHERE   tenantId = @tenantId
                 AND     isDelete != 1
                 AND     documentNumberCode LIKE CONCAT('%',@search,'%')
                 OR      documentNumberDescription LIKE CONCAT('%',@search,'%'); ";
-                MySqlCommand mySqlCommand = new(sql, connection);
-                parameterModels = new List<ParameterModel>
+            MySqlCommand mySqlCommand = new(sql, connection);
+            parameterModels = new List<ParameterModel>
+            {
+                new()
                 {
-                    new ()
+                    Key = "@tenantId",
+                    Value = _sharedUtil.GetTenantId()
+                },
+                new()
+                {
+                    Key = "@search",
+                    Value = search
+                }
+            };
+            foreach (var parameter in parameterModels)
+            {
+                mySqlCommand.Parameters.AddWithValue(parameter.Key, parameter.Value);
+            }
+
+            _sharedUtil.SetSqlSession(sql, parameterModels);
+
+            using (var reader = mySqlCommand.ExecuteReader())
+            {
+                while (reader.Read())
+                {
+                    documentNumberModels.Add(new DocumentNumberModel
                     {
-                        Key = "@tenantId",
-                        Value = _sharedUtil.GetTenantId()
-                    },
-                    new ()
-                    {
-                        Key = "@search",
-                        Value = search
-                    }
-                };
-                foreach (ParameterModel parameter in parameterModels)
+                        DocumentNumberCode = reader["documentNumberCode"].ToString(),
+                        DocumentNumber = reader["documentNumber"].ToString(),
+                        DocumentNumberDescription = reader["documentNumberDescription"].ToString(),
+                        DocumentNumberKey = Convert.ToInt32(reader["documentNumberId"])
+                    });
+                }
+            }
+
+            mySqlCommand.Dispose();
+        }
+        catch (MySqlException ex)
+        {
+            System.Diagnostics.Debug.WriteLine(ex.Message);
+            _sharedUtil.SetQueryException(SharedUtil.GetSqlSessionValue(sql, parameterModels), ex);
+            throw new Exception(ex.Message);
+        }
+
+
+        return documentNumberModels;
+    }
+
+    public byte[] GetExcel()
+    {
+        using var workbook = new XLWorkbook();
+        var worksheet = workbook.Worksheets.Add("Setting > Document Number");
+
+        worksheet.Cell(1, 1).Value = "No";
+        worksheet.Cell(1, 2).Value = "Code";
+        worksheet.Cell(1, 3).Value = "Current Code";
+        worksheet.Cell(1, 4).Value = "Description";
+
+
+        var sql = _sharedUtil.GetSqlSession();
+        var parameterModels = _sharedUtil.GetListSqlParameter();
+        using var connection = SharedUtil.GetConnection();
+
+        try
+        {
+            connection.Open();
+            MySqlCommand mySqlCommand = new(sql, connection);
+            if (parameterModels != null)
+            {
+                foreach (var parameter in parameterModels)
                 {
                     mySqlCommand.Parameters.AddWithValue(parameter.Key, parameter.Value);
                 }
-                _sharedUtil.SetSqlSession(sql, parameterModels);
-
-                using (var reader = mySqlCommand.ExecuteReader())
-                {
-                    while (reader.Read())
-                    {
-                        documentNumberModels.Add(new DocumentNumberModel
-                        {
-                            DocumentNumberCode = reader["documentNumberCode"].ToString(),
-                            DocumentNumber = reader["documentNumber"].ToString(),
-                            DocumentNumberDescription = reader["documentNumberDescription"].ToString(),
-                            DocumentNumberKey = Convert.ToInt32(reader["documentNumberId"])
-                        });
-                    }
-                }
-                mySqlCommand.Dispose();
             }
-            catch (MySqlException ex)
+
+            using (var reader = mySqlCommand.ExecuteReader())
             {
-                System.Diagnostics.Debug.WriteLine(ex.Message);
-                _sharedUtil.SetQueryException(SharedUtil.GetSqlSessionValue(sql, parameterModels), ex);
-                throw new Exception(ex.Message);
+                var counter = 1;
+                while (reader.Read())
+                {
+                    var currentRow = counter++;
+                    worksheet.Cell(currentRow, 1).Value = counter - 1;
+                    worksheet.Cell(currentRow, 2).Value = reader["documentNumberCode"].ToString();
+                    worksheet.Cell(currentRow, 3).Value = reader["documentNumber"].ToString();
+                    worksheet.Cell(currentRow, 4).Value = reader["documentNumberDescription"].ToString();
+                }
             }
 
-
-            return documentNumberModels;
+            mySqlCommand.Dispose();
         }
-        public byte[] GetExcel()
+        catch (MySqlException ex)
         {
-
-            using var workbook = new XLWorkbook();
-            var worksheet = workbook.Worksheets.Add("Setting > Document Number");
-            
-            worksheet.Cell(1, 1).Value = "No";
-            worksheet.Cell(1, 2).Value = "Code";
-            worksheet.Cell(1, 3).Value = "Current Code";
-            worksheet.Cell(1, 4).Value = "Description";
-
-
-            
-            var sql = _sharedUtil.GetSqlSession();
-            var parameterModels = _sharedUtil.GetListSqlParameter();
-            using MySqlConnection connection = SharedUtil.GetConnection();
-
-            try
-            {
-                connection.Open();
-                MySqlCommand mySqlCommand = new(sql, connection);
-                if (parameterModels != null)
-                {
-                    foreach (ParameterModel parameter in parameterModels)
-                    {
-                        mySqlCommand.Parameters.AddWithValue(parameter.Key, parameter.Value);
-                    }
-                }
-                using (var reader = mySqlCommand.ExecuteReader())
-                {
-                    var counter = 1;
-                    while (reader.Read())
-                    {
-                        var currentRow = counter++;
-                        worksheet.Cell(currentRow, 1).Value = counter-1;
-                        worksheet.Cell(currentRow, 2).Value = reader["documentNumberCode"].ToString();
-                        worksheet.Cell(currentRow, 3).Value = reader["documentNumber"].ToString();
-                        worksheet.Cell(currentRow, 4).Value = reader["documentNumberDescription"].ToString();
-
-                    }
-                }
-
-                mySqlCommand.Dispose();
-            }
-            catch (MySqlException ex)
-            {
-                System.Diagnostics.Debug.WriteLine(ex.Message);
-                throw new Exception(ex.Message);
-            }
-            using var stream = new MemoryStream();
-            workbook.SaveAs(stream);
-            return stream.ToArray();
+            System.Diagnostics.Debug.WriteLine(ex.Message);
+            throw new Exception(ex.Message);
         }
-        public void Update(DocumentNumberModel documentNumberModel)
+
+        using var stream = new MemoryStream();
+        workbook.SaveAs(stream);
+        return stream.ToArray();
+    }
+
+    public void Update(DocumentNumberModel documentNumberModel)
+    {
+        var sql = string.Empty;
+        List<ParameterModel> parameterModels = new();
+
+        using var connection = SharedUtil.GetConnection();
+        try
         {
-            string sql = string.Empty;
-            List<ParameterModel> parameterModels = new ();
+            connection.Open();
+            var mySqlTransaction = connection.BeginTransaction();
 
-            using MySqlConnection connection = SharedUtil.GetConnection();
-            try
-            {
-
-                connection.Open();
-                MySqlTransaction mySqlTransaction = connection.BeginTransaction();
-
-                sql += @"
+            sql += @"
                 UPDATE  document_number 
                 SET     documentNumberCode = @documentNumberCode, 
                         documentNumber = @documentNumber ,
                         documentNumberDescription = @documentNumberDescription 
                 WHERE   documentNumberId = @documentNumberId ";
-                MySqlCommand mySqlCommand = new(sql, connection);
-                parameterModels = new List<ParameterModel>
+            MySqlCommand mySqlCommand = new(sql, connection);
+            parameterModels = new List<ParameterModel>
+            {
+                new()
                 {
-                    new ()
-                    {
-                        Key = "@documentNumberCode",
-                        Value = documentNumberModel.DocumentNumberCode
-                    },
-                    new ()
-                    {
-                        Key = "@documentNumber",
-                        Value = documentNumberModel.DocumentNumber
-                    },
-                    new ()
-                    {
-                        Key = "@documentNumberDescription",
-                        Value = documentNumberModel.DocumentNumberDescription
-                    },
-                    new ()
-                    {
-                        Key = "@executeBy",
-                        Value = _sharedUtil.GetUserName()
-                    },
-                    new ()
-                    {
-                        Key = "@documentNumberId",
-                        Value = documentNumberModel.DocumentNumberKey
-                    }
-                };
-                foreach (ParameterModel parameter in parameterModels)
+                    Key = "@documentNumberCode",
+                    Value = documentNumberModel.DocumentNumberCode
+                },
+                new()
                 {
-                    mySqlCommand.Parameters.AddWithValue(parameter.Key, parameter.Value);
+                    Key = "@documentNumber",
+                    Value = documentNumberModel.DocumentNumber
+                },
+                new()
+                {
+                    Key = "@documentNumberDescription",
+                    Value = documentNumberModel.DocumentNumberDescription
+                },
+                new()
+                {
+                    Key = "@executeBy",
+                    Value = _sharedUtil.GetUserName()
+                },
+                new()
+                {
+                    Key = "@documentNumberId",
+                    Value = documentNumberModel.DocumentNumberKey
                 }
-                mySqlCommand.ExecuteNonQuery();
-                mySqlTransaction.Commit();
-                mySqlCommand.Dispose();
-
-            }
-            catch (MySqlException ex)
+            };
+            foreach (var parameter in parameterModels)
             {
-                System.Diagnostics.Debug.WriteLine(ex.Message);
-                _sharedUtil.SetQueryException(SharedUtil.GetSqlSessionValue(sql, parameterModels), ex);
-                throw new Exception(ex.Message);
+                mySqlCommand.Parameters.AddWithValue(parameter.Key, parameter.Value);
             }
+
+            mySqlCommand.ExecuteNonQuery();
+            mySqlTransaction.Commit();
+            mySqlCommand.Dispose();
         }
-        public void Delete(DocumentNumberModel documentNumberModel)
+        catch (MySqlException ex)
         {
-            string sql = string.Empty;
-            List<ParameterModel> parameterModels = new ();
+            System.Diagnostics.Debug.WriteLine(ex.Message);
+            _sharedUtil.SetQueryException(SharedUtil.GetSqlSessionValue(sql, parameterModels), ex);
+            throw new Exception(ex.Message);
+        }
+    }
 
-            using MySqlConnection connection = SharedUtil.GetConnection();
-            try
-            {
+    public void Delete(DocumentNumberModel documentNumberModel)
+    {
+        var sql = string.Empty;
+        List<ParameterModel> parameterModels = new();
 
-                connection.Open();
-                MySqlTransaction mySqlTransaction = connection.BeginTransaction();
+        using var connection = SharedUtil.GetConnection();
+        try
+        {
+            connection.Open();
+            var mySqlTransaction = connection.BeginTransaction();
 
-                sql += @"
+            sql += @"
                 UPDATE  document_number
                 SET     isDelete = 1
                 WHERE   documentNumberId  = @documentNumberId;";
-                MySqlCommand mySqlCommand = new(sql, connection);
+            MySqlCommand mySqlCommand = new(sql, connection);
 
-                parameterModels = new List<ParameterModel>
-                {
-                    new ()
-                    {
-                        Key = "@documentNumberId",
-                        Value = documentNumberModel.DocumentNumberKey
-                    }
-                };
-            
-                foreach (ParameterModel parameter in parameterModels)
-                {
-                    mySqlCommand.Parameters.AddWithValue(parameter.Key, parameter.Value);
-                }
-                mySqlCommand.ExecuteNonQuery();
-
-                mySqlTransaction.Commit();
-
-                mySqlCommand.Dispose();
-
-            }
-            catch (MySqlException ex)
+            parameterModels = new List<ParameterModel>
             {
-                System.Diagnostics.Debug.WriteLine(ex.Message);
-                _sharedUtil.SetQueryException(SharedUtil.GetSqlSessionValue(sql, parameterModels), ex);
-                throw new Exception(ex.Message);
+                new()
+                {
+                    Key = "@documentNumberId",
+                    Value = documentNumberModel.DocumentNumberKey
+                }
+            };
+
+            foreach (var parameter in parameterModels)
+            {
+                mySqlCommand.Parameters.AddWithValue(parameter.Key, parameter.Value);
             }
+
+            mySqlCommand.ExecuteNonQuery();
+
+            mySqlTransaction.Commit();
+
+            mySqlCommand.Dispose();
+        }
+        catch (MySqlException ex)
+        {
+            System.Diagnostics.Debug.WriteLine(ex.Message);
+            _sharedUtil.SetQueryException(SharedUtil.GetSqlSessionValue(sql, parameterModels), ex);
+            throw new Exception(ex.Message);
         }
     }
 }

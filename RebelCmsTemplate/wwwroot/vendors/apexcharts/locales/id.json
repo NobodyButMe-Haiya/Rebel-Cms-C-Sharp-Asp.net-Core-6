@@ -29,8 +29,24 @@
       "Nov",
       "Des"
     ],
-    "days": ["Minggu", "Senin", "Selasa", "Rabu", "kamis", "Jumat", "Sabtu"],
-    "shortDays": ["Min", "Sen", "Sel", "Rab", "Kam", "Jum", "Sab"],
+    "days": [
+      "Minggu",
+      "Senin",
+      "Selasa",
+      "Rabu",
+      "kamis",
+      "Jumat",
+      "Sabtu"
+    ],
+    "shortDays": [
+      "Min",
+      "Sen",
+      "Sel",
+      "Rab",
+      "Kam",
+      "Jum",
+      "Sab"
+    ],
     "toolbar": {
       "exportToSVG": "Unduh SVG",
       "exportToPNG": "Unduh PNG",

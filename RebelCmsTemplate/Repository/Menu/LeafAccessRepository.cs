@@ -1,32 +1,30 @@
-﻿using System;
-using System.Collections.Generic;
-using Microsoft.AspNetCore.Http;
-using MySql.Data.MySqlClient;
+﻿using MySql.Data.MySqlClient;
 using RebelCmsTemplate.Models.Menu;
 using RebelCmsTemplate.Models.Shared;
 using RebelCmsTemplate.Util;
 
-namespace RebelCmsTemplate.Repository.Menu
+namespace RebelCmsTemplate.Repository.Menu;
+
+public class LeafAccessRepository
 {
-    public class LeafAccessRepository
+    private readonly SharedUtil _sharedUtil;
+
+    public LeafAccessRepository(IHttpContextAccessor httpContextAccessor)
     {
-        private readonly SharedUtil _sharedUtil;
-        public LeafAccessRepository(IHttpContextAccessor httpContextAccessor)
-        {
-            _sharedUtil = new SharedUtil(httpContextAccessor);
-        }
-        public List<LeafAccessModel> Read(int roleId=0 , int folderId=0, int leafId=0)
-        {
-            List<LeafAccessModel> leafAccessModels = new();
-            string sql = string.Empty;
-            List<ParameterModel> parameterModels = new ();
+        _sharedUtil = new SharedUtil(httpContextAccessor);
+    }
 
-            using MySqlConnection connection = SharedUtil.GetConnection();
-            try
-            {
+    public List<LeafAccessModel> Read(int roleId = 0, int folderId = 0, int leafId = 0)
+    {
+        List<LeafAccessModel> leafAccessModels = new();
+        var sql = string.Empty;
+        List<ParameterModel> parameterModels = new();
 
-                connection.Open();
-                sql += @"
+        using var connection = SharedUtil.GetConnection();
+        try
+        {
+            connection.Open();
+            sql += @"
                 SELECT  * 
                 FROM    leaf_access 
                 JOIN    leaf
@@ -39,172 +37,175 @@ namespace RebelCmsTemplate.Repository.Menu
                 AND     role.isDelete != 1
                 AND     folder.isDelete != 1 
                 AND     leaf.isDelete != 1 ";
-                if (roleId > 0)
-                {
-                    sql += " AND roleId  = @roleId ";
-                }
-                if (folderId > 0)
-                {
-                    sql += " AND folderId  = @folderId ";
-                }
-                if (leafId > 0)
-                {
-                    sql += " AND leafId  = @leafId ";
-                }
-                MySqlCommand mySqlCommand = new(sql, connection);
-                if (roleId > 0)
-                {
-                    
-                    parameterModels.Add(new ParameterModel
-                    {
-                        Key = "@roleId",
-                        Value = roleId
-                    });
+            if (roleId > 0)
+            {
+                sql += " AND roleId  = @roleId ";
+            }
 
-                }
-                if (folderId > 0)
-                {
-                    parameterModels.Add(new ParameterModel
-                    {
-                        Key = "@folderId",
-                        Value = folderId
-                    });
+            if (folderId > 0)
+            {
+                sql += " AND folderId  = @folderId ";
+            }
 
-                }
-                if (leafId > 0)
-                {
-                    parameterModels.Add(new ParameterModel
-                    {
-                        Key = "@leafId",
-                        Value = leafId
-                    });
+            if (leafId > 0)
+            {
+                sql += " AND leafId  = @leafId ";
+            }
 
-                }
+            MySqlCommand mySqlCommand = new(sql, connection);
+            if (roleId > 0)
+            {
                 parameterModels.Add(new ParameterModel
                 {
-                    Key = "@tenantId",
-                    Value = _sharedUtil.GetTenantId()
+                    Key = "@roleId",
+                    Value = roleId
                 });
-                foreach (ParameterModel parameter in parameterModels)
-                {
-                    mySqlCommand.Parameters.AddWithValue(parameter.Key, parameter.Value);
-                }
-                using (var reader = mySqlCommand.ExecuteReader())
-                {
-                    while (reader.Read())
-                    {
-                        leafAccessModels.Add(new LeafAccessModel
-                        {
-                            LeafAccessKey = Convert.ToInt32(reader["leafAccessId"]),
-                            LeafAccessCreateValue = Convert.ToInt32(reader["leafAccessCreateValue"]),
-                            LeafAccessReadValue = Convert.ToInt32(reader["leafAccessReadValue"]),
-                            LeafAccessUpdateValue = Convert.ToInt32(reader["leafAccessUpdateValue"]),
-                            LeafAccessDeleteValue = Convert.ToInt32(reader["leafAccessDeleteValue"]),
-                            LeafAccessExtraOneValue = Convert.ToInt32(reader["LeafAccessExtraOneValue"]),
-                            LeafAccessExtraTwoValue = Convert.ToInt32(reader["LeafAccessExtraTwoValue"]),
-                            RoleName = reader["roleName"].ToString(),
-                            LeafName = reader["leafName"].ToString(),
-                            FolderName = reader["folderName"].ToString(),
-                            RoleKey = Convert.ToInt32(reader["roleId"]),
-                            LeafKey = Convert.ToInt32(reader["leafId"])
-                        });
-                    }
-                }
-
-                mySqlCommand.Dispose();
-
             }
-            catch (MySqlException ex)
+
+            if (folderId > 0)
             {
-                System.Diagnostics.Debug.WriteLine(ex.Message);
-                _sharedUtil.SetSystemException(ex);
-                throw new Exception(ex.Message);
+                parameterModels.Add(new ParameterModel
+                {
+                    Key = "@folderId",
+                    Value = folderId
+                });
             }
 
+            if (leafId > 0)
+            {
+                parameterModels.Add(new ParameterModel
+                {
+                    Key = "@leafId",
+                    Value = leafId
+                });
+            }
 
-            return leafAccessModels;
+            parameterModels.Add(new ParameterModel
+            {
+                Key = "@tenantId",
+                Value = _sharedUtil.GetTenantId()
+            });
+            foreach (var parameter in parameterModels)
+            {
+                mySqlCommand.Parameters.AddWithValue(parameter.Key, parameter.Value);
+            }
+
+            using (var reader = mySqlCommand.ExecuteReader())
+            {
+                while (reader.Read())
+                {
+                    leafAccessModels.Add(new LeafAccessModel
+                    {
+                        LeafAccessKey = Convert.ToInt32(reader["leafAccessId"]),
+                        LeafAccessCreateValue = Convert.ToInt32(reader["leafAccessCreateValue"]),
+                        LeafAccessReadValue = Convert.ToInt32(reader["leafAccessReadValue"]),
+                        LeafAccessUpdateValue = Convert.ToInt32(reader["leafAccessUpdateValue"]),
+                        LeafAccessDeleteValue = Convert.ToInt32(reader["leafAccessDeleteValue"]),
+                        LeafAccessExtraOneValue = Convert.ToInt32(reader["LeafAccessExtraOneValue"]),
+                        LeafAccessExtraTwoValue = Convert.ToInt32(reader["LeafAccessExtraTwoValue"]),
+                        RoleName = reader["roleName"].ToString(),
+                        LeafName = reader["leafName"].ToString(),
+                        FolderName = reader["folderName"].ToString(),
+                        RoleKey = Convert.ToInt32(reader["roleId"]),
+                        LeafKey = Convert.ToInt32(reader["leafId"])
+                    });
+                }
+            }
+
+            mySqlCommand.Dispose();
+        }
+        catch (MySqlException ex)
+        {
+            System.Diagnostics.Debug.WriteLine(ex.Message);
+            _sharedUtil.SetSystemException(ex);
+            throw new Exception(ex.Message);
         }
 
-        public void Update(List<LeafAccessModel> leafAccessModels)
+
+        return leafAccessModels;
+    }
+
+    public void Update(List<LeafAccessModel> leafAccessModels)
+    {
+        using var connection = SharedUtil.GetConnection();
+        try
         {
-            using MySqlConnection connection = SharedUtil.GetConnection();
-            try
+            connection.Open();
+            var mySqlTransaction = connection.BeginTransaction();
+
+            List<int> primaryKeyAll = new();
+            List<string> access = new()
             {
-
-                connection.Open();
-                MySqlTransaction mySqlTransaction = connection.BeginTransaction();
-
-                List<int> primaryKeyAll = new();
-                List<string> access = new()
+                "leafAccessCreateValue",
+                "leafAccessReadValue",
+                "leafAccessUpdateValue",
+                "leafAccessDeleteValue"
+            };
+            var sql = @"UPDATE  `leaf_access`    ";
+            sql += " SET";
+            foreach (var fieldNameAccess in access)
+            {
+                switch (fieldNameAccess)
                 {
-                    "leafAccessCreateValue",
-                    "leafAccessReadValue",
-                    "leafAccessUpdateValue",
-                    "leafAccessDeleteValue"
-                };
-                string sql = @"UPDATE  `leaf_access`    ";
-                sql += " SET";
-                foreach (var fieldNameAccess in access)
-                {
-                    switch (fieldNameAccess)
-                    {
-                        case "leafAccessCreateValue":
-                            sql += "`leafAccessCreateValue`			= CASE `leafAccessId` ";
-                            foreach (LeafAccessModel leafAccessModel in leafAccessModels)
-                            {
-                                sql += " WHEN  "+leafAccessModel.LeafAccessKey;
-                                sql += " THEN  "+leafAccessModel.LeafAccessCreateValue;
-                                primaryKeyAll.Add(leafAccessModel.LeafAccessKey);
-                            }
-                            sql += " ELSE "+fieldNameAccess.ToUpper()+ " END,";
-                            break;
-                        case "leafAccessReadValue":
-                            sql += "`leafAccessReadValue`			= CASE `leafAccessId` ";
-                            foreach (LeafAccessModel leafAccessModel in leafAccessModels)
-                            {
-                                sql += " WHEN  " + leafAccessModel.LeafAccessKey;
-                                sql += " THEN  " + leafAccessModel.LeafAccessReadValue;
-                                primaryKeyAll.Add(leafAccessModel.LeafAccessKey);
-                            }
-                            sql += " ELSE "+ fieldNameAccess.ToUpper() + " END,";
-                            break;
-                        case "leafAccessUpdateValue":
-                            sql += "`leafAccessUpdateValue`			= CASE `leafAccessId` ";
-                            foreach (LeafAccessModel leafAccessModel in leafAccessModels)
-                            {
-                                sql += " WHEN  " + leafAccessModel.LeafAccessKey;
-                                sql += " THEN  " + leafAccessModel.LeafAccessUpdateValue;
-                                primaryKeyAll.Add(leafAccessModel.LeafAccessKey);
-                            }
-                            sql += " ELSE "+ fieldNameAccess.ToUpper() + " END,";
-                            break;
-                        case "leafAccessDeleteValue":
-                            sql += "`leafAccessDeleteValue`			= CASE `leafAccessId` ";
-                            foreach (LeafAccessModel leafAccessModel in leafAccessModels)
-                            {
-                                sql += " WHEN  " + leafAccessModel.LeafAccessKey;
-                                sql += " THEN  " + leafAccessModel.LeafAccessCreateValue;
-                                primaryKeyAll.Add(leafAccessModel.LeafAccessKey);
-                            }
-                            sql += " ELSE  " + fieldNameAccess.ToUpper() + " END";
-                            break;
-                    }
+                    case "leafAccessCreateValue":
+                        sql += "`leafAccessCreateValue`			= CASE `leafAccessId` ";
+                        foreach (var leafAccessModel in leafAccessModels)
+                        {
+                            sql += " WHEN  " + leafAccessModel.LeafAccessKey;
+                            sql += " THEN  " + leafAccessModel.LeafAccessCreateValue;
+                            primaryKeyAll.Add(leafAccessModel.LeafAccessKey);
+                        }
 
+                        sql += " ELSE " + fieldNameAccess.ToUpper() + " END,";
+                        break;
+                    case "leafAccessReadValue":
+                        sql += "`leafAccessReadValue`			= CASE `leafAccessId` ";
+                        foreach (var leafAccessModel in leafAccessModels)
+                        {
+                            sql += " WHEN  " + leafAccessModel.LeafAccessKey;
+                            sql += " THEN  " + leafAccessModel.LeafAccessReadValue;
+                            primaryKeyAll.Add(leafAccessModel.LeafAccessKey);
+                        }
+
+                        sql += " ELSE " + fieldNameAccess.ToUpper() + " END,";
+                        break;
+                    case "leafAccessUpdateValue":
+                        sql += "`leafAccessUpdateValue`			= CASE `leafAccessId` ";
+                        foreach (var leafAccessModel in leafAccessModels)
+                        {
+                            sql += " WHEN  " + leafAccessModel.LeafAccessKey;
+                            sql += " THEN  " + leafAccessModel.LeafAccessUpdateValue;
+                            primaryKeyAll.Add(leafAccessModel.LeafAccessKey);
+                        }
+
+                        sql += " ELSE " + fieldNameAccess.ToUpper() + " END,";
+                        break;
+                    case "leafAccessDeleteValue":
+                        sql += "`leafAccessDeleteValue`			= CASE `leafAccessId` ";
+                        foreach (var leafAccessModel in leafAccessModels)
+                        {
+                            sql += " WHEN  " + leafAccessModel.LeafAccessKey;
+                            sql += " THEN  " + leafAccessModel.LeafAccessCreateValue;
+                            primaryKeyAll.Add(leafAccessModel.LeafAccessKey);
+                        }
+
+                        sql += " ELSE  " + fieldNameAccess.ToUpper() + " END";
+                        break;
                 }
-                sql += " WHERE 	`leafAccessId`		IN	( " + string.Join(",", primaryKeyAll) + ")";
-                MySqlCommand mySqlCommand = new(sql, connection);
-
-                mySqlCommand.ExecuteNonQuery();
-                mySqlTransaction.Commit();
-                mySqlCommand.Dispose();
-
             }
-            catch (MySqlException ex)
-            {
-                System.Diagnostics.Debug.WriteLine(ex.Message);
-                _sharedUtil.SetSystemException(ex);
-                throw new Exception(ex.Message);
-            }
+
+            sql += " WHERE 	`leafAccessId`		IN	( " + string.Join(",", primaryKeyAll) + ")";
+            MySqlCommand mySqlCommand = new(sql, connection);
+
+            mySqlCommand.ExecuteNonQuery();
+            mySqlTransaction.Commit();
+            mySqlCommand.Dispose();
+        }
+        catch (MySqlException ex)
+        {
+            System.Diagnostics.Debug.WriteLine(ex.Message);
+            _sharedUtil.SetSystemException(ex);
+            throw new Exception(ex.Message);
         }
     }
 }

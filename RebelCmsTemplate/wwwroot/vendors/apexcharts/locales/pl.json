@@ -38,7 +38,15 @@
       "Piątek",
       "Sobota"
     ],
-    "shortDays": ["Nd", "Pn", "Wt", "Śr", "Cz", "Pt", "Sb"],
+    "shortDays": [
+      "Nd",
+      "Pn",
+      "Wt",
+      "Śr",
+      "Cz",
+      "Pt",
+      "Sb"
+    ],
     "toolbar": {
       "exportToSVG": "Pobierz SVG",
       "exportToPNG": "Pobierz PNG",

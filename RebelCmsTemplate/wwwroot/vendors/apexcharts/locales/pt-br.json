@@ -38,7 +38,15 @@
       "Sexta",
       "Sábado"
     ],
-    "shortDays": ["Dom", "Seg", "Ter", "Qua", "Qui", "Sex", "Sab"],
+    "shortDays": [
+      "Dom",
+      "Seg",
+      "Ter",
+      "Qua",
+      "Qui",
+      "Sex",
+      "Sab"
+    ],
     "toolbar": {
       "exportToSVG": "Baixar SVG",
       "exportToPNG": "Baixar PNG",
