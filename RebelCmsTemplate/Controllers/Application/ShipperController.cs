@@ -114,7 +114,7 @@ public class ShipperController : Controller
                 {
                     try
                     {
-                        data = shipperRepository.Search(search);
+                        data = shipperRepository.Search(search); 
                         code = ((int) ReturnCodeEnum.READ_SUCCESS).ToString();
                         status = true;
                     }

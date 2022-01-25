@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "lCxub82TwkDVJzfex8yju2zJqem953hKlfY+3nNUjNI=",
+  "Hash": "luHt9b+aw2kOH0WgqHLPea3uYYHPEblt2+srshWDGXE=",
   "Source": "RebelCmsTemplate",
   "BasePath": "_content/RebelCmsTemplate",
   "Mode": "Default",
@@ -117,6 +117,23 @@
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "wwwroot/css/bootstrap.rtl.css"
+    },
+    {
+      "Identity": "/Users/user/Projects/Rebel-Cms-C-Sharp-Asp.net-Core-6/RebelCmsTemplate/wwwroot/css/custom.css",
+      "SourceId": "RebelCmsTemplate",
+      "SourceType": "Discovered",
+      "ContentRoot": "/Users/user/Projects/Rebel-Cms-C-Sharp-Asp.net-Core-6/RebelCmsTemplate/wwwroot/",
+      "BasePath": "_content/RebelCmsTemplate",
+      "RelativePath": "css/custom.css",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot/css/custom.css"
     },
     {
       "Identity": "/Users/user/Projects/Rebel-Cms-C-Sharp-Asp.net-Core-6/RebelCmsTemplate/wwwroot/css/pages/auth.css",

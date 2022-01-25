@@ -286,65 +286,6 @@ SupplierHomePage = reader["supplierHomePage"].ToString(),
             }
             return supplierModel;
         }
-        public SupplierModel  GetSingleWithDetail(SupplierModel supplierModel)
-        {
-            var sql = string.Empty;
-            var total =0;
-            List<ParameterModel> parameterModels = new ();
-            using var connection = SharedUtil.GetConnection();
-            try
-            {
-                connection.Open();
-                sql += @"
-                SELECT  *
-                FROM    supplier 
-                WHERE   supplier.isDelete != 1
-                AND   supplier.supplierId    =   @supplierId LIMIT 1";
-                MySqlCommand mySqlCommand = new(sql, connection);
-                parameterModels = new List<ParameterModel>
-                {
-                    new ()
-                    {
-                        Key = "@supplierId",
-                        Value = supplierModel.SupplierKey
-                   }
-                };
-                foreach (var parameter in parameterModels)
-                {
-                    mySqlCommand.Parameters.AddWithValue(parameter.Key, parameter.Value);
-                }
-                _sharedUtil.SetSqlSession(sql, parameterModels); 
-                using (var reader = mySqlCommand.ExecuteReader())
-                {
-                    while (reader.Read())
-                   {
-                     total =1;
-supplierModel = new SupplierModel() { 
-SupplierKey = Convert.ToInt32(reader["supplierId"]),
-SupplierName = reader["supplierName"].ToString(),
-SupplierContactName = reader["supplierContactName"].ToString(),
-SupplierContactTitle = reader["supplierContactTitle"].ToString(),
-SupplierAddress = reader["supplierAddress"].ToString(),
-SupplierCity = reader["supplierCity"].ToString(),
-SupplierRegion = reader["supplierRegion"].ToString(),
-SupplierPostalCode = reader["supplierPostalCode"].ToString(),
-SupplierCountry = reader["supplierCountry"].ToString(),
-SupplierPhone = reader["supplierPhone"].ToString(),
-SupplierFax = reader["supplierFax"].ToString(),
-SupplierHomePage = reader["supplierHomePage"].ToString(),
-                    };
-                    }
-                }
-                mySqlCommand.Dispose();
-            }
-            catch (MySqlException ex)
-            {
-                System.Diagnostics.Debug.WriteLine(ex.Message);
-                _sharedUtil.SetQueryException(SharedUtil.GetSqlSessionValue(sql, parameterModels), ex);
-                throw new Exception(ex.Message);
-            }
-            return supplierModel;
-        }
         public byte[] GetExcel()
         {
             using var workbook = new XLWorkbook();

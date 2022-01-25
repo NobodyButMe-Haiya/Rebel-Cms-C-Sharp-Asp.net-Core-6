@@ -69,7 +69,7 @@
                 </div>
                 <div class="card-body">
                     <div class="row">
-                        <input type="hidden" id="customerKey" value="0"/>
+                        <input type="hidden" id="customerKey" value="-"/>
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label for="customerCode">Code</label>
@@ -221,7 +221,7 @@
     </div>
 </section>
 <script>
-        function resetForm() {
+        function resetForm(attributeName) {
 	$("#customerKey").val('');
 	$("#tenantKey").val('');
 	$("#customerCode").val('');
@@ -281,7 +281,6 @@
                return template; 
         }
         function createRecord() {
-         const customerKey = $("#customerKey");
          const customerCode = $("#customerCode");
          const customerName = $("#customerName");
          const customerContactName = $("#customerContactName");
@@ -300,7 +299,6 @@
            data: {
             mode: 'create',
             leafCheckKey: @navigationModel.LeafCheckKey,
-            customerKey: $("#customerKey").val(),
             customerCode: $("#customerCode").val(),
             customerName: $("#customerName").val(),
             customerContactName: $("#customerContactName").val(),
@@ -328,7 +326,7 @@
             if (status) {
              const lastInsertKey = data.lastInsertKey;
              $("#tableBody").prepend(template(lastInsertKey,customerCode.val(),customerName.val(),customerContactName.val(),customerContactTitle.val(),customerAddress.val(),customerCity.val(),customerRegion.val(),customerPostalCode.val(),customerCountry.val(),customerPhone.val(),customerFax.val()));
-  $("customerKeyKey").val(lastInsertKey);
+                $("#customerKey").val(lastInsertKey);
             $("#createButton").attr("disabled","disabled");
             $("#updateButton").removeAttr("disabled","disabled");
             $("#deleteButton").removeAttr("disabled","disabled");

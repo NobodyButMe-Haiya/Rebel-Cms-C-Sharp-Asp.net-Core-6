@@ -282,7 +282,6 @@
                return template; 
         }
         function createRecord() {
- const supplierKey = $("#supplierKey");
  const supplierName = $("#supplierName");
  const supplierContactName = $("#supplierContactName");
  const supplierContactTitle = $("#supplierContactTitle");
@@ -301,7 +300,6 @@
            data: {
             mode: 'create',
             leafCheckKey: @navigationModel.LeafCheckKey,
-            supplierKey: $("#supplierKey").val(),
             supplierName: $("#supplierName").val(),
             supplierContactName: $("#supplierContactName").val(),
             supplierContactTitle: $("#supplierContactTitle").val(),
@@ -329,7 +327,7 @@
             if (status) {
              const lastInsertKey = data.lastInsertKey;
              $("#tableBody").prepend(template(lastInsertKey,supplierName.val(),supplierContactName.val(),supplierContactTitle.val(),supplierAddress.val(),supplierCity.val(),supplierRegion.val(),supplierPostalCode.val(),supplierCountry.val(),supplierPhone.val(),supplierFax.val(),supplierHomePage.val()));
-  $("supplierKeyKey").val(lastInsertKey);
+  $("#supplierKey").val(lastInsertKey); 
             $("#createButton").attr("disabled","disabled");
             $("#updateButton").removeAttr("disabled","disabled");
             $("#deleteButton").removeAttr("disabled","disabled");

@@ -91,7 +91,7 @@
         <div class="col-xs-12 col-sm-12 col-md-12">&nbsp;</div>
     </div>
     <div class="card">
-        <table class="table table-bordered table-striped table-condensed table-hover">
+        <table class="table table-bordered table-striped table-condensed table-hover table-fixed">
             <thead>
             <tr>
                 <th>Customer</th>
@@ -471,20 +471,7 @@ $("#formView").hide();
 		return template; 
 	}
         function createRecord() {
- const invoiceKey = $("#invoiceKey");
- const customerKey = $("#customerKey");
- const shipperKey = $("#shipperKey");
- const employeeKey = $("#employeeKey");
- const invoiceOrderDate = $("#invoiceOrderDate");
- const invoiceRequiredDate = $("#invoiceRequiredDate");
- const invoiceShippedDate = $("#invoiceShippedDate");
- const invoiceFreight = $("#invoiceFreight");
- const invoiceShipName = $("#invoiceShipName");
- const invoiceShipAddress = $("#invoiceShipAddress");
- const invoiceShipCity = $("#invoiceShipCity");
- const invoiceShipRegion = $("#invoiceShipRegion");
- const invoiceShipPostalCode = $("#invoiceShipPostalCode");
- const invoiceShipCountry = $("#invoiceShipCountry");
+
          $.ajax({
           type: 'POST',
            url: "api/application/invoice",
@@ -492,7 +479,6 @@ $("#formView").hide();
            data: {
             mode: 'create',
             leafCheckKey: @navigationModel.LeafCheckKey,
-            invoiceKey: $("#invoiceKey").val(),
             customerKey: $("#customerKey").val(),
             shipperKey: $("#shipperKey").val(),
             employeeKey: $("#employeeKey").val(),

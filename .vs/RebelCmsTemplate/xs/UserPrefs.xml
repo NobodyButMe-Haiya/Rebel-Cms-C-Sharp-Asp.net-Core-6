@@ -1,10 +1,14 @@
 ﻿<Properties GitUserInfo="UsingGIT" StartupConfiguration="{0D6E5960-46B7-41B8-9D5E-4E041993E9B1}|Default">
-  <MonoDevelop.Ide.Workbench ActiveDocument="RebelCmsTemplate/Util/SharedUtil.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="RebelCmsTemplate/Repository/Application/ContactUsRepository.cs">
     <Files>
-      <File FileName="../RebelCmsConsoleApplication/RebelCmsConsoleApplication/CodeGenerator.cs" Line="297" Column="1" />
-      <File FileName="RebelCmsTemplate/Models/Setting/ShipperModel.cs" Line="1" Column="1" />
-      <File FileName="RebelCmsTemplate/Util/DateOnlyConvertor.cs" Line="29" Column="9" />
-      <File FileName="RebelCmsTemplate/Util/SharedUtil.cs" Line="94" Column="1" />
+      <File FileName="RebelCmsTemplate/Repository/Administrator/RoleRepository.cs" Line="1" Column="1" />
+      <File FileName="RebelCmsTemplate/Repository/Application/SupplierRepository.cs" Line="318" Column="66" />
+      <File FileName="RebelCmsTemplate/Repository/Application/ShipperRepository.cs" Line="264" Column="49" />
+      <File FileName="RebelCmsTemplate/Repository/Application/InvoiceRepository.cs" Line="528" Column="64" />
+      <File FileName="RebelCmsTemplate/Repository/Application/InvoiceDetailRepository.cs" Line="285" Column="48" />
+      <File FileName="RebelCmsTemplate/Repository/Application/EmployeeRepository.cs" Line="637" Column="2" />
+      <File FileName="RebelCmsTemplate/Repository/Application/CustomerRepository.cs" Line="363" Column="50" />
+      <File FileName="RebelCmsTemplate/Repository/Application/ContactUsRepository.cs" Line="124" Column="19" />
     </Files>
     <Pads>
       <Pad Id="ProjectPad">
@@ -20,7 +24,7 @@
     </Pads>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.PinnedWatches />
-  <MonoDevelop.Ide.ItemProperties.RebelCmsTemplate PreferredExecutionTarget="/Applications/Google Chrome.app" />
+  <MonoDevelop.Ide.ItemProperties.RebelCmsTemplate PreferredExecutionTarget="/Applications/Safari.app" />
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
     <BreakpointStore />

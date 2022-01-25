@@ -152,6 +152,33 @@
                 console.log("loading");
             }
         }).done(function (data) {
+            // there is possibility network failure / testing not running the server ? 
+             if (data === void 0) {
+                   let timerInterval=0;
+                    Swal.fire({
+                        title: 'Auto close alert!',
+                        html: 'Hamster Out Of Service .Pease Re-login.I will close in <b></b> milliseconds.',
+                        timer: 2000,
+                        timerProgressBar: true,
+                        didOpen: () => {
+                            Swal.showLoading()
+                            const b = Swal.getHtmlContainer().querySelector('b')
+                            timerInterval = setInterval(() => {
+                                b.textContent = Swal.getTimerLeft()
+                            }, 100)
+                        },
+                        willClose: () => {
+                            clearInterval(timerInterval)
+                        }
+                    }).then((result) => {
+                        /* Read more about handling dismissals below */
+                        if (result.dismiss === Swal.DismissReason.timer) {
+                            console.log('session out .. ');
+                            location.href = "/";
+                        }
+                    });
+            }
+             
             let status = data.status;
             let code = data.code;
             if (status) {
@@ -159,7 +186,7 @@
                 $("#page-content").html("").html(data.page)
             } else if (status === false) {
                 if (parseInt(code) === parseInt(@((int) ReturnCodeEnum.ACCESS_DENIED) )) {
-                    let timerInterval
+                    let timerInterval=0;
                     Swal.fire({
                         title: 'Auto close alert!',
                         html: 'Session Out .Pease Re-login.I will close in <b></b> milliseconds.',

@@ -333,7 +333,6 @@
                return template;
         }
         function createRecord() {
-         const employeeKey = $("#employeeKey");
          const employeeLastName = $("#employeeLastName");
          const employeeFirstName = $("#employeeFirstName");
          const employeeTitle = $("#employeeTitle");
@@ -354,7 +353,6 @@
           var formData = new FormData();
  formData.append("mode","create");
  formData.append("leafCheckKey",@navigationModel.LeafCheckKey);
-        formData.append('employeeKey',employeeKey.val());
         formData.append('employeeLastName',employeeLastName.val());
         formData.append('employeeFirstName',employeeFirstName.val());
         formData.append('employeeTitle',employeeTitle.val());
@@ -398,7 +396,7 @@ if(filesEmployeePhoto.length > 0 ){
             if (status) {
              const lastInsertKey = data.lastInsertKey;
              $("#tableBody").prepend(template(lastInsertKey,employeeLastName.val(),employeeFirstName.val(),employeeTitle.val(),employeeTitleOfCourtesy.val(),employeeBirthDate.val(),employeeHireDate.val(),employeeAddress.val(),employeeCity.val(),employeeRegion.val(),employeePostalCode.val(),employeeCountry.val(),employeeHomePhone.val(),employeeExtension.val(),employeePhoto.val(),employeeNotes.val(),employeePhotoPath.val(),employeeSalary.val()));
-  $("employeeKey").val(lastInsertKey);
+  $("#employeeKey").val(lastInsertKey);
             $("#createButton").attr("disabled","disabled");
             $("#updateButton").removeAttr("disabled","disabled");
             $("#deleteButton").removeAttr("disabled","disabled");

@@ -132,12 +132,13 @@ public class CustomerController : Controller
                 {
                     try
                     {
+                        data = customerRepository.Search(search);
                         code = ((int) ReturnCodeEnum.READ_SUCCESS).ToString();
                         status = true;
                     }
                     catch (Exception ex)
                     {
-                        data = customerRepository.Search(search);
+                        
                         code = sharedUtil.GetRoleId() == (int) AccessEnum.ADMINISTRATOR_ACCESS
                             ? ex.Message
                             : ((int) ReturnCodeEnum.SYSTEM_ERROR).ToString();
