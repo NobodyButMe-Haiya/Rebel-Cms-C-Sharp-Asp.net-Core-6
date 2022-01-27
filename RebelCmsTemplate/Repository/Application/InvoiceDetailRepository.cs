@@ -105,9 +105,12 @@ public class InvoiceDetailRepository
                         InvoiceDetailKey = Convert.ToInt32(reader["invoiceDetailId"]),
                         InvoiceKey = Convert.ToInt32(reader["invoiceId"]),
                         ProductKey = Convert.ToInt32(reader["productId"]),
-                        InvoiceDetailUnitPrice = Convert.ToDecimal(reader["invoiceDetailUnitPrice"]),
-                        InvoiceDetailQuantity = Convert.ToInt32(reader["invoiceDetailQuantity"]),
-                        InvoiceDetailDiscount = Convert.ToDouble(reader["invoiceDetailDiscount"]),
+                        InvoiceDetailUnitPrice = reader["invoiceDetailUnitPrice"] != DBNull.Value
+                            ?Convert.ToDecimal(reader["invoiceDetailUnitPrice"]):0,
+                        InvoiceDetailQuantity = reader["invoiceDetailQuantity"] != DBNull.Value
+                            ?Convert.ToInt32(reader["invoiceDetailQuantity"]):0,
+                        InvoiceDetailDiscount = reader["invoiceDetailDiscount"] != DBNull.Value
+                            ?Convert.ToDouble(reader["invoiceDetailDiscount"]):0,
                         IsDelete = Convert.ToInt32(reader["isDelete"])
                     });
                 }

@@ -694,7 +694,7 @@ $("#formView").hide();
                  let templateStringBuilder = "";
                  for (let i = 0; i < data.data.length; i++) {
                   let row = data.data[i];
-                  templateStringBuilder += template(row.invoiceKey,row.customerName,row.shipperName,row.employeeLastName,row.invoiceOrderDate,row.invoiceRequiredDate,row.invoiceShippedDate,row.invoiceFreight,row.invoiceShipName,row.invoiceShipAddress,row.invoiceShipCity,row.invoiceShipRegion,row.invoiceShipPostalCode,row.invoiceShipCountry);
+                  templateStringBuilder += template(row.invoiceKey,row.customerName,row.shipperName,row.employeeLastName,row.invoiceOrderDate);
                  }
                  $("#tableBody").html("").html(templateStringBuilder);
                 } else {

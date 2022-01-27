@@ -14,14 +14,14 @@
     List<ProductTypeModel> productTypeModels = new();
     try
     {
-       SupplierRepository supplierRepository = new(_httpContextAccessor);
-       supplierModels = supplierRepository.Read();
-       ProductCategoryRepository productCategoryRepository = new(_httpContextAccessor);
-       productCategoryModels = productCategoryRepository.Read();
-       ProductTypeRepository productTypeRepository = new(_httpContextAccessor);
-       productTypeModels = productTypeRepository.Read();
-       ProductRepository productRepository = new(_httpContextAccessor);
-       productModels = productRepository.Read();
+        SupplierRepository supplierRepository = new(_httpContextAccessor);
+        supplierModels = supplierRepository.Read();
+        ProductCategoryRepository productCategoryRepository = new(_httpContextAccessor);
+        productCategoryModels = productCategoryRepository.Read();
+        ProductTypeRepository productTypeRepository = new(_httpContextAccessor);
+        productTypeModels = productTypeRepository.Read();
+        ProductRepository productRepository = new(_httpContextAccessor);
+        productModels = productRepository.Read();
     }
     catch (Exception ex)
     {
@@ -32,252 +32,255 @@
     var name = filename.Split(".")[0];
     NavigationModel navigationModel = sharedUtils.GetNavigation(name);
 }
-    <div class="page-title">
-        <div class="row">
-            <div class="col-12 col-md-6 order-md-1 order-last">
-                <h3>@navigationModel.LeafName</h3>
+<div class="page-title">
+    <div class="row">
+        <div class="col-12 col-md-6 order-md-1 order-last">
+            <h3>@navigationModel.LeafName</h3>
+        </div>
+        <div class="col-12 col-md-6 order-md-2 order-first">
+            <nav aria-label="breadcrumb" class="breadcrumb-header float-start float-lg-end">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item">
+                        <a href="#">
+                            <i class="@navigationModel.FolderIcon"></i> @navigationModel.FolderName
+                        </a>
+                    </li>
+                    <li class="breadcrumb-item active" aria-current="page">
+                        <i class="@navigationModel.LeafIcon"></i> @navigationModel.LeafName
+                    </li>
+                    <li class="breadcrumb-item active" aria-current="page">
+                        <i class="fas fa-file-excel"></i>
+                        <a href="#" onclick="excelRecord()">Excel</a>
+                    </li>
+                    <li class="breadcrumb-item active" aria-current="page">
+                        <i class="fas fa-sign-out-alt"></i>
+                        <a href="/logout">Logout</a>
+                    </li>
+                </ol>
+            </nav>
+        </div>
+    </div>
+</div>
+<section class="content">
+<div class="container-fluid">
+<form class="form-horizontal">
+    <div class="card card-primary">
+        <div class="card-header">
+            <Button id="createButton" type="button" class="btn btn-success" onclick="createRecord()">
+                <i class="fas fa-newspaper"></i>&nbsp;CREATE
+            </Button>&nbsp;
+            <Button id="updateButton" type="button" class="btn btn-warning" onclick="updateRecord()" disabled="disabled">
+                <i class="fas fa-edit"></i>&nbsp;UPDATE
+            </Button>&nbsp;
+            <Button id="deleteButton" type="button" class="btn btn-danger" onclick="deleteRecord()" disabled="disabled">
+                <i class="fas fa-trash"></i>&nbsp;DELETE
+            </Button>&nbsp;
+            <button type="button" class="btn btn-warning" onclick="resetForm()">
+                <i class="fas fa-power-off"></i> Reset
+            </button>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <input type="hidden" id="productKey" value="0"/>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="supplierKey">Supplier</label>
+                        <select name="supplierKey" id="supplierKey" class="form-control">
+                            @if (supplierModels.Count == 0)
+                            {
+                                <option value="">Please Create A New field </option>
+                            }
+                            else
+                            {
+                                foreach (var rowSupplier in supplierModels)
+                                {
+                                    <option value="@rowSupplier.SupplierKey">
+                                        @rowSupplier.SupplierName
+                                    </option>
+                                }
+                            }
+                        </select>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="productCategoryKey">Product Category</label>
+                        <select name="productCategoryKey" id="productCategoryKey" class="form-control">
+                            @if (productCategoryModels.Count == 0)
+                            {
+                                <option value="">Please Create A New field </option>
+                            }
+                            else
+                            {
+                                foreach (var rowProductCategory in productCategoryModels)
+                                {
+                                    <option value="@rowProductCategory.ProductCategoryKey">
+                                        @rowProductCategory.ProductCategoryName
+                                    </option>
+                                }
+                            }
+                        </select>
+                    </div>
+                </div>
             </div>
-            <div class="col-12 col-md-6 order-md-2 order-first">
-                <nav aria-label="breadcrumb" class="breadcrumb-header float-start float-lg-end">
-                    <ol class="breadcrumb">
-                        <li class="breadcrumb-item">
-                            <a href="#">
-                                <i class="@navigationModel.FolderIcon"></i> @navigationModel.FolderName
-                            </a>
-                        </li>
-                        <li class="breadcrumb-item active" aria-current="page">
-                            <i class="@navigationModel.LeafIcon"></i> @navigationModel.LeafName
-                        </li>
-                        <li class="breadcrumb-item active" aria-current="page">
-                            <i class="fas fa-file-excel"></i>
-                            <a href="#" onclick="excelRecord()">Excel</a>
-                        </li>
-                        <li class="breadcrumb-item active" aria-current="page">
-                            <i class="fas fa-sign-out-alt"></i>
-                            <a href="/logout">Logout</a>
-                        </li>
-                    </ol>
-                </nav>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="productTypeKey">Product Type</label>
+                        <select name="productTypeKey" id="productTypeKey" class="form-control">
+                            @if (productTypeModels.Count == 0)
+                            {
+                                <option value="">Please Create A New field </option>
+                            }
+                            else
+                            {
+                                foreach (var rowProductType in productTypeModels)
+                                {
+                                    <option value="@rowProductType.ProductTypeKey">
+                                        @rowProductType.ProductTypeName
+                                    </option>
+                                }
+                            }
+                        </select>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="productName">Name</label>
+                        <input type="text" id="productName" class="form-control" value=" " maxlength="128"/>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="productDescription">Description</label>
+                        <input type="text" id="productDescription" class="form-control" value=" " maxlength="128"/>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="productQuantityPerUnit">Quantity Per Unit</label>
+                        <input type="text" id="productQuantityPerUnit" class="form-control" value=" " maxlength="128"/>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="productCostPrice">Cost Price</label>
+                        <input type="number" step="0.01" id="productCostPrice" class="form-control" value="0" maxlength="122"/>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="productSellingPrice">Selling Price</label>
+                        <input type="number" step="0.01" id="productSellingPrice" class="form-control" value="0" maxlength="122"/>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="productUnitsInStock">Units In Stock</label>
+                        <input type="number" step="0.01" id="productUnitsInStock" class="form-control" value="0" maxlength="122"/>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="productUnitsOnOrder">Units On Order</label>
+                        <input type="number" step="0.01" id="productUnitsOnOrder" class="form-control" value="0" maxlength="122"/>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="productReOrderLevel">Re Order Level</label>
+                        <input type="number" step="0.01" id="productReOrderLevel" class="form-control" value="0" maxlength="122"/>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
             </div>
         </div>
     </div>
-    <section class="content">
-        <div class="container-fluid">
-            <form class="form-horizontal">
-                <div class="card card-primary">
-                    <div class="card-header">
-                                                <Button id="createButton" type="button" class="btn btn-success" onclick="createRecord()">
-                                                    <i class="fas fa-newspaper"></i>&nbsp;CREATE
-                                                </Button>&nbsp;
-                                                <Button id="updateButton" type="button" class="btn btn-warning" onclick="updateRecord()" disabled="disabled">
-                                                    <i class="fas fa-edit"></i>&nbsp;UPDATE
-                                                </Button>&nbsp;
-                                                <Button id="deleteButton" type="button" class="btn btn-danger" onclick="deleteRecord()" disabled="disabled">
-                                                    <i class="fas fa-trash"></i>&nbsp;DELETE
-                                                </Button>&nbsp;
-                        <button type="button" class="btn btn-warning" onclick="resetForm()">
-                            <i class="fas fa-power-off"></i> Reset
-                        </button>
-                    </div>
-                    <div class="card-body">
-         <div class="row">
-	<input type="hidden" id="productKey" value="0" />
-<div class="col-md-6">
-	<div class="form-group">
-		<label for="supplierKey">Supplier</label>
-                                            <select name="supplierKey" id="supplierKey" class="form-control">
-                                              @if (supplierModels.Count == 0)
-                                                {
-                                                  <option value="">Please Create A New field </option>
-                                                }
-                                                else
-                                                {
-                                                foreach (var rowSupplier in supplierModels)
-                                                {
-                                                   <option value="@rowSupplier.SupplierKey">
-                                                   @rowSupplier.SupplierName</option>
-                                                }
-                                               }
-                                             </select>
-	</div>
-	</div>
-<div class="col-md-6">
-	<div class="form-group">
-		<label for="productCategoryKey">Product Category</label>
-                                            <select name="productCategoryKey" id="productCategoryKey" class="form-control">
-                                              @if (productCategoryModels.Count == 0)
-                                                {
-                                                  <option value="">Please Create A New field </option>
-                                                }
-                                                else
-                                                {
-                                                foreach (var rowProductCategory in productCategoryModels)
-                                                {
-                                                   <option value="@rowProductCategory.ProductCategoryKey">
-                                                   @rowProductCategory.ProductCategoryName</option>
-                                                }
-                                               }
-                                             </select>
-	</div>
-	</div>
-        </div>
-         <div class="row">
-<div class="col-md-6">
-	<div class="form-group">
-		<label for="productTypeKey">Product Type</label>
-                                            <select name="productTypeKey" id="productTypeKey" class="form-control">
-                                              @if (productTypeModels.Count == 0)
-                                                {
-                                                  <option value="">Please Create A New field </option>
-                                                }
-                                                else
-                                                {
-                                                foreach (var rowProductType in productTypeModels)
-                                                {
-                                                   <option value="@rowProductType.ProductTypeKey">
-                                                   @rowProductType.ProductTypeName</option>
-                                                }
-                                               }
-                                             </select>
-	</div>
-	</div>
-<div class="col-md-6">
-<div class="form-group">
-	<label for="productName">Name</label>
-	<input type="text" id="productName" class="form-control"  value=" " maxlength="128"  />
+</form>
+<div class="row">
+    <div class="col-xs-12 col-sm-12 col-md-12">&nbsp;</div>
 </div>
-</div>
-        </div>
-         <div class="row">
-<div class="col-md-6">
-<div class="form-group">
-	<label for="productDescription">Description</label>
-	<input type="text" id="productDescription" class="form-control"  value=" " maxlength="128"  />
-</div>
-</div>
-<div class="col-md-6">
-<div class="form-group">
-	<label for="productQuantityPerUnit">Quantity Per Unit</label>
-	<input type="text" id="productQuantityPerUnit" class="form-control"  value=" " maxlength="128"  />
-</div>
-</div>
-        </div>
-         <div class="row">
-<div class="col-md-6">
-<div class="form-group">
-	<label for="productCostPrice">Cost Price</label>
-	<input type="number" step="0.01" id="productCostPrice" class="form-control"  value="0" maxlength="122"  />
-</div>
-</div>
-<div class="col-md-6">
-<div class="form-group">
-	<label for="productSellingPrice">Selling Price</label>
-	<input type="number" step="0.01" id="productSellingPrice" class="form-control"  value="0" maxlength="122"  />
-</div>
-</div>
-        </div>
-         <div class="row">
-<div class="col-md-6">
-<div class="form-group">
-	<label for="productUnitsInStock">Units In Stock</label>
-	<input type="number" step="0.01" id="productUnitsInStock" class="form-control"  value="0" maxlength="122"  />
-</div>
-</div>
-<div class="col-md-6">
-<div class="form-group">
-	<label for="productUnitsOnOrder">Units On Order</label>
-	<input type="number" step="0.01" id="productUnitsOnOrder" class="form-control"  value="0" maxlength="122"  />
-</div>
-</div>
-        </div>
-         <div class="row">
-<div class="col-md-6">
-<div class="form-group">
-	<label for="productReOrderLevel">Re Order Level</label>
-	<input type="number" step="0.01" id="productReOrderLevel" class="form-control"  value="0" maxlength="122"  />
-</div>
-</div>
-        </div>
-         <div class="row">
-                    </div>
-                </div>
-                </div>
-            </form>
-                <div class="row">
-                    <div class="col-xs-12 col-sm-12 col-md-12">&nbsp;</div>
-                </div>
 <div class="card">
-	<div class="card-header">
-		<label for="search">Search</label>
-	</div>
-	<div class="card-body">
-		<input name="search" id="search" class="form-control" placeholder="Please Enter Name  Or Other Here" maxlength="64" style ="width: 350px!important;" />
-	</div>
-	<div class="card-footer">
-		<button type="button" class="btn btn-info" onclick="searchRecord()">
-			<i class="fas fa-filter"></i> Filter
-		</button>
-		&nbsp;
-		<button type="button" class="btn btn-warning" onclick="resetRecord()">
-			<i class="fas fa-power-off"></i> Reset
-		</button>
-	</div>
+    <div class="card-header">
+        <label for="search">Search</label>
+    </div>
+    <div class="card-body">
+        <input name="search" id="search" class="form-control" placeholder="Please Enter Name  Or Other Here" maxlength="64" style="width: 350px!important;"/>
+    </div>
+    <div class="card-footer">
+        <button type="button" class="btn btn-info" onclick="searchRecord()">
+            <i class="fas fa-filter"></i> Filter
+        </button>
+        &nbsp;
+        <button type="button" class="btn btn-warning" onclick="resetRecord()">
+            <i class="fas fa-power-off"></i> Reset
+        </button>
+    </div>
 </div>
-                <div class="row">
-                    <div class="col-xs-12 col-sm-12 col-md-12">&nbsp;</div>
-                </div>
-            <div class="row">
-                <div class="col-xs-12 col-sm-12 col-md-12">
-                    <div class="card">
-                        <table class="table table-bordered table-striped table-condensed table-hover" id="tableData">
-                            <thead>
-                            <tr>
-                                    <th>Supplier</th>
-                                    <th>Category</th>
-                                    <th>Type</th>
-                                    <th>Name</th>
-                                    <th>Description</th>
-                                    <th style="width: 230px">Process</th>
-                                </tr>
-                            </thead>
-                            <tbody id="tableBody">
-                                @foreach (var row in productModels)
-                                {
-                                    <tr id='product-@row.ProductKey'>
-<td>
-@row.SupplierName
-</td>
-<td>
-@row.ProductCategoryName
-</td>
-<td>
-@row.ProductTypeName
-</td>
-                                    <td>@row.ProductName</td>
-                                    <td>@row.ProductDescription</td>
-                                        <td style="text-align: center">
-                                                <Button type="button" class="btn btn-warning" onclick="viewRecord(@row.ProductKey)">
-                                                    <i class="fas fa-edit"></i>&nbsp;VIEW
-                                                </Button>
-                                       </td>
-                                    </tr>
-                                }
-                                @if (productModels.Count == 0)
-                                {
-                                    <tr>
-                                        <td colspan="15" class="noRecord">
-                                           @SharedUtil.NoRecord
-                                        </td>
-                                    </tr>
-                                }
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
+<div class="row">
+    <div class="col-xs-12 col-sm-12 col-md-12">&nbsp;</div>
+</div>
+<div class="row">
+    <div class="col-xs-12 col-sm-12 col-md-12">
+        <div class="card">
+            <table class="table table-bordered table-striped table-condensed table-hover" id="tableData">
+                <thead>
+                <tr>
+                    <th>Supplier</th>
+                    <th>Category</th>
+                    <th>Type</th>
+                    <th>Name</th>
+                    <th>Description</th>
+                    <th style="width: 230px">Process</th>
+                </tr>
+                </thead>
+                <tbody id="tableBody">
+                @foreach (var row in productModels)
+                {
+                    <tr id='product-@row.ProductKey'>
+                        <td>
+                            @row.SupplierName
+                        </td>
+                        <td>
+                            @row.ProductCategoryName
+                        </td>
+                        <td>
+                            @row.ProductTypeName
+                        </td>
+                        <td>@row.ProductName</td>
+                        <td>@row.ProductDescription</td>
+                        <td style="text-align: center">
+                            <Button type="button" class="btn btn-warning" onclick="viewRecord(@row.ProductKey)">
+                                <i class="fas fa-edit"></i>&nbsp;VIEW
+                            </Button>
+                        </td>
+                    </tr>
+                }
+                @if (productModels.Count == 0)
+                {
+                    <tr>
+                        <td colspan="15" class="noRecord">
+                            @SharedUtil.NoRecord
+                        </td>
+                    </tr>
+                }
+                </tbody>
+            </table>
         </div>
-    </section>
-    <script>
+    </div>
+</div>
+</div>
+</section>
+<script>
  var supplierModels = @Json.Serialize(supplierModels);
  var productCategoryModels = @Json.Serialize(productCategoryModels);
  var productTypeModels = @Json.Serialize(productTypeModels);
@@ -326,27 +329,12 @@
         function emptyDetailTemplate() {
          return"<tr><td colspan='15'>It's lonely here</td></tr>";
         }
-        function template(productKey,supplierKey,productCategoryKey,productTypeKey,productName,productDescription) {
-	let supplierKeyOptions = "";
-	supplierModels.map((row) => {
-		const selected = (parseInt(row.supplierKey) === parseInt(supplierKey)) ? "selected" : "";
-		supplierKeyOptions += "<option value='" + row.supplierKey + "' " + selected + ">" + row.SupplierName +"</option>";
-	});
-	let productCategoryKeyOptions = "";
-	productCategoryModels.map((row) => {
-		const selected = (parseInt(row.productCategoryKey) === parseInt(productCategoryKey)) ? "selected" : "";
-		productCategoryKeyOptions += "<option value='" + row.productCategoryKey + "' " + selected + ">" + row.ProductCategoryName +"</option>";
-	});
-	let productTypeKeyOptions = "";
-	productTypeModels.map((row) => {
-		const selected = (parseInt(row.productTypeKey) === parseInt(productTypeKey)) ? "selected" : "";
-		productTypeKeyOptions += "<option value='" + row.productTypeKey + "' " + selected + ">" + row.ProductTypeName +"</option>";
-	});
+        function template(productKey,supplierName,productCategoryName,productTypeName,productName,productDescription) {
             let template =  "" +
                 "<tr id='product-" + productKey + "'>" +
-"<td>"+supplierId+"</td>" +
-"<td>"+productCategoryId+"</td>" +
-"<td>"+productTypeId+"</td>" +
+"<td>"+supplierName+"</td>" +
+"<td>"+productCategoryName+"</td>" +
+"<td>"+productTypeName+"</td>" +
 "<td>"+productName+"</td>" +
 "<td>"+productDescription+"</td>" +
                 "<td style='text-align: center'><div class='btn-group'>" +
@@ -358,17 +346,6 @@
                return template; 
         }
         function createRecord() {
- const supplierKey = $("#supplierKey");
- const productCategoryKey = $("#productCategoryKey");
- const productTypeKey = $("#productTypeKey");
- const productName = $("#productName");
- const productDescription = $("#productDescription");
- const productQuantityPerUnit = $("#productQuantityPerUnit");
- const productCostPrice = $("#productCostPrice");
- const productSellingPrice = $("#productSellingPrice");
- const productUnitsInStock = $("#productUnitsInStock");
- const productUnitsOnOrder = $("#productUnitsOnOrder");
- const productReOrderLevel = $("#productReOrderLevel");
          $.ajax({
           type: 'POST',
            url: "api/application/product",
@@ -402,7 +379,7 @@
             let code = data.code;
             if (status) {
              const lastInsertKey = data.lastInsertKey;
-             $("#tableBody").prepend(template(lastInsertKey,productName.val(),productDescription.val(),productQuantityPerUnit.val(),productCostPrice.val(),productSellingPrice.val(),productUnitsInStock.val(),productUnitsOnOrder.val(),productReOrderLevel.val()));
+  readRecord();
   $("#productKey").val(lastInsertKey);
             $("#createButton").attr("disabled","disabled");
             $("#updateButton").removeAttr("disabled","disabled");
@@ -416,22 +393,24 @@
             } else if (status === false) {
              if (typeof(code) === 'string'){
              @{
-              if (sharedUtils.GetRoleId().Equals( (int)AccessEnum.ADMINISTRATOR_ACCESS ))
-              {
-               <text>
+                 if (sharedUtils.GetRoleId().Equals((int) AccessEnum.ADMINISTRATOR_ACCESS))
+                 {
+                     <text>
                 Swal.fire("Debugging Admin", code, "error");
                </text>
-              }else{
-               <text>
+                 }
+                 else
+                 {
+                     <text>
                 Swal.fire("System", "@SharedUtil.UserErrorNotification", "error");
                </text>
-              }
+                 }
              }
-            }else  if (parseInt(code) === parseInt(@((int)ReturnCodeEnum.ACCESS_DENIED) )) {
+            }else  if (parseInt(code) === parseInt(@((int) ReturnCodeEnum.ACCESS_DENIED) )) {
              let timerInterval=0;
              Swal.fire({
               title: 'Auto close alert!',
-              html: 'Session Out .Pease Re-login.I will close in <b></b> milliseconds.',
+              html: 'Session Out .Please Re-login.I will close in <b></b> milliseconds.',
               timer: 2000,
               timerProgressBar: true,
               didOpen: () => {
@@ -492,7 +471,7 @@
                  let templateStringBuilder = "";
                  for (let i = 0; i < data.data.length; i++) {
                   let row = data.data[i];
-                  templateStringBuilder += template(row.productKey,row.supplierKey,row.productCategoryKey,row.productTypeKey,row.productName,row.productDescription,row.productQuantityPerUnit,row.productCostPrice,row.productSellingPrice,row.productUnitsInStock,row.productUnitsOnOrder,row.productReOrderLevel);
+                  templateStringBuilder += template(row.productKey,row.supplierName,row.productCategoryName,row.productTypeName,row.productName,row.productDescription);
                  }
                  $("#tableBody").html("").html(templateStringBuilder);
                 } else {
@@ -502,24 +481,24 @@
               } else if (status === false) {
                if (typeof(code) === 'string'){
                @{
-                if (sharedUtils.GetRoleId().Equals( (int)AccessEnum.ADMINISTRATOR_ACCESS ))
-                {
-                 <text>
+                   if (sharedUtils.GetRoleId().Equals((int) AccessEnum.ADMINISTRATOR_ACCESS))
+                   {
+                       <text>
                   Swal.fire("Debugging Admin", code, "error");
                  </text>
-                }
-                else
-                {
-                 <text>
+                   }
+                   else
+                   {
+                       <text>
                   Swal.fire("System", "@SharedUtil.UserErrorNotification", "error");
                  </text>
-                }
+                   }
                }
-              } else if (parseInt(code) === parseInt(@((int)ReturnCodeEnum.ACCESS_DENIED) )) {
+              } else if (parseInt(code) === parseInt(@((int) ReturnCodeEnum.ACCESS_DENIED) )) {
                let timerInterval=0;
                Swal.fire({
                 title: 'Auto close alert!',
-                html: 'Session Out .Pease Re-login.I will close in <b></b> milliseconds.',
+                html: 'Session Out .Please Re-login.I will close in <b></b> milliseconds.',
                 timer: 2000,
                 timerProgressBar: true,
                 didOpen: () => {
@@ -580,7 +559,7 @@
                 let templateStringBuilder = "";
                 for (let i = 0; i < data.data.length; i++) {
                  let row = data.data[i];
-                 templateStringBuilder += template(row.productKey,row.supplierKey,row.productCategoryKey,row.productTypeKey,row.productName,row.productDescription,row.productQuantityPerUnit,row.productCostPrice,row.productSellingPrice,row.productUnitsInStock,row.productUnitsOnOrder,row.productReOrderLevel);
+                 templateStringBuilder += template(row.productKey,row.supplierName,row.productCategoryName,row.productTypeName,row.productName,row.productDescription);
                 }
                 $("#tableBody").html("").html(templateStringBuilder);
                }
@@ -588,24 +567,24 @@
              } else if (status === false) {
               if (typeof(code) === 'string'){
               @{
-                if (sharedUtils.GetRoleId().Equals( (int)AccessEnum.ADMINISTRATOR_ACCESS ))
-                {
-                 <text>
+                  if (sharedUtils.GetRoleId().Equals((int) AccessEnum.ADMINISTRATOR_ACCESS))
+                  {
+                      <text>
                   Swal.fire("Debugging Admin", code, "error");
                  </text>
-                }
-                else
-                {
-                 <text>
+                  }
+                  else
+                  {
+                      <text>
                   Swal.fire("System", "@SharedUtil.UserErrorNotification", "error");
                  </text>
-                }
-               }
-              }else if (parseInt(code) === parseInt(@((int)ReturnCodeEnum.ACCESS_DENIED) )) {
+                  }
+              }
+              }else if (parseInt(code) === parseInt(@((int) ReturnCodeEnum.ACCESS_DENIED) )) {
                let timerInterval=0;
                Swal.fire({
                 title: 'Auto close alert!',
-                html: 'Session Out .Pease Re-login.I will close in <b></b> milliseconds.',
+                html: 'Session Out .Please Re-login.I will close in <b></b> milliseconds.',
                 timer: 2000,
                 timerProgressBar: true,
                 didOpen: () => {
@@ -645,7 +624,7 @@
           async: false,
           contentType: "application/x-www-form-urlencoded",
           data: {
-           mode: "singleWithDetail",
+           mode: "single",
            leafCheckKey: @navigationModel.LeafCheckKey,
            productKey: productKey
           }, 
@@ -683,24 +662,24 @@
              } else if (status === false) {
               if (typeof(code) === 'string'){
               @{
-                if (sharedUtils.GetRoleId().Equals( (int)AccessEnum.ADMINISTRATOR_ACCESS ))
-                {
-                 <text>
+                  if (sharedUtils.GetRoleId().Equals((int) AccessEnum.ADMINISTRATOR_ACCESS))
+                  {
+                      <text>
                   Swal.fire("Debugging Admin", code, "error");
                  </text>
-                }
-                else
-                {
-                 <text>
+                  }
+                  else
+                  {
+                      <text>
                   Swal.fire("System", "@SharedUtil.UserErrorNotification", "error");
                  </text>
-                }
-               }
-              }else if (parseInt(code) === parseInt(@((int)ReturnCodeEnum.ACCESS_DENIED) )) {
+                  }
+              }
+              }else if (parseInt(code) === parseInt(@((int) ReturnCodeEnum.ACCESS_DENIED) )) {
                let timerInterval=0;
                Swal.fire({
                 title: 'Auto close alert!',
-                html: 'Session Out .Pease Re-login.I will close in <b></b> milliseconds.',
+                html: 'Session Out .Please Re-login.I will close in <b></b> milliseconds.',
                 timer: 2000,
                 timerProgressBar: true,
                 didOpen: () => {
@@ -775,24 +754,24 @@
            } else if (status === false) {
             if (typeof(code) === 'string'){
             @{
-             if (sharedUtils.GetRoleId().Equals( (int)AccessEnum.ADMINISTRATOR_ACCESS ))
-              {
-               <text>
+                if (sharedUtils.GetRoleId().Equals((int) AccessEnum.ADMINISTRATOR_ACCESS))
+                {
+                    <text>
                 Swal.fire("Debugging Admin", code, "error");
                </text>
-              }
-              else
-              {
-               <text>
+                }
+                else
+                {
+                    <text>
                 Swal.fire("System", "@SharedUtil.UserErrorNotification", "error");
                </text>
-              }
-             }
-            }else if (parseInt(code) === parseInt(@((int)ReturnCodeEnum.ACCESS_DENIED) )) {
+                }
+            }
+            }else if (parseInt(code) === parseInt(@((int) ReturnCodeEnum.ACCESS_DENIED) )) {
              let timerInterval=0;
              Swal.fire({
               title: 'Auto close alert!',
-              html: 'Session Out .Pease Re-login.I will close in <b></b> milliseconds.',
+              html: 'Session Out .Please Re-login.I will close in <b></b> milliseconds.',
               timer: 2000,
               timerProgressBar: true,
               didOpen: () => {
@@ -859,7 +838,6 @@
             $("#updateButton").attr("disabled","disabled");
             $("#deleteButton").attr("disabled","disabled");
 	$("#productKey").val('');
-	$("#tenantKey").val('');
 	$("#supplierKey").val('');
 	$("#productCategoryKey").val('');
 	$("#productTypeKey").val('');
@@ -871,31 +849,29 @@
 	$("#productUnitsInStock").val('');
 	$("#productUnitsOnOrder").val('');
 	$("#productReOrderLevel").val('');
-	$("#isDelete").val('');
-	$("#executeBy").val('');
                readRecord();
                Swal.fire("System", "@SharedUtil.RecordDeleted", "success");
               } else if (status === false) {
                if (typeof(code) === 'string'){
                @{
-                if (sharedUtils.GetRoleId().Equals( (int)AccessEnum.ADMINISTRATOR_ACCESS ))
-                {
-                 <text>
+                   if (sharedUtils.GetRoleId().Equals((int) AccessEnum.ADMINISTRATOR_ACCESS))
+                   {
+                       <text>
                   Swal.fire("Debugging Admin", code, "error");
                  </text>
-                }
-                else
-                {
-                 <text>
+                   }
+                   else
+                   {
+                       <text>
                   Swal.fire("System", "@SharedUtil.UserErrorNotification", "error");
                  </text>
-                }
+                   }
                }
-              } else if (parseInt(code) === parseInt(@((int)ReturnCodeEnum.ACCESS_DENIED) )) {
+              } else if (parseInt(code) === parseInt(@((int) ReturnCodeEnum.ACCESS_DENIED) )) {
                let timerInterval=0;
                Swal.fire({
                 title: 'Auto close alert!',
-                html: 'Session Out .Pease Re-login.I will close in <b></b> milliseconds.',
+                html: 'Session Out .Please Re-login.I will close in <b></b> milliseconds.',
                 timer: 2000,
                 timerProgressBar: true,
                 didOpen: () => {
