@@ -24,108 +24,219 @@ public class EmployeeRepository
         try
         {
             connection.Open();
-            MySqlTransaction mySqlTransaction = connection.BeginTransaction();
-            sql +=
-                @"INSERT INTO employee (employeeId,tenantId,employeeFirstName,employeeLastName,employeeTitle,employeeTitleOfCourtesy,employeeBirthDate,employeeHireDate,employeeAddress,employeeCity,employeeRegion,employeePostalCode,employeeCountry,employeeHomePhone,employeeExtension,employeePhoto,employeeNotes,employeePhotoPath,employeeSalary,isDelete) VALUES (null,@tenantId,@employeeFirstName,@employeeLastName,@employeeTitle,@employeeTitleOfCourtesy,@employeeBirthDate,@employeeHireDate,@employeeAddress,@employeeCity,@employeeRegion,@employeePostalCode,@employeeCountry,@employeeHomePhone,@employeeExtension,@employeePhoto,@employeeNotes,@employeePhotoPath,@employeeSalary,@isDelete);";
-            MySqlCommand mySqlCommand = new(sql, connection);
-            parameterModels = new List<ParameterModel>
+            var mySqlTransaction = connection.BeginTransaction();
+
+
+            // this is special for photo /blob
+            if (employeeModel.EmployeePhoto?.Length > 0)
             {
-                new()
+                sql +=
+                    @"INSERT INTO employee (employeeId,tenantId,employeeFirstName,employeeLastName,employeeTitle,employeeTitleOfCourtesy,employeeBirthDate,employeeHireDate,employeeAddress,employeeCity,employeeRegion,employeePostalCode,employeeCountry,employeeHomePhone,employeeExtension,employeeNotes,employeePhotoPath,employeeSalary,isDelete) VALUES (null,@tenantId,@employeeFirstName,@employeeLastName,@employeeTitle,@employeeTitleOfCourtesy,@employeeBirthDate,@employeeHireDate,@employeeAddress,@employeeCity,@employeeRegion,@employeePostalCode,@employeeCountry,@employeeHomePhone,@employeeExtension,@employeeNotes,@employeePhotoPath,@employeeSalary,@isDelete);";
+
+                parameterModels = new List<ParameterModel>
                 {
-                    Key = "@tenantId",
-                    Value = _sharedUtil.GetTenantId()
-                },
-                new()
+                    new()
+                    {
+                        Key = "@tenantId",
+                        Value = _sharedUtil.GetTenantId()
+                    },
+                    new()
+                    {
+                        Key = "@employeeFirstName",
+                        Value = employeeModel.EmployeeFirstName
+                    },
+                    new()
+                    {
+                        Key = "@employeeLastName",
+                        Value = employeeModel.EmployeeLastName
+                    },
+                    new()
+                    {
+                        Key = "@employeeTitle",
+                        Value = employeeModel.EmployeeTitle
+                    },
+                    new()
+                    {
+                        Key = "@employeeTitleOfCourtesy",
+                        Value = employeeModel.EmployeeTitleOfCourtesy
+                    },
+                    new()
+                    {
+                        Key = "@employeeBirthDate",
+                        Value = employeeModel.EmployeeBirthDate?.ToString("yyyy-MM-dd")
+                    },
+                    new()
+                    {
+                        Key = "@employeeHireDate",
+                        Value = employeeModel.EmployeeHireDate?.ToString("yyyy-MM-dd")
+                    },
+                    new()
+                    {
+                        Key = "@employeeAddress",
+                        Value = employeeModel.EmployeeAddress
+                    },
+                    new()
+                    {
+                        Key = "@employeeCity",
+                        Value = employeeModel.EmployeeCity
+                    },
+                    new()
+                    {
+                        Key = "@employeeRegion",
+                        Value = employeeModel.EmployeeRegion
+                    },
+                    new()
+                    {
+                        Key = "@employeePostalCode",
+                        Value = employeeModel.EmployeePostalCode
+                    },
+                    new()
+                    {
+                        Key = "@employeeCountry",
+                        Value = employeeModel.EmployeeCountry
+                    },
+                    new()
+                    {
+                        Key = "@employeeHomePhone",
+                        Value = employeeModel.EmployeeHomePhone
+                    },
+                    new()
+                    {
+                        Key = "@employeeExtension",
+                        Value = employeeModel.EmployeeExtension
+                    },
+
+                    new()
+                    {
+                        Key = "@employeeNotes",
+                        Value = employeeModel.EmployeeNotes
+                    },
+                    new()
+                    {
+                        Key = "@employeePhoto",
+                        Value = employeeModel.EmployeePhoto
+                    },
+                    new()
+                    {
+                        Key = "@employeePhotoPath",
+                        Value = employeeModel.EmployeePhotoPath
+                    },
+                    new()
+                    {
+                        Key = "@employeeSalary",
+                        Value = employeeModel.EmployeeSalary
+                    },
+                    new()
+                    {
+                        Key = "@isDelete",
+                        Value = 0
+                    },
+                };
+            }
+            else
+            {
+                sql +=
+                    @"INSERT INTO employee (employeeId,tenantId,employeeFirstName,employeeLastName,employeeTitle,employeeTitleOfCourtesy,employeeBirthDate,employeeHireDate,employeeAddress,employeeCity,employeeRegion,employeePostalCode,employeeCountry,employeeHomePhone,employeeExtension,employeePhoto,employeeNotes,employeePhotoPath,employeeSalary,isDelete) VALUES (null,@tenantId,@employeeFirstName,@employeeLastName,@employeeTitle,@employeeTitleOfCourtesy,@employeeBirthDate,@employeeHireDate,@employeeAddress,@employeeCity,@employeeRegion,@employeePostalCode,@employeeCountry,@employeeHomePhone,@employeeExtension,@employeePhoto,@employeeNotes,@employeePhotoPath,@employeeSalary,@isDelete);";
+
+
+                parameterModels = new List<ParameterModel>
                 {
-                    Key = "@employeeFirstName",
-                    Value = employeeModel.EmployeeFirstName
-                },
-                new()
-                {
-                    Key = "@employeeLastName",
-                    Value = employeeModel.EmployeeLastName
-                },
-                new()
-                {
-                    Key = "@employeeTitle",
-                    Value = employeeModel.EmployeeTitle
-                },
-                new()
-                {
-                    Key = "@employeeTitleOfCourtesy",
-                    Value = employeeModel.EmployeeTitleOfCourtesy
-                },
-                new()
-                {
-                    Key = "@employeeBirthDate",
-                    Value = employeeModel.EmployeeBirthDate?.ToString("yyyy-MM-dd")
-                },
-                new()
-                {
-                    Key = "@employeeHireDate",
-                    Value = employeeModel.EmployeeHireDate?.ToString("yyyy-MM-dd")
-                },
-                new()
-                {
-                    Key = "@employeeAddress",
-                    Value = employeeModel.EmployeeAddress
-                },
-                new()
-                {
-                    Key = "@employeeCity",
-                    Value = employeeModel.EmployeeCity
-                },
-                new()
-                {
-                    Key = "@employeeRegion",
-                    Value = employeeModel.EmployeeRegion
-                },
-                new()
-                {
-                    Key = "@employeePostalCode",
-                    Value = employeeModel.EmployeePostalCode
-                },
-                new()
-                {
-                    Key = "@employeeCountry",
-                    Value = employeeModel.EmployeeCountry
-                },
-                new()
-                {
-                    Key = "@employeeHomePhone",
-                    Value = employeeModel.EmployeeHomePhone
-                },
-                new()
-                {
-                    Key = "@employeeExtension",
-                    Value = employeeModel.EmployeeExtension
-                },
-                new()
-                {
-                    Key = "@employeePhoto",
-                    Value = employeeModel.EmployeePhoto
-                },
-                new()
-                {
-                    Key = "@employeeNotes",
-                    Value = employeeModel.EmployeeNotes
-                },
-                new()
-                {
-                    Key = "@employeePhotoPath",
-                    Value = employeeModel.EmployeePhotoPath
-                },
-                new()
-                {
-                    Key = "@employeeSalary",
-                    Value = employeeModel.EmployeeSalary
-                },
-                new()
-                {
-                    Key = "@isDelete",
-                    Value = 0
-                },
-            };
+                    new()
+                    {
+                        Key = "@tenantId",
+                        Value = _sharedUtil.GetTenantId()
+                    },
+                    new()
+                    {
+                        Key = "@employeeFirstName",
+                        Value = employeeModel.EmployeeFirstName
+                    },
+                    new()
+                    {
+                        Key = "@employeeLastName",
+                        Value = employeeModel.EmployeeLastName
+                    },
+                    new()
+                    {
+                        Key = "@employeeTitle",
+                        Value = employeeModel.EmployeeTitle
+                    },
+                    new()
+                    {
+                        Key = "@employeeTitleOfCourtesy",
+                        Value = employeeModel.EmployeeTitleOfCourtesy
+                    },
+                    new()
+                    {
+                        Key = "@employeeBirthDate",
+                        Value = employeeModel.EmployeeBirthDate?.ToString("yyyy-MM-dd")
+                    },
+                    new()
+                    {
+                        Key = "@employeeHireDate",
+                        Value = employeeModel.EmployeeHireDate?.ToString("yyyy-MM-dd")
+                    },
+                    new()
+                    {
+                        Key = "@employeeAddress",
+                        Value = employeeModel.EmployeeAddress
+                    },
+                    new()
+                    {
+                        Key = "@employeeCity",
+                        Value = employeeModel.EmployeeCity
+                    },
+                    new()
+                    {
+                        Key = "@employeeRegion",
+                        Value = employeeModel.EmployeeRegion
+                    },
+                    new()
+                    {
+                        Key = "@employeePostalCode",
+                        Value = employeeModel.EmployeePostalCode
+                    },
+                    new()
+                    {
+                        Key = "@employeeCountry",
+                        Value = employeeModel.EmployeeCountry
+                    },
+                    new()
+                    {
+                        Key = "@employeeHomePhone",
+                        Value = employeeModel.EmployeeHomePhone
+                    },
+                    new()
+                    {
+                        Key = "@employeeExtension",
+                        Value = employeeModel.EmployeeExtension
+                    },
+
+                    new()
+                    {
+                        Key = "@employeeNotes",
+                        Value = employeeModel.EmployeeNotes
+                    },
+                    new()
+                    {
+                        Key = "@employeePhotoPath",
+                        Value = employeeModel.EmployeePhotoPath
+                    },
+                    new()
+                    {
+                        Key = "@employeeSalary",
+                        Value = employeeModel.EmployeeSalary
+                    },
+                    new()
+                    {
+                        Key = "@isDelete",
+                        Value = 0
+                    },
+                };
+            }
+
+            MySqlCommand mySqlCommand = new(sql, connection);
+
             foreach (var parameter in parameterModels)
             {
                 mySqlCommand.Parameters.AddWithValue(parameter.Key, parameter.Value);
@@ -553,11 +664,7 @@ isDelete=@isDelete
                     Key = "@employeeExtension",
                     Value = employeeModel.EmployeeExtension
                 },
-                new()
-                {
-                    Key = "@employeePhoto",
-                    Value = employeeModel.EmployeePhoto
-                },
+           
                 new()
                 {
                     Key = "@employeeNotes",
@@ -579,6 +686,11 @@ isDelete=@isDelete
                     Value = 0
                 },
             };
+            if (employeeModel.EmployeePhoto?.Length > 0)
+            {
+                mySqlCommand.Parameters.AddWithValue("@employeePhoto", employeeModel.EmployeePhoto);
+            }
+
             foreach (var parameter in parameterModels)
             {
                 mySqlCommand.Parameters.AddWithValue(parameter.Key, parameter.Value);

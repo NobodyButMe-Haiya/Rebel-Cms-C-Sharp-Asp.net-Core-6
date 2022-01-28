@@ -77,10 +77,9 @@ public class EmployeeController : Controller
         var employeePhoto = Array.Empty<byte>();
         foreach (var formFile in Request.Form.Files)
         {
-            if (formFile.Name.Equals("employeePhoto"))
-            {
-                employeePhoto = await SharedUtil.GetByteArrayFromImageAsync(formFile);
-            }
+            if (!formFile.Name.Equals("employeePhoto")) continue;
+            if (formFile.Length <= 0) continue;
+            employeePhoto = await SharedUtil.GetByteArrayFromImageAsync(formFile);
         }
 
         var employeeNotes = Request.Form["employeeNotes"];
