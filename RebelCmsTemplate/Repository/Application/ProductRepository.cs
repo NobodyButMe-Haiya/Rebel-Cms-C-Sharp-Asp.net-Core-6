@@ -26,7 +26,7 @@ public class ProductRepository
             connection.Open();
             MySqlTransaction mySqlTransaction = connection.BeginTransaction();
             sql +=
-                @"INSERT INTO product (productId,tenantId,supplierId,productCategoryId,productTypeId,productName,productDescription,productQuantityPerUnit,productCostPrice,productSellingPrice,productUnitsInStock,productUnitsOnOrder,productReOrderLevel,isDelete,executeBy) VALUES (null,@tenantId,@supplierId,@productCategoryId,@productTypeId,@productName,@productDescription,@productQuantityPerUnit,@productCostPrice,@productSellingPrice,@productUnitsInStock,@productUnitsOnOrder,@productReOrderLevel,@isDelete,@executeBy);";
+                @"INSERT INTO product (productId,tenantId,supplierId,productCategoryId,productTypeId,productName,productDescription,productQuantityPerUnit,productCostPrice,productSellingPrice,productUnitsInStock,productUnitsOnOrder,productReOrderLevel,isDelete) VALUES (null,@tenantId,@supplierId,@productCategoryId,@productTypeId,@productName,@productDescription,@productQuantityPerUnit,@productCostPrice,@productSellingPrice,@productUnitsInStock,@productUnitsOnOrder,@productReOrderLevel,@isDelete);";
             MySqlCommand mySqlCommand = new(sql, connection);
             parameterModels = new List<ParameterModel>
             {
@@ -94,12 +94,7 @@ public class ProductRepository
                 {
                     Key = "@isDelete",
                     Value = 0
-                },
-                new()
-                {
-                    Key = "@executeBy",
-                    Value = _sharedUtil.GetUserName()
-                },
+                }
             };
             foreach (var parameter in parameterModels)
             {
@@ -108,7 +103,7 @@ public class ProductRepository
 
             mySqlCommand.ExecuteNonQuery();
             mySqlTransaction.Commit();
-            lastInsertKey = (int) mySqlCommand.LastInsertedId;
+            lastInsertKey = (int)mySqlCommand.LastInsertedId;
             mySqlCommand.Dispose();
         }
         catch (MySqlException ex)
@@ -131,17 +126,35 @@ public class ProductRepository
         {
             connection.Open();
             sql = @"
-                SELECT      *
-                FROM        product 
-	 JOIN supplier 
-	 USING(supplierId)
-	 JOIN product_category 
-	 USING(productCategoryId)
-	 JOIN product_type 
-	 USING(productTypeId)
-	 WHERE   product.isDelete != 1
-                ORDER BY    productId DESC ";
+            SELECT      *
+            FROM        product
+
+            JOIN        supplier 
+            USING(supplierId)
+
+            JOIN        product_category 
+            USING(productCategoryId)
+
+            JOIN        product_type 
+            USING(productTypeId)
+
+            WHERE       product.isDelete != 1
+            AND         tenantId = @tenantId
+            ORDER BY    productId DESC ";
             MySqlCommand mySqlCommand = new(sql, connection);
+            parameterModels = new List<ParameterModel>
+            {
+                new()
+                {
+                    Key = "@tenantId",
+                    Value = _sharedUtil.GetTenantId()
+                }
+            };
+            foreach (var parameter in parameterModels)
+            {
+                mySqlCommand.Parameters.AddWithValue(parameter.Key, parameter.Value);
+            }
+
             _sharedUtil.SetSqlSession(sql, parameterModels);
             using (var reader = mySqlCommand.ExecuteReader())
             {
@@ -200,27 +213,63 @@ public class ProductRepository
         {
             connection.Open();
             sql += @"
-                SELECT  *
-                FROM    product 
-	 JOIN supplier 
-	 USING(supplierId)
-	 JOIN product_category 
-	 USING(productCategoryId)
-	 JOIN product_type 
-	 USING(productTypeId)
-	 WHERE   product.isDelete != 1
-	 AND (	 supplier.supplierName LIKE CONCAT('%',@search,'%') OR	 supplier.supplierName LIKE CONCAT('%',@search,'%') OR	 supplier.supplierName LIKE CONCAT('%',@search,'%') OR	 supplier.supplierName LIKE CONCAT('%',@search,'%') OR	 supplier.supplierName LIKE CONCAT('%',@search,'%') OR	 supplier.supplierName LIKE CONCAT('%',@search,'%') OR	 supplier.supplierName LIKE CONCAT('%',@search,'%') OR	 supplier.supplierName LIKE CONCAT('%',@search,'%') OR	 supplier.supplierName LIKE CONCAT('%',@search,'%') OR	 supplier.supplierName LIKE CONCAT('%',@search,'%') OR	 supplier.supplierName LIKE CONCAT('%',@search,'%') OR	 supplier.supplierName LIKE CONCAT('%',@search,'%') OR	 supplier.supplierName LIKE CONCAT('%',@search,'%') OR	 supplier.supplierName LIKE CONCAT('%',@search,'%') OR	 product_category.productCategoryName LIKE CONCAT('%',@search,'%') OR	 product_category.productCategoryName LIKE CONCAT('%',@search,'%') OR	 product_category.productCategoryName LIKE CONCAT('%',@search,'%') OR	 product_category.productCategoryName LIKE CONCAT('%',@search,'%') OR	 product_category.productCategoryName LIKE CONCAT('%',@search,'%') OR	 product_type.productTypeName LIKE CONCAT('%',@search,'%') OR	 product_type.productTypeName LIKE CONCAT('%',@search,'%') OR	 product_type.productTypeName LIKE CONCAT('%',@search,'%') OR	 product_type.productTypeName LIKE CONCAT('%',@search,'%') OR	 product_type.productTypeName LIKE CONCAT('%',@search,'%') OR	 product_type.productTypeName LIKE CONCAT('%',@search,'%') OR
-	 product.productName LIKE CONCAT('%',@search,'%') OR
-	 product.productDescription LIKE CONCAT('%',@search,'%') OR
-	 product.productQuantityPerUnit LIKE CONCAT('%',@search,'%') OR
-	 product.productCostPrice LIKE CONCAT('%',@search,'%') OR
-	 product.productSellingPrice LIKE CONCAT('%',@search,'%') OR
-	 product.productUnitsInStock LIKE CONCAT('%',@search,'%') OR
-	 product.productUnitsOnOrder LIKE CONCAT('%',@search,'%') OR
-	 product.productReOrderLevel LIKE CONCAT('%',@search,'%') )";
+            SELECT  *
+            FROM    product 
+
+            JOIN supplier 
+            USING(supplierId)
+
+            JOIN product_category 
+            USING(productCategoryId)
+
+            JOIN product_type 
+            USING(productTypeId)
+
+            WHERE   product.isDelete != 1
+            AND (
+                    supplier.supplierName LIKE CONCAT('%',@search,'%') OR
+                    supplier.supplierName LIKE CONCAT('%',@search,'%') OR
+                    supplier.supplierName LIKE CONCAT('%',@search,'%') OR
+                    supplier.supplierName LIKE CONCAT('%',@search,'%') OR
+                    supplier.supplierName LIKE CONCAT('%',@search,'%') OR
+                    supplier.supplierName LIKE CONCAT('%',@search,'%') OR
+                    supplier.supplierName LIKE CONCAT('%',@search,'%') OR
+                    supplier.supplierName LIKE CONCAT('%',@search,'%') OR
+                    supplier.supplierName LIKE CONCAT('%',@search,'%') OR
+                    supplier.supplierName LIKE CONCAT('%',@search,'%') OR
+                    supplier.supplierName LIKE CONCAT('%',@search,'%') OR
+                    supplier.supplierName LIKE CONCAT('%',@search,'%') OR
+                    supplier.supplierName LIKE CONCAT('%',@search,'%') OR
+                    supplier.supplierName LIKE CONCAT('%',@search,'%') OR
+                    product_category.productCategoryName LIKE CONCAT('%',@search,'%') OR
+                    product_category.productCategoryName LIKE CONCAT('%',@search,'%') OR
+                    product_category.productCategoryName LIKE CONCAT('%',@search,'%') OR
+                    product_category.productCategoryName LIKE CONCAT('%',@search,'%') OR
+                    product_category.productCategoryName LIKE CONCAT('%',@search,'%') OR
+                    product_type.productTypeName LIKE CONCAT('%',@search,'%') OR
+                    product_type.productTypeName LIKE CONCAT('%',@search,'%') OR
+                    product_type.productTypeName LIKE CONCAT('%',@search,'%') OR
+                    product_type.productTypeName LIKE CONCAT('%',@search,'%') OR
+                    product_type.productTypeName LIKE CONCAT('%',@search,'%') OR
+                    product_type.productTypeName LIKE CONCAT('%',@search,'%') OR
+                    product.productName LIKE CONCAT('%',@search,'%') OR
+                    product.productDescription LIKE CONCAT('%',@search,'%') OR
+                    product.productQuantityPerUnit LIKE CONCAT('%',@search,'%') OR
+                    product.productCostPrice LIKE CONCAT('%',@search,'%') OR
+                    product.productSellingPrice LIKE CONCAT('%',@search,'%') OR
+                    product.productUnitsInStock LIKE CONCAT('%',@search,'%') OR
+                    product.productUnitsOnOrder LIKE CONCAT('%',@search,'%') OR
+                    product.productReOrderLevel LIKE CONCAT('%',@search,'%')
+            )";
+
             MySqlCommand mySqlCommand = new(sql, connection);
             parameterModels = new List<ParameterModel>
             {
+                new()
+                {
+                    Key = "@tenantId",
+                    Value = _sharedUtil.GetTenantId()
+                },
                 new()
                 {
                     Key = "@search",
@@ -278,19 +327,30 @@ public class ProductRepository
         {
             connection.Open();
             sql += @"
-                SELECT  *
-                FROM    product 
-	 JOIN supplier 
-	 USING(supplierId)
-	 JOIN product_category 
-	 USING(productCategoryId)
-	 JOIN product_type 
-	 USING(productTypeId)
-                WHERE   product.isDelete != 1
-                AND   product.productId    =   @productId LIMIT 1";
+            SELECT  *
+            FROM    product
+
+            JOIN supplier 
+            USING(supplierId)
+
+            JOIN product_category 
+            USING(productCategoryId)
+
+            JOIN product_type 
+            USING(productTypeId)
+
+            WHERE   product.isDelete    !=  1
+            AND     product.tenantId    =   @tenantId
+            AND     product.productId   =   @productId
+            LIMIT 1";
             MySqlCommand mySqlCommand = new(sql, connection);
             parameterModels = new List<ParameterModel>
             {
+                new()
+                {
+                    Key = "@tenantId",
+                    Value = _sharedUtil.GetTenantId()
+                },
                 new()
                 {
                     Key = "@productId",
@@ -307,7 +367,7 @@ public class ProductRepository
             {
                 while (reader.Read())
                 {
-                    productModel = new ProductModel()
+                    productModel = new ProductModel
                     {
                         ProductKey = Convert.ToInt32(reader["productId"]),
                         SupplierKey = Convert.ToInt32(reader["supplierId"]),
@@ -410,24 +470,20 @@ public class ProductRepository
             connection.Open();
             MySqlTransaction mySqlTransaction = connection.BeginTransaction();
             sql = @"
-                UPDATE  product 
-                SET     
-tenantId=@tenantId,
-supplierId=@supplierId,
-productCategoryId=@productCategoryId,
-productTypeId=@productTypeId,
-productName=@productName,
-productDescription=@productDescription,
-productQuantityPerUnit=@productQuantityPerUnit,
-productCostPrice=@productCostPrice,
-productSellingPrice=@productSellingPrice,
-productUnitsInStock=@productUnitsInStock,
-productUnitsOnOrder=@productUnitsOnOrder,
-productReOrderLevel=@productReOrderLevel,
-isDelete=@isDelete,
-executeBy=@executeBy
-
-                WHERE   productId    =   @productId";
+            UPDATE  product 
+            SET     tenantId                =   @tenantId,
+                    supplierId              =   @supplierId,
+                    productCategoryId       =   @productCategoryId,
+                    productTypeId           =   @productTypeId,
+                    productName             =   @productName,
+                    productDescription      =   @productDescription,
+                    productQuantityPerUnit  =   @productQuantityPerUnit,
+                    productCostPrice        =   @productCostPrice,
+                    productSellingPrice     =   @productSellingPrice,
+                    productUnitsInStock     =   @productUnitsInStock,
+                    productUnitsOnOrder     =   @productUnitsOnOrder,
+                    productReOrderLevel     =   @productReOrderLevel
+            WHERE   productId               =   @productId";
             MySqlCommand mySqlCommand = new(sql, connection);
             parameterModels = new List<ParameterModel>
             {
@@ -495,17 +551,7 @@ executeBy=@executeBy
                 {
                     Key = "@productReOrderLevel",
                     Value = productModel.ProductReOrderLevel
-                },
-                new()
-                {
-                    Key = "@isDelete",
-                    Value = 0
-                },
-                new()
-                {
-                    Key = "@executeBy",
-                    Value = _sharedUtil.GetUserName()
-                },
+                }
             };
             foreach (var parameter in parameterModels)
             {

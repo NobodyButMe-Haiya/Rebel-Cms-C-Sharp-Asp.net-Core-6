@@ -30,15 +30,15 @@ public class ProductCategoryRepository
             var mySqlTransaction = connection.BeginTransaction();
 
             sql += @"
-                INSERT INTO product_category  (
-                    productCategoryId,      tenantId,
-                    productCategoryName,   isDelete,
-                    executeBy
-                ) VALUES (
-                    null,                   @tenantId,
-                    @productCategoryName,   0,
-                    @executeBy
-                );";
+            INSERT INTO product_category  (
+                productCategoryId,      tenantId,
+                productCategoryName,   isDelete,
+                executeBy
+            ) VALUES (
+                null,                   @tenantId,
+                @productCategoryName,   0,
+                @executeBy
+            );";
             MySqlCommand mySqlCommand = new(sql, connection);
 
             parameterModels = new List<ParameterModel>
@@ -93,11 +93,11 @@ public class ProductCategoryRepository
         {
             connection.Open();
             sql += @"
-                SELECT      *
-                FROM        product_category
-                WHERE       isDelete != 1
-                AND         tenantId = @tenantId
-                ORDER BY    productCategoryId DESC ";
+            SELECT      *
+            FROM        product_category
+            WHERE       isDelete != 1
+            AND         tenantId = @tenantId
+            ORDER BY    productCategoryId DESC ";
             MySqlCommand mySqlCommand = new(sql, connection);
             parameterModels = new List<ParameterModel>
             {
@@ -150,11 +150,11 @@ public class ProductCategoryRepository
         {
             connection.Open();
             sql += @"
-                SELECT  *
-                FROM    product_category
-                WHERE   tenantId = @tenantId
-                AND     isDelete != 1
-                AND     productCategoryName like concat('%',@search,'%') ";
+            SELECT  *
+            FROM    product_category
+            WHERE   tenantId = @tenantId
+            AND     isDelete != 1
+            AND     productCategoryName LIKE CONCAT('%',@search,'%') ";
             MySqlCommand mySqlCommand = new(sql, connection);
             parameterModels = new List<ParameterModel>
             {
@@ -260,10 +260,10 @@ public class ProductCategoryRepository
             var mySqlTransaction = connection.BeginTransaction();
 
             sql += @"
-                UPDATE  product_category
-                SET     productCategoryName =   @productCategoryName,
-                        executeBy           =   @executeBy
-                WHERE   productCategoryId   =   @productCategoryId ";
+            UPDATE  product_category
+            SET     productCategoryName =   @productCategoryName,
+                    executeBy           =   @executeBy
+            WHERE   productCategoryId   =   @productCategoryId ";
             MySqlCommand mySqlCommand = new(sql, connection);
 
             parameterModels = new List<ParameterModel>
@@ -313,9 +313,9 @@ public class ProductCategoryRepository
             var mySqlTransaction = connection.BeginTransaction();
 
             sql += @"
-                UPDATE  product_category
-                SET     isDelete = 1
-                WHERE   productCategoryId  = @productCategoryId;";
+            UPDATE  product_category
+            SET     isDelete = 1
+            WHERE   productCategoryId  = @productCategoryId;";
             MySqlCommand mySqlCommand = new(sql, connection);
 
             parameterModels = new List<ParameterModel>

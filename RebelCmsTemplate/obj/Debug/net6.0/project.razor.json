@@ -1,5 +1,5 @@
 {
-  "FilePath": "/Users/user/Projects/RebelCmsTemplateSharp/RebelCmsTemplate/RebelCmsTemplate.csproj",
+  "FilePath": "/Users/user/Projects/Rebel-Cms-C-Sharp-Asp.net-Core-6/RebelCmsTemplate/RebelCmsTemplate.csproj",
   "Configuration": {
     "ConfigurationName": "MVC-3.0",
     "LanguageVersion": "6.0",
@@ -16298,153 +16298,173 @@
   "RootNamespace": "RebelCmsTemplate",
   "Documents": [
     {
-      "FilePath": "/Users/user/Projects/RebelCmsTemplateSharp/RebelCmsTemplate/Views/Pages/Menu/FolderAccess.cshtml",
-      "TargetPath": "Views\\Pages\\Menu\\FolderAccess.cshtml",
-      "FileKind": "mvc"
-    },
-    {
-      "FilePath": "/Users/user/Projects/RebelCmsTemplateSharp/RebelCmsTemplate/Views/Pages/Administrator/Log.cshtml",
-      "TargetPath": "Views\\Pages\\Administrator\\Log.cshtml",
-      "FileKind": "mvc"
-    },
-    {
-      "FilePath": "/Users/user/Projects/RebelCmsTemplateSharp/RebelCmsTemplate/Views/Shared/Error.cshtml",
-      "TargetPath": "Views\\Shared\\Error.cshtml",
-      "FileKind": "mvc"
-    },
-    {
-      "FilePath": "/Users/user/Projects/RebelCmsTemplateSharp/RebelCmsTemplate/Views/Shared/_ValidationScriptsPartial.cshtml",
-      "TargetPath": "Views\\Shared\\_ValidationScriptsPartial.cshtml",
-      "FileKind": "mvc"
-    },
-    {
-      "FilePath": "/Users/user/Projects/RebelCmsTemplateSharp/RebelCmsTemplate/Views/Pages/Setting/ProductCategory.cshtml",
-      "TargetPath": "Views\\Pages\\Setting\\ProductCategory.cshtml",
-      "FileKind": "mvc"
-    },
-    {
-      "FilePath": "/Users/user/Projects/RebelCmsTemplateSharp/RebelCmsTemplate/Views/Pages/Application/FollowUp.cshtml",
-      "TargetPath": "Views\\Pages\\Application\\FollowUp.cshtml",
-      "FileKind": "mvc"
-    },
-    {
-      "FilePath": "/Users/user/Projects/RebelCmsTemplateSharp/RebelCmsTemplate/Views/Error/403.cshtml",
-      "TargetPath": "Views\\Error\\403.cshtml",
-      "FileKind": "mvc"
-    },
-    {
-      "FilePath": "/Users/user/Projects/RebelCmsTemplateSharp/RebelCmsTemplate/Views/Home/Main.cshtml",
-      "TargetPath": "Views\\Home\\Main.cshtml",
-      "FileKind": "mvc"
-    },
-    {
-      "FilePath": "/Users/user/Projects/RebelCmsTemplateSharp/RebelCmsTemplate/Views/Pages/Administrator/LogSystem.cshtml",
-      "TargetPath": "Views\\Pages\\Administrator\\LogSystem.cshtml",
-      "FileKind": "mvc"
-    },
-    {
-      "FilePath": "/Users/user/Projects/RebelCmsTemplateSharp/RebelCmsTemplate/Views/Pages/Setting/ProductType.cshtml",
-      "TargetPath": "Views\\Pages\\Setting\\ProductType.cshtml",
-      "FileKind": "mvc"
-    },
-    {
-      "FilePath": "/Users/user/Projects/RebelCmsTemplateSharp/RebelCmsTemplate/Views/Pages/Application/Product.cshtml",
+      "FilePath": "/Users/user/Projects/Rebel-Cms-C-Sharp-Asp.net-Core-6/RebelCmsTemplate/Views/Pages/Application/Product.cshtml",
       "TargetPath": "Views\\Pages\\Application\\Product.cshtml",
       "FileKind": "mvc"
     },
     {
-      "FilePath": "/Users/user/Projects/RebelCmsTemplateSharp/RebelCmsTemplate/Views/Pages/Menu/Leaf.cshtml",
-      "TargetPath": "Views\\Pages\\Menu\\Leaf.cshtml",
-      "FileKind": "mvc"
-    },
-    {
-      "FilePath": "/Users/user/Projects/RebelCmsTemplateSharp/RebelCmsTemplate/Views/Pages/Menu/LeafAccess.cshtml",
+      "FilePath": "/Users/user/Projects/Rebel-Cms-C-Sharp-Asp.net-Core-6/RebelCmsTemplate/Views/Pages/Menu/LeafAccess.cshtml",
       "TargetPath": "Views\\Pages\\Menu\\LeafAccess.cshtml",
       "FileKind": "mvc"
     },
     {
-      "FilePath": "/Users/user/Projects/RebelCmsTemplateSharp/RebelCmsTemplate/Views/Pages/Application/ContactUs.cshtml",
-      "TargetPath": "Views\\Pages\\Application\\ContactUs.cshtml",
+      "FilePath": "/Users/user/Projects/Rebel-Cms-C-Sharp-Asp.net-Core-6/RebelCmsTemplate/Views/Home/Main.cshtml",
+      "TargetPath": "Views\\Home\\Main.cshtml",
       "FileKind": "mvc"
     },
     {
-      "FilePath": "/Users/user/Projects/RebelCmsTemplateSharp/RebelCmsTemplate/Views/Home/LogOut.cshtml",
-      "TargetPath": "Views\\Home\\LogOut.cshtml",
+      "FilePath": "/Users/user/Projects/Rebel-Cms-C-Sharp-Asp.net-Core-6/RebelCmsTemplate/Views/Pages/Setting/ProductType.cshtml",
+      "TargetPath": "Views\\Pages\\Setting\\ProductType.cshtml",
       "FileKind": "mvc"
     },
     {
-      "FilePath": "/Users/user/Projects/RebelCmsTemplateSharp/RebelCmsTemplate/Views/Home/Index.cshtml",
-      "TargetPath": "Views\\Home\\Index.cshtml",
-      "FileKind": "mvc"
-    },
-    {
-      "FilePath": "/Users/user/Projects/RebelCmsTemplateSharp/RebelCmsTemplate/Views/Pages/Menu/Folder.cshtml",
-      "TargetPath": "Views\\Pages\\Menu\\Folder.cshtml",
-      "FileKind": "mvc"
-    },
-    {
-      "FilePath": "/Users/user/Projects/RebelCmsTemplateSharp/RebelCmsTemplate/Views/Shared/_Layout.cshtml",
-      "TargetPath": "Views\\Shared\\_Layout.cshtml",
-      "FileKind": "mvc"
-    },
-    {
-      "FilePath": "/Users/user/Projects/RebelCmsTemplateSharp/RebelCmsTemplate/Views/Error/500.cshtml",
-      "TargetPath": "Views\\Error\\500.cshtml",
-      "FileKind": "mvc"
-    },
-    {
-      "FilePath": "/Users/user/Projects/RebelCmsTemplateSharp/RebelCmsTemplate/Views/Pages/Administrator/Configuration.cshtml",
-      "TargetPath": "Views\\Pages\\Administrator\\Configuration.cshtml",
-      "FileKind": "mvc"
-    },
-    {
-      "FilePath": "/Users/user/Projects/RebelCmsTemplateSharp/RebelCmsTemplate/Views/Email/Test.cshtml",
-      "TargetPath": "Views\\Email\\Test.cshtml",
-      "FileKind": "mvc"
-    },
-    {
-      "FilePath": "/Users/user/Projects/RebelCmsTemplateSharp/RebelCmsTemplate/Views/Pages/Administrator/Role.cshtml",
-      "TargetPath": "Views\\Pages\\Administrator\\Role.cshtml",
-      "FileKind": "mvc"
-    },
-    {
-      "FilePath": "/Users/user/Projects/RebelCmsTemplateSharp/RebelCmsTemplate/Views/Home/Login.cshtml",
-      "TargetPath": "Views\\Home\\Login.cshtml",
-      "FileKind": "mvc"
-    },
-    {
-      "FilePath": "/Users/user/Projects/RebelCmsTemplateSharp/RebelCmsTemplate/Views/_ViewStart.cshtml",
-      "TargetPath": "Views\\_ViewStart.cshtml",
-      "FileKind": "mvc"
-    },
-    {
-      "FilePath": "/Users/user/Projects/RebelCmsTemplateSharp/RebelCmsTemplate/Views/Home/Privacy.cshtml",
-      "TargetPath": "Views\\Home\\Privacy.cshtml",
-      "FileKind": "mvc"
-    },
-    {
-      "FilePath": "/Users/user/Projects/RebelCmsTemplateSharp/RebelCmsTemplate/Views/Pages/Administrator/User.cshtml",
-      "TargetPath": "Views\\Pages\\Administrator\\User.cshtml",
-      "FileKind": "mvc"
-    },
-    {
-      "FilePath": "/Users/user/Projects/RebelCmsTemplateSharp/RebelCmsTemplate/Views/Pages/Administrator/Tenant.cshtml",
-      "TargetPath": "Views\\Pages\\Administrator\\Tenant.cshtml",
-      "FileKind": "mvc"
-    },
-    {
-      "FilePath": "/Users/user/Projects/RebelCmsTemplateSharp/RebelCmsTemplate/Views/_ViewImports.cshtml",
-      "TargetPath": "Views\\_ViewImports.cshtml",
-      "FileKind": "mvc"
-    },
-    {
-      "FilePath": "/Users/user/Projects/RebelCmsTemplateSharp/RebelCmsTemplate/Views/Pages/Setting/DocumentNumber.cshtml",
+      "FilePath": "/Users/user/Projects/Rebel-Cms-C-Sharp-Asp.net-Core-6/RebelCmsTemplate/Views/Pages/Setting/DocumentNumber.cshtml",
       "TargetPath": "Views\\Pages\\Setting\\DocumentNumber.cshtml",
       "FileKind": "mvc"
     },
     {
-      "FilePath": "/Users/user/Projects/RebelCmsTemplateSharp/RebelCmsTemplate/Views/Error/404.cshtml",
+      "FilePath": "/Users/user/Projects/Rebel-Cms-C-Sharp-Asp.net-Core-6/RebelCmsTemplate/Views/Pages/Application/Shipper.cshtml",
+      "TargetPath": "Views\\Pages\\Application\\Shipper.cshtml",
+      "FileKind": "mvc"
+    },
+    {
+      "FilePath": "/Users/user/Projects/Rebel-Cms-C-Sharp-Asp.net-Core-6/RebelCmsTemplate/Views/Pages/Application/ContactUs.cshtml",
+      "TargetPath": "Views\\Pages\\Application\\ContactUs.cshtml",
+      "FileKind": "mvc"
+    },
+    {
+      "FilePath": "/Users/user/Projects/Rebel-Cms-C-Sharp-Asp.net-Core-6/RebelCmsTemplate/Views/Error/403.cshtml",
+      "TargetPath": "Views\\Error\\403.cshtml",
+      "FileKind": "mvc"
+    },
+    {
+      "FilePath": "/Users/user/Projects/Rebel-Cms-C-Sharp-Asp.net-Core-6/RebelCmsTemplate/Views/Home/LogOut.cshtml",
+      "TargetPath": "Views\\Home\\LogOut.cshtml",
+      "FileKind": "mvc"
+    },
+    {
+      "FilePath": "/Users/user/Projects/Rebel-Cms-C-Sharp-Asp.net-Core-6/RebelCmsTemplate/Views/Shared/_ValidationScriptsPartial.cshtml",
+      "TargetPath": "Views\\Shared\\_ValidationScriptsPartial.cshtml",
+      "FileKind": "mvc"
+    },
+    {
+      "FilePath": "/Users/user/Projects/Rebel-Cms-C-Sharp-Asp.net-Core-6/RebelCmsTemplate/Views/Shared/Error.cshtml",
+      "TargetPath": "Views\\Shared\\Error.cshtml",
+      "FileKind": "mvc"
+    },
+    {
+      "FilePath": "/Users/user/Projects/Rebel-Cms-C-Sharp-Asp.net-Core-6/RebelCmsTemplate/Views/Home/Privacy.cshtml",
+      "TargetPath": "Views\\Home\\Privacy.cshtml",
+      "FileKind": "mvc"
+    },
+    {
+      "FilePath": "/Users/user/Projects/Rebel-Cms-C-Sharp-Asp.net-Core-6/RebelCmsTemplate/Views/Home/Login.cshtml",
+      "TargetPath": "Views\\Home\\Login.cshtml",
+      "FileKind": "mvc"
+    },
+    {
+      "FilePath": "/Users/user/Projects/Rebel-Cms-C-Sharp-Asp.net-Core-6/RebelCmsTemplate/Views/Pages/Administrator/Tenant.cshtml",
+      "TargetPath": "Views\\Pages\\Administrator\\Tenant.cshtml",
+      "FileKind": "mvc"
+    },
+    {
+      "FilePath": "/Users/user/Projects/Rebel-Cms-C-Sharp-Asp.net-Core-6/RebelCmsTemplate/Views/Pages/Application/Invoice.cshtml",
+      "TargetPath": "Views\\Pages\\Application\\Invoice.cshtml",
+      "FileKind": "mvc"
+    },
+    {
+      "FilePath": "/Users/user/Projects/Rebel-Cms-C-Sharp-Asp.net-Core-6/RebelCmsTemplate/Views/Pages/Setting/ProductCategory.cshtml",
+      "TargetPath": "Views\\Pages\\Setting\\ProductCategory.cshtml",
+      "FileKind": "mvc"
+    },
+    {
+      "FilePath": "/Users/user/Projects/Rebel-Cms-C-Sharp-Asp.net-Core-6/RebelCmsTemplate/Views/Pages/Application/Customer.cshtml",
+      "TargetPath": "Views\\Pages\\Application\\Customer.cshtml",
+      "FileKind": "mvc"
+    },
+    {
+      "FilePath": "/Users/user/Projects/Rebel-Cms-C-Sharp-Asp.net-Core-6/RebelCmsTemplate/Views/Pages/Menu/FolderAccess.cshtml",
+      "TargetPath": "Views\\Pages\\Menu\\FolderAccess.cshtml",
+      "FileKind": "mvc"
+    },
+    {
+      "FilePath": "/Users/user/Projects/Rebel-Cms-C-Sharp-Asp.net-Core-6/RebelCmsTemplate/Views/_ViewStart.cshtml",
+      "TargetPath": "Views\\_ViewStart.cshtml",
+      "FileKind": "mvc"
+    },
+    {
+      "FilePath": "/Users/user/Projects/Rebel-Cms-C-Sharp-Asp.net-Core-6/RebelCmsTemplate/Views/Home/Index.cshtml",
+      "TargetPath": "Views\\Home\\Index.cshtml",
+      "FileKind": "mvc"
+    },
+    {
+      "FilePath": "/Users/user/Projects/Rebel-Cms-C-Sharp-Asp.net-Core-6/RebelCmsTemplate/Views/Pages/Administrator/Log.cshtml",
+      "TargetPath": "Views\\Pages\\Administrator\\Log.cshtml",
+      "FileKind": "mvc"
+    },
+    {
+      "FilePath": "/Users/user/Projects/Rebel-Cms-C-Sharp-Asp.net-Core-6/RebelCmsTemplate/Views/Pages/Administrator/Role.cshtml",
+      "TargetPath": "Views\\Pages\\Administrator\\Role.cshtml",
+      "FileKind": "mvc"
+    },
+    {
+      "FilePath": "/Users/user/Projects/Rebel-Cms-C-Sharp-Asp.net-Core-6/RebelCmsTemplate/Views/Email/Test.cshtml",
+      "TargetPath": "Views\\Email\\Test.cshtml",
+      "FileKind": "mvc"
+    },
+    {
+      "FilePath": "/Users/user/Projects/Rebel-Cms-C-Sharp-Asp.net-Core-6/RebelCmsTemplate/Views/Pages/Menu/Folder.cshtml",
+      "TargetPath": "Views\\Pages\\Menu\\Folder.cshtml",
+      "FileKind": "mvc"
+    },
+    {
+      "FilePath": "/Users/user/Projects/Rebel-Cms-C-Sharp-Asp.net-Core-6/RebelCmsTemplate/Views/Pages/Application/Supplier.cshtml",
+      "TargetPath": "Views\\Pages\\Application\\Supplier.cshtml",
+      "FileKind": "mvc"
+    },
+    {
+      "FilePath": "/Users/user/Projects/Rebel-Cms-C-Sharp-Asp.net-Core-6/RebelCmsTemplate/Views/Pages/Administrator/User.cshtml",
+      "TargetPath": "Views\\Pages\\Administrator\\User.cshtml",
+      "FileKind": "mvc"
+    },
+    {
+      "FilePath": "/Users/user/Projects/Rebel-Cms-C-Sharp-Asp.net-Core-6/RebelCmsTemplate/Views/Pages/Application/Employee.cshtml",
+      "TargetPath": "Views\\Pages\\Application\\Employee.cshtml",
+      "FileKind": "mvc"
+    },
+    {
+      "FilePath": "/Users/user/Projects/Rebel-Cms-C-Sharp-Asp.net-Core-6/RebelCmsTemplate/Views/Pages/Menu/Leaf.cshtml",
+      "TargetPath": "Views\\Pages\\Menu\\Leaf.cshtml",
+      "FileKind": "mvc"
+    },
+    {
+      "FilePath": "/Users/user/Projects/Rebel-Cms-C-Sharp-Asp.net-Core-6/RebelCmsTemplate/Views/Pages/Administrator/LogSystem.cshtml",
+      "TargetPath": "Views\\Pages\\Administrator\\LogSystem.cshtml",
+      "FileKind": "mvc"
+    },
+    {
+      "FilePath": "/Users/user/Projects/Rebel-Cms-C-Sharp-Asp.net-Core-6/RebelCmsTemplate/Views/_ViewImports.cshtml",
+      "TargetPath": "Views\\_ViewImports.cshtml",
+      "FileKind": "mvc"
+    },
+    {
+      "FilePath": "/Users/user/Projects/Rebel-Cms-C-Sharp-Asp.net-Core-6/RebelCmsTemplate/Views/Shared/_Layout.cshtml",
+      "TargetPath": "Views\\Shared\\_Layout.cshtml",
+      "FileKind": "mvc"
+    },
+    {
+      "FilePath": "/Users/user/Projects/Rebel-Cms-C-Sharp-Asp.net-Core-6/RebelCmsTemplate/Views/Error/500.cshtml",
+      "TargetPath": "Views\\Error\\500.cshtml",
+      "FileKind": "mvc"
+    },
+    {
+      "FilePath": "/Users/user/Projects/Rebel-Cms-C-Sharp-Asp.net-Core-6/RebelCmsTemplate/Views/Error/404.cshtml",
       "TargetPath": "Views\\Error\\404.cshtml",
+      "FileKind": "mvc"
+    },
+    {
+      "FilePath": "/Users/user/Projects/Rebel-Cms-C-Sharp-Asp.net-Core-6/RebelCmsTemplate/Views/Pages/Administrator/Configuration.cshtml",
+      "TargetPath": "Views\\Pages\\Administrator\\Configuration.cshtml",
       "FileKind": "mvc"
     }
   ],

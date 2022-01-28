@@ -58,7 +58,7 @@ public class ShipperRepository
 
             mySqlCommand.ExecuteNonQuery();
             mySqlTransaction.Commit();
-            lastInsertKey = (int) mySqlCommand.LastInsertedId;
+            lastInsertKey = (int)mySqlCommand.LastInsertedId;
             mySqlCommand.Dispose();
         }
         catch (MySqlException ex)
@@ -84,8 +84,23 @@ public class ShipperRepository
                 SELECT      *
                 FROM        shipper 
                 WHERE       isDelete !=1
+                AND         tenantId   = @tenantId
                 ORDER BY    shipperId DESC ";
             MySqlCommand mySqlCommand = new(sql, connection);
+            parameterModels = new List<ParameterModel>
+                {
+                  new ()
+                    {
+                        Key = "@tenantId",
+                        Value = _sharedUtil.GetTenantId()
+                   }
+                };
+            foreach (var parameter in parameterModels)
+            {
+                mySqlCommand.Parameters.AddWithValue(parameter.Key, parameter.Value);
+            }
+
+            _sharedUtil.SetSqlSession(sql, parameterModels);
             _sharedUtil.SetSqlSession(sql, parameterModels);
             using (var reader = mySqlCommand.ExecuteReader())
             {
@@ -128,8 +143,8 @@ public class ShipperRepository
                 FROM    shipper 
 	 WHERE   shipper.isDelete != 1
 	 AND (
-	 shipper.shipperName like concat('%',@search,'%') OR
-	 shipper.shipperPhone like concat('%',@search,'%') )";
+	 shipper.shipperName LIKE CONCAT('%',@search,'%') OR
+	 shipper.shipperPhone LIKE CONCAT('%',@search,'%') )";
             MySqlCommand mySqlCommand = new(sql, connection);
             parameterModels = new List<ParameterModel>
             {

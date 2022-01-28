@@ -132,6 +132,7 @@ public class InvoiceRepository
         var sql = string.Empty;
         List<ParameterModel> parameterModels = new();
         using var connection = SharedUtil.GetConnection();
+        // the reason limit avoid hang . dom browser can't process a lot of record. Want more paging or ajax paging
         try
         {
             connection.Open();
@@ -145,7 +146,7 @@ public class InvoiceRepository
 	 JOIN employee 
 	 USING(employeeId)
 	 WHERE   invoice.isDelete != 1
-                ORDER BY    invoiceId DESC ";
+                ORDER BY    invoiceId DESC LIMIT 100 ";
             MySqlCommand mySqlCommand = new(sql, connection);
             _sharedUtil.SetSqlSession(sql, parameterModels);
             using (var reader = mySqlCommand.ExecuteReader())
@@ -203,29 +204,81 @@ public class InvoiceRepository
         {
             connection.Open();
             sql += @"
-                SELECT  *
-                FROM    invoice 
-	 JOIN customer 
-	 USING(customerId)
-	 JOIN shipper 
-	 USING(shipperId)
-	 JOIN employee 
-	 USING(employeeId)
-	 WHERE   invoice.isDelete != 1
-	 AND (	 customer.customerName LIKE CONCAT('%',@search,'%') OR	 customer.customerName LIKE CONCAT('%',@search,'%') OR	 customer.customerName LIKE CONCAT('%',@search,'%') OR	 customer.customerName LIKE CONCAT('%',@search,'%') OR	 customer.customerName LIKE CONCAT('%',@search,'%') OR	 customer.customerName LIKE CONCAT('%',@search,'%') OR	 customer.customerName LIKE CONCAT('%',@search,'%') OR	 customer.customerName LIKE CONCAT('%',@search,'%') OR	 customer.customerName LIKE CONCAT('%',@search,'%') OR	 customer.customerName LIKE CONCAT('%',@search,'%') OR	 customer.customerName LIKE CONCAT('%',@search,'%') OR	 customer.customerName LIKE CONCAT('%',@search,'%') OR	 customer.customerName LIKE CONCAT('%',@search,'%') OR	 customer.customerName LIKE CONCAT('%',@search,'%') OR	 shipper.shipperName LIKE CONCAT('%',@search,'%') OR	 shipper.shipperName LIKE CONCAT('%',@search,'%') OR	 shipper.shipperName LIKE CONCAT('%',@search,'%') OR	 shipper.shipperName LIKE CONCAT('%',@search,'%') OR	 shipper.shipperName LIKE CONCAT('%',@search,'%') OR	 employee.employeeLastName LIKE CONCAT('%',@search,'%') OR	 employee.employeeLastName LIKE CONCAT('%',@search,'%') OR	 employee.employeeLastName LIKE CONCAT('%',@search,'%') OR	 employee.employeeLastName LIKE CONCAT('%',@search,'%') OR	 employee.employeeLastName LIKE CONCAT('%',@search,'%') OR	 employee.employeeLastName LIKE CONCAT('%',@search,'%') OR	 employee.employeeLastName LIKE CONCAT('%',@search,'%') OR	 employee.employeeLastName LIKE CONCAT('%',@search,'%') OR	 employee.employeeLastName LIKE CONCAT('%',@search,'%') OR	 employee.employeeLastName LIKE CONCAT('%',@search,'%') OR	 employee.employeeLastName LIKE CONCAT('%',@search,'%') OR	 employee.employeeLastName LIKE CONCAT('%',@search,'%') OR	 employee.employeeLastName LIKE CONCAT('%',@search,'%') OR	 employee.employeeLastName LIKE CONCAT('%',@search,'%') OR	 employee.employeeLastName LIKE CONCAT('%',@search,'%') OR	 employee.employeeLastName LIKE CONCAT('%',@search,'%') OR	 employee.employeeLastName LIKE CONCAT('%',@search,'%') OR	 employee.employeeLastName LIKE CONCAT('%',@search,'%') OR	 employee.employeeLastName LIKE CONCAT('%',@search,'%') OR	 employee.employeeLastName LIKE CONCAT('%',@search,'%') OR
-	 invoice.invoiceOrderDate LIKE CONCAT('%',@search,'%') OR
-	 invoice.invoiceRequiredDate LIKE CONCAT('%',@search,'%') OR
-	 invoice.invoiceShippedDate LIKE CONCAT('%',@search,'%') OR
-	 invoice.invoiceFreight LIKE CONCAT('%',@search,'%') OR
-	 invoice.invoiceShipName LIKE CONCAT('%',@search,'%') OR
-	 invoice.invoiceShipAddress LIKE CONCAT('%',@search,'%') OR
-	 invoice.invoiceShipCity LIKE CONCAT('%',@search,'%') OR
-	 invoice.invoiceShipRegion LIKE CONCAT('%',@search,'%') OR
-	 invoice.invoiceShipPostalCode LIKE CONCAT('%',@search,'%') OR
-	 invoice.invoiceShipCountry LIKE CONCAT('%',@search,'%') )";
+            SELECT  *
+            FROM    invoice
+
+            JOIN customer 
+            USING(customerId)
+
+            JOIN shipper 
+            USING(shipperId)
+
+            JOIN employee 
+            USING(employeeId)
+
+            WHERE   invoice.isDelete != 1
+            AND     invoice.tenantId = @tenantId
+     		AND (				customer. LIKE CONCAT('%',@search,'%') OR
+				customer.tenantName LIKE CONCAT('%',@search,'%') OR
+				customer.customerCode LIKE CONCAT('%',@search,'%') OR
+				customer.customerName LIKE CONCAT('%',@search,'%') OR
+				customer.customerContactName LIKE CONCAT('%',@search,'%') OR
+				customer.customerContactTitle LIKE CONCAT('%',@search,'%') OR
+				customer.customerAddress LIKE CONCAT('%',@search,'%') OR
+				customer.customerCity LIKE CONCAT('%',@search,'%') OR
+				customer.customerRegion LIKE CONCAT('%',@search,'%') OR
+				customer.customerPostalCode LIKE CONCAT('%',@search,'%') OR
+				customer.customerCountry LIKE CONCAT('%',@search,'%') OR
+				customer.customerPhone LIKE CONCAT('%',@search,'%') OR
+				customer.customerFax LIKE CONCAT('%',@search,'%') OR
+				customer.isDelete LIKE CONCAT('%',@search,'%') OR
+				customer.isDefault LIKE CONCAT('%',@search,'%') OR
+				shipper. LIKE CONCAT('%',@search,'%') OR
+				shipper.tenantName LIKE CONCAT('%',@search,'%') OR
+				shipper.shipperName LIKE CONCAT('%',@search,'%') OR
+				shipper.shipperPhone LIKE CONCAT('%',@search,'%') OR
+				shipper.isDelete LIKE CONCAT('%',@search,'%') OR
+				shipper.isDefault LIKE CONCAT('%',@search,'%') OR
+				employee. LIKE CONCAT('%',@search,'%') OR
+				employee.tenantName LIKE CONCAT('%',@search,'%') OR
+				employee.employeeFirstName LIKE CONCAT('%',@search,'%') OR
+				employee.employeeLastName LIKE CONCAT('%',@search,'%') OR
+				employee.employeeTitle LIKE CONCAT('%',@search,'%') OR
+				employee.employeeTitleOfCourtesy LIKE CONCAT('%',@search,'%') OR
+				employee.employeeBirthDate LIKE CONCAT('%',@search,'%') OR
+				employee.employeeHireDate LIKE CONCAT('%',@search,'%') OR
+				employee.employeeAddress LIKE CONCAT('%',@search,'%') OR
+				employee.employeeCity LIKE CONCAT('%',@search,'%') OR
+				employee.employeeRegion LIKE CONCAT('%',@search,'%') OR
+				employee.employeePostalCode LIKE CONCAT('%',@search,'%') OR
+				employee.employeeCountry LIKE CONCAT('%',@search,'%') OR
+				employee.employeeHomePhone LIKE CONCAT('%',@search,'%') OR
+				employee.employeeExtension LIKE CONCAT('%',@search,'%') OR
+				employee.employeePhoto LIKE CONCAT('%',@search,'%') OR
+				employee.employeeNotes LIKE CONCAT('%',@search,'%') OR
+				employee.employeePhotoPath LIKE CONCAT('%',@search,'%') OR
+				employee.employeeSalary LIKE CONCAT('%',@search,'%') OR
+				employee.isDelete LIKE CONCAT('%',@search,'%') OR
+				employee.isDefault LIKE CONCAT('%',@search,'%') OR
+				invoice.invoiceOrderDate LIKE CONCAT('%',@search,'%') OR
+				invoice.invoiceRequiredDate LIKE CONCAT('%',@search,'%') OR
+				invoice.invoiceShippedDate LIKE CONCAT('%',@search,'%') OR
+				invoice.invoiceFreight LIKE CONCAT('%',@search,'%') OR
+				invoice.invoiceShipName LIKE CONCAT('%',@search,'%') OR
+				invoice.invoiceShipAddress LIKE CONCAT('%',@search,'%') OR
+				invoice.invoiceShipCity LIKE CONCAT('%',@search,'%') OR
+				invoice.invoiceShipRegion LIKE CONCAT('%',@search,'%') OR
+				invoice.invoiceShipPostalCode LIKE CONCAT('%',@search,'%') OR
+				invoice.invoiceShipCountry LIKE CONCAT('%',@search,'%')
+            ) LIMIT 100 ";
             MySqlCommand mySqlCommand = new(sql, connection);
             parameterModels = new List<ParameterModel>
             {
+                new()
+                {
+                    Key = "@tenantId",
+                    Value = _sharedUtil.GetTenantId()
+                },
                 new()
                 {
                     Key = "@search",
@@ -291,19 +344,29 @@ public class InvoiceRepository
         {
             connection.Open();
             sql += @"
-                SELECT  *
-                FROM    invoice 
-	 JOIN customer 
-	 USING(customerId)
-	 JOIN shipper 
-	 USING(shipperId)
-	 JOIN employee 
-	 USING(employeeId)
-                WHERE   invoice.isDelete != 1
-                AND   invoice.invoiceId    =   @invoiceId LIMIT 1";
+            SELECT  *
+            FROM    invoice
+
+            JOIN customer 
+            USING(customerId)
+
+            JOIN shipper 
+            USING(shipperId)
+
+            JOIN employee 
+            USING(employeeId)
+
+            WHERE   invoice.isDelete    !=  1
+            AND     invoice.tenantId    =   @tenantId
+            AND   invoice.invoiceId     =   @invoiceId LIMIT 1";
             MySqlCommand mySqlCommand = new(sql, connection);
             parameterModels = new List<ParameterModel>
             {
+                   new()
+                {
+                    Key = "@tenantId",
+                    Value = _sharedUtil.GetTenantId()
+                },
                 new()
                 {
                     Key = "@invoiceId",
@@ -367,19 +430,30 @@ public class InvoiceRepository
         {
             connection.Open();
             sql += @"
-                SELECT  *
-                FROM    invoice 
-	 JOIN customer 
-	 USING(customerId)
-	 JOIN shipper 
-	 USING(shipperId)
-	 JOIN employee 
-	 USING(employeeId)
-                WHERE   invoice.isDelete != 1
-                AND   invoice.invoiceId    =   @invoiceId LIMIT 1";
+            SELECT  *
+            FROM    invoice
+
+            JOIN customer 
+            USING(customerId)
+
+            JOIN shipper 
+            USING(shipperId)
+
+            JOIN employee 
+            USING(employeeId)
+
+            WHERE   invoice.isDelete !  =   1
+            AND     invoice.tenantId    =   @tenantId
+            AND     invoice.invoiceId   =   @invoiceId
+            LIMIT 1";
             MySqlCommand mySqlCommand = new(sql, connection);
             parameterModels = new List<ParameterModel>
             {
+                    new()
+                {
+                    Key = "@tenantId",
+                    Value = _sharedUtil.GetTenantId()
+                },
                 new()
                 {
                     Key = "@invoiceId",
@@ -435,15 +509,28 @@ public class InvoiceRepository
         try
         {
             sql = @"
-                SELECT      *
-                FROM        invoice_detail 
-	 JOIN invoice 
-	 USING(invoiceId)
-	 JOIN product 
-	 USING(productId)
-	 WHERE   invoice.isDelete != 1 AND invoice_detail.isDelete != 1
-                AND   invoice_detail.invoiceId    =   @invoiceId limit 5";
+            SELECT      *
+            FROM        invoice_detail
+
+            JOIN invoice 
+            USING(invoiceId)
+
+            JOIN product 
+            USING(productId)
+
+            WHERE   invoice.isDelete        !=  1
+            AND     invoice.tenantId        =   @tenantId
+            AND     invoice_detail.isDelete != 1
+            AND   invoice_detail.invoiceId  =   @invoiceId";
             MySqlCommand mySqlCommand = new(sql, connection);
+            parameterModels = new List<ParameterModel>
+            {
+                    new()
+                {
+                    Key = "@tenantId",
+                    Value = _sharedUtil.GetTenantId()
+                }
+            };
             foreach (var parameter in parameterModels)
             {
                 mySqlCommand.Parameters.AddWithValue(parameter.Key, parameter.Value);
@@ -559,25 +646,22 @@ public class InvoiceRepository
             connection.Open();
             var mySqlTransaction = connection.BeginTransaction();
             sql = @"
-                UPDATE  invoice 
-                SET     
-tenantId=@tenantId,
-customerId=@customerId,
-shipperId=@shipperId,
-employeeId=@employeeId,
-invoiceOrderDate=@invoiceOrderDate,
-invoiceRequiredDate=@invoiceRequiredDate,
-invoiceShippedDate=@invoiceShippedDate,
-invoiceFreight=@invoiceFreight,
-invoiceShipName=@invoiceShipName,
-invoiceShipAddress=@invoiceShipAddress,
-invoiceShipCity=@invoiceShipCity,
-invoiceShipRegion=@invoiceShipRegion,
-invoiceShipPostalCode=@invoiceShipPostalCode,
-invoiceShipCountry=@invoiceShipCountry,
-isDelete=@isDelete
+            UPDATE  invoice 
+            SET     customerId              =   @customerId,
+                    shipperId               =   @shipperId,
+                    employeeId              =   @employeeId,
+                    invoiceOrderDate        =   @invoiceOrderDate,
+                    invoiceRequiredDate     =   @invoiceRequiredDate,
+                    invoiceShippedDate      =   @invoiceShippedDate,
+                    invoiceFreight          =   @invoiceFreight,
+                    invoiceShipName         =   @invoiceShipName,
+                    invoiceShipAddress      =   @invoiceShipAddress,
+                    invoiceShipCity         =   @invoiceShipCity,
+                    invoiceShipRegion       =   @invoiceShipRegion,
+                    invoiceShipPostalCode   =   @invoiceShipPostalCode,
+                    invoiceShipCountry      =   @invoiceShipCountry
 
-                WHERE   invoiceId    =   @invoiceId";
+            WHERE   invoiceId    =   @invoiceId";
             MySqlCommand mySqlCommand = new(sql, connection);
             parameterModels = new List<ParameterModel>
             {
@@ -655,11 +739,6 @@ isDelete=@isDelete
                 {
                     Key = "@invoiceShipCountry",
                     Value = invoiceModel.InvoiceShipCountry
-                },
-                new()
-                {
-                    Key = "@isDelete",
-                    Value = 0
                 }
             };
             foreach (var parameter in parameterModels)
@@ -689,9 +768,9 @@ isDelete=@isDelete
             connection.Open();
             var mySqlTransaction = connection.BeginTransaction();
             sql = @"
-                UPDATE  invoice 
-                SET     isDelete    =   1
-                WHERE   invoiceId    =   @invoiceId";
+            UPDATE  invoice 
+            SET     isDelete    =   1
+            WHERE   invoiceId    =   @invoiceId";
             MySqlCommand mySqlCommand = new(sql, connection);
             parameterModels = new List<ParameterModel>
             {

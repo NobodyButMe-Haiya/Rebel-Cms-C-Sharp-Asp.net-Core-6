@@ -25,16 +25,16 @@ public class FolderAccessRepository
         {
             connection.Open();
             sql += @"
-                SELECT  * 
-                FROM    folder_access 
+            SELECT  * 
+            FROM    folder_access 
 
-                JOIN    role 
-                USING(roleId) 
+            JOIN    role 
+            USING(roleId) 
 
-                JOIN folder 
-                USING(folderId)
+            JOIN folder 
+            USING(folderId)
 
-                WHERE folder.tenantId  = @tenantId ";
+            WHERE folder.tenantId  = @tenantId ";
             if (roleId > 0)
             {
                 sql += " AND roleId  = @roleId ";

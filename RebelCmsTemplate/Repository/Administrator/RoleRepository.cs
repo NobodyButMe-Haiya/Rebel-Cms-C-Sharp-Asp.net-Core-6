@@ -59,7 +59,7 @@ public class RoleRepository
             mySqlCommand.ExecuteNonQuery();
 
 
-            lastInsertKey = (int) mySqlCommand.LastInsertedId;
+            lastInsertKey = (int)mySqlCommand.LastInsertedId;
 
             mySqlCommand.Dispose();
             SetLeafAccess(connection, lastInsertKey);
@@ -147,7 +147,7 @@ public class RoleRepository
                 FROM    role
                 WHERE   tenantId = @tenantId
                 AND     isDelete != 1
-                AND     roleName like concat('%',@search,'%'); ";
+                AND     roleName LIKE CONCAT('%',@search,'%'); ";
             MySqlCommand mySqlCommand = new(sql, connection);
 
             parameterModels = new List<ParameterModel>
@@ -253,10 +253,10 @@ public class RoleRepository
             var mySqlTransaction = connection.BeginTransaction();
 
             sql += @"
-                UPDATE  role
-                SET     roleName = @roleName,
-                        executeBy = @executeBy
-                WHERE   roleId = @roleId ";
+            UPDATE  role
+            SET     roleName    =   @roleName,
+                    executeBy   =   @executeBy
+            WHERE   roleId      =   @roleId ";
             MySqlCommand mySqlCommand = new(sql, connection);
             parameterModels = new List<ParameterModel>
             {
@@ -305,9 +305,9 @@ public class RoleRepository
             var mySqlTransaction = connection.BeginTransaction();
 
             sql += @"
-                UPDATE  role
-                SET     isDelete = 1
-                WHERE   roleId  = @roleId;";
+            UPDATE  role
+            SET     isDelete = 1
+            WHERE   roleId  = @roleId;";
             MySqlCommand mySqlCommand = new(sql, connection);
 
             parameterModels = new List<ParameterModel>

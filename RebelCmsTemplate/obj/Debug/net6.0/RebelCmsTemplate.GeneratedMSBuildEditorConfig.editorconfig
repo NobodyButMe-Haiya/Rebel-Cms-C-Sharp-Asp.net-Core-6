@@ -51,16 +51,8 @@ build_metadata.AdditionalFiles.CssScope =
 build_metadata.AdditionalFiles.TargetPath = Vmlld3MvSG9tZS9Qcml2YWN5LmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[/Users/user/Projects/Rebel-Cms-C-Sharp-Asp.net-Core-6/RebelCmsTemplate/Views/Pages/Administrator/Configuration.cshtml]
-build_metadata.AdditionalFiles.TargetPath = Vmlld3MvUGFnZXMvQWRtaW5pc3RyYXRvci9Db25maWd1cmF0aW9uLmNzaHRtbA==
-build_metadata.AdditionalFiles.CssScope = 
-
 [/Users/user/Projects/Rebel-Cms-C-Sharp-Asp.net-Core-6/RebelCmsTemplate/Views/Pages/Administrator/Log.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3MvUGFnZXMvQWRtaW5pc3RyYXRvci9Mb2cuY3NodG1s
-build_metadata.AdditionalFiles.CssScope = 
-
-[/Users/user/Projects/Rebel-Cms-C-Sharp-Asp.net-Core-6/RebelCmsTemplate/Views/Pages/Administrator/LogSystem.cshtml]
-build_metadata.AdditionalFiles.TargetPath = Vmlld3MvUGFnZXMvQWRtaW5pc3RyYXRvci9Mb2dTeXN0ZW0uY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
 [/Users/user/Projects/Rebel-Cms-C-Sharp-Asp.net-Core-6/RebelCmsTemplate/Views/Pages/Administrator/Role.cshtml]
@@ -73,10 +65,6 @@ build_metadata.AdditionalFiles.CssScope =
 
 [/Users/user/Projects/Rebel-Cms-C-Sharp-Asp.net-Core-6/RebelCmsTemplate/Views/Pages/Administrator/User.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3MvUGFnZXMvQWRtaW5pc3RyYXRvci9Vc2VyLmNzaHRtbA==
-build_metadata.AdditionalFiles.CssScope = 
-
-[/Users/user/Projects/Rebel-Cms-C-Sharp-Asp.net-Core-6/RebelCmsTemplate/Views/Pages/Application/ContactUs.cshtml]
-build_metadata.AdditionalFiles.TargetPath = Vmlld3MvUGFnZXMvQXBwbGljYXRpb24vQ29udGFjdFVzLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
 [/Users/user/Projects/Rebel-Cms-C-Sharp-Asp.net-Core-6/RebelCmsTemplate/Views/Pages/Application/Customer.cshtml]
@@ -117,10 +105,6 @@ build_metadata.AdditionalFiles.CssScope =
 
 [/Users/user/Projects/Rebel-Cms-C-Sharp-Asp.net-Core-6/RebelCmsTemplate/Views/Pages/Menu/LeafAccess.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3MvUGFnZXMvTWVudS9MZWFmQWNjZXNzLmNzaHRtbA==
-build_metadata.AdditionalFiles.CssScope = 
-
-[/Users/user/Projects/Rebel-Cms-C-Sharp-Asp.net-Core-6/RebelCmsTemplate/Views/Pages/Setting/DocumentNumber.cshtml]
-build_metadata.AdditionalFiles.TargetPath = Vmlld3MvUGFnZXMvU2V0dGluZy9Eb2N1bWVudE51bWJlci5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
 [/Users/user/Projects/Rebel-Cms-C-Sharp-Asp.net-Core-6/RebelCmsTemplate/Views/Pages/Setting/ProductCategory.cshtml]

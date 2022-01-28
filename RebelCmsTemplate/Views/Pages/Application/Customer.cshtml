@@ -223,7 +223,7 @@
 <script>
         function resetForm(attributeName) {
 	$("#customerKey").val('');
-	$("#tenantKey").val('');
+	
 	$("#customerCode").val('');
 	$("#customerName").val('');
 	$("#customerContactName").val('');
@@ -235,7 +235,7 @@
 	$("#customerCountry").val('');
 	$("#customerPhone").val('');
 	$("#customerFax").val('');
-	$("#isDelete").val('');
+	
             $("#createButton").removeAttr("disabled");
             $("#updateButton").attr("disabled","disabled");
             $("#deleteButton").attr("disabled","disabled");
@@ -244,7 +244,7 @@
          readRecord();
          $("#search").val("");
 	$("#customerKey").val('');
-	$("#tenantKey").val('');
+	
 	$("#customerCode").val('');
 	$("#customerName").val('');
 	$("#customerContactName").val('');
@@ -256,7 +256,7 @@
 	$("#customerCountry").val('');
 	$("#customerPhone").val('');
 	$("#customerFax").val('');
-	$("#isDelete").val('');
+	
         }
         function emptyTemplate() {
          return"<tr><td colspan='6'>It's lonely here</td></tr>";
@@ -784,7 +784,7 @@
             $("#updateButton").attr("disabled","disabled");
             $("#deleteButton").attr("disabled","disabled");
 	$("#customerKey").val('');
-	$("#tenantKey").val('');
+	
 	$("#customerCode").val('');
 	$("#customerName").val('');
 	$("#customerContactName").val('');
@@ -796,7 +796,7 @@
 	$("#customerCountry").val('');
 	$("#customerPhone").val('');
 	$("#customerFax").val('');
-	$("#isDelete").val('');
+	
                readRecord();
                Swal.fire("System", "@SharedUtil.RecordDeleted", "success");
               } else if (status === false) {

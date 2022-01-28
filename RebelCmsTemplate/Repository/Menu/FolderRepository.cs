@@ -30,18 +30,18 @@ public class FolderRepository
                 mySqlTransaction = connection.BeginTransaction();
 
             sql += @"
-                INSERT INTO folder
-                ( 
-                    folderId, folderName, 
-                    folderFilename, folderIcon, 
-                    folderSeq,isDelete,
-                    tenantId
-                )VALUES(
-                    NULL, @folderName,
-                    @folderFilename, @folderIcon,
-                    @folderSeq,0,
-                        @tenantId
-                )";
+            INSERT INTO folder
+            ( 
+                folderId,           folderName, 
+                folderFilename,     folderIcon, 
+                folderSeq,          isDelete,
+                tenantId
+            )VALUES(
+                NULL,               @folderName,
+                @folderFilename,    @folderIcon,
+                @folderSeq,         0,
+                @tenantId
+            )";
 
             MySqlCommand mySqlCommand = new(sql, connection);
 
@@ -112,11 +112,11 @@ public class FolderRepository
         {
             connection.Open();
             sql += @"
-                SELECT      *
-                FROM        folder
-                WHERE       tenantId = @tenantId
-                AND         isDelete !=1
-                ORDER BY    folderSeq  ";
+            SELECT      *
+            FROM        folder
+            WHERE       tenantId = @tenantId
+            AND         isDelete !=1
+            ORDER BY    folderSeq  ";
             MySqlCommand mySqlCommand = new(sql, connection);
             parameterModels = new List<ParameterModel>
             {
@@ -173,11 +173,11 @@ public class FolderRepository
         {
             connection.Open();
             sql += @"
-                SELECT  *
-                FROM    folder
-                WHERE   tenantId= @tenantId 
-                AND     isDelete != 1
-                AND     folderName  LIKE CONCAT('%',@search,'%'); ";
+            SELECT  *
+            FROM    folder
+            WHERE   tenantId= @tenantId 
+            AND     isDelete != 1
+            AND     folderName  LIKE CONCAT('%',@search,'%'); ";
             MySqlCommand mySqlCommand = new(sql, connection);
             parameterModels = new List<ParameterModel>
             {
@@ -240,12 +240,12 @@ public class FolderRepository
             var mySqlTransaction = connection.BeginTransaction();
 
             sql += @"
-                UPDATE  folder
-                SET     folderName      =   @folderName,
-                        folderFilename  =   @folderFilename,
-                        folderIcon      =   @folderIcon,
-                        folderSeq       =   @folderSeq
-                WHERE   folderId        =   @folderId ";
+            UPDATE  folder
+            SET     folderName      =   @folderName,
+                    folderFilename  =   @folderFilename,
+                    folderIcon      =   @folderIcon,
+                    folderSeq       =   @folderSeq
+            WHERE   folderId        =   @folderId ";
 
             MySqlCommand mySqlCommand = new(sql, connection);
 
@@ -316,9 +316,9 @@ public class FolderRepository
             var mySqlTransaction = connection.BeginTransaction();
 
             sql += @"
-                UPDATE  folder
-                SET     isDelete = 1
-                WHERE   folderId  = @folderId;";
+            UPDATE  folder
+            SET     isDelete = 1
+            WHERE   folderId  = @folderId;";
             MySqlCommand mySqlCommand = new(sql, connection);
 
             parameterModels = new List<ParameterModel>

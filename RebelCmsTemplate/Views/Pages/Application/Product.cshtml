@@ -286,7 +286,7 @@
  var productTypeModels = @Json.Serialize(productTypeModels);
 	function resetForm() {
 	$("#productKey").val('');
-	$("#tenantKey").val('');
+	
 	$("#supplierKey").val('');
 	$("#productCategoryKey").val('');
 	$("#productTypeKey").val('');
@@ -298,7 +298,7 @@
 	$("#productUnitsInStock").val('');
 	$("#productUnitsOnOrder").val('');
 	$("#productReOrderLevel").val('');
-	$("#isDelete").val('');
+	
 	$("#executeBy").val('');
             $("#createButton").removeAttr("disabled");
             $("#updateButton").attr("disabled","disabled");
@@ -308,7 +308,7 @@
          readRecord();
          $("#search").val("");
 	$("#productKey").val('');
-	$("#tenantKey").val('');
+	
 	$("#supplierKey").val('');
 	$("#productCategoryKey").val('');
 	$("#productTypeKey").val('');
@@ -320,7 +320,7 @@
 	$("#productUnitsInStock").val('');
 	$("#productUnitsOnOrder").val('');
 	$("#productReOrderLevel").val('');
-	$("#isDelete").val('');
+	
 	$("#executeBy").val('');
         }
         function emptyTemplate() {

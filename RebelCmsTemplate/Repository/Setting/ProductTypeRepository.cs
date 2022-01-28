@@ -90,15 +90,15 @@ public class ProductTypeRepository
         {
             connection.Open();
             sql += @"
-                SELECT      *
-                FROM        product_type
-                JOIN        product_category              
-                USING       (productCategoryId,tenantId)
-                JOIN        tenant
-                USING       (tenantId)
-                WHERE       product_category.tenantId = @tenantId
-                AND         product_type.isDelete != 1
-                ORDER BY    productTypeId DESC ";
+            SELECT      *
+            FROM        product_type
+            JOIN        product_category              
+            USING       (productCategoryId,tenantId)
+            JOIN        tenant
+            USING       (tenantId)
+            WHERE       product_category.tenantId = @tenantId
+            AND         product_type.isDelete != 1
+            ORDER BY    productTypeId DESC ";
             // reporting purpose
             _sharedUtil.SetSqlSession(sql);
             MySqlCommand mySqlCommand = new(sql, connection);
@@ -156,17 +156,17 @@ public class ProductTypeRepository
         {
             connection.Open();
             sql += @"
-                SELECT  *
-                FROM    product_type
-                JOIN    product_category
-                USING   (productCategoryId,tenantId)
-                JOIN    tenant
-                USING   (tenantId)
-                WHERE   product_category.tenantId = @tenantId
-                AND     product_type.isDelete != 1
-                AND     product_category.isDelete != 1            
-                AND     productTypeName like concat('%',@search,'%')
-                OR      productCategoryName like concat('%',@search,'%'); ";
+            SELECT  *
+            FROM    product_type
+            JOIN    product_category
+            USING   (productCategoryId,tenantId)
+            JOIN    tenant
+            USING   (tenantId)
+            WHERE   product_category.tenantId = @tenantId
+            AND     product_type.isDelete != 1
+            AND     product_category.isDelete != 1            
+            AND     productTypeName LIKE CONCAT('%',@search,'%')
+            OR      productCategoryName LIKE CONCAT('%',@search,'%'); ";
             // reporting purpose
             MySqlCommand mySqlCommand = new(sql, connection);
             parameterModels = new List<ParameterModel>
@@ -218,6 +218,65 @@ public class ProductTypeRepository
         return productTypeModels;
     }
 
+    public ProductTypeModel GetDefault()
+    {
+        ProductTypeModel productTypeModel = new();
+        var sql = string.Empty;
+        List<ParameterModel> parameterModels = new();
+
+        using var connection = SharedUtil.GetConnection();
+        try
+        {
+            connection.Open();
+            sql += @"
+            SELECT  *
+            FROM    product_type
+            WHERE   product_type.tenantId = @tenantId
+            LIMIT   1 ";
+            MySqlCommand mySqlCommand = new(sql, connection);
+            parameterModels = new List<ParameterModel>
+            {
+                new()
+                {
+                    Key = "@tenantId",
+                    Value = _sharedUtil.GetTenantId()
+                }
+            };
+            foreach (var parameter in parameterModels)
+            {
+                mySqlCommand.Parameters.AddWithValue(parameter.Key, parameter.Value);
+            }
+
+            _sharedUtil.SetSqlSession(sql, parameterModels);
+
+            using (var reader = mySqlCommand.ExecuteReader())
+            {
+                while (reader.Read())
+                {
+                    productTypeModel = new ProductTypeModel
+                    {
+                        ProductCategoryName = reader["productCategoryName"].ToString(),
+                        ProductTypeName = reader["productTypeName"].ToString(),
+                        ProductCategoryKey = Convert.ToInt32(reader["productCategoryId"]),
+                        ProductTypeKey = Convert.ToInt32(reader["productTypeId"]),
+                        TenantKey = Convert.ToInt32(reader["tenantId"]),
+                        TenantName = reader["tenantName"].ToString()
+                    };
+                }
+            }
+
+            mySqlCommand.Dispose();
+        }
+        catch (MySqlException ex)
+        {
+            System.Diagnostics.Debug.WriteLine(ex.Message);
+            _sharedUtil.SetQueryException(SharedUtil.GetSqlSessionValue(sql, parameterModels), ex);
+            throw new Exception(ex.Message);
+        }
+
+
+        return productTypeModel;
+    }
     public byte[] GetExcel()
     {
         using var workbook = new XLWorkbook();

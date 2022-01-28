@@ -113,11 +113,11 @@ public class LeafRepository
         {
             connection.Open();
             sql += @"
-                SELECT      *
-                FROM        leaf
-                WHERE       tenantId = @tenantId
-                AND         isDelete  !=1
-                ORDER BY    leafSeq ";
+            SELECT      *
+            FROM        leaf
+            WHERE       tenantId = @tenantId
+            AND         isDelete  !=1
+            ORDER BY    leafSeq ";
             MySqlCommand mySqlCommand = new(sql, connection);
             parameterModels = new List<ParameterModel>
             {
@@ -175,15 +175,15 @@ public class LeafRepository
         {
             connection.Open();
             sql += @"
-                SELECT  *
-                FROM    leaf
-                JOIN    folder 
-                USING   (folderId)
-                WHERE   leaf.tenantId = @tenantId
-                AND     leaf.isDelete != 1
-                AND     folder.isDelete != 1  
-                AND     leafName LIKE CONCAT('%',@search,'%') 
-                OR      folderName LIKE CONCAT('%',@search,'%') ; ";
+            SELECT  *
+            FROM    leaf
+            JOIN    folder 
+            USING   (folderId)
+            WHERE   leaf.tenantId = @tenantId
+            AND     leaf.isDelete != 1
+            AND     folder.isDelete != 1  
+            AND     leafName LIKE CONCAT('%',@search,'%') 
+            OR      folderName LIKE CONCAT('%',@search,'%') ; ";
             MySqlCommand mySqlCommand = new(sql, connection);
             parameterModels = new List<ParameterModel>
             {
@@ -247,13 +247,13 @@ public class LeafRepository
             var mySqlTransaction = connection.BeginTransaction();
 
             sql += @"
-                UPDATE  leaf
-                SET     folderId        =   @folderId,
-                        leafName        =   @leafName,
-                        leafFilename    =   @leafFilename,
-                        leafIcon        =   @leafIcon,
-                        leafSeq         =   @leafSeq
-                WHERE   leafId          =   @leafId ";
+            UPDATE  leaf
+            SET     folderId        =   @folderId,
+                    leafName        =   @leafName,
+                    leafFilename    =   @leafFilename,
+                    leafIcon        =   @leafIcon,
+                    leafSeq         =   @leafSeq
+            WHERE   leafId          =   @leafId ";
 
             MySqlCommand mySqlCommand = new(sql, connection);
 
@@ -329,9 +329,9 @@ public class LeafRepository
             var mySqlTransaction = connection.BeginTransaction();
 
             sql += @"
-                UPDATE  leaf
-                SET     isDelete    =   1
-                WHERE   leafId      =   @leafId;";
+            UPDATE  leaf
+            SET     isDelete    =   1
+            WHERE   leafId      =   @leafId;";
             MySqlCommand mySqlCommand = new(sql, connection);
 
             parameterModels = new List<ParameterModel>

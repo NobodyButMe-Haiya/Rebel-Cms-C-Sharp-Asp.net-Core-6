@@ -91,10 +91,11 @@ public class InvoiceDetailRepository
         {
             connection.Open();
             sql = @"
-                SELECT      *
-                FROM        invoice_detail 
-                WHERE       isDelete !=1
-                ORDER BY    invoiceDetailId DESC ";
+            SELECT      *
+            FROM        invoice_detail 
+            WHERE       isDelete !=1
+            AND         tenantId = @tenantId
+            ORDER BY    invoiceDetailId DESC ";
             MySqlCommand mySqlCommand = new(sql, connection);
             using (var reader = mySqlCommand.ExecuteReader())
             {
@@ -138,17 +139,29 @@ public class InvoiceDetailRepository
         {
             connection.Open();
             sql += @"
-                SELECT  *
-                FROM    invoice_detail 
-	 JOIN invoice 
-	 USING(invoiceId)
-	 JOIN product 
-	 USING(productId)
-	 WHERE   invoice_detail.isDelete != 1
-	 AND (	 invoice.invoiceId like concat('%',@search,'%') OR	 invoice.invoiceId like concat('%',@search,'%') OR	 invoice.invoiceId like concat('%',@search,'%') OR	 invoice.invoiceId like concat('%',@search,'%') OR	 invoice.invoiceId like concat('%',@search,'%') OR	 invoice.invoiceId like concat('%',@search,'%') OR	 invoice.invoiceId like concat('%',@search,'%') OR	 invoice.invoiceId like concat('%',@search,'%') OR	 invoice.invoiceId like concat('%',@search,'%') OR	 invoice.invoiceId like concat('%',@search,'%') OR	 invoice.invoiceId like concat('%',@search,'%') OR	 invoice.invoiceId like concat('%',@search,'%') OR	 invoice.invoiceId like concat('%',@search,'%') OR	 invoice.invoiceId like concat('%',@search,'%') OR	 invoice.invoiceId like concat('%',@search,'%') OR	 invoice.invoiceId like concat('%',@search,'%') OR	 product.productId like concat('%',@search,'%') OR	 product.productId like concat('%',@search,'%') OR	 product.productId like concat('%',@search,'%') OR	 product.productId like concat('%',@search,'%') OR	 product.productId like concat('%',@search,'%') OR	 product.productId like concat('%',@search,'%') OR	 product.productId like concat('%',@search,'%') OR	 product.productId like concat('%',@search,'%') OR	 product.productId like concat('%',@search,'%') OR	 product.productId like concat('%',@search,'%') OR	 product.productId like concat('%',@search,'%') OR	 product.productId like concat('%',@search,'%') OR	 product.productId like concat('%',@search,'%') OR	 product.productId like concat('%',@search,'%') OR	 product.productId like concat('%',@search,'%') OR
-	 invoice_detail.invoiceDetailUnitPrice like concat('%',@search,'%') OR
-	 invoice_detail.invoiceDetailQuantity like concat('%',@search,'%') OR
-	 invoice_detail.invoiceDetailDiscount like concat('%',@search,'%') )";
+            SELECT  *
+            FROM    invoice_detail
+
+            JOIN invoice 
+            USING(invoiceId)
+
+            JOIN product 
+            USING(productId)
+
+            WHERE   invoice_detail.isDelete != 1
+            AND     tenantId = @tenantId 
+            AND     (
+                        invoice.invoiceId LIKE CONCAT('%',@search,'%') OR
+                        invoice.invoiceId LIKE CONCAT('%',@search,'%') OR
+                        invoice.invoiceId LIKE CONCAT('%',@search,'%') OR
+                        invoice.invoiceId LIKE CONCAT('%',@search,'%') OR
+                        invoice.invoiceId LIKE CONCAT('%',@search,'%') OR
+                        invoice.invoiceId LIKE CONCAT('%',@search,'%') OR
+                        invoice.invoiceId LIKE CONCAT('%',@search,'%') OR
+                        invoice.invoiceId LIKE CONCAT('%',@search,'%') OR	 invoice.invoiceId LIKE CONCAT('%',@search,'%') OR	 invoice.invoiceId LIKE CONCAT('%',@search,'%') OR	 invoice.invoiceId LIKE CONCAT('%',@search,'%') OR	 invoice.invoiceId LIKE CONCAT('%',@search,'%') OR	 invoice.invoiceId LIKE CONCAT('%',@search,'%') OR	 invoice.invoiceId LIKE CONCAT('%',@search,'%') OR	 invoice.invoiceId LIKE CONCAT('%',@search,'%') OR	 invoice.invoiceId LIKE CONCAT('%',@search,'%') OR	 product.productId LIKE CONCAT('%',@search,'%') OR	 product.productId LIKE CONCAT('%',@search,'%') OR	 product.productId LIKE CONCAT('%',@search,'%') OR	 product.productId LIKE CONCAT('%',@search,'%') OR	 product.productId LIKE CONCAT('%',@search,'%') OR	 product.productId LIKE CONCAT('%',@search,'%') OR	 product.productId LIKE CONCAT('%',@search,'%') OR	 product.productId LIKE CONCAT('%',@search,'%') OR	 product.productId LIKE CONCAT('%',@search,'%') OR	 product.productId LIKE CONCAT('%',@search,'%') OR	 product.productId LIKE CONCAT('%',@search,'%') OR	 product.productId LIKE CONCAT('%',@search,'%') OR	 product.productId LIKE CONCAT('%',@search,'%') OR	 product.productId LIKE CONCAT('%',@search,'%') OR	 product.productId LIKE CONCAT('%',@search,'%') OR
+            invoice_detail.invoiceDetailUnitPrice LIKE CONCAT('%',@search,'%') OR
+            invoice_detail.invoiceDetailQuantity LIKE CONCAT('%',@search,'%') OR
+            invoice_detail.invoiceDetailDiscount LIKE CONCAT('%',@search,'%') )";
             MySqlCommand mySqlCommand = new(sql, connection);
             parameterModels = new List<ParameterModel>
             {

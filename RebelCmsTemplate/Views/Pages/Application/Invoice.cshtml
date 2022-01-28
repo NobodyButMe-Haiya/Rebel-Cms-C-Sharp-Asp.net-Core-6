@@ -329,7 +329,7 @@
                         </label>
                     </td>
                     <td style="text-align: center">
-                        <Button id="createDetailButton" type="button" class="btn btn-info" onclick="createDetailRecord()" disaabled="disabled">
+                        <Button id="createDetailButton" type="button" class="btn btn-info" onclick="createDetailRecord()" disabled="disabled">
                             <i class="fa fa-newspaper"></i>&nbsp;&nbsp;CREATE
                         </Button>
                     </td>
@@ -356,8 +356,9 @@
  var employeeModels = @Json.Serialize(employeeModels);
  var productModels = @Json.Serialize(productModels);
 	function newRecord() {
-$("#listView").hide();
-$("#formView").show();
+  $("#listView").hide();
+  $("#formView").show();
+  resetForm();
 	}
 	function viewListRecord() {
 $("#listView").show();
@@ -365,7 +366,6 @@ $("#formView").hide();
 	}
 	function resetForm() {
 	$("#invoiceKey").val('');
-	$("#tenantKey").val('');
 	$("#customerKey").val('');
 	$("#shipperKey").val('');
 	$("#employeeKey").val('');
@@ -379,7 +379,6 @@ $("#formView").hide();
 	$("#invoiceShipRegion").val('');
 	$("#invoiceShipPostalCode").val('');
 	$("#invoiceShipCountry").val('');
-	$("#isDelete").val('');
 		$("#createButton").removeAttr("disabled");
 		$("#updateButton").attr("disabled","disabled");
 		$("#deleteButton").attr("disabled","disabled");
@@ -388,7 +387,6 @@ $("#formView").hide();
 		readRecord();
 		$("#search").val("");
 	$("#invoiceKey").val('');
-	$("#tenantKey").val('');
 	$("#customerKey").val('');
 	$("#shipperKey").val('');
 	$("#employeeKey").val('');
@@ -402,7 +400,7 @@ $("#formView").hide();
 	$("#invoiceShipRegion").val('');
 	$("#invoiceShipPostalCode").val('');
 	$("#invoiceShipCountry").val('');
-	$("#isDelete").val('');
+	
 	}
 	function emptyTemplate() {
 		return"<tr><td colspan='6'>It's lonely here</td></tr>";
@@ -1244,7 +1242,7 @@ $("#formView").show();
             $("#updateButton").attr("disabled","disabled");
             $("#deleteButton").attr("disabled","disabled");
 	$("#invoiceKey").val('');
-	$("#tenantKey").val('');
+	
 	$("#customerKey").val('');
 	$("#shipperKey").val('');
 	$("#employeeKey").val('');
@@ -1258,7 +1256,7 @@ $("#formView").show();
 	$("#invoiceShipRegion").val('');
 	$("#invoiceShipPostalCode").val('');
 	$("#invoiceShipCountry").val('');
-	$("#isDelete").val('');
+	
                readRecord();
                Swal.fire("System", "@SharedUtil.RecordDeleted", "success");
               } else if (status === false) {

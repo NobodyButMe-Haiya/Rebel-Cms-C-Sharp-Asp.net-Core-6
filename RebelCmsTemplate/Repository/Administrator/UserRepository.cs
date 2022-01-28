@@ -177,8 +177,8 @@ public  class UserRepository
                 FROM    user
                 WHERE   tenantId = @tenantId
                 AND     isDelete != 1
-                AND     userName like concat('%',@search,'%')
-                OR      userEmail like concat('%',@search,'%'); ";
+                AND     userName LIKE CONCAT('%',@search,'%')
+                OR      userEmail LIKE CONCAT('%',@search,'%'); ";
             MySqlCommand mySqlCommand = new(sql, connection);
             parameterModels = new List<ParameterModel>
             {

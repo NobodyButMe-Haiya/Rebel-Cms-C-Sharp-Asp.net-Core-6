@@ -182,17 +182,17 @@ public class CustomerRepository
                 FROM    customer 
 	 WHERE   customer.isDelete != 1
 	 AND (
-	 customer.customerCode like concat('%',@search,'%') OR
-	 customer.customerName like concat('%',@search,'%') OR
-	 customer.customerContactName like concat('%',@search,'%') OR
-	 customer.customerContactTitle like concat('%',@search,'%') OR
-	 customer.customerAddress like concat('%',@search,'%') OR
-	 customer.customerCity like concat('%',@search,'%') OR
-	 customer.customerRegion like concat('%',@search,'%') OR
-	 customer.customerPostalCode like concat('%',@search,'%') OR
-	 customer.customerCountry like concat('%',@search,'%') OR
-	 customer.customerPhone like concat('%',@search,'%') OR
-	 customer.customerFax like concat('%',@search,'%') )";
+	 customer.customerCode LIKE CONCAT('%',@search,'%') OR
+	 customer.customerName LIKE CONCAT('%',@search,'%') OR
+	 customer.customerContactName LIKE CONCAT('%',@search,'%') OR
+	 customer.customerContactTitle LIKE CONCAT('%',@search,'%') OR
+	 customer.customerAddress LIKE CONCAT('%',@search,'%') OR
+	 customer.customerCity LIKE CONCAT('%',@search,'%') OR
+	 customer.customerRegion LIKE CONCAT('%',@search,'%') OR
+	 customer.customerPostalCode LIKE CONCAT('%',@search,'%') OR
+	 customer.customerCountry LIKE CONCAT('%',@search,'%') OR
+	 customer.customerPhone LIKE CONCAT('%',@search,'%') OR
+	 customer.customerFax LIKE CONCAT('%',@search,'%') )";
             MySqlCommand mySqlCommand = new(sql, connection);
             parameterModels = new List<ParameterModel>
             {

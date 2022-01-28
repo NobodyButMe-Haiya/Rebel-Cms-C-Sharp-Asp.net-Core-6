@@ -25,18 +25,18 @@ public class LeafAccessRepository
         {
             connection.Open();
             sql += @"
-                SELECT  * 
-                FROM    leaf_access 
-                JOIN    leaf
-                USING(leafId) 
-                JOIN    role
-                USING(tenantId,roleId) 
-                JOIN    folder 
-                USING   (tenantId,folderId) 
-                WHERE   leaf.tenantId = @tenantId 
-                AND     role.isDelete != 1
-                AND     folder.isDelete != 1 
-                AND     leaf.isDelete != 1 ";
+            SELECT  * 
+            FROM    leaf_access 
+            JOIN    leaf
+            USING(leafId) 
+            JOIN    role
+            USING(tenantId,roleId) 
+            JOIN    folder 
+            USING   (tenantId,folderId) 
+            WHERE   leaf.tenantId = @tenantId 
+            AND     role.isDelete != 1
+            AND     folder.isDelete != 1 
+            AND     leaf.isDelete != 1 ";
             if (roleId > 0)
             {
                 sql += " AND roleId  = @roleId ";

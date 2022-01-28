@@ -18,18 +18,32 @@ public class LogRepository
     public List<LogModel> Read()
     {
         List<LogModel> logModels = new();
-
+        List<ParameterModel> parameterModels = new();
         using var connection = SharedUtil.GetConnection();
         try
         {
             connection.Open();
             const string sql = @"
-                SELECT      * 
-                FROM        log 
-                ORDER BY    logId DESC ";
-            // reporting purpose
-            _sharedUtil.SetSqlSession(sql);
+            SELECT      * 
+            FROM        log
+            WHERE       tenantId = @tenantId
+            ORDER BY    logId DESC ";
             MySqlCommand mySqlCommand = new(sql, connection);
+            parameterModels = new List<ParameterModel>
+            {
+                new()
+                {
+                    Key = "@tenantId",
+                    Value = _sharedUtil.GetTenantId()
+                }
+            };
+            foreach (var parameter in parameterModels)
+            {
+                mySqlCommand.Parameters.AddWithValue(parameter.Key, parameter.Value);
+            }
+
+            _sharedUtil.SetSqlSession(sql, parameterModels);
+
             using (var reader = mySqlCommand.ExecuteReader())
             {
                 while (reader.Read())
@@ -70,15 +84,21 @@ public class LogRepository
             sql += @"
                 SELECT   * 
                 FROM     log  
-                WHERE    logUserName like concat('%',@search,'%') 
-                OR       logQuery like concat('%',@search,'%')
-                OR       logError like concat('%',@search,'%')";
-            // reporting purpose
-
+                WHERE    log.tenantId = @tenantId
+                AND     (
+                            logUserName LIKE CONCAT('%',@search,'%')    OR
+                            logQuery LIKE CONCAT('%',@search,'%')       OR
+                            logError LIKE CONCAT('%',@search,'%')
+                        )";
 
             MySqlCommand mySqlCommand = new(sql, connection);
             parameterModels = new List<ParameterModel>
             {
+                new()
+                {
+                    Key = "@tenantId",
+                    Value = _sharedUtil.GetTenantId()
+                },
                 new()
                 {
                     Key = "@search",
@@ -145,7 +165,7 @@ public class LogRepository
 
             using (var reader = mySqlCommand.ExecuteReader())
             {
-                var counter = 1;
+                var counter = 3;
                 while (reader.Read())
                 {
                     var currentRow = counter++;

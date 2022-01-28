@@ -224,7 +224,7 @@
 <script>
 	function resetForm() {
 	$("#supplierKey").val('');
-	$("#tenantKey").val('');
+	
 	$("#supplierName").val('');
 	$("#supplierContactName").val('');
 	$("#supplierContactTitle").val('');
@@ -236,7 +236,7 @@
 	$("#supplierPhone").val('');
 	$("#supplierFax").val('');
 	$("#supplierHomePage").val('');
-	$("#isDelete").val('');
+	
             $("#createButton").removeAttr("disabled");
             $("#updateButton").attr("disabled","disabled");
             $("#deleteButton").attr("disabled","disabled");
@@ -245,7 +245,7 @@
          readRecord();
          $("#search").val("");
 	$("#supplierKey").val('');
-	$("#tenantKey").val('');
+	
 	$("#supplierName").val('');
 	$("#supplierContactName").val('');
 	$("#supplierContactTitle").val('');
@@ -257,7 +257,7 @@
 	$("#supplierPhone").val('');
 	$("#supplierFax").val('');
 	$("#supplierHomePage").val('');
-	$("#isDelete").val('');
+	
         }
         function emptyTemplate() {
          return"<tr><td colspan='6'>It's lonely here</td></tr>";
@@ -785,7 +785,7 @@
             $("#updateButton").attr("disabled","disabled");
             $("#deleteButton").attr("disabled","disabled");
 	$("#supplierKey").val('');
-	$("#tenantKey").val('');
+	
 	$("#supplierName").val('');
 	$("#supplierContactName").val('');
 	$("#supplierContactTitle").val('');
@@ -797,7 +797,7 @@
 	$("#supplierPhone").val('');
 	$("#supplierFax").val('');
 	$("#supplierHomePage").val('');
-	$("#isDelete").val('');
+	
                readRecord();
                Swal.fire("System", "@SharedUtil.RecordDeleted", "success");
               } else if (status === false) {

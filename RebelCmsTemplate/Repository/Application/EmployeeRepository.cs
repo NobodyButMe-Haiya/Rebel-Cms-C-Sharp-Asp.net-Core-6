@@ -438,7 +438,7 @@ public class EmployeeRepository
             {
                 while (reader.Read())
                 {
-                    employeeModel = new EmployeeModel()
+                    employeeModel = new EmployeeModel
                     {
                         EmployeeKey = Convert.ToInt32(reader["employeeId"]),
                         EmployeeFirstName = reader["employeeFirstName"].ToString(),

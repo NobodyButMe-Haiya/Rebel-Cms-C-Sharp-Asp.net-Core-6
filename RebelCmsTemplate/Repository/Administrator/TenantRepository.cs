@@ -124,7 +124,7 @@ public class TenantRepository
                 SELECT  *
                 FROM    tenant
                 WHERE   isDelete != 1
-                AND     tenantName like concat('%',@search,'%'); ";
+                AND     tenantName LIKE CONCAT('%',@search,'%'); ";
             MySqlCommand mySqlCommand = new(sql, connection);
             parameterModels = new List<ParameterModel>
             {
