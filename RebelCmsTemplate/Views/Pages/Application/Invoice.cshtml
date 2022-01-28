@@ -380,7 +380,7 @@ $("#formView").hide();
 	$("#invoiceShipPostalCode").val('');
 	$("#invoiceShipCountry").val('');
 	$("#isDelete").val('');
-		$("#createButton").removeAttr("disabled","disabled");
+		$("#createButton").removeAttr("disabled");
 		$("#updateButton").attr("disabled","disabled");
 		$("#deleteButton").attr("disabled","disabled");
 	}
@@ -509,8 +509,8 @@ $("#formView").hide();
              const lastInsertKey = data.lastInsertKey;
             $("#invoiceKey").val(lastInsertKey);
             $("#createButton").attr("disabled","disabled");
-            $("#updateButton").removeAttr("disabled","disabled");
-            $("#deleteButton").removeAttr("disabled","disabled");
+            $("#updateButton").removeAttr("disabled");
+            $("#deleteButton").removeAttr("disabled");
              Swal.fire({
                title: 'Success!',
                text: '@SharedUtil.RecordCreated',
@@ -978,8 +978,8 @@ $("#formView").show();
                  $("#tableDetailBody").html("").html(templateStringBuilder);
                  }
             $("#createButton").attr("disabled","disabled");
-            $("#updateButton").removeAttr("disabled","disabled");
-            $("#deleteButton").removeAttr("disabled","disabled");
+            $("#updateButton").removeAttr("disabled");
+            $("#deleteButton").removeAttr("disabled");
             $("html, body").animate({ scrollTop: 0 }, "slow");
               }
              } else if (status === false) {
@@ -1073,8 +1073,8 @@ $("#formView").show();
            let code = data.code;
            if (status) {
             $("#createButton").attr("disabled","disabled");
-            $("#updateButton").removeAttr("disabled","disabled");
-            $("#deleteButton").removeAttr("disabled","disabled");
+            $("#updateButton").removeAttr("disabled");
+            $("#deleteButton").removeAttr("disabled");
             Swal.fire("System", "@SharedUtil.RecordUpdated", 'success');
            } else if (status === false) {
             if (typeof(code) === 'string'){
@@ -1240,7 +1240,7 @@ $("#formView").show();
               let status = data.status;
               let code = data.code;
               if (status) {
-            $("#createButton").removeAttr("disabled","disabled");
+            $("#createButton").removeAttr("disabled");
             $("#updateButton").attr("disabled","disabled");
             $("#deleteButton").attr("disabled","disabled");
 	$("#invoiceKey").val('');

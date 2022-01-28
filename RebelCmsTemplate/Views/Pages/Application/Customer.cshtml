@@ -236,7 +236,7 @@
 	$("#customerPhone").val('');
 	$("#customerFax").val('');
 	$("#isDelete").val('');
-            $("#createButton").removeAttr("disabled","disabled");
+            $("#createButton").removeAttr("disabled");
             $("#updateButton").attr("disabled","disabled");
             $("#deleteButton").attr("disabled","disabled");
         }
@@ -328,8 +328,8 @@
              $("#tableBody").prepend(template(lastInsertKey,customerCode.val(),customerName.val(),customerContactName.val(),customerContactTitle.val(),customerAddress.val(),customerCity.val(),customerRegion.val(),customerPostalCode.val(),customerCountry.val(),customerPhone.val(),customerFax.val()));
                 $("#customerKey").val(lastInsertKey);
             $("#createButton").attr("disabled","disabled");
-            $("#updateButton").removeAttr("disabled","disabled");
-            $("#deleteButton").removeAttr("disabled","disabled");
+            $("#updateButton").removeAttr("disabled");
+            $("#deleteButton").removeAttr("disabled");
              Swal.fire({
                title: 'Success!',
                text: '@SharedUtil.RecordCreated',
@@ -601,8 +601,8 @@
 	$("#customerPhone").val(data.dataSingle.customerPhone);
 	$("#customerFax").val(data.dataSingle.customerFax);
             $("#createButton").attr("disabled","disabled");
-            $("#updateButton").removeAttr("disabled","disabled");
-            $("#deleteButton").removeAttr("disabled","disabled");
+            $("#updateButton").removeAttr("disabled");
+            $("#deleteButton").removeAttr("disabled");
             $("html, body").animate({ scrollTop: 0 }, "slow");
               }
              } else if (status === false) {
@@ -694,8 +694,8 @@
            let code = data.code;
            if (status) {
             $("#createButton").attr("disabled","disabled");
-            $("#updateButton").removeAttr("disabled","disabled");
-            $("#deleteButton").removeAttr("disabled","disabled");
+            $("#updateButton").removeAttr("disabled");
+            $("#deleteButton").removeAttr("disabled");
             Swal.fire("System", "@SharedUtil.RecordUpdated", 'success')
            } else if (status === false) {
             if (typeof(code) === 'string'){
@@ -780,7 +780,7 @@
               let status = data.status;
               let code = data.code;
               if (status) {
-            $("#createButton").removeAttr("disabled","disabled");
+            $("#createButton").removeAttr("disabled");
             $("#updateButton").attr("disabled","disabled");
             $("#deleteButton").attr("disabled","disabled");
 	$("#customerKey").val('');

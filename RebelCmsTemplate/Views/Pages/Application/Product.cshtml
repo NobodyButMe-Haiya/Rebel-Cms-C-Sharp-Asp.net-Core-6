@@ -300,7 +300,7 @@
 	$("#productReOrderLevel").val('');
 	$("#isDelete").val('');
 	$("#executeBy").val('');
-            $("#createButton").removeAttr("disabled","disabled");
+            $("#createButton").removeAttr("disabled");
             $("#updateButton").attr("disabled","disabled");
             $("#deleteButton").attr("disabled","disabled");
         }
@@ -382,8 +382,8 @@
   readRecord();
   $("#productKey").val(lastInsertKey);
             $("#createButton").attr("disabled","disabled");
-            $("#updateButton").removeAttr("disabled","disabled");
-            $("#deleteButton").removeAttr("disabled","disabled");
+            $("#updateButton").removeAttr("disabled");
+            $("#deleteButton").removeAttr("disabled");
              Swal.fire({
                title: 'Success!',
                text: '@SharedUtil.RecordCreated',
@@ -655,8 +655,8 @@
 	$("#productUnitsOnOrder").val(data.dataSingle.productUnitsOnOrder);
 	$("#productReOrderLevel").val(data.dataSingle.productReOrderLevel);
             $("#createButton").attr("disabled","disabled");
-            $("#updateButton").removeAttr("disabled","disabled");
-            $("#deleteButton").removeAttr("disabled","disabled");
+            $("#updateButton").removeAttr("disabled");
+            $("#deleteButton").removeAttr("disabled");
             $("html, body").animate({ scrollTop: 0 }, "slow");
               }
              } else if (status === false) {
@@ -748,8 +748,8 @@
            let code = data.code;
            if (status) {
             $("#createButton").attr("disabled","disabled");
-            $("#updateButton").removeAttr("disabled","disabled");
-            $("#deleteButton").removeAttr("disabled","disabled");
+            $("#updateButton").removeAttr("disabled");
+            $("#deleteButton").removeAttr("disabled");
             Swal.fire("System", "@SharedUtil.RecordUpdated", 'success');
            } else if (status === false) {
             if (typeof(code) === 'string'){
@@ -834,7 +834,7 @@
               let status = data.status;
               let code = data.code;
               if (status) {
-            $("#createButton").removeAttr("disabled","disabled");
+            $("#createButton").removeAttr("disabled");
             $("#updateButton").attr("disabled","disabled");
             $("#deleteButton").attr("disabled","disabled");
 	$("#productKey").val('');

@@ -164,7 +164,7 @@
                     <div class="form-group">
                         <label for="employeePhoto">Photo</label>
                         <input type="file" id="employeePhoto" class="form-control" onchange="showPreview(event,'employeePhotoImage');"/>
-                        <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+P+/HgAFhAJ/wlseKgAAAABJRU5ErkJggg==" id="employeePhotoImage" class="img-fluid" accept="image/png" style="width:100px;height:100px" alt=""/>
+                        <img  src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAABHNCSVQICAgIfAhkiAAAAAlwSFlzAAAApgAAAKYB3X3/OAAAABl0RVh0U29mdHdhcmUAd3d3Lmlua3NjYXBlLm9yZ5vuPBoAAASdSURBVEiJnZVZbBVVHMZ/58x2585dukIboaaFllgUJA0kmKCJccGNxQSJS3ziUWN8VKPRCPqgiYmJjxiJD5poDIrEhcQHjEIFNNgGZC+0bG2htHef5Rwfpvd2oYXol8wkc875f99/+TJHaK2p4urPj3qybHSpRHRy4SM/FfgPuPz9hqSpwmWzY0VVYOTbp7YKrXcBDhAC7zcFyXdyzeVOKuxwk4Zt2rQCoDkB4ggJ/SmnrNyoVXoT9OuABfgCva1x097PawIjXz3RYgeZ86nBTluZAflFp4mcErYjzgeBbktlDeEk5FyJT1TK6mhuLFpn+AlSg0uRoU1u8alIeaX2ho27B+MoWz7mXeywjXISK58lM3AXpiXxK/rO9PzkABknIdelsxaZc91Y+TqMcpLUxQ5D6/BJABm/tIuYiip1niAMFKYlsOcnr8FJgtExPGNNa+HWBCIlfgvdPABh8zBlGc8omTZuS17D4quQieNCt4DU0e81gQWb9xwtN175U1kB+UVnAeLsHTEf3c0QwPIBtBlSbrzS3/D0D701AQDfLmzJ3/NXJVQhAG7q9q25Cdk85ZV9hcArbYbYnmZ1L5k1E5WCbwMYhuAWg70l3GY/cCNjovpdY1G++k6reNT/K/sp1GHwwQyBwr6NL/gVtQRASHDcWCCMoOzPz1T24zM3Q79I7+aemkDgq4+qWwlXIgT4Abz3zRI+2b+O05diQZ1cisr2ADA6Dh//spp3d68gX5rDDEJvBzALP254Ngx0U3W9mv3JIeg/fpGFrQH7A4Oli13Clk0gTETxHH+fvsax/jPYjsXBY5KHemaVosV6DmxcJZXgwVq/DIFpxdm0t4AOi1y6MMTDPQEq3Q0i9oS2m+hqE4xdG2X8+ihru+fsExjGChNNZ62qaZV6Lnz2miSIFNn6OsK6tVPJeV0saj7JrjcklhHhuXPzo3S7CdRP9U2gnYVopwWki1sHCbuR0OsC6UzFpe8GIci6fSAMlHRAGIBC5k+ADqtHG00hOQiswLBwlj1PkLkDpWK/CikRctKyN8rI62UwJKrFQ6WWo1LL0UrFDyClRDY8gDG8B1EaBKkPmeOsuqCtIqQ6KF2eQI6UkaYJWiNNk4a2Nij4WF/+AY0L4lm5JuH6DjAlY0NDqDAEIVBRhFYKKe7F8V2KQYNnlmTr4Sy/lpIta1xhJhG2SxhEVAoF3Gx2cvqTwykVwU3OaHOqqYnS+DiO52F7HtIw0EoRnjl4fCxoPyu01hT3bXpct23dmxuPiIIQJ1OH43k46TSiOvmxIsaBAWhME61shcSko7SmkstRKRTwi0VMx6F+YVJbAzu7Wfv1P7UrM3/47d9k/er7AKTjYiS8eKCBT5DPYWeycSsAaZr4E+NYqTTSsmdZRyMn+r8wOrY9B9PuZIDS8Z292mldg9YYCQ/pxP4Ly0X8iRs1MhX42Jk6zMTMdhGVtJHve0sueXl7zZjTBQDyR3ZsMbKdu7T0XGk5cSXi1j8/4Q+XqAz36SD/ktX1yqEZe7MFpsPv//CZSDj32wl5CK2uG2YwAhCFVjNCNqCxIun32h2v9s3H8S+Ik+JUeCrYzAAAAABJRU5ErkJggg==" id="employeePhotoImage" class="img-fluid" accept="image/png" style="width:50px;height:50px" alt=""/>
                     </div>
                 </div>
             </div>
@@ -265,6 +265,8 @@
 </section>
 <script>
         function resetForm() {
+                                    const image = "iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAABHNCSVQICAgIfAhkiAAAAAlwSFlzAAAApgAAAKYB3X3/OAAAABl0RVh0U29mdHdhcmUAd3d3Lmlua3NjYXBlLm9yZ5vuPBoAAASdSURBVEiJnZVZbBVVHMZ/58x2585dukIboaaFllgUJA0kmKCJccGNxQSJS3ziUWN8VKPRCPqgiYmJjxiJD5poDIrEhcQHjEIFNNgGZC+0bG2htHef5Rwfpvd2oYXol8wkc875f99/+TJHaK2p4urPj3qybHSpRHRy4SM/FfgPuPz9hqSpwmWzY0VVYOTbp7YKrXcBDhAC7zcFyXdyzeVOKuxwk4Zt2rQCoDkB4ggJ/SmnrNyoVXoT9OuABfgCva1x097PawIjXz3RYgeZ86nBTluZAflFp4mcErYjzgeBbktlDeEk5FyJT1TK6mhuLFpn+AlSg0uRoU1u8alIeaX2ho27B+MoWz7mXeywjXISK58lM3AXpiXxK/rO9PzkABknIdelsxaZc91Y+TqMcpLUxQ5D6/BJABm/tIuYiip1niAMFKYlsOcnr8FJgtExPGNNa+HWBCIlfgvdPABh8zBlGc8omTZuS17D4quQieNCt4DU0e81gQWb9xwtN175U1kB+UVnAeLsHTEf3c0QwPIBtBlSbrzS3/D0D701AQDfLmzJ3/NXJVQhAG7q9q25Cdk85ZV9hcArbYbYnmZ1L5k1E5WCbwMYhuAWg70l3GY/cCNjovpdY1G++k6reNT/K/sp1GHwwQyBwr6NL/gVtQRASHDcWCCMoOzPz1T24zM3Q79I7+aemkDgq4+qWwlXIgT4Abz3zRI+2b+O05diQZ1cisr2ADA6Dh//spp3d68gX5rDDEJvBzALP254Ngx0U3W9mv3JIeg/fpGFrQH7A4Oli13Clk0gTETxHH+fvsax/jPYjsXBY5KHemaVosV6DmxcJZXgwVq/DIFpxdm0t4AOi1y6MMTDPQEq3Q0i9oS2m+hqE4xdG2X8+ihru+fsExjGChNNZ62qaZV6Lnz2miSIFNn6OsK6tVPJeV0saj7JrjcklhHhuXPzo3S7CdRP9U2gnYVopwWki1sHCbuR0OsC6UzFpe8GIci6fSAMlHRAGIBC5k+ADqtHG00hOQiswLBwlj1PkLkDpWK/CikRctKyN8rI62UwJKrFQ6WWo1LL0UrFDyClRDY8gDG8B1EaBKkPmeOsuqCtIqQ6KF2eQI6UkaYJWiNNk4a2Nij4WF/+AY0L4lm5JuH6DjAlY0NDqDAEIVBRhFYKKe7F8V2KQYNnlmTr4Sy/lpIta1xhJhG2SxhEVAoF3Gx2cvqTwykVwU3OaHOqqYnS+DiO52F7HtIw0EoRnjl4fCxoPyu01hT3bXpct23dmxuPiIIQJ1OH43k46TSiOvmxIsaBAWhME61shcSko7SmkstRKRTwi0VMx6F+YVJbAzu7Wfv1P7UrM3/47d9k/er7AKTjYiS8eKCBT5DPYWeycSsAaZr4E+NYqTTSsmdZRyMn+r8wOrY9B9PuZIDS8Z292mldg9YYCQ/pxP4Ly0X8iRs1MhX42Jk6zMTMdhGVtJHve0sueXl7zZjTBQDyR3ZsMbKdu7T0XGk5cSXi1j8/4Q+XqAz36SD/ktX1yqEZe7MFpsPv//CZSDj32wl5CK2uG2YwAhCFVjNCNqCxIun32h2v9s3H8S+Ik+JUeCrYzAAAAABJRU5ErkJggg==";
+
 	$("#employeeKey").val('');
 	$("#tenantKey").val('');
 	$("#employeeLastName").val('');
@@ -283,13 +285,18 @@
 	$("#employeePhoto").val('');
 	$("#employeeNotes").val('');
 	$("#employeePhotoPath").val('');
+        $("#employeePhotoImage").attr("src",'data:image/png;base64,'+image);
+
 	$("#employeeSalary").val('');
 	$("#isDelete").val('');
-            $("#createButton").removeAttr("disabled","disabled");
+            $("#createButton").removeAttr("disabled");
             $("#updateButton").attr("disabled","disabled");
             $("#deleteButton").attr("disabled","disabled");
+            
+
         }
         function resetRecord() {
+
          readRecord();
          $("#search").val("");
 	$("#employeeKey").val('');
@@ -398,8 +405,8 @@ if(filesEmployeePhoto.length > 0 ){
              $("#tableBody").prepend(template(lastInsertKey,employeeLastName.val(),employeeFirstName.val(),employeeTitle.val(),employeeTitleOfCourtesy.val(),employeeBirthDate.val(),employeeHireDate.val(),employeeAddress.val(),employeeCity.val(),employeeRegion.val(),employeePostalCode.val(),employeeCountry.val(),employeeHomePhone.val(),employeeExtension.val(),employeePhoto.val(),employeeNotes.val(),employeePhotoPath.val(),employeeSalary.val()));
   $("#employeeKey").val(lastInsertKey);
             $("#createButton").attr("disabled","disabled");
-            $("#updateButton").removeAttr("disabled","disabled");
-            $("#deleteButton").removeAttr("disabled","disabled");
+            $("#updateButton").removeAttr("disabled");
+            $("#deleteButton").removeAttr("disabled");
              Swal.fire({
                title: 'Success!',
                text: '@SharedUtil.RecordCreated',
@@ -677,8 +684,8 @@ if(filesEmployeePhoto.length > 0 ){
 	$("#employeePhotoPath").val(data.dataSingle.employeePhotoPath);
 	$("#employeeSalary").val(data.dataSingle.employeeSalary);
             $("#createButton").attr("disabled","disabled");
-            $("#updateButton").removeAttr("disabled","disabled");
-            $("#deleteButton").removeAttr("disabled","disabled");
+            $("#updateButton").removeAttr("disabled");
+            $("#deleteButton").removeAttr("disabled");
             $("html, body").animate({ scrollTop: 0 }, "slow");
               }
              } else if (status === false) {
@@ -798,8 +805,8 @@ if(filesEmployeePhoto.length > 0 ){
            let code = data.code;
            if (status) {
             $("#createButton").attr("disabled","disabled");
-            $("#updateButton").removeAttr("disabled","disabled");
-            $("#deleteButton").removeAttr("disabled","disabled");
+            $("#updateButton").removeAttr("disabled");
+            $("#deleteButton").removeAttr("disabled");
             Swal.fire("System", "@SharedUtil.RecordUpdated", 'success')
            } else if (status === false) {
             if (typeof(code) === 'string'){
@@ -884,7 +891,7 @@ if(filesEmployeePhoto.length > 0 ){
               let status = data.status;
               let code = data.code;
               if (status) {
-            $("#createButton").removeAttr("disabled","disabled");
+            $("#createButton").removeAttr("disabled");
             $("#updateButton").attr("disabled","disabled");
             $("#deleteButton").attr("disabled","disabled");
 	$("#employeeKey").val('');
