@@ -139,7 +139,7 @@ public class ProductRepository
             USING(productTypeId)
 
             WHERE       product.isDelete != 1
-            AND         tenantId = @tenantId
+            AND         product.tenantId = @tenantId
             ORDER BY    productId DESC ";
             MySqlCommand mySqlCommand = new(sql, connection);
             parameterModels = new List<ParameterModel>
@@ -226,6 +226,7 @@ public class ProductRepository
             USING(productTypeId)
 
             WHERE   product.isDelete != 1
+            AND     product.tenantId = @tenantId
             AND (
                     supplier.supplierName LIKE CONCAT('%',@search,'%') OR
                     supplier.supplierName LIKE CONCAT('%',@search,'%') OR
@@ -396,7 +397,60 @@ public class ProductRepository
 
         return productModel;
     }
+    public int GetDefault()
+    {
+        int productId = 0;
+        var sql = string.Empty;
+        List<ParameterModel> parameterModels = new();
+        using var connection = SharedUtil.GetConnection();
+        try
+        {
+            connection.Open();
+            sql += @"
+            SELECT  *
+            FROM    product
 
+            JOIN supplier 
+            USING(supplierId)
+
+            JOIN product_category 
+            USING(productCategoryId)
+
+            JOIN product_type 
+            USING(productTypeId)
+
+            WHERE   product.isDelete    !=  1
+            AND     product.tenantId    =   @tenantId
+            AND     product.productId   =   @productId
+            LIMIT 1";
+            MySqlCommand mySqlCommand = new(sql, connection);
+            parameterModels = new List<ParameterModel>
+            {
+                new()
+                {
+                    Key = "@tenantId",
+                    Value = _sharedUtil.GetTenantId()
+                }
+            };
+            foreach (var parameter in parameterModels)
+            {
+                mySqlCommand.Parameters.AddWithValue(parameter.Key, parameter.Value);
+            }
+
+            _sharedUtil.SetSqlSession(sql, parameterModels);
+            productId = (int)(long)mySqlCommand.ExecuteScalar();
+
+            mySqlCommand.Dispose();
+        }
+        catch (MySqlException ex)
+        {
+            System.Diagnostics.Debug.WriteLine(ex.Message);
+            _sharedUtil.SetQueryException(SharedUtil.GetSqlSessionValue(sql, parameterModels), ex);
+            throw new Exception(ex.Message);
+        }
+
+        return productId;
+    }
     public byte[] GetExcel()
     {
         using var workbook = new XLWorkbook();

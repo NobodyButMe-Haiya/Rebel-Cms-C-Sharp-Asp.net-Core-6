@@ -253,13 +253,20 @@ public class CustomerRepository
         {
             connection.Open();
             sql += @"
-                SELECT  *
-                FROM    customer 
-                WHERE   customer.isDelete != 1
-                AND   customer.customerId    =   @customerId LIMIT 1";
+            SELECT  *
+            FROM    customer 
+            WHERE   isDelete    != 1
+            AND     tenantId    = @tenantId
+            AND     customerId  =   @customerId
+            LIMIT 1";
             MySqlCommand mySqlCommand = new(sql, connection);
             parameterModels = new List<ParameterModel>
             {
+                 new()
+                {
+                    Key = "@tenantId",
+                    Value = _sharedUtil.GetTenantId()
+                },
                 new()
                 {
                     Key = "@customerId",
@@ -307,7 +314,52 @@ public class CustomerRepository
 
         return customerModel;
     }
+    public int GetDefault()
+    {
+        var customerId = 0;
+        var sql = string.Empty;
+        List<ParameterModel> parameterModels = new();
+        using var connection = SharedUtil.GetConnection();
+        try
+        {
+            connection.Open();
+            sql += @"
+            SELECT  customerId
+            FROM    customer 
+            WHERE   isDelete    != 1
+            AND     tenantId    = @tenantId
+            AND     customerId  =   @customerId
+            AND     isDefault   =   1
+            LIMIT 1";
+            MySqlCommand mySqlCommand = new(sql, connection);
+            parameterModels = new List<ParameterModel>
+            {
+                 new()
+                {
+                    Key = "@tenantId",
+                    Value = _sharedUtil.GetTenantId()
+                }
+            };
+            foreach (var parameter in parameterModels)
+            {
+                mySqlCommand.Parameters.AddWithValue(parameter.Key, parameter.Value);
+            }
 
+            _sharedUtil.SetSqlSession(sql, parameterModels);
+
+            customerId = (int)mySqlCommand.ExecuteScalar();
+
+            mySqlCommand.Dispose();
+        }
+        catch (MySqlException ex)
+        {
+            System.Diagnostics.Debug.WriteLine(ex.Message);
+            _sharedUtil.SetQueryException(SharedUtil.GetSqlSessionValue(sql, parameterModels), ex);
+            throw new Exception(ex.Message);
+        }
+
+        return customerId;
+    }
     public byte[] GetExcel()
     {
         using var workbook = new XLWorkbook();

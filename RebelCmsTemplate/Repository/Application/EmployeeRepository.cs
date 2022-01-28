@@ -244,7 +244,7 @@ public class EmployeeRepository
 
             mySqlCommand.ExecuteNonQuery();
             mySqlTransaction.Commit();
-            lastInsertKey = (int) mySqlCommand.LastInsertedId;
+            lastInsertKey = (int)mySqlCommand.LastInsertedId;
             mySqlCommand.Dispose();
         }
         catch (MySqlException ex)
@@ -267,11 +267,25 @@ public class EmployeeRepository
         {
             connection.Open();
             sql = @"
-                SELECT      *
-                FROM        employee 
-	 WHERE   employee.isDelete != 1
-                ORDER BY    employeeId DESC ";
+            SELECT      *
+            FROM        employee 
+            WHERE       isDelete != 1
+            AND         tenantId = @tenantId
+            ORDER BY    employeeId DESC ";
             MySqlCommand mySqlCommand = new(sql, connection);
+            parameterModels = new List<ParameterModel>
+            {
+                new()
+                {
+                    Key = "@tenantId",
+                    Value = _sharedUtil.GetTenantId()
+                }
+            };
+            foreach (var parameter in parameterModels)
+            {
+                mySqlCommand.Parameters.AddWithValue(parameter.Key, parameter.Value);
+            }
+
             _sharedUtil.SetSqlSession(sql, parameterModels);
             using (var reader = mySqlCommand.ExecuteReader())
             {
@@ -285,10 +299,10 @@ public class EmployeeRepository
                         EmployeeTitle = reader["employeeTitle"].ToString(),
                         EmployeeTitleOfCourtesy = reader["employeeTitleOfCourtesy"].ToString(),
                         EmployeeBirthDate = (reader["employeeBirthDate"] != DBNull.Value)
-                            ? CustomDateTimeConvert.ConvertToDate((DateTime) reader["employeeBirthDate"])
+                            ? CustomDateTimeConvert.ConvertToDate((DateTime)reader["employeeBirthDate"])
                             : null,
                         EmployeeHireDate = (reader["employeeHireDate"] != DBNull.Value)
-                            ? CustomDateTimeConvert.ConvertToDate((DateTime) reader["employeeHireDate"])
+                            ? CustomDateTimeConvert.ConvertToDate((DateTime)reader["employeeHireDate"])
                             : null,
                         EmployeeAddress = reader["employeeAddress"].ToString(),
                         EmployeeCity = reader["employeeCity"].ToString(),
@@ -297,7 +311,7 @@ public class EmployeeRepository
                         EmployeeCountry = reader["employeeCountry"].ToString(),
                         EmployeeHomePhone = reader["employeeHomePhone"].ToString(),
                         EmployeeExtension = reader["employeeExtension"].ToString(),
-                        EmployeePhoto = (byte[]) reader["employeePhoto"],
+                        EmployeePhoto = (byte[])reader["employeePhoto"],
                         EmployeeNotes = reader["employeeNotes"].ToString(),
                         EmployeePhotoPath = reader["employeePhotoPath"].ToString(),
                         EmployeeSalary = Convert.ToDouble(reader["employeeSalary"]),
@@ -327,30 +341,37 @@ public class EmployeeRepository
         {
             connection.Open();
             sql += @"
-                SELECT  *
-                FROM    employee 
-	 WHERE   employee.isDelete != 1
-	 AND (
-	 employee.employeeFirstName LIKE CONCAT('%',@search,'%') OR
-	 employee.employeeLastName LIKE CONCAT('%',@search,'%') OR
-	 employee.employeeTitle LIKE CONCAT('%',@search,'%') OR
-	 employee.employeeTitleOfCourtesy LIKE CONCAT('%',@search,'%') OR
-	 employee.employeeBirthDate LIKE CONCAT('%',@search,'%') OR
-	 employee.employeeHireDate LIKE CONCAT('%',@search,'%') OR
-	 employee.employeeAddress LIKE CONCAT('%',@search,'%') OR
-	 employee.employeeCity LIKE CONCAT('%',@search,'%') OR
-	 employee.employeeRegion LIKE CONCAT('%',@search,'%') OR
-	 employee.employeePostalCode LIKE CONCAT('%',@search,'%') OR
-	 employee.employeeCountry LIKE CONCAT('%',@search,'%') OR
-	 employee.employeeHomePhone LIKE CONCAT('%',@search,'%') OR
-	 employee.employeeExtension LIKE CONCAT('%',@search,'%') OR
-	 employee.employeePhoto LIKE CONCAT('%',@search,'%') OR
-	 employee.employeeNotes LIKE CONCAT('%',@search,'%') OR
-	 employee.employeePhotoPath LIKE CONCAT('%',@search,'%') OR
-	 employee.employeeSalary LIKE CONCAT('%',@search,'%') )";
+            SELECT  *
+            FROM    employee 
+            WHERE   employee.isDelete != 1
+            AND     tenantId = @tenantId
+            AND (
+                employee.employeeFirstName LIKE CONCAT('%',@search,'%') OR
+                employee.employeeLastName LIKE CONCAT('%',@search,'%') OR
+                employee.employeeTitle LIKE CONCAT('%',@search,'%') OR
+                employee.employeeTitleOfCourtesy LIKE CONCAT('%',@search,'%') OR
+                employee.employeeBirthDate LIKE CONCAT('%',@search,'%') OR
+                employee.employeeHireDate LIKE CONCAT('%',@search,'%') OR
+                employee.employeeAddress LIKE CONCAT('%',@search,'%') OR
+                employee.employeeCity LIKE CONCAT('%',@search,'%') OR
+                employee.employeeRegion LIKE CONCAT('%',@search,'%') OR
+                employee.employeePostalCode LIKE CONCAT('%',@search,'%') OR
+                employee.employeeCountry LIKE CONCAT('%',@search,'%') OR
+                employee.employeeHomePhone LIKE CONCAT('%',@search,'%') OR
+                employee.employeeExtension LIKE CONCAT('%',@search,'%') OR
+                employee.employeePhoto LIKE CONCAT('%',@search,'%') OR
+                employee.employeeNotes LIKE CONCAT('%',@search,'%') OR
+                employee.employeePhotoPath LIKE CONCAT('%',@search,'%') OR
+                employee.employeeSalary LIKE CONCAT('%',@search,'%')
+            )";
             MySqlCommand mySqlCommand = new(sql, connection);
             parameterModels = new List<ParameterModel>
             {
+                new()
+                {
+                    Key = "@tenantId",
+                    Value = _sharedUtil.GetTenantId()
+                },
                 new()
                 {
                     Key = "@search",
@@ -374,10 +395,10 @@ public class EmployeeRepository
                         EmployeeTitle = reader["employeeTitle"].ToString(),
                         EmployeeTitleOfCourtesy = reader["employeeTitleOfCourtesy"].ToString(),
                         EmployeeBirthDate = (reader["employeeBirthDate"] != DBNull.Value)
-                            ? CustomDateTimeConvert.ConvertToDate((DateTime) reader["employeeBirthDate"])
+                            ? CustomDateTimeConvert.ConvertToDate((DateTime)reader["employeeBirthDate"])
                             : null,
                         EmployeeHireDate = (reader["employeeHireDate"] != DBNull.Value)
-                            ? CustomDateTimeConvert.ConvertToDate((DateTime) reader["employeeHireDate"])
+                            ? CustomDateTimeConvert.ConvertToDate((DateTime)reader["employeeHireDate"])
                             : null,
                         EmployeeAddress = reader["employeeAddress"].ToString(),
                         EmployeeCity = reader["employeeCity"].ToString(),
@@ -386,7 +407,7 @@ public class EmployeeRepository
                         EmployeeCountry = reader["employeeCountry"].ToString(),
                         EmployeeHomePhone = reader["employeeHomePhone"].ToString(),
                         EmployeeExtension = reader["employeeExtension"].ToString(),
-                        EmployeePhoto = (byte[]) reader["employeePhoto"],
+                        EmployeePhoto = (byte[])reader["employeePhoto"],
                         EmployeeNotes = reader["employeeNotes"].ToString(),
                         EmployeePhotoPath = reader["employeePhotoPath"].ToString(),
                         EmployeeSalary = Convert.ToDouble(reader["employeeSalary"]),
@@ -415,13 +436,20 @@ public class EmployeeRepository
         {
             connection.Open();
             sql += @"
-                SELECT  *
-                FROM    employee 
-                WHERE   employee.isDelete != 1
-                AND   employee.employeeId    =   @employeeId LIMIT 1";
+            SELECT  *
+            FROM    employee 
+            WHERE   isDelete    != 1
+            AND     tenantId    = @tenantId
+            AND     employeeId  =   @employeeId
+            LIMIT 1";
             MySqlCommand mySqlCommand = new(sql, connection);
             parameterModels = new List<ParameterModel>
             {
+                new()
+                {
+                    Key = "@tenantId",
+                    Value = _sharedUtil.GetTenantId()
+                },
                 new()
                 {
                     Key = "@employeeId",
@@ -446,10 +474,10 @@ public class EmployeeRepository
                         EmployeeTitle = reader["employeeTitle"].ToString(),
                         EmployeeTitleOfCourtesy = reader["employeeTitleOfCourtesy"].ToString(),
                         EmployeeBirthDate = (reader["employeeBirthDate"] != DBNull.Value)
-                            ? CustomDateTimeConvert.ConvertToDate((DateTime) reader["employeeBirthDate"])
+                            ? CustomDateTimeConvert.ConvertToDate((DateTime)reader["employeeBirthDate"])
                             : null,
                         EmployeeHireDate = (reader["employeeHireDate"] != DBNull.Value)
-                            ? CustomDateTimeConvert.ConvertToDate((DateTime) reader["employeeHireDate"])
+                            ? CustomDateTimeConvert.ConvertToDate((DateTime)reader["employeeHireDate"])
                             : null,
                         EmployeeAddress = reader["employeeAddress"].ToString(),
                         EmployeeCity = reader["employeeCity"].ToString(),
@@ -458,7 +486,7 @@ public class EmployeeRepository
                         EmployeeCountry = reader["employeeCountry"].ToString(),
                         EmployeeHomePhone = reader["employeeHomePhone"].ToString(),
                         EmployeeExtension = reader["employeeExtension"].ToString(),
-                        EmployeePhoto = (byte[]) reader["employeePhoto"],
+                        EmployeePhoto = (byte[])reader["employeePhoto"],
                         EmployeeNotes = reader["employeeNotes"].ToString(),
                         EmployeePhotoPath = reader["employeePhotoPath"].ToString(),
                         EmployeeSalary = Convert.ToDouble(reader["employeeSalary"]),
@@ -476,6 +504,49 @@ public class EmployeeRepository
         }
 
         return employeeModel;
+    }
+
+    public int GetDefault()
+    {
+        int employeeId = 0;
+        var sql = string.Empty;
+        List<ParameterModel> parameterModels = new();
+        using var connection = SharedUtil.GetConnection();
+        try
+        {
+            connection.Open();
+            sql += @"
+            SELECT  *
+            FROM    employee 
+            WHERE   isDelete    != 1
+            AND     tenantId    = @tenantId
+            AND     isDefault   =   1
+            LIMIT 1";
+            MySqlCommand mySqlCommand = new(sql, connection);
+            parameterModels = new List<ParameterModel>
+            {
+                new()
+                {
+                    Key = "@tenantId",
+                    Value = _sharedUtil.GetTenantId()
+                }
+            };
+            foreach (var parameter in parameterModels)
+            {
+                mySqlCommand.Parameters.AddWithValue(parameter.Key, parameter.Value);
+            }
+
+            _sharedUtil.SetSqlSession(sql, parameterModels);
+            employeeId = (int)(long)mySqlCommand.ExecuteScalar();
+        }
+        catch (MySqlException ex)
+        {
+            System.Diagnostics.Debug.WriteLine(ex.Message);
+            _sharedUtil.SetQueryException(SharedUtil.GetSqlSessionValue(sql, parameterModels), ex);
+            throw new Exception(ex.Message);
+        }
+
+        return employeeId;
     }
 
     public byte[] GetExcel()
@@ -563,29 +634,27 @@ public class EmployeeRepository
             connection.Open();
             var mySqlTransaction = connection.BeginTransaction();
             sql = @"
-                UPDATE  employee 
-                SET     
-tenantId=@tenantId,
-employeeFirstName=@employeeFirstName,
-employeeLastName=@employeeLastName,
-employeeTitle=@employeeTitle,
-employeeTitleOfCourtesy=@employeeTitleOfCourtesy,
-employeeBirthDate=@employeeBirthDate,
-employeeHireDate=@employeeHireDate,
-employeeAddress=@employeeAddress,
-employeeCity=@employeeCity,
-employeeRegion=@employeeRegion,
-employeePostalCode=@employeePostalCode,
-employeeCountry=@employeeCountry,
-employeeHomePhone=@employeeHomePhone,
-employeeExtension=@employeeExtension,
-employeePhoto=@employeePhoto,
-employeeNotes=@employeeNotes,
-employeePhotoPath=@employeePhotoPath,
-employeeSalary=@employeeSalary,
-isDelete=@isDelete
-
-                WHERE   employeeId    =   @employeeId";
+            UPDATE  employee 
+            SET     tenantId                =   @tenantId,
+                    employeeFirstName       =   @employeeFirstName,
+                    employeeLastName        =   @employeeLastName,
+                    employeeTitle           =   @employeeTitle,
+                    employeeTitleOfCourtesy =   @employeeTitleOfCourtesy,
+                    employeeBirthDate       =   @employeeBirthDate,
+                    employeeHireDate        =   @employeeHireDate,
+                    employeeAddress         =   @employeeAddress,
+                    employeeCity            =   @employeeCity,
+                    employeeRegion          =   @employeeRegion,
+                    employeePostalCode      =   @employeePostalCode,
+                    employeeCountry         =   @employeeCountry,
+                    employeeHomePhone       =   @employeeHomePhone,
+                    employeeExtension       =   @employeeExtension,
+                    employeePhoto           =   @employeePhoto,
+                    employeeNotes           =   @employeeNotes,
+                    employeePhotoPath       =   @employeePhotoPath,
+                    employeeSalary          =   @employeeSalary,
+                    isDelete                =   @isDelete
+            WHERE   employeeId              =   @employeeId";
             MySqlCommand mySqlCommand = new(sql, connection);
             parameterModels = new List<ParameterModel>
             {
@@ -664,7 +733,7 @@ isDelete=@isDelete
                     Key = "@employeeExtension",
                     Value = employeeModel.EmployeeExtension
                 },
-           
+
                 new()
                 {
                     Key = "@employeeNotes",
@@ -718,9 +787,9 @@ isDelete=@isDelete
             connection.Open();
             MySqlTransaction mySqlTransaction = connection.BeginTransaction();
             sql = @"
-                UPDATE  employee 
-                SET     isDelete    =   1
-                WHERE   employeeId    =   @employeeId";
+            UPDATE  employee 
+            SET     isDelete    =   1
+            WHERE   employeeId    =   @employeeId";
             MySqlCommand mySqlCommand = new(sql, connection);
             parameterModels = new List<ParameterModel>
             {

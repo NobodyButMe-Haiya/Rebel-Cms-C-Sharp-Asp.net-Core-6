@@ -44,6 +44,7 @@ public class InvoiceDetailController : Controller
         var mode = Request.Form["mode"];
         var leafCheckKey = Convert.ToInt32(Request.Form["leafCheckKey"]);
         InvoiceDetailRepository invoiceDetailRepository = new(_httpContextAccessor);
+        ProductRepository productRepository = new(_httpContextAccessor);
         SharedUtil sharedUtil = new(_httpContextAccessor);
         CheckAccessUtil checkAccessUtil = new(_httpContextAccessor);
         var invoiceDetailKey = !string.IsNullOrEmpty(Request.Form["invoiceDetailKey"])
@@ -54,7 +55,7 @@ public class InvoiceDetailController : Controller
             : 0;
         var productKey = !string.IsNullOrEmpty(Request.Form["productKey"])
             ? Convert.ToInt32(Request.Form["productKey"])
-            : 0;
+            : productRepository.GetDefault();
         var invoiceDetailUnitPrice = !string.IsNullOrEmpty(Request.Form["invoiceDetailUnitPrice"])
             ? Convert.ToDecimal(Request.Form["invoiceDetailUnitPrice"])
             : 0;

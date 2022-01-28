@@ -218,9 +218,9 @@ public class ProductTypeRepository
         return productTypeModels;
     }
 
-    public ProductTypeModel GetDefault()
+    public int GetDefault()
     {
-        ProductTypeModel productTypeModel = new();
+        var productTypeId = 0;
         var sql = string.Empty;
         List<ParameterModel> parameterModels = new();
 
@@ -231,7 +231,8 @@ public class ProductTypeRepository
             sql += @"
             SELECT  *
             FROM    product_type
-            WHERE   product_type.tenantId = @tenantId
+            WHERE   tenantId = @tenantId
+            AND     isDefault = 1
             LIMIT   1 ";
             MySqlCommand mySqlCommand = new(sql, connection);
             parameterModels = new List<ParameterModel>
@@ -249,21 +250,7 @@ public class ProductTypeRepository
 
             _sharedUtil.SetSqlSession(sql, parameterModels);
 
-            using (var reader = mySqlCommand.ExecuteReader())
-            {
-                while (reader.Read())
-                {
-                    productTypeModel = new ProductTypeModel
-                    {
-                        ProductCategoryName = reader["productCategoryName"].ToString(),
-                        ProductTypeName = reader["productTypeName"].ToString(),
-                        ProductCategoryKey = Convert.ToInt32(reader["productCategoryId"]),
-                        ProductTypeKey = Convert.ToInt32(reader["productTypeId"]),
-                        TenantKey = Convert.ToInt32(reader["tenantId"]),
-                        TenantName = reader["tenantName"].ToString()
-                    };
-                }
-            }
+            productTypeId = (int)(long)mySqlCommand.ExecuteScalar();
 
             mySqlCommand.Dispose();
         }
@@ -275,7 +262,7 @@ public class ProductTypeRepository
         }
 
 
-        return productTypeModel;
+        return productTypeId;
     }
     public byte[] GetExcel()
     {

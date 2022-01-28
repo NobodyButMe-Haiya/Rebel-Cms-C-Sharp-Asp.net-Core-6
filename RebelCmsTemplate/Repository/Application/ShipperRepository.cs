@@ -241,7 +241,50 @@ public class ShipperRepository
 
         return shipperModel;
     }
+    public int GetDefault()
+    {
+        int shipperId = 0;
+        var sql = string.Empty;
+        List<ParameterModel> parameterModels = new();
+        using var connection = SharedUtil.GetConnection();
+        try
+        {
+            connection.Open();
+            sql += @"
+            SELECT  *
+            FROM    shipper 
+            WHERE   isDelete != 1
+            AND     isDefault = 1
+            AND     tenantId  = @tenantId
+            LIMIT 1";
+            MySqlCommand mySqlCommand = new(sql, connection);
+            parameterModels = new List<ParameterModel>
+            {
+                new()
+                {
+                    Key = "@tenantId",
+                    Value = _sharedUtil.GetTenantId()
+                }
+            };
+            foreach (var parameter in parameterModels)
+            {
+                mySqlCommand.Parameters.AddWithValue(parameter.Key, parameter.Value);
+            }
 
+            _sharedUtil.SetSqlSession(sql, parameterModels);
+            shipperId = (int)(long)mySqlCommand.ExecuteScalar();
+
+            mySqlCommand.Dispose();
+        }
+        catch (MySqlException ex)
+        {
+            System.Diagnostics.Debug.WriteLine(ex.Message);
+            _sharedUtil.SetQueryException(SharedUtil.GetSqlSessionValue(sql, parameterModels), ex);
+            throw new Exception(ex.Message);
+        }
+
+        return shipperId;
+    }
     public byte[] GetExcel()
     {
         using var workbook = new XLWorkbook();
@@ -268,7 +311,7 @@ public class ShipperRepository
 
             using (var reader = mySqlCommand.ExecuteReader())
             {
-                var counter = 1;
+                var counter = 3;
                 while (reader.Read())
                 {
                     var currentRow = counter++;
@@ -303,14 +346,12 @@ public class ShipperRepository
             connection.Open();
             var mySqlTransaction = connection.BeginTransaction();
             sql = @"
-                UPDATE  shipper 
-                SET     
-tenantId=@tenantId,
-shipperName=@shipperName,
-shipperPhone=@shipperPhone,
-isDelete=@isDelete
-
-                WHERE   shipperId    =   @shipperId";
+            UPDATE  shipper 
+            SET     tenantId        =   @tenantId,
+                    shipperName     =   @shipperName,
+                    shipperPhone    =   @shipperPhone,
+                    isDelete        =   @isDelete
+            WHERE   shipperId       =   @shipperId";
             MySqlCommand mySqlCommand = new(sql, connection);
             parameterModels = new List<ParameterModel>
             {
@@ -367,9 +408,9 @@ isDelete=@isDelete
             connection.Open();
             var mySqlTransaction = connection.BeginTransaction();
             sql = @"
-                UPDATE  shipper 
-                SET     isDelete    =   1
-                WHERE   shipperId    =   @shipperId";
+            UPDATE  shipper 
+            SET     isDelete    =   1
+            WHERE   shipperId   =   @shipperId";
             MySqlCommand mySqlCommand = new(sql, connection);
             parameterModels = new List<ParameterModel>
             {

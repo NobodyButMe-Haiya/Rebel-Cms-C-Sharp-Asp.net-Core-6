@@ -200,7 +200,53 @@ public class ProductCategoryRepository
 
         return productCategoryModels;
     }
+    public int GetDefault()
+    {
+        var productCategoryId = 0;
+        var sql = string.Empty;
+        List<ParameterModel> parameterModels = new();
 
+        using var connection = SharedUtil.GetConnection();
+        try
+        {
+            connection.Open();
+            sql += @"
+            SELECT  *
+            FROM    product_category
+            WHERE   tenantId = @tenantId
+            AND     isDelete != 1
+            AND     isDefault = 1
+            LIMIT   1";
+            MySqlCommand mySqlCommand = new(sql, connection);
+            parameterModels = new List<ParameterModel>
+            {
+                new()
+                {
+                    Key = "@tenantId",
+                    Value = _sharedUtil.GetTenantId()
+                }
+            };
+            foreach (var parameter in parameterModels)
+            {
+                mySqlCommand.Parameters.AddWithValue(parameter.Key, parameter.Value);
+            }
+
+            _sharedUtil.SetSqlSession(sql, parameterModels);
+
+            productCategoryId = (int)(long)mySqlCommand.ExecuteScalar();
+
+            mySqlCommand.Dispose();
+        }
+        catch (MySqlException ex)
+        {
+            System.Diagnostics.Debug.WriteLine(ex.Message);
+            _sharedUtil.SetQueryException(SharedUtil.GetSqlSessionValue(sql, parameterModels), ex);
+            throw new Exception(ex.Message);
+        }
+
+
+        return productCategoryId;
+    }
     public byte[] GetExcel()
     {
         using var workbook = new XLWorkbook();

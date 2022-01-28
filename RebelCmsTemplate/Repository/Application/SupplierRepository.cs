@@ -315,9 +315,9 @@ public class SupplierRepository
         }
         return supplierModel;
     }
-    public SupplierModel GetDefault()
+    public int GetDefault()
     {
-        SupplierModel supplierModel = new();
+        int supplierId = 0;
         var sql = string.Empty;
         List<ParameterModel> parameterModels = new();
         using var connection = SharedUtil.GetConnection();
@@ -327,7 +327,7 @@ public class SupplierRepository
             sql += @"
             SELECT  *
             FROM    supplier 
-            WHERE   supplier.isDelete != 1
+            WHERE   isDelete    != 1
             AND     tenantId    =   @tenantId
             LIMIT   1 ";
             MySqlCommand mySqlCommand = new(sql, connection);
@@ -344,27 +344,7 @@ public class SupplierRepository
                 mySqlCommand.Parameters.AddWithValue(parameter.Key, parameter.Value);
             }
             _sharedUtil.SetSqlSession(sql, parameterModels);
-            using (var reader = mySqlCommand.ExecuteReader())
-            {
-                while (reader.Read())
-                {
-                    supplierModel = new SupplierModel
-                    {
-                        SupplierKey = Convert.ToInt32(reader["supplierId"]),
-                        SupplierName = reader["supplierName"].ToString(),
-                        SupplierContactName = reader["supplierContactName"].ToString(),
-                        SupplierContactTitle = reader["supplierContactTitle"].ToString(),
-                        SupplierAddress = reader["supplierAddress"].ToString(),
-                        SupplierCity = reader["supplierCity"].ToString(),
-                        SupplierRegion = reader["supplierRegion"].ToString(),
-                        SupplierPostalCode = reader["supplierPostalCode"].ToString(),
-                        SupplierCountry = reader["supplierCountry"].ToString(),
-                        SupplierPhone = reader["supplierPhone"].ToString(),
-                        SupplierFax = reader["supplierFax"].ToString(),
-                        SupplierHomePage = reader["supplierHomePage"].ToString(),
-                    };
-                }
-            }
+            supplierId = (int)(long)mySqlCommand.ExecuteScalar();
             mySqlCommand.Dispose();
         }
         catch (MySqlException ex)
@@ -373,7 +353,7 @@ public class SupplierRepository
             _sharedUtil.SetQueryException(SharedUtil.GetSqlSessionValue(sql, parameterModels), ex);
             throw new Exception(ex.Message);
         }
-        return supplierModel;
+        return supplierId;
     }
     public byte[] GetExcel()
     {
@@ -406,7 +386,7 @@ public class SupplierRepository
             }
             using (var reader = mySqlCommand.ExecuteReader())
             {
-                var counter = 1;
+                var counter = 3;
                 while (reader.Read())
                 {
                     var currentRow = counter++;
@@ -444,23 +424,21 @@ public class SupplierRepository
             connection.Open();
             MySqlTransaction mySqlTransaction = connection.BeginTransaction();
             sql = @"
-                UPDATE  supplier 
-                SET     
-tenantId=@tenantId,
-supplierName=@supplierName,
-supplierContactName=@supplierContactName,
-supplierContactTitle=@supplierContactTitle,
-supplierAddress=@supplierAddress,
-supplierCity=@supplierCity,
-supplierRegion=@supplierRegion,
-supplierPostalCode=@supplierPostalCode,
-supplierCountry=@supplierCountry,
-supplierPhone=@supplierPhone,
-supplierFax=@supplierFax,
-supplierHomePage=@supplierHomePage,
-isDelete=@isDelete
-
-                WHERE   supplierId    =   @supplierId";
+            UPDATE  supplier 
+            SET     tenantId                =   @tenantId,
+                    supplierName            =   @supplierName,
+                    supplierContactName     =   @supplierContactName,
+                    supplierContactTitle    =   @supplierContactTitle,
+                    supplierAddress         =   @supplierAddress,
+                    supplierCity            =   @supplierCity,
+                    supplierRegion          =   @supplierRegion,
+                    supplierPostalCode      =   @supplierPostalCode,
+                    supplierCountry         =   @supplierCountry,
+                    supplierPhone           =   @supplierPhone,
+                    supplierFax             =   @supplierFax,
+                    supplierHomePage        =   @supplierHomePage,
+                    isDelete                =   @isDelete
+            WHERE   supplierId              =   @supplierId";
             MySqlCommand mySqlCommand = new(sql, connection);
             parameterModels = new List<ParameterModel>
                 {
