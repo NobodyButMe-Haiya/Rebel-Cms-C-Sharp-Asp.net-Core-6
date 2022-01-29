@@ -4,7 +4,7 @@ using RebelCmsTemplate.Models.Administrator;
 using RebelCmsTemplate.Repository.Administrator;
 using RebelCmsTemplate.Util;
 
-namespace RebelCmsTemplate.Controllers.Api.Administrator;
+namespace RebelCmsTemplate.Controllers.Administrator;
 
 [Route("api/administrator/[controller]")]
 [ApiController]
@@ -49,16 +49,14 @@ public class RoleController : Controller
         SharedUtil sharedUtil = new(_httpContextAccessor);
         CheckAccessUtil checkAccessUtil = new(_httpContextAccessor);
 
-        List<RoleModel> data = new();
+        string code;
 
-        string? code = string.Empty;
-        var lastInsertKey = 0;
         switch (mode)
         {
             case "create":
                 if (!checkAccessUtil.GetPermission(leafCheckKey, AuthenticationEnum.CREATE_ACCESS))
                 {
-                    code = ((int)ReturnCodeEnum.ACCESS_DENIED).ToString();
+                    code = ((int) ReturnCodeEnum.ACCESS_DENIED).ToString();
                 }
                 else
                 {
@@ -69,16 +67,16 @@ public class RoleController : Controller
                         {
                             RoleName = roleName
                         };
-                        lastInsertKey = roleRepository.Create(roleModel);
-                        code = ((int)ReturnCodeEnum.CREATE_SUCCESS).ToString();
+                        var lastInsertKey = roleRepository.Create(roleModel);
+                        code = ((int) ReturnCodeEnum.CREATE_SUCCESS).ToString();
                         status = true;
-                        return Ok(new { status, code, lastInsertKey });
+                        return Ok(new {status, code, lastInsertKey});
                     }
                     catch (Exception ex)
                     {
-                        code = sharedUtil.GetRoleId() == (int)AccessEnum.ADMINISTRATOR_ACCESS
+                        code = sharedUtil.GetRoleId() == (int) AccessEnum.ADMINISTRATOR_ACCESS
                             ? ex.Message
-                            : ((int)ReturnCodeEnum.SYSTEM_ERROR).ToString();
+                            : ((int) ReturnCodeEnum.SYSTEM_ERROR).ToString();
                     }
                 }
 
@@ -86,21 +84,22 @@ public class RoleController : Controller
             case "read":
                 if (!checkAccessUtil.GetPermission(leafCheckKey, AuthenticationEnum.READ_ACCESS))
                 {
-                    code = ((int)ReturnCodeEnum.ACCESS_DENIED).ToString();
+                    code = ((int) ReturnCodeEnum.ACCESS_DENIED).ToString();
                 }
                 else
                 {
                     try
                     {
-                        data = roleRepository.Read();
-                        code = ((int)ReturnCodeEnum.CREATE_SUCCESS).ToString();
+                        var data = roleRepository.Read();
+                        code = ((int) ReturnCodeEnum.CREATE_SUCCESS).ToString();
                         status = true;
+                        return Ok(new {status, code, data});
                     }
                     catch (Exception ex)
                     {
-                        code = sharedUtil.GetRoleId() == (int)AccessEnum.ADMINISTRATOR_ACCESS
+                        code = sharedUtil.GetRoleId() == (int) AccessEnum.ADMINISTRATOR_ACCESS
                             ? ex.Message
-                            : ((int)ReturnCodeEnum.SYSTEM_ERROR).ToString();
+                            : ((int) ReturnCodeEnum.SYSTEM_ERROR).ToString();
                     }
                 }
 
@@ -108,7 +107,7 @@ public class RoleController : Controller
             case "search":
                 if (!checkAccessUtil.GetPermission(leafCheckKey, AuthenticationEnum.READ_ACCESS))
                 {
-                    code = ((int)ReturnCodeEnum.ACCESS_DENIED).ToString();
+                    code = ((int) ReturnCodeEnum.ACCESS_DENIED).ToString();
                 }
                 else
                 {
@@ -117,20 +116,21 @@ public class RoleController : Controller
                         try
                         {
                             var search = Request.Form["search"];
-                            data = roleRepository.Search(search);
-                            code = ((int)ReturnCodeEnum.READ_SUCCESS).ToString();
+                            var data = roleRepository.Search(search);
+                            code = ((int) ReturnCodeEnum.READ_SUCCESS).ToString();
                             status = true;
+                            return Ok(new {status, code, data});
                         }
                         catch (Exception ex)
                         {
-                            code = sharedUtil.GetRoleId() == (int)AccessEnum.ADMINISTRATOR_ACCESS
+                            code = sharedUtil.GetRoleId() == (int) AccessEnum.ADMINISTRATOR_ACCESS
                                 ? ex.Message
-                                : ((int)ReturnCodeEnum.SYSTEM_ERROR).ToString();
+                                : ((int) ReturnCodeEnum.SYSTEM_ERROR).ToString();
                         }
                     }
                     else
                     {
-                        code = ((int)ReturnCodeEnum.ACCESS_DENIED).ToString();
+                        code = ((int) ReturnCodeEnum.ACCESS_DENIED).ToString();
                     }
                 }
 
@@ -138,7 +138,7 @@ public class RoleController : Controller
             case "update":
                 if (!checkAccessUtil.GetPermission(leafCheckKey, AuthenticationEnum.UPDATE_ACCESS))
                 {
-                    code = ((int)ReturnCodeEnum.ACCESS_DENIED).ToString();
+                    code = ((int) ReturnCodeEnum.ACCESS_DENIED).ToString();
                 }
                 else
                 {
@@ -146,12 +146,10 @@ public class RoleController : Controller
                     {
                         try
                         {
-                            int roleKey = 0;
-
-                            if (!int.TryParse(Request.Form["roleKey"], out roleKey))
+                            if (!int.TryParse(Request.Form["roleKey"], out var roleKey))
                             {
-                                code = ((int)ReturnCodeEnum.ACCESS_DENIED_NO_MODE).ToString();
-                                return Ok(new { status, code });
+                                code = ((int) ReturnCodeEnum.ACCESS_DENIED_NO_MODE).ToString();
+                                return Ok(new {status, code});
                             }
 
                             var roleName = Request.Form["roleName"];
@@ -162,19 +160,19 @@ public class RoleController : Controller
                                 RoleKey = Convert.ToInt32(roleKey)
                             };
                             roleRepository.Update(roleModel);
-                            code = ((int)ReturnCodeEnum.UPDATE_SUCCESS).ToString();
+                            code = ((int) ReturnCodeEnum.UPDATE_SUCCESS).ToString();
                             status = true;
                         }
                         catch (Exception ex)
                         {
-                            code = sharedUtil.GetRoleId() == (int)AccessEnum.ADMINISTRATOR_ACCESS
+                            code = sharedUtil.GetRoleId() == (int) AccessEnum.ADMINISTRATOR_ACCESS
                                 ? ex.Message
-                                : ((int)ReturnCodeEnum.SYSTEM_ERROR).ToString();
+                                : ((int) ReturnCodeEnum.SYSTEM_ERROR).ToString();
                         }
                     }
                     else
                     {
-                        code = ((int)ReturnCodeEnum.ACCESS_DENIED).ToString();
+                        code = ((int) ReturnCodeEnum.ACCESS_DENIED).ToString();
                     }
                 }
 
@@ -182,7 +180,7 @@ public class RoleController : Controller
             case "delete":
                 if (!checkAccessUtil.GetPermission(leafCheckKey, AuthenticationEnum.DELETE_ACCESS))
                 {
-                    code = ((int)ReturnCodeEnum.ACCESS_DENIED).ToString();
+                    code = ((int) ReturnCodeEnum.ACCESS_DENIED).ToString();
                 }
                 else
                 {
@@ -190,46 +188,40 @@ public class RoleController : Controller
                     {
                         try
                         {
-                            int roleKey = 0;
-
-                            if (!int.TryParse(Request.Form["roleKey"], out roleKey))
+                            if (!int.TryParse(Request.Form["roleKey"], out var roleKey))
                             {
-                                code = ((int)ReturnCodeEnum.ACCESS_DENIED_NO_MODE).ToString();
-                                return Ok(new { status, code });
+                                code = ((int) ReturnCodeEnum.ACCESS_DENIED_NO_MODE).ToString();
+                                return Ok(new {status, code});
                             }
+
                             RoleModel roleModel = new()
                             {
                                 RoleKey = Convert.ToInt32(roleKey)
                             };
                             roleRepository.Delete(roleModel);
 
-                            code = ((int)ReturnCodeEnum.DELETE_SUCCESS).ToString();
+                            code = ((int) ReturnCodeEnum.DELETE_SUCCESS).ToString();
                             status = true;
                         }
                         catch (Exception ex)
                         {
-                            code = sharedUtil.GetRoleId() == (int)AccessEnum.ADMINISTRATOR_ACCESS
+                            code = sharedUtil.GetRoleId() == (int) AccessEnum.ADMINISTRATOR_ACCESS
                                 ? ex.Message
-                                : ((int)ReturnCodeEnum.SYSTEM_ERROR).ToString();
+                                : ((int) ReturnCodeEnum.SYSTEM_ERROR).ToString();
                         }
                     }
                     else
                     {
-                        code = ((int)ReturnCodeEnum.ACCESS_DENIED).ToString();
+                        code = ((int) ReturnCodeEnum.ACCESS_DENIED).ToString();
                     }
                 }
 
                 break;
             default:
-                code = ((int)ReturnCodeEnum.ACCESS_DENIED_NO_MODE).ToString();
+                code = ((int) ReturnCodeEnum.ACCESS_DENIED_NO_MODE).ToString();
                 break;
         }
 
-        if (data.Count > 0)
-        {
-            return Ok(new { status, code, data });
-        }
-
-        return lastInsertKey > 0 ? Ok(new { status, code, lastInsertKey }) : Ok(new { status, code });
+        return Ok(new {status, code});
     }
 }

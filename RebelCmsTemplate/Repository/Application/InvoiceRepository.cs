@@ -17,7 +17,7 @@ public class InvoiceRepository
 
     public int Create(InvoiceModel invoiceModel)
     {
-        int lastInsertKey ;
+        int lastInsertKey;
         var sql = string.Empty;
         List<ParameterModel> parameterModels = new();
         using var connection = SharedUtil.GetConnection();
@@ -362,7 +362,7 @@ public class InvoiceRepository
             MySqlCommand mySqlCommand = new(sql, connection);
             parameterModels = new List<ParameterModel>
             {
-                   new()
+                new()
                 {
                     Key = "@tenantId",
                     Value = _sharedUtil.GetTenantId()
@@ -449,7 +449,7 @@ public class InvoiceRepository
             MySqlCommand mySqlCommand = new(sql, connection);
             parameterModels = new List<ParameterModel>
             {
-                    new()
+                new()
                 {
                     Key = "@tenantId",
                     Value = _sharedUtil.GetTenantId()
@@ -525,7 +525,7 @@ public class InvoiceRepository
             MySqlCommand mySqlCommand = new(sql, connection);
             parameterModels = new List<ParameterModel>
             {
-                    new()
+                new()
                 {
                     Key = "@tenantId",
                     Value = _sharedUtil.GetTenantId()

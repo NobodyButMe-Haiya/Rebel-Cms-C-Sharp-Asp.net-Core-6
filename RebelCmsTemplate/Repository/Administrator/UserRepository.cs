@@ -6,7 +6,7 @@ using RebelCmsTemplate.Util;
 
 namespace RebelCmsTemplate.Repository.Administrator;
 
-public  class UserRepository
+public class UserRepository
 {
     private readonly SharedUtil _sharedUtil;
 

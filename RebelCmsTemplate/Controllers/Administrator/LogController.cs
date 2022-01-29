@@ -1,10 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using RebelCmsTemplate.Enum;
-using RebelCmsTemplate.Models.Administrator;
 using RebelCmsTemplate.Repository.Administrator;
 using RebelCmsTemplate.Util;
 
-namespace RebelCmsTemplate.Controllers.Api.Administrator;
+namespace RebelCmsTemplate.Controllers.Administrator;
 
 [Route("api/administrator/[controller]")]
 [ApiController]
@@ -44,13 +43,12 @@ public class LogController : Controller
         var status = false;
         var mode = Request.Form["mode"];
         var leafCheckKey = Convert.ToInt32(Request.Form["leafCheckKey"]);
-      
+
 
         LogRepository logRepository = new(_httpContextAccessor);
         SharedUtil sharedUtil = new(_httpContextAccessor);
         CheckAccessUtil checkAccessUtil = new(_httpContextAccessor);
 
-        List<LogModel> data = new();
 
         string? code;
         switch (mode)
@@ -64,10 +62,10 @@ public class LogController : Controller
                 {
                     try
                     {
-                        data = logRepository.Read();
+                        var data = logRepository.Read();
                         code = ((int) ReturnCodeEnum.CREATE_SUCCESS).ToString();
                         status = true;
-                        return Ok(new { status, code, data });
+                        return Ok(new {status, code, data});
                     }
                     catch (Exception ex)
                     {
@@ -90,21 +88,21 @@ public class LogController : Controller
                         try
                         {
                             var search = Request.Form["search"];
-                            data = logRepository.Search(search);
-                            code = ((int)ReturnCodeEnum.READ_SUCCESS).ToString();
+                            var data = logRepository.Search(search);
+                            code = ((int) ReturnCodeEnum.READ_SUCCESS).ToString();
                             status = true;
-                            return Ok(new { status, code, data });
+                            return Ok(new {status, code, data});
                         }
                         catch (Exception ex)
                         {
-                            code = sharedUtil.GetRoleId() == (int)AccessEnum.ADMINISTRATOR_ACCESS
+                            code = sharedUtil.GetRoleId() == (int) AccessEnum.ADMINISTRATOR_ACCESS
                                 ? ex.Message
-                                : ((int)ReturnCodeEnum.SYSTEM_ERROR).ToString();
+                                : ((int) ReturnCodeEnum.SYSTEM_ERROR).ToString();
                         }
                     }
                     else
                     {
-                        code = ((int)ReturnCodeEnum.ACCESS_DENIED).ToString();
+                        code = ((int) ReturnCodeEnum.ACCESS_DENIED).ToString();
                     }
                 }
 
@@ -113,6 +111,7 @@ public class LogController : Controller
                 code = ((int) ReturnCodeEnum.ACCESS_DENIED_NO_MODE).ToString();
                 break;
         }
-        return Ok(new { status, code });
+
+        return Ok(new {status, code});
     }
 }

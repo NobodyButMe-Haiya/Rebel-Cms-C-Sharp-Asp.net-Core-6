@@ -4,7 +4,7 @@ using RebelCmsTemplate.Models.Menu;
 using RebelCmsTemplate.Repository.Menu;
 using RebelCmsTemplate.Util;
 
-namespace RebelCmsTemplate.Controllers.Api.Menu;
+namespace RebelCmsTemplate.Controllers.Menu;
 
 [Route("api/menu/[controller]")]
 [ApiController]
@@ -66,14 +66,8 @@ public class LeafAccessController : Controller
         LeafAccessRepository leafAccessRepository = new(_httpContextAccessor);
         SharedUtil sharedUtil = new(_httpContextAccessor);
         CheckAccessUtil checkAccessUtil = new(_httpContextAccessor);
-
-        List<LeafAccessModel> data = new();
-
-        var folderModels = new List<FolderOptionModel>();
-        var leafModels = new List<LeafOptionModel>();
-
+        
         string code;
-        // but we think something missing .. what ya ? 
         switch (mode)
         {
             case "read":
@@ -87,9 +81,10 @@ public class LeafAccessController : Controller
                 {
                     try
                     {
-                        data = leafAccessRepository.Read(roleKey, folderKey, leafKey);
+                        var data = leafAccessRepository.Read(roleKey, folderKey, leafKey);
                         code = ((int) ReturnCodeEnum.CREATE_SUCCESS).ToString();
                         status = true;
+                        return Ok(new {code, status, data});
                     }
                     catch (Exception ex)
                     {
@@ -127,10 +122,11 @@ public class LeafAccessController : Controller
                 try
                 {
                     FolderRepository folderRepository = new(_httpContextAccessor);
-                    folderModels = folderRepository.Read().Select(x => new FolderOptionModel
+                    var folderModels = folderRepository.Read().Select(x => new FolderOptionModel
                         {FolderKey = x.FolderKey, FolderName = x.FolderName}).ToList();
                     code = ((int) ReturnCodeEnum.CREATE_SUCCESS).ToString();
                     status = true;
+                    return Ok(new {code, status, folderModels});
                 }
                 catch (Exception ex)
                 {
@@ -144,10 +140,11 @@ public class LeafAccessController : Controller
                 try
                 {
                     LeafRepository leafRepository = new(_httpContextAccessor);
-                    leafModels = leafRepository.Read().Where(x => x.FolderKey == folderKey)
+                    var leafModels = leafRepository.Read().Where(x => x.FolderKey == folderKey)
                         .Select(x => new LeafOptionModel {LeafKey = x.LeafKey, LeafName = x.LeafName}).ToList();
                     code = ((int) ReturnCodeEnum.CREATE_SUCCESS).ToString();
                     status = true;
+                    return Ok(new {code, status, leafModels});
                 }
                 catch (Exception ex)
                 {
@@ -163,16 +160,6 @@ public class LeafAccessController : Controller
                 break;
         }
 
-        if (data.Count > 0)
-        {
-            return Ok(new {status, code, data});
-        }
-
-        if (folderModels.Count > 0)
-        {
-            return Ok(new {status, code, folderModels});
-        }
-
-        return leafModels.Count > 0 ? Ok(new {status, code, leafModels}) : Ok(new {status, code});
+        return Ok(new {status, code});
     }
 }

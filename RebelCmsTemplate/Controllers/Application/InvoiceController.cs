@@ -4,7 +4,7 @@ using RebelCmsTemplate.Models.Application;
 using RebelCmsTemplate.Repository.Application;
 using RebelCmsTemplate.Util;
 
-namespace RebelCmsTemplate.Controllers.Api.Application;
+namespace RebelCmsTemplate.Controllers.Application;
 
 [Route("api/application/[controller]")]
 [ApiController]
@@ -38,6 +38,7 @@ public class InvoiceController : Controller
     [HttpPost]
     public ActionResult Post()
     {
+      
         var status = false;
         var mode = Request.Form["mode"];
         var leafCheckKey = Convert.ToInt32(Request.Form["leafCheckKey"]);
@@ -49,56 +50,53 @@ public class InvoiceController : Controller
 
         SharedUtil sharedUtil = new(_httpContextAccessor);
         CheckAccessUtil checkAccessUtil = new(_httpContextAccessor);
-
-        List<InvoiceModel> data = new();
-        InvoiceModel dataSingle = new();
-        string? code = string.Empty;
-        string? message = string.Empty;
-        var lastInsertKey = 0;
+        string code = string.Empty;
         switch (mode)
         {
             case "create":
                 if (!checkAccessUtil.GetPermission(leafCheckKey, AuthenticationEnum.CREATE_ACCESS))
                 {
-                    code = ((int)ReturnCodeEnum.ACCESS_DENIED).ToString();
+                    code = ((int) ReturnCodeEnum.ACCESS_DENIED).ToString();
                 }
                 else
                 {
                     try
                     {
-                        var customerKey = 0;
+                        int customerKey;
                         if (!string.IsNullOrWhiteSpace(Request.Form["customerKey"]))
                         {
                             if (!int.TryParse(Request.Form["customerKey"], out customerKey))
                             {
-                                code = ((int)ReturnCodeEnum.ACCESS_DENIED_NO_MODE).ToString();
-                                return Ok(new { status, code });
+                                code = ((int) ReturnCodeEnum.ACCESS_DENIED_NO_MODE).ToString();
+                                return Ok(new {status, code});
                             }
                         }
                         else
                         {
                             customerKey = customerRepository.GetDefault();
                         }
-                        var shipperKey = 0;
+
+                        int shipperKey;
                         if (!string.IsNullOrWhiteSpace(Request.Form["shipperKey"]))
                         {
                             if (!int.TryParse(Request.Form["shipperKey"], out shipperKey))
                             {
-                                code = ((int)ReturnCodeEnum.ACCESS_DENIED_NO_MODE).ToString();
-                                return Ok(new { status, code });
+                                code = ((int) ReturnCodeEnum.ACCESS_DENIED_NO_MODE).ToString();
+                                return Ok(new {status, code});
                             }
                         }
                         else
                         {
                             shipperKey = shipperRepository.GetDefault();
                         }
+
                         var employeeKey = 0;
                         if (!string.IsNullOrWhiteSpace(Request.Form["employeeKey"]))
                         {
                             if (!int.TryParse(Request.Form["employeeKey"], out shipperKey))
                             {
-                                code = ((int)ReturnCodeEnum.ACCESS_DENIED_NO_MODE).ToString();
-                                return Ok(new { status, code });
+                                code = ((int) ReturnCodeEnum.ACCESS_DENIED_NO_MODE).ToString();
+                                return Ok(new {status, code});
                             }
                         }
                         else
@@ -110,7 +108,8 @@ public class InvoiceController : Controller
                         if (!string.IsNullOrEmpty(Request.Form["invoiceOrderDate"]))
                         {
                             var dateString = Request.Form["invoiceOrderDate"].ToString().Split("-");
-                            invoiceOrderDate = new DateOnly(Convert.ToInt32(dateString[0]), Convert.ToInt32(dateString[1]),
+                            invoiceOrderDate = new DateOnly(Convert.ToInt32(dateString[0]),
+                                Convert.ToInt32(dateString[1]),
                                 Convert.ToInt32(dateString[2]));
                         }
 
@@ -118,7 +117,8 @@ public class InvoiceController : Controller
                         if (!string.IsNullOrEmpty(Request.Form["invoiceRequiredDate"]))
                         {
                             var dateString = Request.Form["invoiceRequiredDate"].ToString().Split("-");
-                            invoiceRequiredDate = new DateOnly(Convert.ToInt32(dateString[0]), Convert.ToInt32(dateString[1]),
+                            invoiceRequiredDate = new DateOnly(Convert.ToInt32(dateString[0]),
+                                Convert.ToInt32(dateString[1]),
                                 Convert.ToInt32(dateString[2]));
                         }
 
@@ -126,7 +126,8 @@ public class InvoiceController : Controller
                         if (!string.IsNullOrEmpty(Request.Form["invoiceShippedDate"]))
                         {
                             var dateString = Request.Form["invoiceShippedDate"].ToString().Split("-");
-                            invoiceShippedDate = new DateOnly(Convert.ToInt32(dateString[0]), Convert.ToInt32(dateString[1]),
+                            invoiceShippedDate = new DateOnly(Convert.ToInt32(dateString[0]),
+                                Convert.ToInt32(dateString[1]),
                                 Convert.ToInt32(dateString[2]));
                         }
 
@@ -156,16 +157,16 @@ public class InvoiceController : Controller
                             InvoiceShipPostalCode = invoiceShipPostalCode,
                             InvoiceShipCountry = invoiceShipCountry
                         };
-                        lastInsertKey = invoiceRepository.Create(invoiceModel);
-                        code = ((int)ReturnCodeEnum.CREATE_SUCCESS).ToString();
+                        var lastInsertKey = invoiceRepository.Create(invoiceModel);
+                        code = ((int) ReturnCodeEnum.CREATE_SUCCESS).ToString();
                         status = true;
-                        return Ok(new { status, code, lastInsertKey });
+                        return Ok(new {status, code, lastInsertKey});
                     }
                     catch (Exception ex)
                     {
-                        code = sharedUtil.GetRoleId() == (int)AccessEnum.ADMINISTRATOR_ACCESS
+                        code = sharedUtil.GetRoleId() == (int) AccessEnum.ADMINISTRATOR_ACCESS
                             ? ex.Message
-                            : ((int)ReturnCodeEnum.SYSTEM_ERROR).ToString();
+                            : ((int) ReturnCodeEnum.SYSTEM_ERROR).ToString();
                     }
                 }
 
@@ -173,22 +174,22 @@ public class InvoiceController : Controller
             case "read":
                 if (!checkAccessUtil.GetPermission(leafCheckKey, AuthenticationEnum.READ_ACCESS))
                 {
-                    code = ((int)ReturnCodeEnum.ACCESS_DENIED).ToString();
+                    code = ((int) ReturnCodeEnum.ACCESS_DENIED).ToString();
                 }
                 else
                 {
                     try
                     {
-                        data = invoiceRepository.Read();
-                        code = ((int)ReturnCodeEnum.CREATE_SUCCESS).ToString();
+                        var data = invoiceRepository.Read();
+                        code = ((int) ReturnCodeEnum.CREATE_SUCCESS).ToString();
                         status = true;
-                        return Ok(new { status, code, data });
+                        return Ok(new {status, code, data});
                     }
                     catch (Exception ex)
                     {
-                        code = sharedUtil.GetRoleId() == (int)AccessEnum.ADMINISTRATOR_ACCESS
+                        code = sharedUtil.GetRoleId() == (int) AccessEnum.ADMINISTRATOR_ACCESS
                             ? ex.Message
-                            : ((int)ReturnCodeEnum.SYSTEM_ERROR).ToString();
+                            : ((int) ReturnCodeEnum.SYSTEM_ERROR).ToString();
                     }
                 }
 
@@ -196,7 +197,7 @@ public class InvoiceController : Controller
             case "search":
                 if (!checkAccessUtil.GetPermission(leafCheckKey, AuthenticationEnum.READ_ACCESS))
                 {
-                    code = ((int)ReturnCodeEnum.ACCESS_DENIED).ToString();
+                    code = ((int) ReturnCodeEnum.ACCESS_DENIED).ToString();
                 }
                 else
                 {
@@ -205,21 +206,21 @@ public class InvoiceController : Controller
                         try
                         {
                             var search = Request.Form["search"];
-                            data = invoiceRepository.Search(search);
-                            code = ((int)ReturnCodeEnum.READ_SUCCESS).ToString();
+                            var data = invoiceRepository.Search(search);
+                            code = ((int) ReturnCodeEnum.READ_SUCCESS).ToString();
                             status = true;
-                            return Ok(new { status, code, data });
+                            return Ok(new {status, code, data});
                         }
                         catch (Exception ex)
                         {
-                            code = sharedUtil.GetRoleId() == (int)AccessEnum.ADMINISTRATOR_ACCESS
+                            code = sharedUtil.GetRoleId() == (int) AccessEnum.ADMINISTRATOR_ACCESS
                                 ? ex.Message
-                                : ((int)ReturnCodeEnum.SYSTEM_ERROR).ToString();
+                                : ((int) ReturnCodeEnum.SYSTEM_ERROR).ToString();
                         }
                     }
                     else
                     {
-                        code = ((int)ReturnCodeEnum.ACCESS_DENIED).ToString();
+                        code = ((int) ReturnCodeEnum.ACCESS_DENIED).ToString();
                     }
                 }
 
@@ -227,7 +228,7 @@ public class InvoiceController : Controller
             case "singleWithDetail":
                 if (!checkAccessUtil.GetPermission(leafCheckKey, AuthenticationEnum.READ_ACCESS))
                 {
-                    code = ((int)ReturnCodeEnum.ACCESS_DENIED).ToString();
+                    code = ((int) ReturnCodeEnum.ACCESS_DENIED).ToString();
                 }
                 else
                 {
@@ -240,36 +241,37 @@ public class InvoiceController : Controller
                             {
                                 if (!int.TryParse(Request.Form["invoiceKey"], out invoiceKey))
                                 {
-                                    code = ((int)ReturnCodeEnum.ACCESS_DENIED_NO_MODE).ToString();
-                                    return Ok(new { status, code });
+                                    code = ((int) ReturnCodeEnum.ACCESS_DENIED_NO_MODE).ToString();
+                                    return Ok(new {status, code});
                                 }
                             }
+
                             if (invoiceKey > 0)
                             {
                                 InvoiceModel invoiceModel = new()
                                 {
                                     InvoiceKey = invoiceKey
                                 };
-                                dataSingle = invoiceRepository.GetSingleWithDetail(invoiceModel);
-                                code = ((int)ReturnCodeEnum.READ_SUCCESS).ToString();
+                                var dataSingle = invoiceRepository.GetSingleWithDetail(invoiceModel);
+                                code = ((int) ReturnCodeEnum.READ_SUCCESS).ToString();
                                 status = true;
-                                return Ok(new { status, code, dataSingle });
+                                return Ok(new {status, code, dataSingle});
                             }
                             else
                             {
-                                code = ((int)ReturnCodeEnum.ACCESS_DENIED).ToString();
+                                code = ((int) ReturnCodeEnum.ACCESS_DENIED).ToString();
                             }
                         }
                         catch (Exception ex)
                         {
-                            code = sharedUtil.GetRoleId() == (int)AccessEnum.ADMINISTRATOR_ACCESS
+                            code = sharedUtil.GetRoleId() == (int) AccessEnum.ADMINISTRATOR_ACCESS
                                 ? ex.Message
-                                : ((int)ReturnCodeEnum.SYSTEM_ERROR).ToString();
+                                : ((int) ReturnCodeEnum.SYSTEM_ERROR).ToString();
                         }
                     }
                     else
                     {
-                        code = ((int)ReturnCodeEnum.ACCESS_DENIED).ToString();
+                        code = ((int) ReturnCodeEnum.ACCESS_DENIED).ToString();
                     }
                 }
 
@@ -277,7 +279,7 @@ public class InvoiceController : Controller
             case "update":
                 if (!checkAccessUtil.GetPermission(leafCheckKey, AuthenticationEnum.UPDATE_ACCESS))
                 {
-                    code = ((int)ReturnCodeEnum.ACCESS_DENIED).ToString();
+                    code = ((int) ReturnCodeEnum.ACCESS_DENIED).ToString();
                 }
                 else
                 {
@@ -285,51 +287,53 @@ public class InvoiceController : Controller
                     {
                         try
                         {
-
                             var invoiceKey = 0;
                             if (!string.IsNullOrWhiteSpace(Request.Form["invoiceKey"]))
                             {
                                 if (!int.TryParse(Request.Form["invoiceKey"], out invoiceKey))
                                 {
-                                    code = ((int)ReturnCodeEnum.ACCESS_DENIED_NO_MODE).ToString();
-                                    return Ok(new { status, code });
+                                    code = ((int) ReturnCodeEnum.ACCESS_DENIED_NO_MODE).ToString();
+                                    return Ok(new {status, code});
                                 }
                             }
+
                             if (invoiceKey > 0)
                             {
-                                var customerKey = 0;
+                                int customerKey;
                                 if (!string.IsNullOrWhiteSpace(Request.Form["customerKey"]))
                                 {
                                     if (!int.TryParse(Request.Form["customerKey"], out customerKey))
                                     {
-                                        code = ((int)ReturnCodeEnum.ACCESS_DENIED_NO_MODE).ToString();
-                                        return Ok(new { status, code });
+                                        code = ((int) ReturnCodeEnum.ACCESS_DENIED_NO_MODE).ToString();
+                                        return Ok(new {status, code});
                                     }
                                 }
                                 else
                                 {
                                     customerKey = customerRepository.GetDefault();
                                 }
-                                var shipperKey = 0;
+
+                                int shipperKey;
                                 if (!string.IsNullOrWhiteSpace(Request.Form["shipperKey"]))
                                 {
                                     if (!int.TryParse(Request.Form["shipperKey"], out shipperKey))
                                     {
-                                        code = ((int)ReturnCodeEnum.ACCESS_DENIED_NO_MODE).ToString();
-                                        return Ok(new { status, code });
+                                        code = ((int) ReturnCodeEnum.ACCESS_DENIED_NO_MODE).ToString();
+                                        return Ok(new {status, code});
                                     }
                                 }
                                 else
                                 {
                                     shipperKey = shipperRepository.GetDefault();
                                 }
+
                                 var employeeKey = 0;
                                 if (!string.IsNullOrWhiteSpace(Request.Form["employeeKey"]))
                                 {
                                     if (!int.TryParse(Request.Form["employeeKey"], out shipperKey))
                                     {
-                                        code = ((int)ReturnCodeEnum.ACCESS_DENIED_NO_MODE).ToString();
-                                        return Ok(new { status, code });
+                                        code = ((int) ReturnCodeEnum.ACCESS_DENIED_NO_MODE).ToString();
+                                        return Ok(new {status, code});
                                     }
                                 }
                                 else
@@ -341,7 +345,8 @@ public class InvoiceController : Controller
                                 if (!string.IsNullOrEmpty(Request.Form["invoiceOrderDate"]))
                                 {
                                     var dateString = Request.Form["invoiceOrderDate"].ToString().Split("-");
-                                    invoiceOrderDate = new DateOnly(Convert.ToInt32(dateString[0]), Convert.ToInt32(dateString[1]),
+                                    invoiceOrderDate = new DateOnly(Convert.ToInt32(dateString[0]),
+                                        Convert.ToInt32(dateString[1]),
                                         Convert.ToInt32(dateString[2]));
                                 }
 
@@ -349,7 +354,8 @@ public class InvoiceController : Controller
                                 if (!string.IsNullOrEmpty(Request.Form["invoiceRequiredDate"]))
                                 {
                                     var dateString = Request.Form["invoiceRequiredDate"].ToString().Split("-");
-                                    invoiceRequiredDate = new DateOnly(Convert.ToInt32(dateString[0]), Convert.ToInt32(dateString[1]),
+                                    invoiceRequiredDate = new DateOnly(Convert.ToInt32(dateString[0]),
+                                        Convert.ToInt32(dateString[1]),
                                         Convert.ToInt32(dateString[2]));
                                 }
 
@@ -357,7 +363,8 @@ public class InvoiceController : Controller
                                 if (!string.IsNullOrEmpty(Request.Form["invoiceShippedDate"]))
                                 {
                                     var dateString = Request.Form["invoiceShippedDate"].ToString().Split("-");
-                                    invoiceShippedDate = new DateOnly(Convert.ToInt32(dateString[0]), Convert.ToInt32(dateString[1]),
+                                    invoiceShippedDate = new DateOnly(Convert.ToInt32(dateString[0]),
+                                        Convert.ToInt32(dateString[1]),
                                         Convert.ToInt32(dateString[2]));
                                 }
 
@@ -389,20 +396,20 @@ public class InvoiceController : Controller
                                     InvoiceShipCountry = invoiceShipCountry
                                 };
                                 invoiceRepository.Update(invoiceModel);
-                                code = ((int)ReturnCodeEnum.UPDATE_SUCCESS).ToString();
+                                code = ((int) ReturnCodeEnum.UPDATE_SUCCESS).ToString();
                                 status = true;
                             }
                         }
                         catch (Exception ex)
                         {
-                            code = sharedUtil.GetRoleId() == (int)AccessEnum.ADMINISTRATOR_ACCESS
+                            code = sharedUtil.GetRoleId() == (int) AccessEnum.ADMINISTRATOR_ACCESS
                                 ? ex.Message
-                                : ((int)ReturnCodeEnum.SYSTEM_ERROR).ToString();
+                                : ((int) ReturnCodeEnum.SYSTEM_ERROR).ToString();
                         }
                     }
                     else
                     {
-                        code = ((int)ReturnCodeEnum.ACCESS_DENIED).ToString();
+                        code = ((int) ReturnCodeEnum.ACCESS_DENIED).ToString();
                     }
                 }
 
@@ -410,7 +417,7 @@ public class InvoiceController : Controller
             case "delete":
                 if (!checkAccessUtil.GetPermission(leafCheckKey, AuthenticationEnum.DELETE_ACCESS))
                 {
-                    code = ((int)ReturnCodeEnum.ACCESS_DENIED).ToString();
+                    code = ((int) ReturnCodeEnum.ACCESS_DENIED).ToString();
                 }
                 else
                 {
@@ -423,10 +430,11 @@ public class InvoiceController : Controller
                             {
                                 if (!int.TryParse(Request.Form["invoiceKey"], out invoiceKey))
                                 {
-                                    code = ((int)ReturnCodeEnum.ACCESS_DENIED_NO_MODE).ToString();
-                                    return Ok(new { status, code });
+                                    code = ((int) ReturnCodeEnum.ACCESS_DENIED_NO_MODE).ToString();
+                                    return Ok(new {status, code});
                                 }
                             }
+
                             if (invoiceKey > 0)
                             {
                                 InvoiceModel invoiceModel = new()
@@ -434,34 +442,34 @@ public class InvoiceController : Controller
                                     InvoiceKey = invoiceKey
                                 };
                                 invoiceRepository.Delete(invoiceModel);
-                                code = ((int)ReturnCodeEnum.DELETE_SUCCESS).ToString();
+                                code = ((int) ReturnCodeEnum.DELETE_SUCCESS).ToString();
                                 status = true;
                             }
                             else
                             {
-                                code = ((int)ReturnCodeEnum.ACCESS_DENIED).ToString();
+                                code = ((int) ReturnCodeEnum.ACCESS_DENIED).ToString();
                             }
                         }
                         catch (Exception ex)
                         {
-                            code = sharedUtil.GetRoleId() == (int)AccessEnum.ADMINISTRATOR_ACCESS
+                            code = sharedUtil.GetRoleId() == (int) AccessEnum.ADMINISTRATOR_ACCESS
                                 ? ex.Message
-                                : ((int)ReturnCodeEnum.SYSTEM_ERROR).ToString();
+                                : ((int) ReturnCodeEnum.SYSTEM_ERROR).ToString();
                         }
                     }
                     else
                     {
-                        code = ((int)ReturnCodeEnum.ACCESS_DENIED).ToString();
+                        code = ((int) ReturnCodeEnum.ACCESS_DENIED).ToString();
                     }
-
                 }
+
                 break;
             default:
-                code = ((int)ReturnCodeEnum.ACCESS_DENIED_NO_MODE).ToString();
+                code = ((int) ReturnCodeEnum.ACCESS_DENIED_NO_MODE).ToString();
                 break;
         }
 
-        
-        return Ok(new { status, code });
+
+        return Ok(new {status, code});
     }
 }

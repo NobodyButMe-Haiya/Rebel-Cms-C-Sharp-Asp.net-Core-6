@@ -103,7 +103,7 @@ public class ProductRepository
 
             mySqlCommand.ExecuteNonQuery();
             mySqlTransaction.Commit();
-            lastInsertKey = (int)mySqlCommand.LastInsertedId;
+            lastInsertKey = (int) mySqlCommand.LastInsertedId;
             mySqlCommand.Dispose();
         }
         catch (MySqlException ex)
@@ -397,12 +397,13 @@ public class ProductRepository
 
         return productModel;
     }
+
     public int GetDefault()
     {
-        int productId = 0;
         var sql = string.Empty;
         List<ParameterModel> parameterModels = new();
         using var connection = SharedUtil.GetConnection();
+        int productId;
         try
         {
             connection.Open();
@@ -429,7 +430,7 @@ public class ProductRepository
             }
 
             _sharedUtil.SetSqlSession(sql, parameterModels);
-            productId = (int)(long)mySqlCommand.ExecuteScalar();
+            productId = (int) (long) mySqlCommand.ExecuteScalar();
 
             mySqlCommand.Dispose();
         }
@@ -442,6 +443,7 @@ public class ProductRepository
 
         return productId;
     }
+
     public byte[] GetExcel()
     {
         using var workbook = new XLWorkbook();

@@ -58,7 +58,7 @@ public class ShipperRepository
 
             mySqlCommand.ExecuteNonQuery();
             mySqlTransaction.Commit();
-            lastInsertKey = (int)mySqlCommand.LastInsertedId;
+            lastInsertKey = (int) mySqlCommand.LastInsertedId;
             mySqlCommand.Dispose();
         }
         catch (MySqlException ex)
@@ -88,13 +88,13 @@ public class ShipperRepository
                 ORDER BY    shipperId DESC ";
             MySqlCommand mySqlCommand = new(sql, connection);
             parameterModels = new List<ParameterModel>
+            {
+                new()
                 {
-                  new ()
-                    {
-                        Key = "@tenantId",
-                        Value = _sharedUtil.GetTenantId()
-                   }
-                };
+                    Key = "@tenantId",
+                    Value = _sharedUtil.GetTenantId()
+                }
+            };
             foreach (var parameter in parameterModels)
             {
                 mySqlCommand.Parameters.AddWithValue(parameter.Key, parameter.Value);
@@ -241,12 +241,13 @@ public class ShipperRepository
 
         return shipperModel;
     }
+
     public int GetDefault()
     {
-        int shipperId = 0;
         var sql = string.Empty;
         List<ParameterModel> parameterModels = new();
         using var connection = SharedUtil.GetConnection();
+        int shipperId;
         try
         {
             connection.Open();
@@ -272,7 +273,7 @@ public class ShipperRepository
             }
 
             _sharedUtil.SetSqlSession(sql, parameterModels);
-            shipperId = (int)(long)mySqlCommand.ExecuteScalar();
+            shipperId = (int) (long) mySqlCommand.ExecuteScalar();
 
             mySqlCommand.Dispose();
         }
@@ -285,6 +286,7 @@ public class ShipperRepository
 
         return shipperId;
     }
+
     public byte[] GetExcel()
     {
         using var workbook = new XLWorkbook();

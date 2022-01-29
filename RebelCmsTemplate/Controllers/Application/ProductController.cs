@@ -4,18 +4,22 @@ using RebelCmsTemplate.Models.Application;
 using RebelCmsTemplate.Repository.Application;
 using RebelCmsTemplate.Repository.Setting;
 using RebelCmsTemplate.Util;
+
 namespace RebelCmsTemplate.Controllers.Application;
+
 [Route("api/application/[controller]")]
 [ApiController]
 public class ProductController : Controller
 {
     private readonly IHttpContextAccessor _httpContextAccessor;
     private readonly RenderViewToStringUtil _renderViewToStringUtil;
+
     public ProductController(RenderViewToStringUtil renderViewToStringUtil, IHttpContextAccessor httpContextAccessor)
     {
         _renderViewToStringUtil = renderViewToStringUtil;
         _httpContextAccessor = httpContextAccessor;
     }
+
     [HttpGet]
     public async Task<IActionResult> Get()
     {
@@ -26,10 +30,12 @@ public class ProductController : Controller
             var page = await _renderViewToStringUtil.RenderViewToStringAsync(ControllerContext, templatePath);
             return Ok(page);
         }
+
         ProductRepository productRepository = new(_httpContextAccessor);
         var content = productRepository.GetExcel();
         return File(content, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "product26.xlsx");
     }
+
     [HttpPost]
     public ActionResult Post()
     {
@@ -44,35 +50,48 @@ public class ProductController : Controller
 
         SharedUtil sharedUtil = new(_httpContextAccessor);
         CheckAccessUtil checkAccessUtil = new(_httpContextAccessor);
-
-        List<ProductModel> data = new();
-        ProductModel dataSingle = new();
+        
         string? code;
-        var lastInsertKey = 0;
+
         switch (mode)
         {
             case "create":
                 if (!checkAccessUtil.GetPermission(leafCheckKey, AuthenticationEnum.CREATE_ACCESS))
                 {
-                    code = ((int)ReturnCodeEnum.ACCESS_DENIED).ToString();
+                    code = ((int) ReturnCodeEnum.ACCESS_DENIED).ToString();
                 }
                 else
                 {
                     try
                     {
-
-                        var supplierKey = !string.IsNullOrEmpty(Request.Form["supplierKey"]) ? Convert.ToInt32(Request.Form["supplierKey"]) : supplierRepository.GetDefault();
-                        var productCategoryKey = !string.IsNullOrEmpty(Request.Form["productCategoryKey"]) ? Convert.ToInt32(Request.Form["productCategoryKey"]) : productCategoryRepository.GetDefault();
-                        var productTypeKey = !string.IsNullOrEmpty(Request.Form["productTypeKey"]) ? Convert.ToInt32(Request.Form["productTypeKey"]) : productTypeRepository.GetDefault();
+                        var supplierKey = !string.IsNullOrEmpty(Request.Form["supplierKey"])
+                            ? Convert.ToInt32(Request.Form["supplierKey"])
+                            : supplierRepository.GetDefault();
+                        var productCategoryKey = !string.IsNullOrEmpty(Request.Form["productCategoryKey"])
+                            ? Convert.ToInt32(Request.Form["productCategoryKey"])
+                            : productCategoryRepository.GetDefault();
+                        var productTypeKey = !string.IsNullOrEmpty(Request.Form["productTypeKey"])
+                            ? Convert.ToInt32(Request.Form["productTypeKey"])
+                            : productTypeRepository.GetDefault();
 
                         var productName = Request.Form["productName"];
                         var productDescription = Request.Form["productDescription"];
                         var productQuantityPerUnit = Request.Form["productQuantityPerUnit"];
-                        var productCostPrice = !string.IsNullOrEmpty(Request.Form["productCostPrice"]) ? Convert.ToDouble(Request.Form["productCostPrice"]) : 0;
-                        var productSellingPrice = !string.IsNullOrEmpty(Request.Form["productSellingPrice"]) ? Convert.ToDouble(Request.Form["productSellingPrice"]) : 0;
-                        var productUnitsInStock = !string.IsNullOrEmpty(Request.Form["productUnitsInStock"]) ? Convert.ToDouble(Request.Form["productUnitsInStock"]) : 0;
-                        var productUnitsOnOrder = !string.IsNullOrEmpty(Request.Form["productUnitsOnOrder"]) ? Convert.ToDouble(Request.Form["productUnitsOnOrder"]) : 0;
-                        var productReOrderLevel = !string.IsNullOrEmpty(Request.Form["productReOrderLevel"]) ? Convert.ToDouble(Request.Form["productReOrderLevel"]) : 0;
+                        var productCostPrice = !string.IsNullOrEmpty(Request.Form["productCostPrice"])
+                            ? Convert.ToDouble(Request.Form["productCostPrice"])
+                            : 0;
+                        var productSellingPrice = !string.IsNullOrEmpty(Request.Form["productSellingPrice"])
+                            ? Convert.ToDouble(Request.Form["productSellingPrice"])
+                            : 0;
+                        var productUnitsInStock = !string.IsNullOrEmpty(Request.Form["productUnitsInStock"])
+                            ? Convert.ToDouble(Request.Form["productUnitsInStock"])
+                            : 0;
+                        var productUnitsOnOrder = !string.IsNullOrEmpty(Request.Form["productUnitsOnOrder"])
+                            ? Convert.ToDouble(Request.Form["productUnitsOnOrder"])
+                            : 0;
+                        var productReOrderLevel = !string.IsNullOrEmpty(Request.Form["productReOrderLevel"])
+                            ? Convert.ToDouble(Request.Form["productReOrderLevel"])
+                            : 0;
 
                         ProductModel productModel = new()
                         {
@@ -88,62 +107,71 @@ public class ProductController : Controller
                             ProductUnitsOnOrder = productUnitsOnOrder,
                             ProductReOrderLevel = productReOrderLevel,
                         };
-                        lastInsertKey = productRepository.Create(productModel);
-                        code = ((int)ReturnCodeEnum.CREATE_SUCCESS).ToString();
+                        var lastInsertKey = productRepository.Create(productModel);
+                        code = ((int) ReturnCodeEnum.CREATE_SUCCESS).ToString();
                         status = true;
-                        return Ok(new { status, code, lastInsertKey });
+                        return Ok(new {status, code, lastInsertKey});
                     }
                     catch (Exception ex)
                     {
-                        code = sharedUtil.GetRoleId() == (int)AccessEnum.ADMINISTRATOR_ACCESS ? ex.Message : ((int)ReturnCodeEnum.SYSTEM_ERROR).ToString();
+                        code = sharedUtil.GetRoleId() == (int) AccessEnum.ADMINISTRATOR_ACCESS
+                            ? ex.Message
+                            : ((int) ReturnCodeEnum.SYSTEM_ERROR).ToString();
                     }
                 }
+
                 break;
             case "read":
                 if (!checkAccessUtil.GetPermission(leafCheckKey, AuthenticationEnum.READ_ACCESS))
                 {
-                    code = ((int)ReturnCodeEnum.ACCESS_DENIED).ToString();
+                    code = ((int) ReturnCodeEnum.ACCESS_DENIED).ToString();
                 }
                 else
                 {
                     try
                     {
-                        data = productRepository.Read();
-                        code = ((int)ReturnCodeEnum.CREATE_SUCCESS).ToString();
+                        var data = productRepository.Read();
+                        code = ((int) ReturnCodeEnum.CREATE_SUCCESS).ToString();
                         status = true;
-                        return Ok(new { status, code, data });
+                        return Ok(new {status, code, data});
                     }
                     catch (Exception ex)
                     {
-                        code = sharedUtil.GetRoleId() == (int)AccessEnum.ADMINISTRATOR_ACCESS ? ex.Message : ((int)ReturnCodeEnum.SYSTEM_ERROR).ToString();
+                        code = sharedUtil.GetRoleId() == (int) AccessEnum.ADMINISTRATOR_ACCESS
+                            ? ex.Message
+                            : ((int) ReturnCodeEnum.SYSTEM_ERROR).ToString();
                     }
                 }
+
                 break;
             case "search":
                 if (!checkAccessUtil.GetPermission(leafCheckKey, AuthenticationEnum.READ_ACCESS))
                 {
-                    code = ((int)ReturnCodeEnum.ACCESS_DENIED).ToString();
+                    code = ((int) ReturnCodeEnum.ACCESS_DENIED).ToString();
                 }
                 else
                 {
                     try
                     {
                         var search = Request.Form["search"];
-                        data = productRepository.Search(search);
-                        code = ((int)ReturnCodeEnum.READ_SUCCESS).ToString();
+                        var data = productRepository.Search(search);
+                        code = ((int) ReturnCodeEnum.READ_SUCCESS).ToString();
                         status = true;
-                        return Ok(new { status, code, data });
+                        return Ok(new {status, code, data});
                     }
                     catch (Exception ex)
                     {
-                        code = sharedUtil.GetRoleId() == (int)AccessEnum.ADMINISTRATOR_ACCESS ? ex.Message : ((int)ReturnCodeEnum.SYSTEM_ERROR).ToString();
+                        code = sharedUtil.GetRoleId() == (int) AccessEnum.ADMINISTRATOR_ACCESS
+                            ? ex.Message
+                            : ((int) ReturnCodeEnum.SYSTEM_ERROR).ToString();
                     }
                 }
+
                 break;
             case "single":
                 if (!checkAccessUtil.GetPermission(leafCheckKey, AuthenticationEnum.READ_ACCESS))
                 {
-                    code = ((int)ReturnCodeEnum.ACCESS_DENIED).ToString();
+                    code = ((int) ReturnCodeEnum.ACCESS_DENIED).ToString();
                 }
                 else
                 {
@@ -151,63 +179,83 @@ public class ProductController : Controller
                     {
                         try
                         {
-                            int productKey = 0;
-                            if (!int.TryParse(Request.Form["productKey"], out productKey))
+                            if (!int.TryParse(Request.Form["productKey"], out var productKey))
                             {
-                                code = ((int)ReturnCodeEnum.ACCESS_DENIED_NO_MODE).ToString();
-                                return Ok(new { status, code });
+                                code = ((int) ReturnCodeEnum.ACCESS_DENIED_NO_MODE).ToString();
+                                return Ok(new {status, code});
                             }
+
                             if (productKey > 0)
                             {
                                 ProductModel productModel = new()
                                 {
                                     ProductKey = productKey
                                 };
-                                dataSingle = productRepository.GetSingle(productModel);
-                                code = ((int)ReturnCodeEnum.READ_SUCCESS).ToString();
+                                var dataSingle = productRepository.GetSingle(productModel);
+                                code = ((int) ReturnCodeEnum.READ_SUCCESS).ToString();
                                 status = true;
-                                return Ok(new { status, code, dataSingle });
+                                return Ok(new {status, code, dataSingle});
                             }
                             else
                             {
-                                code = ((int)ReturnCodeEnum.ACCESS_DENIED).ToString();
+                                code = ((int) ReturnCodeEnum.ACCESS_DENIED).ToString();
                             }
                         }
                         catch (Exception ex)
                         {
-                            code = sharedUtil.GetRoleId() == (int)AccessEnum.ADMINISTRATOR_ACCESS ? ex.Message : ((int)ReturnCodeEnum.SYSTEM_ERROR).ToString();
+                            code = sharedUtil.GetRoleId() == (int) AccessEnum.ADMINISTRATOR_ACCESS
+                                ? ex.Message
+                                : ((int) ReturnCodeEnum.SYSTEM_ERROR).ToString();
                         }
                     }
                     else
                     {
-                        code = ((int)ReturnCodeEnum.ACCESS_DENIED).ToString();
+                        code = ((int) ReturnCodeEnum.ACCESS_DENIED).ToString();
                     }
                 }
+
                 break;
             case "update":
                 if (!checkAccessUtil.GetPermission(leafCheckKey, AuthenticationEnum.UPDATE_ACCESS))
                 {
-                    code = ((int)ReturnCodeEnum.ACCESS_DENIED).ToString();
+                    code = ((int) ReturnCodeEnum.ACCESS_DENIED).ToString();
                 }
                 else
                 {
                     try
                     {
-
-                        var productKey = !string.IsNullOrEmpty(Request.Form["productKey"]) ? Convert.ToInt32(Request.Form["productKey"]) : 0;
-                        var supplierKey = !string.IsNullOrEmpty(Request.Form["supplierKey"]) ? Convert.ToInt32(Request.Form["supplierKey"]) : supplierRepository.GetDefault();
-                        var productCategoryKey = !string.IsNullOrEmpty(Request.Form["productCategoryKey"]) ? Convert.ToInt32(Request.Form["productCategoryKey"]) : productCategoryRepository.GetDefault();
-                        var productTypeKey = !string.IsNullOrEmpty(Request.Form["productTypeKey"]) ? Convert.ToInt32(Request.Form["productTypeKey"]) : productTypeRepository.GetDefault();
+                        var productKey = !string.IsNullOrEmpty(Request.Form["productKey"])
+                            ? Convert.ToInt32(Request.Form["productKey"])
+                            : 0;
+                        var supplierKey = !string.IsNullOrEmpty(Request.Form["supplierKey"])
+                            ? Convert.ToInt32(Request.Form["supplierKey"])
+                            : supplierRepository.GetDefault();
+                        var productCategoryKey = !string.IsNullOrEmpty(Request.Form["productCategoryKey"])
+                            ? Convert.ToInt32(Request.Form["productCategoryKey"])
+                            : productCategoryRepository.GetDefault();
+                        var productTypeKey = !string.IsNullOrEmpty(Request.Form["productTypeKey"])
+                            ? Convert.ToInt32(Request.Form["productTypeKey"])
+                            : productTypeRepository.GetDefault();
 
                         var productName = Request.Form["productName"];
                         var productDescription = Request.Form["productDescription"];
                         var productQuantityPerUnit = Request.Form["productQuantityPerUnit"];
 
-                        var productCostPrice = !string.IsNullOrEmpty(Request.Form["productCostPrice"]) ? Convert.ToDouble(Request.Form["productCostPrice"]) : 0;
-                        var productSellingPrice = !string.IsNullOrEmpty(Request.Form["productSellingPrice"]) ? Convert.ToDouble(Request.Form["productSellingPrice"]) : 0;
-                        var productUnitsInStock = !string.IsNullOrEmpty(Request.Form["productUnitsInStock"]) ? Convert.ToDouble(Request.Form["productUnitsInStock"]) : 0;
-                        var productUnitsOnOrder = !string.IsNullOrEmpty(Request.Form["productUnitsOnOrder"]) ? Convert.ToDouble(Request.Form["productUnitsOnOrder"]) : 0;
-                        var productReOrderLevel = !string.IsNullOrEmpty(Request.Form["productReOrderLevel"]) ? Convert.ToDouble(Request.Form["productReOrderLevel"]) : 0;
+                        var productCostPrice = !string.IsNullOrEmpty(Request.Form["productCostPrice"])
+                            ? Convert.ToDouble(Request.Form["productCostPrice"])
+                            : 0;
+                        var productSellingPrice = !string.IsNullOrEmpty(Request.Form["productSellingPrice"])
+                            ? Convert.ToDouble(Request.Form["productSellingPrice"])
+                            : 0;
+                        var productUnitsInStock = !string.IsNullOrEmpty(Request.Form["productUnitsInStock"])
+                            ? Convert.ToDouble(Request.Form["productUnitsInStock"])
+                            : 0;
+                        var productUnitsOnOrder = !string.IsNullOrEmpty(Request.Form["productUnitsOnOrder"])
+                            ? Convert.ToDouble(Request.Form["productUnitsOnOrder"])
+                            : 0;
+                        var productReOrderLevel = !string.IsNullOrEmpty(Request.Form["productReOrderLevel"])
+                            ? Convert.ToDouble(Request.Form["productReOrderLevel"])
+                            : 0;
 
                         ProductModel productModel = new()
                         {
@@ -225,45 +273,53 @@ public class ProductController : Controller
                             ProductReOrderLevel = productReOrderLevel,
                         };
                         productRepository.Update(productModel);
-                        code = ((int)ReturnCodeEnum.UPDATE_SUCCESS).ToString();
+                        code = ((int) ReturnCodeEnum.UPDATE_SUCCESS).ToString();
                         status = true;
                     }
                     catch (Exception ex)
                     {
-                        code = sharedUtil.GetRoleId() == (int)AccessEnum.ADMINISTRATOR_ACCESS ? ex.Message : ((int)ReturnCodeEnum.SYSTEM_ERROR).ToString();
+                        code = sharedUtil.GetRoleId() == (int) AccessEnum.ADMINISTRATOR_ACCESS
+                            ? ex.Message
+                            : ((int) ReturnCodeEnum.SYSTEM_ERROR).ToString();
                     }
                 }
+
                 break;
             case "delete":
                 if (!checkAccessUtil.GetPermission(leafCheckKey, AuthenticationEnum.DELETE_ACCESS))
                 {
-                    code = ((int)ReturnCodeEnum.ACCESS_DENIED).ToString();
+                    code = ((int) ReturnCodeEnum.ACCESS_DENIED).ToString();
                 }
                 else
                 {
                     try
                     {
-                        var productKey = !string.IsNullOrEmpty(Request.Form["productKey"]) ? Convert.ToInt32(Request.Form["productKey"]) : 0;
+                        var productKey = !string.IsNullOrEmpty(Request.Form["productKey"])
+                            ? Convert.ToInt32(Request.Form["productKey"])
+                            : 0;
 
                         ProductModel productModel = new()
                         {
                             ProductKey = productKey
                         };
                         productRepository.Delete(productModel);
-                        code = ((int)ReturnCodeEnum.DELETE_SUCCESS).ToString();
+                        code = ((int) ReturnCodeEnum.DELETE_SUCCESS).ToString();
                         status = true;
                     }
                     catch (Exception ex)
                     {
-                        code = sharedUtil.GetRoleId() == (int)AccessEnum.ADMINISTRATOR_ACCESS ? ex.Message : ((int)ReturnCodeEnum.SYSTEM_ERROR).ToString();
+                        code = sharedUtil.GetRoleId() == (int) AccessEnum.ADMINISTRATOR_ACCESS
+                            ? ex.Message
+                            : ((int) ReturnCodeEnum.SYSTEM_ERROR).ToString();
                     }
                 }
+
                 break;
             default:
-                code = ((int)ReturnCodeEnum.ACCESS_DENIED_NO_MODE).ToString();
+                code = ((int) ReturnCodeEnum.ACCESS_DENIED_NO_MODE).ToString();
                 break;
         }
-        return Ok(new { status, code });
-    }
 
+        return Ok(new {status, code});
+    }
 }

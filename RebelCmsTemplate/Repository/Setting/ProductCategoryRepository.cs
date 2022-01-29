@@ -32,12 +32,10 @@ public class ProductCategoryRepository
             sql += @"
             INSERT INTO product_category  (
                 productCategoryId,      tenantId,
-                productCategoryName,   isDelete,
-                executeBy
+                productCategoryName,   isDelete
             ) VALUES (
                 null,                   @tenantId,
-                @productCategoryName,   0,
-                @executeBy
+                @productCategoryName,   0
             );";
             MySqlCommand mySqlCommand = new(sql, connection);
 
@@ -52,11 +50,6 @@ public class ProductCategoryRepository
                 {
                     Key = "@productCategoryName",
                     Value = productCategoryModel.ProductCategoryName
-                },
-                new()
-                {
-                    Key = "@executeBy",
-                    Value = _sharedUtil.GetUserName()
                 }
             };
             foreach (var parameter in parameterModels)
@@ -200,13 +193,14 @@ public class ProductCategoryRepository
 
         return productCategoryModels;
     }
+
     public int GetDefault()
     {
-        var productCategoryId = 0;
         var sql = string.Empty;
         List<ParameterModel> parameterModels = new();
 
         using var connection = SharedUtil.GetConnection();
+        int productCategoryId;
         try
         {
             connection.Open();
@@ -233,7 +227,7 @@ public class ProductCategoryRepository
 
             _sharedUtil.SetSqlSession(sql, parameterModels);
 
-            productCategoryId = (int)(long)mySqlCommand.ExecuteScalar();
+            productCategoryId = (int) (long) mySqlCommand.ExecuteScalar();
 
             mySqlCommand.Dispose();
         }
@@ -247,6 +241,7 @@ public class ProductCategoryRepository
 
         return productCategoryId;
     }
+
     public byte[] GetExcel()
     {
         using var workbook = new XLWorkbook();
@@ -307,8 +302,7 @@ public class ProductCategoryRepository
 
             sql += @"
             UPDATE  product_category
-            SET     productCategoryName =   @productCategoryName,
-                    executeBy           =   @executeBy
+            SET     productCategoryName =   @productCategoryName
             WHERE   productCategoryId   =   @productCategoryId ";
             MySqlCommand mySqlCommand = new(sql, connection);
 
@@ -318,11 +312,6 @@ public class ProductCategoryRepository
                 {
                     Key = "@productCategoryName",
                     Value = productCategoryModel.ProductCategoryName
-                },
-                new()
-                {
-                    Key = "@executeBy",
-                    Value = _sharedUtil.GetUserName()
                 },
                 new()
                 {

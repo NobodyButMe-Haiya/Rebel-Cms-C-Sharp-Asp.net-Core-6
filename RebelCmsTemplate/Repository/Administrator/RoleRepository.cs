@@ -59,7 +59,7 @@ public class RoleRepository
             mySqlCommand.ExecuteNonQuery();
 
 
-            lastInsertKey = (int)mySqlCommand.LastInsertedId;
+            lastInsertKey = (int) mySqlCommand.LastInsertedId;
 
             mySqlCommand.Dispose();
             SetLeafAccess(connection, lastInsertKey);

@@ -1,10 +1,10 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using RebelCmsTemplate.Enum;
 using RebelCmsTemplate.Models.Administrator;
 using RebelCmsTemplate.Repository.Administrator;
 using RebelCmsTemplate.Util;
-using RebelCmsTemplate.Enum;
 
-namespace RebelCmsTemplate.Controllers.Api.Administrator;
+namespace RebelCmsTemplate.Controllers.Administrator;
 
 [Route("api/administrator/[controller]")]
 [ApiController]
@@ -55,26 +55,21 @@ public class UserController : Controller
             var test = int.TryParse(Request.Form["roleKey"], out roleKey);
             if (!test)
             {
-                code = ((int)ReturnCodeEnum.ACCESS_DENIED_NO_MODE).ToString();
-                return Ok(new { status, code });
+                code = ((int) ReturnCodeEnum.ACCESS_DENIED_NO_MODE).ToString();
+                return Ok(new {status, code});
             }
         }
-
-
 
         UserRepository userRepository = new(_httpContextAccessor);
         SharedUtil sharedUtil = new(_httpContextAccessor);
         CheckAccessUtil checkAccessUtil = new(_httpContextAccessor);
-
-        List<UserModel> data = new();
-        var lastInsertKey = 0;
 
         switch (mode)
         {
             case "create":
                 if (!checkAccessUtil.GetPermission(leafCheckKey, AuthenticationEnum.CREATE_ACCESS))
                 {
-                    code = ((int)ReturnCodeEnum.ACCESS_DENIED).ToString();
+                    code = ((int) ReturnCodeEnum.ACCESS_DENIED).ToString();
                 }
                 else
                 {
@@ -86,7 +81,7 @@ public class UserController : Controller
                         var userPhone = Request.Form["userPhone"].ToString();
                         var userAddress = Request.Form["userAddress"].ToString();
 
-                        lastInsertKey = userRepository.Create(new UserModel
+                        var lastInsertKey = userRepository.Create(new UserModel
                         {
                             RoleKey = roleKey,
                             UserName = userName,
@@ -95,14 +90,15 @@ public class UserController : Controller
                             UserPhone = userPhone,
                             UserAddress = userAddress
                         });
-                        code = ((int)ReturnCodeEnum.CREATE_SUCCESS).ToString();
+                        code = ((int) ReturnCodeEnum.CREATE_SUCCESS).ToString();
                         status = true;
+                        return Ok(new {code, status, lastInsertKey});
                     }
                     catch (Exception ex)
                     {
-                        code = sharedUtil.GetRoleId() == (int)AccessEnum.ADMINISTRATOR_ACCESS
+                        code = sharedUtil.GetRoleId() == (int) AccessEnum.ADMINISTRATOR_ACCESS
                             ? ex.Message
-                            : ((int)ReturnCodeEnum.SYSTEM_ERROR).ToString();
+                            : ((int) ReturnCodeEnum.SYSTEM_ERROR).ToString();
                     }
                 }
 
@@ -110,21 +106,22 @@ public class UserController : Controller
             case "read":
                 if (!checkAccessUtil.GetPermission(leafCheckKey, AuthenticationEnum.READ_ACCESS))
                 {
-                    code = ((int)ReturnCodeEnum.ACCESS_DENIED).ToString();
+                    code = ((int) ReturnCodeEnum.ACCESS_DENIED).ToString();
                 }
                 else
                 {
                     try
                     {
-                        data = userRepository.Read();
-                        code = ((int)ReturnCodeEnum.CREATE_SUCCESS).ToString();
+                        var data = userRepository.Read();
+                        code = ((int) ReturnCodeEnum.CREATE_SUCCESS).ToString();
                         status = true;
+                        return Ok(new {status, code, data});
                     }
                     catch (Exception ex)
                     {
-                        code = sharedUtil.GetRoleId() == (int)AccessEnum.ADMINISTRATOR_ACCESS
+                        code = sharedUtil.GetRoleId() == (int) AccessEnum.ADMINISTRATOR_ACCESS
                             ? ex.Message
-                            : ((int)ReturnCodeEnum.SYSTEM_ERROR).ToString();
+                            : ((int) ReturnCodeEnum.SYSTEM_ERROR).ToString();
                     }
                 }
 
@@ -132,7 +129,7 @@ public class UserController : Controller
             case "search":
                 if (!checkAccessUtil.GetPermission(leafCheckKey, AuthenticationEnum.READ_ACCESS))
                 {
-                    code = ((int)ReturnCodeEnum.ACCESS_DENIED).ToString();
+                    code = ((int) ReturnCodeEnum.ACCESS_DENIED).ToString();
                 }
                 else
                 {
@@ -141,20 +138,21 @@ public class UserController : Controller
                         try
                         {
                             var search = Request.Form["search"];
-                            data = userRepository.Search(search);
-                            code = ((int)ReturnCodeEnum.READ_SUCCESS).ToString();
+                            var data = userRepository.Search(search);
+                            code = ((int) ReturnCodeEnum.READ_SUCCESS).ToString();
                             status = true;
+                            return Ok(new {status, code, data});
                         }
                         catch (Exception ex)
                         {
-                            code = sharedUtil.GetRoleId() == (int)AccessEnum.ADMINISTRATOR_ACCESS
+                            code = sharedUtil.GetRoleId() == (int) AccessEnum.ADMINISTRATOR_ACCESS
                                 ? ex.Message
-                                : ((int)ReturnCodeEnum.SYSTEM_ERROR).ToString();
+                                : ((int) ReturnCodeEnum.SYSTEM_ERROR).ToString();
                         }
                     }
                     else
                     {
-                        code = ((int)ReturnCodeEnum.ACCESS_DENIED).ToString();
+                        code = ((int) ReturnCodeEnum.ACCESS_DENIED).ToString();
                     }
                 }
 
@@ -162,7 +160,7 @@ public class UserController : Controller
             case "update":
                 if (!checkAccessUtil.GetPermission(leafCheckKey, AuthenticationEnum.UPDATE_ACCESS))
                 {
-                    code = ((int)ReturnCodeEnum.ACCESS_DENIED).ToString();
+                    code = ((int) ReturnCodeEnum.ACCESS_DENIED).ToString();
                 }
                 else
                 {
@@ -184,14 +182,14 @@ public class UserController : Controller
                             UserAddress = userAddress,
                             UserKey = userKey
                         });
-                        code = ((int)ReturnCodeEnum.UPDATE_SUCCESS).ToString();
+                        code = ((int) ReturnCodeEnum.UPDATE_SUCCESS).ToString();
                         status = true;
                     }
                     catch (Exception ex)
                     {
-                        code = sharedUtil.GetRoleId() == (int)AccessEnum.ADMINISTRATOR_ACCESS
+                        code = sharedUtil.GetRoleId() == (int) AccessEnum.ADMINISTRATOR_ACCESS
                             ? ex.Message
-                            : ((int)ReturnCodeEnum.SYSTEM_ERROR).ToString();
+                            : ((int) ReturnCodeEnum.SYSTEM_ERROR).ToString();
                     }
                 }
 
@@ -199,7 +197,7 @@ public class UserController : Controller
             case "delete":
                 if (!checkAccessUtil.GetPermission(leafCheckKey, AuthenticationEnum.DELETE_ACCESS))
                 {
-                    code = ((int)ReturnCodeEnum.ACCESS_DENIED).ToString();
+                    code = ((int) ReturnCodeEnum.ACCESS_DENIED).ToString();
                 }
                 else
                 {
@@ -210,14 +208,14 @@ public class UserController : Controller
                             UserKey = userKey
                         });
 
-                        code = ((int)ReturnCodeEnum.DELETE_SUCCESS).ToString();
+                        code = ((int) ReturnCodeEnum.DELETE_SUCCESS).ToString();
                         status = true;
                     }
                     catch (Exception ex)
                     {
-                        code = sharedUtil.GetRoleId() == (int)AccessEnum.ADMINISTRATOR_ACCESS
+                        code = sharedUtil.GetRoleId() == (int) AccessEnum.ADMINISTRATOR_ACCESS
                             ? ex.Message
-                            : ((int)ReturnCodeEnum.SYSTEM_ERROR).ToString();
+                            : ((int) ReturnCodeEnum.SYSTEM_ERROR).ToString();
                     }
                 }
 
@@ -227,11 +225,6 @@ public class UserController : Controller
                 break;
         }
 
-        if (data.Count > 0)
-        {
-            return Ok(new { status, code, data });
-        }
-
-        return lastInsertKey > 0 ? Ok(new { status, code, lastInsertKey }) : Ok(new { status, code });
+        return Ok(new {status, code});
     }
 }

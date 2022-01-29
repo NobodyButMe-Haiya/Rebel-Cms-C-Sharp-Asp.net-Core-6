@@ -7,14 +7,18 @@ using MySql.Data.MySqlClient;
 using RebelCmsTemplate.Models.Application;
 using RebelCmsTemplate.Models.Shared;
 using RebelCmsTemplate.Util;
+
 namespace RebelCmsTemplate.Repository.Application;
+
 public class SupplierRepository
 {
     private readonly SharedUtil _sharedUtil;
+
     public SupplierRepository(IHttpContextAccessor httpContextAccessor)
     {
         _sharedUtil = new SharedUtil(httpContextAccessor);
     }
+
     public int Create(SupplierModel supplierModel)
     {
         int lastInsertKey;
@@ -25,84 +29,85 @@ public class SupplierRepository
         {
             connection.Open();
             MySqlTransaction mySqlTransaction = connection.BeginTransaction();
-            sql += @"INSERT INTO supplier (supplierId,tenantId,supplierName,supplierContactName,supplierContactTitle,supplierAddress,supplierCity,supplierRegion,supplierPostalCode,supplierCountry,supplierPhone,supplierFax,supplierHomePage,isDelete) VALUES (null,@tenantId,@supplierName,@supplierContactName,@supplierContactTitle,@supplierAddress,@supplierCity,@supplierRegion,@supplierPostalCode,@supplierCountry,@supplierPhone,@supplierFax,@supplierHomePage,@isDelete);";
+            sql +=
+                @"INSERT INTO supplier (supplierId,tenantId,supplierName,supplierContactName,supplierContactTitle,supplierAddress,supplierCity,supplierRegion,supplierPostalCode,supplierCountry,supplierPhone,supplierFax,supplierHomePage,isDelete) VALUES (null,@tenantId,@supplierName,@supplierContactName,@supplierContactTitle,@supplierAddress,@supplierCity,@supplierRegion,@supplierPostalCode,@supplierCountry,@supplierPhone,@supplierFax,@supplierHomePage,@isDelete);";
             MySqlCommand mySqlCommand = new(sql, connection);
             parameterModels = new List<ParameterModel>
+            {
+                new()
                 {
-                    new ()
-                    {
-                        Key = "@tenantId",
-                        Value = _sharedUtil.GetTenantId()
-                    },
-                    new ()
-                    {
-                        Key = "@supplierName",
-                        Value = supplierModel.SupplierName
-                    },
-                    new ()
-                    {
-                        Key = "@supplierContactName",
-                        Value = supplierModel.SupplierContactName
-                    },
-                    new ()
-                    {
-                        Key = "@supplierContactTitle",
-                        Value = supplierModel.SupplierContactTitle
-                    },
-                    new ()
-                    {
-                        Key = "@supplierAddress",
-                        Value = supplierModel.SupplierAddress
-                    },
-                    new ()
-                    {
-                        Key = "@supplierCity",
-                        Value = supplierModel.SupplierCity
-                    },
-                    new ()
-                    {
-                        Key = "@supplierRegion",
-                        Value = supplierModel.SupplierRegion
-                    },
-                    new ()
-                    {
-                        Key = "@supplierPostalCode",
-                        Value = supplierModel.SupplierPostalCode
-                    },
-                    new ()
-                    {
-                        Key = "@supplierCountry",
-                        Value = supplierModel.SupplierCountry
-                    },
-                    new ()
-                    {
-                        Key = "@supplierPhone",
-                        Value = supplierModel.SupplierPhone
-                    },
-                    new ()
-                    {
-                        Key = "@supplierFax",
-                        Value = supplierModel.SupplierFax
-                    },
-                    new ()
-                    {
-                        Key = "@supplierHomePage",
-                        Value = supplierModel.SupplierHomePage
-                    },
-                    new ()
-                    {
-                        Key = "@isDelete",
-                        Value = 0
-                    },
-
-                };
+                    Key = "@tenantId",
+                    Value = _sharedUtil.GetTenantId()
+                },
+                new()
+                {
+                    Key = "@supplierName",
+                    Value = supplierModel.SupplierName
+                },
+                new()
+                {
+                    Key = "@supplierContactName",
+                    Value = supplierModel.SupplierContactName
+                },
+                new()
+                {
+                    Key = "@supplierContactTitle",
+                    Value = supplierModel.SupplierContactTitle
+                },
+                new()
+                {
+                    Key = "@supplierAddress",
+                    Value = supplierModel.SupplierAddress
+                },
+                new()
+                {
+                    Key = "@supplierCity",
+                    Value = supplierModel.SupplierCity
+                },
+                new()
+                {
+                    Key = "@supplierRegion",
+                    Value = supplierModel.SupplierRegion
+                },
+                new()
+                {
+                    Key = "@supplierPostalCode",
+                    Value = supplierModel.SupplierPostalCode
+                },
+                new()
+                {
+                    Key = "@supplierCountry",
+                    Value = supplierModel.SupplierCountry
+                },
+                new()
+                {
+                    Key = "@supplierPhone",
+                    Value = supplierModel.SupplierPhone
+                },
+                new()
+                {
+                    Key = "@supplierFax",
+                    Value = supplierModel.SupplierFax
+                },
+                new()
+                {
+                    Key = "@supplierHomePage",
+                    Value = supplierModel.SupplierHomePage
+                },
+                new()
+                {
+                    Key = "@isDelete",
+                    Value = 0
+                },
+            };
             foreach (var parameter in parameterModels)
             {
                 mySqlCommand.Parameters.AddWithValue(parameter.Key, parameter.Value);
             }
+
             mySqlCommand.ExecuteNonQuery();
             mySqlTransaction.Commit();
-            lastInsertKey = (int)mySqlCommand.LastInsertedId;
+            lastInsertKey = (int) mySqlCommand.LastInsertedId;
             mySqlCommand.Dispose();
         }
         catch (MySqlException ex)
@@ -111,8 +116,10 @@ public class SupplierRepository
             _sharedUtil.SetQueryException(SharedUtil.GetSqlSessionValue(sql, parameterModels), ex);
             throw new Exception(ex.Message);
         }
+
         return lastInsertKey;
     }
+
     public List<SupplierModel> Read()
     {
         List<SupplierModel> supplierModels = new();
@@ -130,13 +137,13 @@ public class SupplierRepository
             ORDER BY    supplierId DESC ";
             MySqlCommand mySqlCommand = new(sql, connection);
             parameterModels = new List<ParameterModel>
+            {
+                new()
                 {
-                  new ()
-                    {
-                        Key = "@tenantId",
-                        Value = _sharedUtil.GetTenantId()
-                   }
-                };
+                    Key = "@tenantId",
+                    Value = _sharedUtil.GetTenantId()
+                }
+            };
             foreach (var parameter in parameterModels)
             {
                 mySqlCommand.Parameters.AddWithValue(parameter.Key, parameter.Value);
@@ -164,6 +171,7 @@ public class SupplierRepository
                     });
                 }
             }
+
             mySqlCommand.Dispose();
         }
         catch (MySqlException ex)
@@ -172,8 +180,10 @@ public class SupplierRepository
             _sharedUtil.SetQueryException(SharedUtil.GetSqlSessionValue(sql, parameterModels), ex);
             throw new Exception(ex.Message);
         }
+
         return supplierModels;
     }
+
     public List<SupplierModel> Search(string search)
     {
         List<SupplierModel> supplierModels = new();
@@ -203,22 +213,23 @@ public class SupplierRepository
             )";
             MySqlCommand mySqlCommand = new(sql, connection);
             parameterModels = new List<ParameterModel>
+            {
+                new()
                 {
-                  new ()
-                    {
-                        Key = "@tenantId",
-                        Value = _sharedUtil.GetTenantId()
-                   },
-                    new ()
-                    {
-                        Key = "@search",
-                        Value = search
-                    }
-                };
+                    Key = "@tenantId",
+                    Value = _sharedUtil.GetTenantId()
+                },
+                new()
+                {
+                    Key = "@search",
+                    Value = search
+                }
+            };
             foreach (var parameter in parameterModels)
             {
                 mySqlCommand.Parameters.AddWithValue(parameter.Key, parameter.Value);
             }
+
             _sharedUtil.SetSqlSession(sql, parameterModels);
             using (var reader = mySqlCommand.ExecuteReader())
             {
@@ -240,6 +251,7 @@ public class SupplierRepository
                     });
                 }
             }
+
             mySqlCommand.Dispose();
         }
         catch (MySqlException ex)
@@ -248,8 +260,10 @@ public class SupplierRepository
             _sharedUtil.SetQueryException(SharedUtil.GetSqlSessionValue(sql, parameterModels), ex);
             throw new Exception(ex.Message);
         }
+
         return supplierModels;
     }
+
     public SupplierModel GetSingle(SupplierModel supplierModel)
     {
         var sql = string.Empty;
@@ -267,22 +281,23 @@ public class SupplierRepository
             LIMIT 1";
             MySqlCommand mySqlCommand = new(sql, connection);
             parameterModels = new List<ParameterModel>
+            {
+                new()
                 {
-                  new ()
-                    {
-                        Key = "@tenantId",
-                        Value = _sharedUtil.GetTenantId()
-                   },
-                    new ()
-                    {
-                        Key = "@supplierId",
-                        Value = supplierModel.SupplierKey
-                   }
-                };
+                    Key = "@tenantId",
+                    Value = _sharedUtil.GetTenantId()
+                },
+                new()
+                {
+                    Key = "@supplierId",
+                    Value = supplierModel.SupplierKey
+                }
+            };
             foreach (var parameter in parameterModels)
             {
                 mySqlCommand.Parameters.AddWithValue(parameter.Key, parameter.Value);
             }
+
             _sharedUtil.SetSqlSession(sql, parameterModels);
             using (var reader = mySqlCommand.ExecuteReader())
             {
@@ -305,6 +320,7 @@ public class SupplierRepository
                     };
                 }
             }
+
             mySqlCommand.Dispose();
         }
         catch (MySqlException ex)
@@ -313,14 +329,16 @@ public class SupplierRepository
             _sharedUtil.SetQueryException(SharedUtil.GetSqlSessionValue(sql, parameterModels), ex);
             throw new Exception(ex.Message);
         }
+
         return supplierModel;
     }
+
     public int GetDefault()
     {
-        int supplierId = 0;
         var sql = string.Empty;
         List<ParameterModel> parameterModels = new();
         using var connection = SharedUtil.GetConnection();
+        int supplierId;
         try
         {
             connection.Open();
@@ -332,19 +350,20 @@ public class SupplierRepository
             LIMIT   1 ";
             MySqlCommand mySqlCommand = new(sql, connection);
             parameterModels = new List<ParameterModel>
+            {
+                new()
                 {
-                    new ()
-                    {
-                        Key = "@tenantId",
-                        Value = _sharedUtil.GetTenantId()
-                   }
-                };
+                    Key = "@tenantId",
+                    Value = _sharedUtil.GetTenantId()
+                }
+            };
             foreach (var parameter in parameterModels)
             {
                 mySqlCommand.Parameters.AddWithValue(parameter.Key, parameter.Value);
             }
+
             _sharedUtil.SetSqlSession(sql, parameterModels);
-            supplierId = (int)(long)mySqlCommand.ExecuteScalar();
+            supplierId = (int) (long) mySqlCommand.ExecuteScalar();
             mySqlCommand.Dispose();
         }
         catch (MySqlException ex)
@@ -353,8 +372,10 @@ public class SupplierRepository
             _sharedUtil.SetQueryException(SharedUtil.GetSqlSessionValue(sql, parameterModels), ex);
             throw new Exception(ex.Message);
         }
+
         return supplierId;
     }
+
     public byte[] GetExcel()
     {
         using var workbook = new XLWorkbook();
@@ -384,6 +405,7 @@ public class SupplierRepository
                     mySqlCommand.Parameters.AddWithValue(parameter.Key, parameter.Value);
                 }
             }
+
             using (var reader = mySqlCommand.ExecuteReader())
             {
                 var counter = 3;
@@ -403,6 +425,7 @@ public class SupplierRepository
                     worksheet.Cell(currentRow, 11).Value = reader["supplierHomePage"].ToString();
                 }
             }
+
             mySqlCommand.Dispose();
         }
         catch (MySqlException ex)
@@ -410,10 +433,12 @@ public class SupplierRepository
             System.Diagnostics.Debug.WriteLine(ex.Message);
             throw new Exception(ex.Message);
         }
+
         using var stream = new MemoryStream();
         workbook.SaveAs(stream);
         return stream.ToArray();
     }
+
     public void Update(SupplierModel supplierModel)
     {
         var sql = string.Empty;
@@ -441,83 +466,83 @@ public class SupplierRepository
             WHERE   supplierId              =   @supplierId";
             MySqlCommand mySqlCommand = new(sql, connection);
             parameterModels = new List<ParameterModel>
+            {
+                new()
                 {
-                    new ()
-                    {
-                        Key = "@supplierId",
-                        Value = supplierModel.SupplierKey
-                   },
-                    new ()
-                    {
-                        Key = "@tenantId",
-                        Value = _sharedUtil.GetTenantId()
-                    },
-                    new ()
-                    {
-                        Key = "@supplierName",
-                        Value = supplierModel.SupplierName
-                    },
-                    new ()
-                    {
-                        Key = "@supplierContactName",
-                        Value = supplierModel.SupplierContactName
-                    },
-                    new ()
-                    {
-                        Key = "@supplierContactTitle",
-                        Value = supplierModel.SupplierContactTitle
-                    },
-                    new ()
-                    {
-                        Key = "@supplierAddress",
-                        Value = supplierModel.SupplierAddress
-                    },
-                    new ()
-                    {
-                        Key = "@supplierCity",
-                        Value = supplierModel.SupplierCity
-                    },
-                    new ()
-                    {
-                        Key = "@supplierRegion",
-                        Value = supplierModel.SupplierRegion
-                    },
-                    new ()
-                    {
-                        Key = "@supplierPostalCode",
-                        Value = supplierModel.SupplierPostalCode
-                    },
-                    new ()
-                    {
-                        Key = "@supplierCountry",
-                        Value = supplierModel.SupplierCountry
-                    },
-                    new ()
-                    {
-                        Key = "@supplierPhone",
-                        Value = supplierModel.SupplierPhone
-                    },
-                    new ()
-                    {
-                        Key = "@supplierFax",
-                        Value = supplierModel.SupplierFax
-                    },
-                    new ()
-                    {
-                        Key = "@supplierHomePage",
-                        Value = supplierModel.SupplierHomePage
-                    },
-                    new ()
-                    {
-                        Key = "@isDelete",
-                        Value = 0
-                    },
-
-                };
+                    Key = "@supplierId",
+                    Value = supplierModel.SupplierKey
+                },
+                new()
+                {
+                    Key = "@tenantId",
+                    Value = _sharedUtil.GetTenantId()
+                },
+                new()
+                {
+                    Key = "@supplierName",
+                    Value = supplierModel.SupplierName
+                },
+                new()
+                {
+                    Key = "@supplierContactName",
+                    Value = supplierModel.SupplierContactName
+                },
+                new()
+                {
+                    Key = "@supplierContactTitle",
+                    Value = supplierModel.SupplierContactTitle
+                },
+                new()
+                {
+                    Key = "@supplierAddress",
+                    Value = supplierModel.SupplierAddress
+                },
+                new()
+                {
+                    Key = "@supplierCity",
+                    Value = supplierModel.SupplierCity
+                },
+                new()
+                {
+                    Key = "@supplierRegion",
+                    Value = supplierModel.SupplierRegion
+                },
+                new()
+                {
+                    Key = "@supplierPostalCode",
+                    Value = supplierModel.SupplierPostalCode
+                },
+                new()
+                {
+                    Key = "@supplierCountry",
+                    Value = supplierModel.SupplierCountry
+                },
+                new()
+                {
+                    Key = "@supplierPhone",
+                    Value = supplierModel.SupplierPhone
+                },
+                new()
+                {
+                    Key = "@supplierFax",
+                    Value = supplierModel.SupplierFax
+                },
+                new()
+                {
+                    Key = "@supplierHomePage",
+                    Value = supplierModel.SupplierHomePage
+                },
+                new()
+                {
+                    Key = "@isDelete",
+                    Value = 0
+                },
+            };
             foreach (var parameter in parameterModels)
             {
                 mySqlCommand.Parameters.AddWithValue(parameter.Key, parameter.Value);
             }
+
             mySqlCommand.ExecuteNonQuery();
             mySqlTransaction.Commit();
             mySqlCommand.Dispose();
@@ -529,6 +554,7 @@ public class SupplierRepository
             throw new Exception(ex.Message);
         }
     }
+
     public void Delete(SupplierModel supplierModel)
     {
         var sql = string.Empty;
@@ -544,17 +570,18 @@ public class SupplierRepository
                 WHERE   supplierId    =   @supplierId";
             MySqlCommand mySqlCommand = new(sql, connection);
             parameterModels = new List<ParameterModel>
+            {
+                new()
                 {
-                    new ()
-                    {
-                        Key = "@supplierId",
-                        Value = supplierModel.SupplierKey
-                   }
-                };
+                    Key = "@supplierId",
+                    Value = supplierModel.SupplierKey
+                }
+            };
             foreach (var parameter in parameterModels)
             {
                 mySqlCommand.Parameters.AddWithValue(parameter.Key, parameter.Value);
             }
+
             mySqlCommand.ExecuteNonQuery();
             mySqlTransaction.Commit();
             mySqlCommand.Dispose();

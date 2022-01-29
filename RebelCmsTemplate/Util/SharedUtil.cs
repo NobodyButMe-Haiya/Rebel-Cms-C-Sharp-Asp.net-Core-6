@@ -208,7 +208,9 @@ public class SharedUtil
 
         originalChar.ForEach(x =>
         {
-            if (x != null) sql = sql.Replace(x, replaceWith[originalChar.IndexOf(x)]);
+            if (x == null)
+                return;
+            sql = sql.Replace(x, replaceWith[originalChar.IndexOf(x)]);
         });
         return sql;
     }
@@ -234,8 +236,9 @@ public class SharedUtil
         _httpContextAccessor.HttpContext?.Session.SetInt32("userId", userModel.UserKey);
         _httpContextAccessor.HttpContext?.Session.SetInt32("roleId", userModel.RoleKey);
         _httpContextAccessor.HttpContext?.Session.SetInt32("tenantId", userModel.TenantKey);
-        if (userModel.UserName != null)
-            _httpContextAccessor.HttpContext?.Session.SetString("userName", userModel.UserName);
+        if (userModel.UserName == null)
+            return;
+        _httpContextAccessor.HttpContext?.Session.SetString("userName", userModel.UserName);
     }
 
     public void GetRemoveSession()

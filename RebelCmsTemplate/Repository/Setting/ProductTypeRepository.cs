@@ -220,7 +220,7 @@ public class ProductTypeRepository
 
     public int GetDefault()
     {
-        var productTypeId = 0;
+        int productTypeId;
         var sql = string.Empty;
         List<ParameterModel> parameterModels = new();
 
@@ -250,7 +250,7 @@ public class ProductTypeRepository
 
             _sharedUtil.SetSqlSession(sql, parameterModels);
 
-            productTypeId = (int)(long)mySqlCommand.ExecuteScalar();
+            productTypeId = (int) (long) mySqlCommand.ExecuteScalar();
 
             mySqlCommand.Dispose();
         }
@@ -264,6 +264,7 @@ public class ProductTypeRepository
 
         return productTypeId;
     }
+
     public byte[] GetExcel()
     {
         using var workbook = new XLWorkbook();
@@ -328,8 +329,7 @@ public class ProductTypeRepository
             sql += @"
                 UPDATE  product_type
                 SET     productCategoryId   =   @productCategoryId,
-                        productTypeName     =   @productTypeName,
-                        executeBy           =   @executeBy
+                        productTypeName     =   @productTypeName
                 WHERE   productTypeId       =   @productTypeId ";
             MySqlCommand mySqlCommand = new(sql, connection);
 
@@ -344,11 +344,6 @@ public class ProductTypeRepository
                 {
                     Key = "@productTypeName",
                     Value = productTypeModel.ProductTypeName
-                },
-                new()
-                {
-                    Key = "@executeBy",
-                    Value = _sharedUtil.GetUserName()
                 },
                 new()
                 {
@@ -385,8 +380,7 @@ public class ProductTypeRepository
 
             sql += @"
                 UPDATE  product_type
-                SET     isDelete = 1,
-                        executeBy = @executeBy
+                SET     isDelete = 1
                 WHERE   productTypeId  = @productTypeId;";
             MySqlCommand mySqlCommand = new(sql, connection);
 

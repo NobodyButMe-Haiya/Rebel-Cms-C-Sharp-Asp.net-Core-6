@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using RebelCmsTemplate.Util;
 
-namespace RebelCmsTemplate.Controllers.Api.Web;
+namespace RebelCmsTemplate.Controllers.Web;
 
 [Route("42/[controller]")]
 [ApiController]

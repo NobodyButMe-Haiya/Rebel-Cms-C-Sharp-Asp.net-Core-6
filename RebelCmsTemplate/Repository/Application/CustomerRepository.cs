@@ -262,7 +262,7 @@ public class CustomerRepository
             MySqlCommand mySqlCommand = new(sql, connection);
             parameterModels = new List<ParameterModel>
             {
-                 new()
+                new()
                 {
                     Key = "@tenantId",
                     Value = _sharedUtil.GetTenantId()
@@ -314,6 +314,7 @@ public class CustomerRepository
 
         return customerModel;
     }
+
     public int GetDefault()
     {
         var customerId = 0;
@@ -334,7 +335,7 @@ public class CustomerRepository
             MySqlCommand mySqlCommand = new(sql, connection);
             parameterModels = new List<ParameterModel>
             {
-                 new()
+                new()
                 {
                     Key = "@tenantId",
                     Value = _sharedUtil.GetTenantId()
@@ -347,7 +348,7 @@ public class CustomerRepository
 
             _sharedUtil.SetSqlSession(sql, parameterModels);
 
-            customerId = (int)mySqlCommand.ExecuteScalar();
+            customerId = (int) mySqlCommand.ExecuteScalar();
 
             mySqlCommand.Dispose();
         }
@@ -360,6 +361,7 @@ public class CustomerRepository
 
         return customerId;
     }
+
     public byte[] GetExcel()
     {
         using var workbook = new XLWorkbook();

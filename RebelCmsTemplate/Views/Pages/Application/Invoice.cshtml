@@ -12,7 +12,6 @@
     List<ProductModel> productModels = new();
     try
     {
-
         CustomerRepository customerRepository = new(_httpContextAccessor);
         customerModels = customerRepository.Read();
         ShipperRepository shipperRepository = new(_httpContextAccessor);

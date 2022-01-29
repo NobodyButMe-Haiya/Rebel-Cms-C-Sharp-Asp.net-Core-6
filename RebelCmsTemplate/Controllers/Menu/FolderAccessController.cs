@@ -4,7 +4,7 @@ using RebelCmsTemplate.Models.Menu;
 using RebelCmsTemplate.Repository.Menu;
 using RebelCmsTemplate.Util;
 
-namespace RebelCmsTemplate.Controllers.Api.Menu;
+namespace RebelCmsTemplate.Controllers.Menu;
 
 [Route("api/menu/[controller]")]
 [ApiController]
@@ -59,9 +59,8 @@ public class FolderAccessController : Controller
         }
 
         FolderAccessRepository folderAccessRepository = new(_httpContextAccessor);
-        List<FolderAccessModel> data = new();
 
-        string? code=string.Empty;
+        string code ;
         switch (mode)
         {
             case "read":
@@ -74,10 +73,10 @@ public class FolderAccessController : Controller
                 {
                     try
                     {
-                        data = folderAccessRepository.Read(roleKey, folderKey);
+                       var data = folderAccessRepository.Read(roleKey, folderKey);
                         code = ((int) ReturnCodeEnum.CREATE_SUCCESS).ToString();
                         status = true;
-                        return Ok(new { status, code, data });
+                        return Ok(new {status, code, data});
                     }
                     catch (Exception ex)
                     {

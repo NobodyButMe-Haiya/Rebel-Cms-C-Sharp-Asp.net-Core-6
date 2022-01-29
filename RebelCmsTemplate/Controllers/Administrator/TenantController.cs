@@ -4,7 +4,7 @@ using RebelCmsTemplate.Models.Administrator;
 using RebelCmsTemplate.Repository.Administrator;
 using RebelCmsTemplate.Util;
 
-namespace RebelCmsTemplate.Controllers.Api.Administrator;
+namespace RebelCmsTemplate.Controllers.Administrator;
 
 [Route("api/administrator/[controller]")]
 [ApiController]
@@ -53,10 +53,8 @@ public class TenantController : Controller
         SharedUtil sharedUtil = new(_httpContextAccessor);
         CheckAccessUtil checkAccessUtil = new(_httpContextAccessor);
 
-        List<TenantModel> data = new();
 
         string code;
-        var lastInsertKey = 0;
         // but we think something missing .. what ya ? 
         switch (mode)
         {
@@ -73,9 +71,10 @@ public class TenantController : Controller
                         {
                             TenantName = tenantName
                         };
-                        lastInsertKey = tenantRepository.Create(tenantModel);
+                        var lastInsertKey = tenantRepository.Create(tenantModel);
                         code = ((int) ReturnCodeEnum.CREATE_SUCCESS).ToString();
                         status = true;
+                        return Ok(new {code, status, lastInsertKey});
                     }
                     catch (Exception ex)
                     {
@@ -95,9 +94,10 @@ public class TenantController : Controller
                 {
                     try
                     {
-                        data = tenantRepository.Read();
+                        var data = tenantRepository.Read();
                         code = ((int) ReturnCodeEnum.CREATE_SUCCESS).ToString();
                         status = true;
+                        return Ok(new {code, status, data});
                     }
                     catch (Exception ex)
                     {
@@ -117,9 +117,10 @@ public class TenantController : Controller
                 {
                     try
                     {
-                        data = tenantRepository.Search(search);
+                        var data = tenantRepository.Search(search);
                         code = ((int) ReturnCodeEnum.READ_SUCCESS).ToString();
                         status = true;
+                        return Ok(new {code, status, data });
                     }
                     catch (Exception ex)
                     {
@@ -190,11 +191,6 @@ public class TenantController : Controller
                 break;
         }
 
-        if (data.Count > 0)
-        {
-            return Ok(new {status, code, data});
-        }
-
-        return lastInsertKey > 0 ? Ok(new {status, code, lastInsertKey}) : Ok(new {status, code});
+        return Ok(new {status, code});
     }
 }
