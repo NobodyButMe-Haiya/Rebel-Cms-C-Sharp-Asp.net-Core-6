@@ -147,12 +147,14 @@
             data: {
                 mode: "read",
                 leafCheckKey: @navigationModel.LeafCheckKey
-                    }, beforeSend() {
+            }, 
+            beforeSend() {
                 console.log("loading ..");
             }, 
             statusCode: {
                 500: function () {
                     Swal.fire("System Error", "@SharedUtil.UserErrorNotification", "error");
+                    accessDenied();
                 }
             }
         }).done(function (data) {

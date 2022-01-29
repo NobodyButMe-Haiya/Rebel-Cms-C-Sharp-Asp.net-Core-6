@@ -229,20 +229,34 @@
     </div>
 </section>
 <script>
+    var $supplierKey = $("#supplierKey");
+    var $supplierName = $("#supplierName");
+    var $supplierContactName = $("#supplierContactName");
+    var $supplierContactTitle = $("#supplierContactTitle");
+    var $supplierAddress = $("#supplierAddress");
+    var $supplierCity = $("#supplierCity");
+    var $supplierRegion = $("#supplierRegion");
+    var $supplierPostalCode = $("#supplierPostalCode");
+    var $supplierCountry = $("#supplierCountry");
+    var $supplierPhone = $("#supplierPhone");
+    var $supplierFax = $("#supplierFax");
+    var $supplierHomePage = $("#supplierHomePage");
+    function emptyForm() {
+        $supplierKey.val('');
+        $supplierName.val('');
+        $supplierContactName.val('');
+        $supplierContactTitle.val('');
+        $supplierAddress.val('');
+        $supplierCity.val('');
+        $supplierRegion.val('');
+        $supplierPostalCode.val('');
+        $supplierCountry.val('');
+        $supplierPhone.val('');
+        $supplierFax.val('');
+        $supplierHomePage.val('');
+    }
     function resetForm() {
-        $("#supplierKey").val('');
-
-        $("#supplierName").val('');
-        $("#supplierContactName").val('');
-        $("#supplierContactTitle").val('');
-        $("#supplierAddress").val('');
-        $("#supplierCity").val('');
-        $("#supplierRegion").val('');
-        $("#supplierPostalCode").val('');
-        $("#supplierCountry").val('');
-        $("#supplierPhone").val('');
-        $("#supplierFax").val('');
-        $("#supplierHomePage").val('');
+        emptyForm();
 
         $("#createButton").removeAttr("disabled");
         $("#updateButton").attr("disabled", "disabled");
@@ -250,21 +264,8 @@
     }
     function resetRecord() {
         readRecord();
+        emptyForm();
         $("#search").val("");
-        $("#supplierKey").val('');
-
-        $("#supplierName").val('');
-        $("#supplierContactName").val('');
-        $("#supplierContactTitle").val('');
-        $("#supplierAddress").val('');
-        $("#supplierCity").val('');
-        $("#supplierRegion").val('');
-        $("#supplierPostalCode").val('');
-        $("#supplierCountry").val('');
-        $("#supplierPhone").val('');
-        $("#supplierFax").val('');
-        $("#supplierHomePage").val('');
-
     }
     function emptyTemplate() {
         return "<tr><td colspan='6'>It's lonely here</td></tr>";
@@ -272,7 +273,7 @@
     function emptyDetailTemplate() {
         return "<tr><td colspan='14'>It's lonely here</td></tr>";
     }
-    function template(supplierKey, supplierName, supplierContactName, supplierContactTitle, supplierAddress, supplierCity, supplierRegion, supplierPostalCode, supplierCountry, supplierPhone, supplierFax, supplierHomePage) {
+    function template(supplierKey, supplierName, supplierContactName, supplierContactTitle, supplierAddress, supplierCity) {
         let template = "" +
             "<tr id='supplier-" + supplierKey + "'>" +
             "<td>" + supplierName + "</td>" +
@@ -289,17 +290,7 @@
         return template;
     }
     function createRecord() {
-        const supplierName = $("#supplierName");
-        const supplierContactName = $("#supplierContactName");
-        const supplierContactTitle = $("#supplierContactTitle");
-        const supplierAddress = $("#supplierAddress");
-        const supplierCity = $("#supplierCity");
-        const supplierRegion = $("#supplierRegion");
-        const supplierPostalCode = $("#supplierPostalCode");
-        const supplierCountry = $("#supplierCountry");
-        const supplierPhone = $("#supplierPhone");
-        const supplierFax = $("#supplierFax");
-        const supplierHomePage = $("#supplierHomePage");
+
         $.ajax({
             type: 'POST',
             url: "api/application/supplier",
@@ -307,20 +298,22 @@
             data: {
                 mode: 'create',
                 leafCheckKey: @navigationModel.LeafCheckKey,
-                supplierName: $("#supplierName").val(),
-                supplierContactName: $("#supplierContactName").val(),
-                supplierContactTitle: $("#supplierContactTitle").val(),
-                supplierAddress: $("#supplierAddress").val(),
-                supplierCity: $("#supplierCity").val(),
-                supplierRegion: $("#supplierRegion").val(),
-                supplierPostalCode: $("#supplierPostalCode").val(),
-                supplierCountry: $("#supplierCountry").val(),
-                supplierPhone: $("#supplierPhone").val(),
-                supplierFax: $("#supplierFax").val(),
-                supplierHomePage: $("#supplierHomePage").val(),
-            }, statusCode: {
+                supplierName: $supplierName.val(),
+                supplierContactName: $supplierContactName.val(),
+                supplierContactTitle: $supplierContactTitle.val(),
+                supplierAddress: $supplierAddress.val(),
+                supplierCity: $supplierCity.val(),
+                supplierRegion: $supplierRegion.val(),
+                supplierPostalCode: $supplierPostalCode.val(),
+                supplierCountry: $supplierCountry.val(),
+                supplierPhone: $supplierPhone.val(),
+                supplierFax: $supplierFax.val(),
+                supplierHomePage: $supplierHomePage.val(),
+            },
+            statusCode: {
                 500: function () {
                     Swal.fire("System Error", "@SharedUtil.UserErrorNotification", "error");
+                    accessDenied();
                 }
             },
             beforeSend: function () {
@@ -334,7 +327,7 @@
             let code = data.code;
             if (status) {
                 const lastInsertKey = data.lastInsertKey;
-                $("#tableBody").prepend(template(lastInsertKey, supplierName.val(), supplierContactName.val(), supplierContactTitle.val(), supplierAddress.val(), supplierCity.val(), supplierRegion.val(), supplierPostalCode.val(), supplierCountry.val(), supplierPhone.val(), supplierFax.val(), supplierHomePage.val()));
+                $("#tableBody").prepend(template(lastInsertKey, supplierName.val(), supplierContactName.val(), supplierContactTitle.val(), supplierAddress.val(), supplierCity.val()));
                 $("#supplierKey").val(lastInsertKey);
                 $("#createButton").attr("disabled", "disabled");
                 $("#updateButton").removeAttr("disabled");
@@ -375,6 +368,7 @@
             }, statusCode: {
                 500: function () {
                     Swal.fire("System Error", "@SharedUtil.UserErrorNotification", "error");
+                    accessDenied();
                 }
             }, beforeSend() {
                 console.log("loading ..");
@@ -393,7 +387,7 @@
                         let templateStringBuilder = "";
                         for (let i = 0; i < data.data.length; i++) {
                             let row = data.data[i];
-                            templateStringBuilder += template(row.supplierKey, row.supplierName, row.supplierContactName, row.supplierContactTitle, row.supplierAddress, row.supplierCity, row.supplierRegion, row.supplierPostalCode, row.supplierCountry, row.supplierPhone, row.supplierFax, row.supplierHomePage);
+                            templateStringBuilder += template(row.supplierKey, row.supplierName, row.supplierContactName, row.supplierContactTitle, row.supplierAddress, row.supplierCity);
                         }
                         $("#tableBody").html("").html(templateStringBuilder);
                     } else {
@@ -432,6 +426,7 @@
             statusCode: {
                 500: function () {
                     Swal.fire("System Error", "@SharedUtil.UserErrorNotification", "error");
+                    accessDenied();
                 }
             }, beforeSend() {
                 console.log("loading ..");
@@ -448,7 +443,7 @@
                         let templateStringBuilder = "";
                         for (let i = 0; i < data.data.length; i++) {
                             let row = data.data[i];
-                            templateStringBuilder += template(row.supplierKey, row.supplierName, row.supplierContactName, row.supplierContactTitle, row.supplierAddress, row.supplierCity, row.supplierRegion, row.supplierPostalCode, row.supplierCountry, row.supplierPhone, row.supplierFax, row.supplierHomePage);
+                            templateStringBuilder += template(row.supplierKey, row.supplierName, row.supplierContactName, row.supplierContactTitle, row.supplierAddress, row.supplierCity);
                         }
                         $("#tableBody").html("").html(templateStringBuilder);
                     }
@@ -488,6 +483,7 @@
             statusCode: {
                 500: function () {
                     Swal.fire("System Error", "@SharedUtil.UserErrorNotification", "error");
+                    accessDenied();
                 }
             }, beforeSend() {
                 console.log("loading ..");
@@ -500,18 +496,18 @@
                 if (data.dataSingle === void 0) {
                     $("#tableBody").html("").html(emptyTemplate());
                 } else {
-                    $("#supplierKey").val(data.dataSingle.supplierKey);
-                    $("#supplierName").val(data.dataSingle.supplierName);
-                    $("#supplierContactName").val(data.dataSingle.supplierContactName);
-                    $("#supplierContactTitle").val(data.dataSingle.supplierContactTitle);
-                    $("#supplierAddress").val(data.dataSingle.supplierAddress);
-                    $("#supplierCity").val(data.dataSingle.supplierCity);
-                    $("#supplierRegion").val(data.dataSingle.supplierRegion);
-                    $("#supplierPostalCode").val(data.dataSingle.supplierPostalCode);
-                    $("#supplierCountry").val(data.dataSingle.supplierCountry);
-                    $("#supplierPhone").val(data.dataSingle.supplierPhone);
-                    $("#supplierFax").val(data.dataSingle.supplierFax);
-                    $("#supplierHomePage").val(data.dataSingle.supplierHomePage);
+                    $supplierKey.val(data.dataSingle.supplierKey);
+                    $supplierName.val(data.dataSingle.supplierName);
+                    $supplierContactName.val(data.dataSingle.supplierContactName);
+                    $supplierContactTitle.val(data.dataSingle.supplierContactTitle);
+                    $supplierAddress.val(data.dataSingle.supplierAddress);
+                    $supplierCity.val(data.dataSingle.supplierCity);
+                    $supplierRegion.val(data.dataSingle.supplierRegion);
+                    $supplierPostalCode.val(data.dataSingle.supplierPostalCode);
+                    $supplierCountry.val(data.dataSingle.supplierCountry);
+                    $supplierPhone.val(data.dataSingle.supplierPhone);
+                    $supplierFax.val(data.dataSingle.supplierFax);
+                    $supplierHomePage.val(data.dataSingle.supplierHomePage);
                     $("#createButton").attr("disabled", "disabled");
                     $("#updateButton").removeAttr("disabled");
                     $("#deleteButton").removeAttr("disabled");
@@ -546,22 +542,23 @@
             data: {
                 mode: 'update',
                 leafCheckKey: @navigationModel.LeafCheckKey,
-                supplierKey: $("#supplierKey").val(),
-                supplierKey: $("#supplierKey").val(),
-                supplierName: $("#supplierName").val(),
-                supplierContactName: $("#supplierContactName").val(),
-                supplierContactTitle: $("#supplierContactTitle").val(),
-                supplierAddress: $("#supplierAddress").val(),
-                supplierCity: $("#supplierCity").val(),
-                supplierRegion: $("#supplierRegion").val(),
-                supplierPostalCode: $("#supplierPostalCode").val(),
-                supplierCountry: $("#supplierCountry").val(),
-                supplierPhone: $("#supplierPhone").val(),
-                supplierFax: $("#supplierFax").val(),
-                supplierHomePage: $("#supplierHomePage").val(),
-            }, statusCode: {
+                supplierKey: $supplierKey.val(),
+                supplierName: $supplierName.val(),
+                supplierContactName: $supplierContactName.val(),
+                supplierContactTitle: $supplierContactTitle.val(),
+                supplierAddress: $supplierAddress.val(),
+                supplierCity: $supplierCity.val(),
+                supplierRegion: $supplierRegion.val(),
+                supplierPostalCode: $supplierPostalCode.val(),
+                supplierCountry: $supplierCountry.val(),
+                supplierPhone: $supplierPhone.val(),
+                supplierFax: $supplierFax.val(),
+                supplierHomePage: $supplierHomePage.val(),
+            },
+            statusCode: {
                 500: function () {
                     Swal.fire("System Error", "@SharedUtil.UserErrorNotification", "error");
+                    accessDenied();
                 }
             },
             beforeSend: function () {
@@ -631,20 +628,7 @@
                         $("#createButton").removeAttr("disabled");
                         $("#updateButton").attr("disabled", "disabled");
                         $("#deleteButton").attr("disabled", "disabled");
-                        $("#supplierKey").val('');
-
-                        $("#supplierName").val('');
-                        $("#supplierContactName").val('');
-                        $("#supplierContactTitle").val('');
-                        $("#supplierAddress").val('');
-                        $("#supplierCity").val('');
-                        $("#supplierRegion").val('');
-                        $("#supplierPostalCode").val('');
-                        $("#supplierCountry").val('');
-                        $("#supplierPhone").val('');
-                        $("#supplierFax").val('');
-                        $("#supplierHomePage").val('');
-
+                        emptyForm();
                         readRecord();
                         Swal.fire("System", "@SharedUtil.RecordDeleted", "success");
                     } else if (status === false) {

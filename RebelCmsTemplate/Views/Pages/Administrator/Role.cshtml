@@ -190,11 +190,11 @@
                 mode: 'create',
                 leafCheckKey: @navigationModel.LeafCheckKey,
                 roleName: roleName.val()
-
             },
             statusCode: {
                 500: function () {
                     Swal.fire("System Error", "@SharedUtil.UserErrorNotification", "error");
+                    accessDenied();
                 }
             },
             beforeSend: function () {
@@ -248,6 +248,7 @@
             statusCode: {
                 500: function () {
                     Swal.fire("System Error", "@SharedUtil.UserErrorNotification", "error");
+                    accessDenied();
                 }
             },
             beforeSend() {
@@ -307,6 +308,7 @@
             statusCode: {
                 500: function () {
                     Swal.fire("System Error", "@SharedUtil.UserErrorNotification", "error");
+                    accessDenied();
                 }
             }, beforeSend() {
                 console.log("loading ..");
@@ -365,6 +367,7 @@
             statusCode: {
                 500: function () {
                     Swal.fire("System Error", "@SharedUtil.UserErrorNotification", "error");
+                    accessDenied();
                 }
             },
             beforeSend: function () {

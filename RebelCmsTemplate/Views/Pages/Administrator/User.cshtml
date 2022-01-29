@@ -265,9 +265,11 @@
                 userName: $userName.val(),
                 userEmail: $userEmail.val(),
                 userPassword: $userPassword.val()
-            }, statusCode: {
+            },
+            statusCode: {
                 500: function () {
                     Swal.fire("System Error", "@SharedUtil.UserErrorNotification", "error");
+                    accessDenied();
                 }
             },
             beforeSend: function () {
@@ -318,9 +320,11 @@
             data: {
                 mode: "read",
                 leafCheckKey: @navigationModel.LeafCheckKey
-                    }, statusCode: {
+            },
+            statusCode: {
                 500: function () {
                     Swal.fire("System Error", "@SharedUtil.UserErrorNotification", "error");
+                    accessDenied();
                 }
             },
             beforeSend: function () {
@@ -378,6 +382,7 @@
             }, statusCode: {
                 500: function () {
                     Swal.fire("System Error", "@SharedUtil.UserErrorNotification", "error");
+                    accessDenied();
                 }
             }, beforeSend() {
                 console.log("loading ..");
@@ -433,9 +438,11 @@
                 userEmail: $("#userEmail-" + userKey).val(),
                 userPassword: $("#userPassword-" + userKey).val(),
                 userKey: userKey
-            }, statusCode: {
+            }, 
+            statusCode: {
                 500: function () {
                     Swal.fire("System Error", "@SharedUtil.UserErrorNotification", "error");
+                    accessDenied();
                 }
             },
             beforeSend: function () {
@@ -486,9 +493,11 @@
                         mode: 'delete',
                         leafCheckKey: @navigationModel.LeafCheckKey,
                         userKey: userKey
-                    }, statusCode: {
+                    }, 
+                    statusCode: {
                         500: function () {
                             Swal.fire("System Error", "@SharedUtil.UserErrorNotification", "error");
+                            accessDenied();
                         }
                     },
                     beforeSend: function () {

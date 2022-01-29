@@ -262,6 +262,7 @@
             statusCode: {
                 500: function () {
                     Swal.fire("System Error", "@SharedUtil.UserErrorNotification", "error");
+                    accessDenied();
                 }
             },
             beforeSend: function () {
@@ -314,10 +315,11 @@
             data: {
                 mode: "read",
                 leafCheckKey: @navigationModel.LeafCheckKey
-                    },
+            },
             statusCode: {
                 500: function () {
                     Swal.fire("System Error", "@SharedUtil.UserErrorNotification", "error");
+                    accessDenied();
                 }
             },
             beforeSend: function () {
@@ -372,11 +374,14 @@
                 mode: "search",
                 leafCheckKey: @navigationModel.LeafCheckKey,
                 search: $("#search").val()
-            }, statusCode: {
+            },
+            statusCode: {
                 500: function () {
                     Swal.fire("System Error", "@SharedUtil.UserErrorNotification", "error");
+                    accessDenied();
                 }
-            }, beforeSend() {
+            },
+            beforeSend() {
                 console.log("loading ..");
             }
         }).done(function (data) {
@@ -427,9 +432,11 @@
                 productTypeKey: productTypeKey,
                 productCategoryKey: $("#productCategoryKey-" + productTypeKey).val(),
                 productTypeName: $("#productTypeName-" + productTypeKey).val()
-            }, statusCode: {
+            },
+            statusCode: {
                 500: function () {
                     Swal.fire("System Error", "@SharedUtil.UserErrorNotification", "error");
+                    accessDenied();
                 }
             },
             beforeSend: function () {
@@ -480,9 +487,11 @@
                         mode: 'delete',
                         leafCheckKey: @navigationModel.LeafCheckKey,
                         productTypeKey: productTypeKey
-                    }, statusCode: {
+                    },
+                    statusCode: {
                         500: function () {
                             Swal.fire("System Error", "@SharedUtil.UserErrorNotification", "error");
+                            accessDenied();
                         }
                     },
                     beforeSend: function () {

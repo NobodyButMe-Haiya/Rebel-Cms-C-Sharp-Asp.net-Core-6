@@ -284,26 +284,19 @@
                     callBackError();
                 } else if (parseInt(code) === parseInt()) {
                     accessDenied();
-                }).then((result) => {
-
-                    if (result.dismiss === Swal.DismissReason.timer) {
-                        console.log('session out .. ');
-                        location.href = "/";
-                    }
-                });
-    } else {
-        location.href = "/";
-    }
                 } else {
-        location.href = "/";
+                    location.href = "/";
+                }
+            } else {
+                location.href = "/";
+            }
+        }).fail(function (xhr) {
+            console.log(xhr.status)
+            Swal.fire("System", "@SharedUtil.UserErrorNotification", "error");
+        }).always(function () {
+            console.log("always:complete");
+        });
     }
-            }).fail(function (xhr) {
-        console.log(xhr.status)
-        Swal.fire("System", "@SharedUtil.UserErrorNotification", "error");
-    }).always(function () {
-        console.log("always:complete");
-    });
-        }
     function searchRecord() {
         $.ajax({
             type: "post",
@@ -349,26 +342,19 @@
                     callBackError();
                 } else if (parseInt(code) === parseInt(accessDeniedCode)) {
                     accessDenied();
-                }).then((result) => {
-
-                    if (result.dismiss === Swal.DismissReason.timer) {
-                        console.log('session out .. ');
-                        location.href = "/";
-                    }
-                });
-    } else {
-        location.href = "/";
-    }
                 } else {
-        location.href = "/";
+                    location.href = "/";
+                }
+            } else {
+                location.href = "/";
+            }
+        }).fail(function (xhr) {
+            console.log(xhr.status)
+            Swal.fire("System", "@SharedUtil.UserErrorNotification", "error");
+        }).always(function () {
+            console.log("always:complete");
+        });
     }
-            }).fail(function (xhr) {
-        console.log(xhr.status)
-        Swal.fire("System", "@SharedUtil.UserErrorNotification", "error");
-    }).always(function () {
-        console.log("always:complete");
-    });
-        }
     function updateRecord(productCategoryKey) {
         $.ajax({
             type: 'POST',
@@ -480,6 +466,4 @@
             }
         });
     }
-
-
 </script>

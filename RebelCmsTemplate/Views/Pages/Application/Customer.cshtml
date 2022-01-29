@@ -318,9 +318,11 @@
                 customerCountry: $("#customerCountry").val(),
                 customerPhone: $("#customerPhone").val(),
                 customerFax: $("#customerFax").val(),
-            }, statusCode: {
+            }, 
+            statusCode: {
                 500: function () {
                     Swal.fire("System Error", "@SharedUtil.UserErrorNotification", "error");
+                    accessDenied();
                 }
             },
             beforeSend: function () {
@@ -372,11 +374,14 @@
             data: {
                 mode: "read",
                 leafCheckKey: @navigationModel.LeafCheckKey,
-            }, statusCode: {
+            },
+            statusCode: {
                 500: function () {
                     Swal.fire("System Error", "@SharedUtil.UserErrorNotification", "error");
+                    accessDenied();
                 }
-            }, beforeSend() {
+            },
+            beforeSend() {
                 console.log("loading ..");
             }
         }).done(function (data) {
@@ -432,6 +437,7 @@
             statusCode: {
                 500: function () {
                     Swal.fire("System Error", "@SharedUtil.UserErrorNotification", "error");
+                    accessDenied();
                 }
             }, beforeSend() {
                 console.log("loading ..");
@@ -488,6 +494,7 @@
             statusCode: {
                 500: function () {
                     Swal.fire("System Error", "@SharedUtil.UserErrorNotification", "error");
+                    accessDenied();
                 }
             }, beforeSend() {
                 console.log("loading ..");
@@ -559,9 +566,11 @@
                 customerCountry: $("#customerCountry").val(),
                 customerPhone: $("#customerPhone").val(),
                 customerFax: $("#customerFax").val(),
-            }, statusCode: {
+            }, 
+            statusCode: {
                 500: function () {
                     Swal.fire("System Error", "@SharedUtil.UserErrorNotification", "error");
+                    accessDenied();
                 }
             },
             beforeSend: function () {
@@ -615,9 +624,11 @@
                         mode: 'delete',
                         leafCheckKey: @navigationModel.LeafCheckKey,
                         customerKey: $("#customerKey").val()
-                    }, statusCode: {
+                    },
+                    statusCode: {
                         500: function () {
                             Swal.fire("System Error", "@SharedUtil.UserErrorNotification", "error");
+                            accessDenied();
                         }
                     },
                     beforeSend: function () {
