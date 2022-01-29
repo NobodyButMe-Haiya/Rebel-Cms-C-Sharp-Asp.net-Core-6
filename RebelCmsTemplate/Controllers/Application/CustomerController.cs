@@ -44,7 +44,7 @@ public class CustomerController : Controller
         CustomerRepository customerRepository = new(_httpContextAccessor);
         SharedUtil sharedUtil = new(_httpContextAccessor);
         CheckAccessUtil checkAccessUtil = new(_httpContextAccessor);
-        
+
         string code;
         switch (mode)
         {
@@ -167,7 +167,11 @@ public class CustomerController : Controller
                                 return Ok(new {status, code});
                             }
 
-                            if (customerKey > 0)
+                            if (customerKey == 0)
+                            {
+                                code = ((int) ReturnCodeEnum.ACCESS_DENIED).ToString();
+                            }
+                            else
                             {
                                 CustomerModel customerModel = new()
                                 {
@@ -177,10 +181,6 @@ public class CustomerController : Controller
                                 code = ((int) ReturnCodeEnum.READ_SUCCESS).ToString();
                                 status = true;
                                 return Ok(new {status, code, dataSingle});
-                            }
-                            else
-                            {
-                                code = ((int) ReturnCodeEnum.ACCESS_DENIED).ToString();
                             }
                         }
                         catch (Exception ex)

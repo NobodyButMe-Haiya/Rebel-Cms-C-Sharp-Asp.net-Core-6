@@ -1,4 +1,33 @@
-﻿function showPreview(event, imageTarget) {
+﻿var accessDeniedCode = 500;
+function callBackError() {
+    Swal.fire("System", "System Error", "error");
+}
+function accessDenied() {
+    let timerInterval = 0;
+    Swal.fire({
+        title: 'Auto close alert!',
+        html: 'Session Out .Pease Re-login.I will close in <b></b> milliseconds.',
+        timer: 2000,
+        timerProgressBar: true,
+        didOpen: () => {
+            Swal.showLoading()
+            const b = Swal.getHtmlContainer().querySelector('b')
+            timerInterval = setInterval(() => {
+                b.textContent = Swal.getTimerLeft()
+            }, 100)
+        },
+        willClose: () => {
+            clearInterval(timerInterval)
+        }
+    }).then((result) => {
+
+        if (result.dismiss === Swal.DismissReason.timer) {
+            console.log('session out .. ');
+            location.href = "/";
+        }
+    });
+}
+function showPreview(event, imageTarget) {
     if (event.target.files.length > 0) {
         var src = URL.createObjectURL(event.target.files[0]);
         var preview = document.getElementById(imageTarget);

@@ -3,6 +3,7 @@
 @using RebelCmsTemplate.Repository.Administrator;
 @using RebelCmsTemplate.Util;
 @using RebelCmsTemplate.Enum;
+@using Microsoft.AspNetCore.Http
 @{
     SharedUtil sharedUtils = new(_httpContextAccessor);
     List<LogModel> logModels = new();
@@ -59,8 +60,8 @@
                         </div>
                         <div class="col-md-10">
                             <input name="search" id="search" class="form-control"
-                                   placeholder="Please Enter Name  Or Other Here" maxlength="64"
-                                   style="width: 350px!important;"/>
+                                placeholder="Please Enter Name  Or Other Here" maxlength="64"
+                                style="width: 350px!important;" />
                         </div>
                     </div>
                 </div>
@@ -83,32 +84,32 @@
                 <div class="card">
                     <table class="table table-bordered table-striped table-condensed table-hover" id="tableData">
                         <thead>
-                        <tr>
-                            <th scope="col">Name</th>
-                            <th scope="col">Log Query</th>
-                            <th scope="col">Log Error</th>
-                            <th scope="col">TimeStamp</th>
-                        </tr>
+                            <tr>
+                                <th scope="col">Name</th>
+                                <th scope="col">Log Query</th>
+                                <th scope="col">Log Error</th>
+                                <th scope="col">TimeStamp</th>
+                            </tr>
                         </thead>
                         <tbody id="tableBody">
-                        @foreach (var row in logModels)
-                        {
-                            <tr id="log-@row.LogKey">
-                                <td>@row.LogUserName</td>
-                                <td>@row.LogQuery</td>
-                                <td>@row.LogError</td>
-                                <td>@row.LogDateTime</td>
-                            </tr>
-                        }
+                            @foreach (var row in logModels)
+                            {
+                                <tr id="log-@row.LogKey">
+                                    <td>@row.LogUserName</td>
+                                    <td>@row.LogQuery</td>
+                                    <td>@row.LogError</td>
+                                    <td>@row.LogDateTime</td>
+                                </tr>
+                            }
 
-                        @if (logModels.Count == 0)
-                        {
-                            <tr>
-                                <td colspan="7" class="noRecord">
-                                    @SharedUtil.NoRecord
-                                </td>
-                            </tr>
-                        }
+                            @if (logModels.Count == 0)
+                            {
+                                <tr>
+                                    <td colspan="7" class="noRecord">
+                                        @SharedUtil.NoRecord
+                                    </td>
+                                </tr>
+                            }
                         </tbody>
                     </table>
                 </div>
@@ -117,203 +118,132 @@
     </div>
 </section>
 <script>
-        function resetRecord() {
-            readRecord();
-            $("#search").val("");
-        }
-        function emptyTemplate() {
-            return "" +
-                "<tr>" +
-                "<td colspan='6'>It's lonely here</td>" +
-                "</tr>";
-        }
-        function template(logKey, logUserName, logQuery, logError, logDateTime) {
-            return "" +
-                "<tr id=\"log-" + logKey + "'>" +
-                "<td>" + logUserName + "</td>" +
-                "<td>" + logQuery + "</td>" +
-                "<td>" + logError + "</td>" +
-                "<td>" + logDateTime + "</td>" +
-                "</tr>";
-        }
-        function readRecord() {
-            let row = { logKey: "", logUserId: "", logUserName: "", logQuery: "", logError: "", logDatetime: "" };
-            $.ajax({
-                type: "post",
-                url: "api/administrator/log",
-                contentType: "application/x-www-form-urlencoded",
-                async: false,
-                data: {
-                    mode: "read",
-                    leafCheckKey: @navigationModel.LeafCheckKey
+    function resetRecord() {
+        readRecord();
+        $("#search").val("");
+    }
+    function emptyTemplate() {
+        return "" +
+            "<tr>" +
+            "<td colspan='6'>It's lonely here</td>" +
+            "</tr>";
+    }
+    function template(logKey, logUserName, logQuery, logError, logDateTime) {
+        return "" +
+            "<tr id=\"log-" + logKey + "'>" +
+            "<td>" + logUserName + "</td>" +
+            "<td>" + logQuery + "</td>" +
+            "<td>" + logError + "</td>" +
+            "<td>" + logDateTime + "</td>" +
+            "</tr>";
+    }
+    function readRecord() {
+        let row = { logKey: "", logUserId: "", logUserName: "", logQuery: "", logError: "", logDatetime: "" };
+        $.ajax({
+            type: "post",
+            url: "api/administrator/log",
+            contentType: "application/x-www-form-urlencoded",
+            async: false,
+            data: {
+                mode: "read",
+                leafCheckKey: @navigationModel.LeafCheckKey
                     }, beforeSend() {
-                    console.log("loading ..");
-                }, statusCode: {
-                    500: function () {
-                        Swal.fire("System Error", "@SharedUtil.UserErrorNotification", "error");
-                    }
-                }}).done(function(data)  {
-                    if (data === void 0) {
-                        location.href = "/";
-                    }
-                    let status =data.status;
-                         let code = data.code;
-                    if (status) {
-                        if (data.data === void 0) {
-                            $("#tableBody").html("").html(emptyTemplate());
-                        } else {
-                            if (data.data.length > 0) {
-                                let templateStringBuilder = "";
-                                for (let i = 0; i < data.data.length; i++) {
-                                    row = data.data[i];
-                                    templateStringBuilder += template(row.logKey, row.logUserName, row.logQuery, row.logError, row.logDateTime);
-                                }
-                                $("#tableBody").html("").html(templateStringBuilder);
-                            } else {
-                                $("#tableBody").html("").html(emptyTemplate());
-                            }
+                console.log("loading ..");
+            }, 
+            statusCode: {
+                500: function () {
+                    Swal.fire("System Error", "@SharedUtil.UserErrorNotification", "error");
+                }
+            }
+        }).done(function (data) {
+            if (data === void 0) {
+                location.href = "/";
+            }
+            let status = data.status;
+            let code = data.code;
+            if (status) {
+                if (data.data === void 0) {
+                    $("#tableBody").html("").html(emptyTemplate());
+                } else {
+                    if (data.data.length > 0) {
+                        let templateStringBuilder = "";
+                        for (let i = 0; i < data.data.length; i++) {
+                            row = data.data[i];
+                            templateStringBuilder += template(row.logKey, row.logUserName, row.logQuery, row.logError, row.logDateTime);
                         }
-                    } else if (status === false) {
-                      if (typeof(code) === 'string'){
-                        @{
-                            if (sharedUtils.GetRoleId().Equals((int) AccessEnum.ADMINISTRATOR_ACCESS))
-                            {
-                                <text>
-                                Swal.fire("Debugging Admin", code, "error");
-                                </text>
-                            }
-                            else
-                            {
-                                <text>
-                                Swal.fire("System", "@SharedUtil.UserErrorNotification", "error");
-                                </text>
-                            }
-                        }
-                    }else   if (parseInt(code) === parseInt(@((int) ReturnCodeEnum.ACCESS_DENIED) )) {
-                            let timerInterval
-                            Swal.fire({
-                                title: 'Auto close alert!',
-                                html: 'Session Out .Pease Re-login.I will close in <b></b> milliseconds.',
-                                timer: 2000,
-                                timerProgressBar: true,
-                                didOpen: () => {
-                                    Swal.showLoading()
-                                    const b = Swal.getHtmlContainer().querySelector('b')
-                                    timerInterval = setInterval(() => {
-                                        b.textContent = Swal.getTimerLeft()
-                                    }, 100)
-                                },
-                                willClose: () => {
-                                    clearInterval(timerInterval)
-                                }
-                            }).then((result) => {
-                                
-                                if (result.dismiss === Swal.DismissReason.timer) {
-                                    console.log('session out .. ');
-                                    location.href = "/";
-                                }
-                            });
-                        } else {
-                            location.href = "/";
-                        }
+                        $("#tableBody").html("").html(templateStringBuilder);
                     } else {
-                        location.href = "/";
+                        $("#tableBody").html("").html(emptyTemplate());
                     }
-                }).fail(function(xhr)  {
-                                      console.log(xhr.status)
-                                      Swal.fire("System", "@SharedUtil.UserErrorNotification", "error");
-                                  }).always(function (){
-                                      console.log("always:complete");    
-                                  });
-        }
-        function searchRecord() {
-            let row = { logKey: "", logUserName: "", logQuery: "", logQueryError: "", logDatetime: "" };
-            $.ajax({
-                type: "post",
-                url: "api/administrator/log",
-                async: false,
-                contentType: "application/x-www-form-urlencoded",
-                data: {
-                    mode: "search",
-                    leafCheckKey: @navigationModel.LeafCheckKey,
-                    search: $("#search").val()
-                }, statusCode: {
-                    500: function () {
-                        Swal.fire("System Error", "@SharedUtil.UserErrorNotification", "error");
-                    }
-                }, beforeSend() {
-                    console.log("loading ..");
-                }}).done(function(data)  {
-                    if (data === void 0) {
-                        location.href = "/";
-                    }
-                    let status  = data.status;
-                         let code = data.code;
-                    if (status) {
-                        if (data.data === void 0) {
-                            $("#tableBody").html("").html(emptyTemplate());
-                        } else {
-                            if (data.data.length > 0) {
-                                let templateStringBuilder = "";
-                                for (let i = 0; i < data.data.length; i++) {
-                                    row = data.data[i];
-                                    templateStringBuilder += template(row.logKey, row.logUserName, row.logQuery, row.logError, row.logDateTime);
-                                }
-                                $("#tableBody").html("").html(templateStringBuilder);
-                            }
-                            console.log(data.data);
+                }
+            } else if (status === false) {
+                if (typeof (code) === 'string') {
+                    callBackError();
+                } else if (parseInt(code) === parseInt(accessDeniedCode)) {
+                    accessDenied();
+                } else {
+                    location.href = "/";
+                }
+            }).fail(function (xhr) {
+                console.log(xhr.status)
+                Swal.fire("System", "@SharedUtil.UserErrorNotification", "error");
+            }).always(function () {
+                console.log("always:complete");
+            });
+    }
+    function searchRecord() {
+        let row = { logKey: "", logUserName: "", logQuery: "", logQueryError: "", logDatetime: "" };
+        $.ajax({
+            type: "post",
+            url: "api/administrator/log",
+            async: false,
+            contentType: "application/x-www-form-urlencoded",
+            data: {
+                mode: "search",
+                leafCheckKey: @navigationModel.LeafCheckKey,
+                search: $("#search").val()
+            },
+            statusCode: {
+                500: function () {
+                    Swal.fire("System Error", "@SharedUtil.UserErrorNotification", "error");
+                    accessDenied();
+                }
+            },
+            beforeSend() {
+                console.log("loading ..");
+            }
+        }).done(function (data) {
+            if (data === void 0) {
+                location.href = "/";
+            }
+            let status = data.status;
+            let code = data.code;
+            if (status) {
+                if (data.data === void 0) {
+                    $("#tableBody").html("").html(emptyTemplate());
+                } else {
+                    if (data.data.length > 0) {
+                        let templateStringBuilder = "";
+                        for (let i = 0; i < data.data.length; i++) {
+                            row = data.data[i];
+                            templateStringBuilder += template(row.logKey, row.logUserName, row.logQuery, row.logError, row.logDateTime);
                         }
-                    } else if (status === false) {
-                    if (typeof(code) === 'string'){
-                        @{
-                            if (sharedUtils.GetRoleId().Equals((int) AccessEnum.ADMINISTRATOR_ACCESS))
-                            {
-                                <text>
-                                Swal.fire("Debugging Admin", code, "error");
-                                </text>
-                            }
-                            else
-                            {
-                                <text>
-                                Swal.fire("System", "@SharedUtil.UserErrorNotification", "error");
-                                </text>
-                            }
-                        }
-                    } else if (parseInt(code) === parseInt(@((int) ReturnCodeEnum.ACCESS_DENIED) )) {
-                            let timerInterval
-                            Swal.fire({
-                                title: 'Auto close alert!',
-                                html: 'Session Out .Pease Re-login.I will close in <b></b> milliseconds.',
-                                timer: 2000,
-                                timerProgressBar: true,
-                                didOpen: () => {
-                                    Swal.showLoading()
-                                    const b = Swal.getHtmlContainer().querySelector('b')
-                                    timerInterval = setInterval(() => {
-                                        b.textContent = Swal.getTimerLeft()
-                                    }, 100)
-                                },
-                                willClose: () => {
-                                    clearInterval(timerInterval)
-                                }
-                            }).then((result) => {
-                                
-                                if (result.dismiss === Swal.DismissReason.timer) {
-                                    console.log('session out .. ');
-                                    location.href = "/";
-                                }
-                            });
-                        } else {
-                            location.href = "/";
-                        }
-                    } else {
-                        location.href = "/";
+                        $("#tableBody").html("").html(templateStringBuilder);
                     }
-                }).fail(function(xhr)  {
-                                     console.log(xhr.status)
-                                     Swal.fire("System", "@SharedUtil.UserErrorNotification", "error");
-                                 }).always(function (){
-                                     console.log("always:complete");    
-                                 });
-        }
-    </script>
+                }
+            } else if (status === false) {
+                if (typeof (code) === 'string') {
+                    callBackError();
+                } else if (parseInt(code) === parseInt(accessDeniedCode)) {
+                    accessDenied();
+                } else {
+                    location.href = "/";
+                }
+            }).fail(function (xhr) {
+                console.log(xhr.status)
+                Swal.fire("System", "@SharedUtil.UserErrorNotification", "error");
+            }).always(function () {
+                console.log("always:complete");
+            });
+    }
+</script>

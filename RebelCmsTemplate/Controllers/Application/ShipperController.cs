@@ -150,7 +150,11 @@ public class ShipperController : Controller
                                 return Ok(new {status, code});
                             }
 
-                            if (shipperKey > 0)
+                            if (shipperKey == 0)
+                            {
+                                code = ((int) ReturnCodeEnum.ACCESS_DENIED).ToString();
+                            }
+                            else
                             {
                                 ShipperModel shipperModel = new()
                                 {
@@ -160,10 +164,6 @@ public class ShipperController : Controller
                                 code = ((int) ReturnCodeEnum.READ_SUCCESS).ToString();
                                 status = true;
                                 return Ok(new {status, code, dataSingle});
-                            }
-                            else
-                            {
-                                code = ((int) ReturnCodeEnum.ACCESS_DENIED).ToString();
                             }
                         }
                         catch (Exception ex)

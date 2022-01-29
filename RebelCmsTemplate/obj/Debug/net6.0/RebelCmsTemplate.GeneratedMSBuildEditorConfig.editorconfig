@@ -15,10 +15,6 @@ build_property.GenerateRazorMetadataSourceChecksumAttributes =
 build_property.MSBuildProjectDirectory = /Users/user/Projects/Rebel-Cms-C-Sharp-Asp.net-Core-6/RebelCmsTemplate
 build_property._RazorSourceGeneratorDebug = 
 
-[/Users/user/Projects/Rebel-Cms-C-Sharp-Asp.net-Core-6/RebelCmsTemplate/Views/Email/Test.cshtml]
-build_metadata.AdditionalFiles.TargetPath = Vmlld3MvRW1haWwvVGVzdC5jc2h0bWw=
-build_metadata.AdditionalFiles.CssScope = 
-
 [/Users/user/Projects/Rebel-Cms-C-Sharp-Asp.net-Core-6/RebelCmsTemplate/Views/Error/403.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3MvRXJyb3IvNDAzLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 

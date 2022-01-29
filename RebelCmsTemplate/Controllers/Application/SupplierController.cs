@@ -81,7 +81,7 @@ public class SupplierController : Controller
                             SupplierCountry = supplierCountry,
                             SupplierPhone = supplierPhone,
                             SupplierFax = supplierFax,
-                            SupplierHomePage = supplierHomePage,
+                            SupplierHomePage = supplierHomePage
                         };
                         var lastInsertKey = supplierRepository.Create(supplierModel);
                         code = ((int) ReturnCodeEnum.CREATE_SUCCESS).ToString();
@@ -232,7 +232,7 @@ public class SupplierController : Controller
                                 SupplierCountry = supplierCountry,
                                 SupplierPhone = supplierPhone,
                                 SupplierFax = supplierFax,
-                                SupplierHomePage = supplierHomePage,
+                                SupplierHomePage = supplierHomePage
                             };
                             supplierRepository.Update(supplierModel);
                             code = ((int) ReturnCodeEnum.UPDATE_SUCCESS).ToString();

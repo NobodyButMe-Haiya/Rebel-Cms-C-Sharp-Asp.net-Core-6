@@ -1,8 +1,4 @@
-using System;
-using System.Collections.Generic;
-using System.IO;
 using ClosedXML.Excel;
-using Microsoft.AspNetCore.Http;
 using MySql.Data.MySqlClient;
 using RebelCmsTemplate.Models.Application;
 using RebelCmsTemplate.Models.Shared;
@@ -28,7 +24,7 @@ public class SupplierRepository
         try
         {
             connection.Open();
-            MySqlTransaction mySqlTransaction = connection.BeginTransaction();
+            var mySqlTransaction = connection.BeginTransaction();
             sql +=
                 @"INSERT INTO supplier (supplierId,tenantId,supplierName,supplierContactName,supplierContactTitle,supplierAddress,supplierCity,supplierRegion,supplierPostalCode,supplierCountry,supplierPhone,supplierFax,supplierHomePage,isDelete) VALUES (null,@tenantId,@supplierName,@supplierContactName,@supplierContactTitle,@supplierAddress,@supplierCity,@supplierRegion,@supplierPostalCode,@supplierCountry,@supplierPhone,@supplierFax,@supplierHomePage,@isDelete);";
             MySqlCommand mySqlCommand = new(sql, connection);
@@ -98,7 +94,7 @@ public class SupplierRepository
                 {
                     Key = "@isDelete",
                     Value = 0
-                },
+                }
             };
             foreach (var parameter in parameterModels)
             {
@@ -167,7 +163,7 @@ public class SupplierRepository
                         SupplierCountry = reader["supplierCountry"].ToString(),
                         SupplierPhone = reader["supplierPhone"].ToString(),
                         SupplierFax = reader["supplierFax"].ToString(),
-                        SupplierHomePage = reader["supplierHomePage"].ToString(),
+                        SupplierHomePage = reader["supplierHomePage"].ToString()
                     });
                 }
             }
@@ -247,7 +243,7 @@ public class SupplierRepository
                         SupplierCountry = reader["supplierCountry"].ToString(),
                         SupplierPhone = reader["supplierPhone"].ToString(),
                         SupplierFax = reader["supplierFax"].ToString(),
-                        SupplierHomePage = reader["supplierHomePage"].ToString(),
+                        SupplierHomePage = reader["supplierHomePage"].ToString()
                     });
                 }
             }
@@ -316,7 +312,7 @@ public class SupplierRepository
                         SupplierCountry = reader["supplierCountry"].ToString(),
                         SupplierPhone = reader["supplierPhone"].ToString(),
                         SupplierFax = reader["supplierFax"].ToString(),
-                        SupplierHomePage = reader["supplierHomePage"].ToString(),
+                        SupplierHomePage = reader["supplierHomePage"].ToString()
                     };
                 }
             }
@@ -447,7 +443,7 @@ public class SupplierRepository
         try
         {
             connection.Open();
-            MySqlTransaction mySqlTransaction = connection.BeginTransaction();
+            var mySqlTransaction = connection.BeginTransaction();
             sql = @"
             UPDATE  supplier 
             SET     tenantId                =   @tenantId,
@@ -536,7 +532,7 @@ public class SupplierRepository
                 {
                     Key = "@isDelete",
                     Value = 0
-                },
+                }
             };
             foreach (var parameter in parameterModels)
             {
@@ -563,7 +559,7 @@ public class SupplierRepository
         try
         {
             connection.Open();
-            MySqlTransaction mySqlTransaction = connection.BeginTransaction();
+            var mySqlTransaction = connection.BeginTransaction();
             sql = @"
                 UPDATE  supplier 
                 SET     isDelete    =   1

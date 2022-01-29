@@ -24,7 +24,7 @@ public class ProductRepository
         try
         {
             connection.Open();
-            MySqlTransaction mySqlTransaction = connection.BeginTransaction();
+            var mySqlTransaction = connection.BeginTransaction();
             sql +=
                 @"INSERT INTO product (productId,tenantId,supplierId,productCategoryId,productTypeId,productName,productDescription,productQuantityPerUnit,productCostPrice,productSellingPrice,productUnitsInStock,productUnitsOnOrder,productReOrderLevel,isDelete) VALUES (null,@tenantId,@supplierId,@productCategoryId,@productTypeId,@productName,@productDescription,@productQuantityPerUnit,@productCostPrice,@productSellingPrice,@productUnitsInStock,@productUnitsOnOrder,@productReOrderLevel,@isDelete);";
             MySqlCommand mySqlCommand = new(sql, connection);
@@ -302,7 +302,7 @@ public class ProductRepository
                         ProductSellingPrice = Convert.ToDouble(reader["productSellingPrice"]),
                         ProductUnitsInStock = Convert.ToDouble(reader["productUnitsInStock"]),
                         ProductUnitsOnOrder = Convert.ToDouble(reader["productUnitsOnOrder"]),
-                        ProductReOrderLevel = Convert.ToDouble(reader["productReOrderLevel"]),
+                        ProductReOrderLevel = Convert.ToDouble(reader["productReOrderLevel"])
                     });
                 }
             }
@@ -381,7 +381,7 @@ public class ProductRepository
                         ProductSellingPrice = Convert.ToDouble(reader["productSellingPrice"]),
                         ProductUnitsInStock = Convert.ToDouble(reader["productUnitsInStock"]),
                         ProductUnitsOnOrder = Convert.ToDouble(reader["productUnitsOnOrder"]),
-                        ProductReOrderLevel = Convert.ToDouble(reader["productReOrderLevel"]),
+                        ProductReOrderLevel = Convert.ToDouble(reader["productReOrderLevel"])
                     };
                 }
             }
@@ -515,7 +515,7 @@ public class ProductRepository
         try
         {
             connection.Open();
-            MySqlTransaction mySqlTransaction = connection.BeginTransaction();
+            var mySqlTransaction = connection.BeginTransaction();
             sql = @"
             UPDATE  product 
             SET     tenantId                =   @tenantId,
@@ -625,7 +625,7 @@ public class ProductRepository
         try
         {
             connection.Open();
-            MySqlTransaction mySqlTransaction = connection.BeginTransaction();
+            var mySqlTransaction = connection.BeginTransaction();
             sql = @"
                 UPDATE  product 
                 SET     isDelete    =   1

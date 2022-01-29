@@ -207,7 +207,11 @@ public class EmployeeController : Controller
                                 return Ok(new {status, code});
                             }
 
-                            if (employeeKey > 0)
+                            if (employeeKey == 0)
+                            {
+                                code = ((int) ReturnCodeEnum.ACCESS_DENIED).ToString();
+                            }
+                            else 
                             {
                                 EmployeeModel employeeModel = new()
                                 {
@@ -221,10 +225,6 @@ public class EmployeeController : Controller
                                 code = ((int) ReturnCodeEnum.READ_SUCCESS).ToString();
                                 status = true;
                                 return Ok(new {status, code, dataSingle});
-                            }
-                            else
-                            {
-                                code = ((int) ReturnCodeEnum.ACCESS_DENIED).ToString();
                             }
                         }
                         catch (Exception ex)

@@ -16318,18 +16318,8 @@
       "FileKind": "mvc"
     },
     {
-      "FilePath": "/Users/user/Projects/Rebel-Cms-C-Sharp-Asp.net-Core-6/RebelCmsTemplate/Views/Pages/Setting/DocumentNumber.cshtml",
-      "TargetPath": "Views\\Pages\\Setting\\DocumentNumber.cshtml",
-      "FileKind": "mvc"
-    },
-    {
       "FilePath": "/Users/user/Projects/Rebel-Cms-C-Sharp-Asp.net-Core-6/RebelCmsTemplate/Views/Pages/Application/Shipper.cshtml",
       "TargetPath": "Views\\Pages\\Application\\Shipper.cshtml",
-      "FileKind": "mvc"
-    },
-    {
-      "FilePath": "/Users/user/Projects/Rebel-Cms-C-Sharp-Asp.net-Core-6/RebelCmsTemplate/Views/Pages/Application/ContactUs.cshtml",
-      "TargetPath": "Views\\Pages\\Application\\ContactUs.cshtml",
       "FileKind": "mvc"
     },
     {
@@ -16408,11 +16398,6 @@
       "FileKind": "mvc"
     },
     {
-      "FilePath": "/Users/user/Projects/Rebel-Cms-C-Sharp-Asp.net-Core-6/RebelCmsTemplate/Views/Email/Test.cshtml",
-      "TargetPath": "Views\\Email\\Test.cshtml",
-      "FileKind": "mvc"
-    },
-    {
       "FilePath": "/Users/user/Projects/Rebel-Cms-C-Sharp-Asp.net-Core-6/RebelCmsTemplate/Views/Pages/Menu/Folder.cshtml",
       "TargetPath": "Views\\Pages\\Menu\\Folder.cshtml",
       "FileKind": "mvc"
@@ -16438,11 +16423,6 @@
       "FileKind": "mvc"
     },
     {
-      "FilePath": "/Users/user/Projects/Rebel-Cms-C-Sharp-Asp.net-Core-6/RebelCmsTemplate/Views/Pages/Administrator/LogSystem.cshtml",
-      "TargetPath": "Views\\Pages\\Administrator\\LogSystem.cshtml",
-      "FileKind": "mvc"
-    },
-    {
       "FilePath": "/Users/user/Projects/Rebel-Cms-C-Sharp-Asp.net-Core-6/RebelCmsTemplate/Views/_ViewImports.cshtml",
       "TargetPath": "Views\\_ViewImports.cshtml",
       "FileKind": "mvc"
@@ -16460,11 +16440,6 @@
     {
       "FilePath": "/Users/user/Projects/Rebel-Cms-C-Sharp-Asp.net-Core-6/RebelCmsTemplate/Views/Error/404.cshtml",
       "TargetPath": "Views\\Error\\404.cshtml",
-      "FileKind": "mvc"
-    },
-    {
-      "FilePath": "/Users/user/Projects/Rebel-Cms-C-Sharp-Asp.net-Core-6/RebelCmsTemplate/Views/Pages/Administrator/Configuration.cshtml",
-      "TargetPath": "Views\\Pages\\Administrator\\Configuration.cshtml",
       "FileKind": "mvc"
     }
   ],

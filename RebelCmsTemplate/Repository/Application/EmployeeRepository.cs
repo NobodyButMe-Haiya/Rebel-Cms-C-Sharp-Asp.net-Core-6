@@ -130,7 +130,7 @@ public class EmployeeRepository
                     {
                         Key = "@isDelete",
                         Value = 0
-                    },
+                    }
                 };
             }
             else
@@ -231,7 +231,7 @@ public class EmployeeRepository
                     {
                         Key = "@isDelete",
                         Value = 0
-                    },
+                    }
                 };
             }
 
@@ -298,10 +298,10 @@ public class EmployeeRepository
                         EmployeeLastName = reader["employeeLastName"].ToString(),
                         EmployeeTitle = reader["employeeTitle"].ToString(),
                         EmployeeTitleOfCourtesy = reader["employeeTitleOfCourtesy"].ToString(),
-                        EmployeeBirthDate = (reader["employeeBirthDate"] != DBNull.Value)
+                        EmployeeBirthDate = reader["employeeBirthDate"] != DBNull.Value
                             ? CustomDateTimeConvert.ConvertToDate((DateTime) reader["employeeBirthDate"])
                             : null,
-                        EmployeeHireDate = (reader["employeeHireDate"] != DBNull.Value)
+                        EmployeeHireDate = reader["employeeHireDate"] != DBNull.Value
                             ? CustomDateTimeConvert.ConvertToDate((DateTime) reader["employeeHireDate"])
                             : null,
                         EmployeeAddress = reader["employeeAddress"].ToString(),
@@ -314,7 +314,7 @@ public class EmployeeRepository
                         EmployeePhoto = (byte[]) reader["employeePhoto"],
                         EmployeeNotes = reader["employeeNotes"].ToString(),
                         EmployeePhotoPath = reader["employeePhotoPath"].ToString(),
-                        EmployeeSalary = Convert.ToDouble(reader["employeeSalary"]),
+                        EmployeeSalary = Convert.ToDouble(reader["employeeSalary"])
                     });
                 }
             }
@@ -394,10 +394,10 @@ public class EmployeeRepository
                         EmployeeLastName = reader["employeeLastName"].ToString(),
                         EmployeeTitle = reader["employeeTitle"].ToString(),
                         EmployeeTitleOfCourtesy = reader["employeeTitleOfCourtesy"].ToString(),
-                        EmployeeBirthDate = (reader["employeeBirthDate"] != DBNull.Value)
+                        EmployeeBirthDate = reader["employeeBirthDate"] != DBNull.Value
                             ? CustomDateTimeConvert.ConvertToDate((DateTime) reader["employeeBirthDate"])
                             : null,
-                        EmployeeHireDate = (reader["employeeHireDate"] != DBNull.Value)
+                        EmployeeHireDate = reader["employeeHireDate"] != DBNull.Value
                             ? CustomDateTimeConvert.ConvertToDate((DateTime) reader["employeeHireDate"])
                             : null,
                         EmployeeAddress = reader["employeeAddress"].ToString(),
@@ -410,7 +410,7 @@ public class EmployeeRepository
                         EmployeePhoto = (byte[]) reader["employeePhoto"],
                         EmployeeNotes = reader["employeeNotes"].ToString(),
                         EmployeePhotoPath = reader["employeePhotoPath"].ToString(),
-                        EmployeeSalary = Convert.ToDouble(reader["employeeSalary"]),
+                        EmployeeSalary = Convert.ToDouble(reader["employeeSalary"])
                     });
                 }
             }
@@ -473,10 +473,10 @@ public class EmployeeRepository
                         EmployeeLastName = reader["employeeLastName"].ToString(),
                         EmployeeTitle = reader["employeeTitle"].ToString(),
                         EmployeeTitleOfCourtesy = reader["employeeTitleOfCourtesy"].ToString(),
-                        EmployeeBirthDate = (reader["employeeBirthDate"] != DBNull.Value)
+                        EmployeeBirthDate = reader["employeeBirthDate"] != DBNull.Value
                             ? CustomDateTimeConvert.ConvertToDate((DateTime) reader["employeeBirthDate"])
                             : null,
-                        EmployeeHireDate = (reader["employeeHireDate"] != DBNull.Value)
+                        EmployeeHireDate = reader["employeeHireDate"] != DBNull.Value
                             ? CustomDateTimeConvert.ConvertToDate((DateTime) reader["employeeHireDate"])
                             : null,
                         EmployeeAddress = reader["employeeAddress"].ToString(),
@@ -489,7 +489,7 @@ public class EmployeeRepository
                         EmployeePhoto = (byte[]) reader["employeePhoto"],
                         EmployeeNotes = reader["employeeNotes"].ToString(),
                         EmployeePhotoPath = reader["employeePhotoPath"].ToString(),
-                        EmployeeSalary = Convert.ToDouble(reader["employeeSalary"]),
+                        EmployeeSalary = Convert.ToDouble(reader["employeeSalary"])
                     };
                 }
             }
@@ -508,7 +508,7 @@ public class EmployeeRepository
 
     public int GetDefault()
     {
-        int employeeId = 0;
+        var employeeId = 0;
         var sql = string.Empty;
         List<ParameterModel> parameterModels = new();
         using var connection = SharedUtil.GetConnection();
@@ -753,7 +753,7 @@ public class EmployeeRepository
                 {
                     Key = "@isDelete",
                     Value = 0
-                },
+                }
             };
             if (employeeModel.EmployeePhoto?.Length > 0)
             {
@@ -785,7 +785,7 @@ public class EmployeeRepository
         try
         {
             connection.Open();
-            MySqlTransaction mySqlTransaction = connection.BeginTransaction();
+            var mySqlTransaction = connection.BeginTransaction();
             sql = @"
             UPDATE  employee 
             SET     isDelete    =   1

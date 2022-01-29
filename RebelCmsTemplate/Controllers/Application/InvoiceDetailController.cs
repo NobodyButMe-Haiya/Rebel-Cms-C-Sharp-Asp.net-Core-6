@@ -170,7 +170,7 @@ public class InvoiceDetailController : Controller
                 }
                 else
                 {
-                    if (!string.IsNullOrEmpty(Request.Form["invoideDetailKey"]))
+                    if (!string.IsNullOrEmpty(Request.Form["invoiceDetailKey"]))
                     {
                         try
                         {
@@ -247,7 +247,7 @@ public class InvoiceDetailController : Controller
                 }
                 else
                 {
-                    if (!string.IsNullOrEmpty(Request.Form["invoideDetailKey"]))
+                    if (!string.IsNullOrEmpty(Request.Form["invoiceDetailKey"]))
                     {
                         try
                         {

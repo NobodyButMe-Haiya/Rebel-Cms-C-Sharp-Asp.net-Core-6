@@ -2,7 +2,7 @@
 @using RebelCmsTemplate.Models.Setting
 @using RebelCmsTemplate.Repository.Setting
 @using RebelCmsTemplate.Util
-@using RebelCmsTemplate.Enum
+@using Microsoft.AspNetCore.Http
 @{
     SharedUtil sharedUtils = new(_httpContextAccessor);
     List<ProductCategoryModel> productCategoryModels = new();
@@ -61,8 +61,8 @@
                         </div>
                         <div class="col-md-10">
                             <input name="search" id="search" class="form-control"
-                                   placeholder="Please Enter Name  Or Other Here" maxlength="64"
-                                   style="width: 350px!important;"/>
+                                placeholder="Please Enter Name  Or Other Here" maxlength="64"
+                                style="width: 350px!important;" />
                         </div>
                     </div>
                 </div>
@@ -85,60 +85,60 @@
                 <div class="card">
                     <table class="table table-bordered table-striped table-condensed table-hover" id="tableData">
                         <thead>
-                        <tr>
-                            <td>
-                                <label>
-                                    <input type="text" name="productCategoryName" id="productCategoryName"
-                                           class="form-control"/>
-                                </label>
-                            </td>
-                            <td style="text-align: center">
-                                <Button type="button" class="btn btn-info" onclick="createRecord()">
-                                    <i class="fa fa-newspaper"></i>&nbsp;&nbsp;CREATE
-                                </Button>
-                            </td>
-                        </tr>
-                        <tr>
-                            <th>DESCRIPTION</th>
-                            <th style="width: 250px">Process</th>
-                        </tr>
-                        </thead>
-                        <tbody id="tableBody">
-                        @foreach (var row in productCategoryModels)
-                        {
-                            <tr id='productCategory-@row.ProductCategoryKey'>
-                                <td class="tdNormalAlign">
+                            <tr>
+                                <td>
                                     <label>
-                                        <input type="text" class="form-control" name='productCategoryName[]'
-                                               id='productCategoryName-@row.ProductCategoryKey'
-                                               value='@row.ProductCategoryName'/>
+                                        <input type="text" name="productCategoryName" id="productCategoryName"
+                                            class="form-control" />
                                     </label>
                                 </td>
-
-                                <td style='text-align: center'>
-                                    <div class="btn-group">
-                                        <Button type="button" class="btn btn-warning"
-                                                onclick='updateRecord(@row.ProductCategoryKey)'>
-                                            <i class="fas fa-edit"></i>&nbsp;UPDATE
-                                        </Button>
-                                        <Button type="button" class="btn btn-danger"
-                                                onclick='deleteRecord(@row.ProductCategoryKey)'>
-                                            <i class="fas fa-trash"></i>&nbsp;DELETE
-                                        </Button>
-                                    </div>
+                                <td style="text-align: center">
+                                    <Button type="button" class="btn btn-info" onclick="createRecord()">
+                                        <i class="fa fa-newspaper"></i>&nbsp;&nbsp;CREATE
+                                    </Button>
                                 </td>
-
                             </tr>
-                        }
-
-                        @if (productCategoryModels.Count == 0)
-                        {
                             <tr>
-                                <td colspan="7" class="noRecord">
-                                    @SharedUtil.NoRecord
-                                </td>
+                                <th>DESCRIPTION</th>
+                                <th style="width: 250px">Process</th>
                             </tr>
-                        }
+                        </thead>
+                        <tbody id="tableBody">
+                            @foreach (var row in productCategoryModels)
+                            {
+                                <tr id='productCategory-@row.ProductCategoryKey'>
+                                    <td class="tdNormalAlign">
+                                        <label>
+                                            <input type="text" class="form-control" name='productCategoryName[]'
+                                            id='productCategoryName-@row.ProductCategoryKey'
+                                            value='@row.ProductCategoryName' />
+                                        </label>
+                                    </td>
+
+                                    <td style='text-align: center'>
+                                        <div class="btn-group">
+                                            <Button type="button" class="btn btn-warning"
+                                            onclick='updateRecord(@row.ProductCategoryKey)'>
+                                                <i class="fas fa-edit"></i>&nbsp;UPDATE
+                                            </Button>
+                                            <Button type="button" class="btn btn-danger"
+                                            onclick='deleteRecord(@row.ProductCategoryKey)'>
+                                                <i class="fas fa-trash"></i>&nbsp;DELETE
+                                            </Button>
+                                        </div>
+                                    </td>
+
+                                </tr>
+                            }
+
+                            @if (productCategoryModels.Count == 0)
+                            {
+                                <tr>
+                                    <td colspan="7" class="noRecord">
+                                        @SharedUtil.NoRecord
+                                    </td>
+                                </tr>
+                            }
                         </tbody>
                     </table>
                 </div>
@@ -150,38 +150,42 @@
     </div>
 </section>
 <script>
-        function resetRecord() {
-            readRecord();
-            $("#search").val("");
-        }
-        function emptyTemplate() {
-            return "" +
-                "<tr>" +
-                "<td colspan='4'>It's lonely here</td>" +
-                "</tr>";
-        }
-        function template(productCategoryKey, productCategoryName) {
+    function resetRecord() {
+        readRecord();
+        $("#search").val("");
+    }
+    function emptyTemplate() {
+        return "" +
+            "<tr>" +
+            "<td colspan='4'>It's lonely here</td>" +
+            "</tr>";
+    }
+    function template(productCategoryKey, productCategoryName) {
 
-            return "" +
-                "<tr id='role-" + productCategoryKey + "'>" +
-                "<td>     " +
-                "<label>" +
-                "<input type='text' class='form-control' id='productCategoryName-" + productCategoryKey + "' value='" + productCategoryName + "' />" +
-                "</label>" +
-                "</td>" +
-                "<td style='text-align: center'><div class='btn-group'>" +
-                "<Button type='button' class='btn btn-warning' onclick='updateRecord(" + productCategoryKey + ")'>" +
-                "<i class='fas fa-edit'></i> UPDATE" +
-                "</Button>" +
-                "&nbsp;" +
-                "<Button type='button' class='btn btn-danger' onclick='deleteRecord(" + productCategoryKey + ")'>" +
-                "<i class='fas fa-trash'></i> DELETE" +
-                "</Button>" +
-                "</div></td>" +
-                "</tr>";
-        }
-        function createRecord() {
-            const $productCategoryName = $("#productCategoryName");
+        return "" +
+            "<tr id='productCategory-" + productCategoryKey + "'>" +
+            "<td>     " +
+            "<label>" +
+            "<input type='text' class='form-control' id='productCategoryName-" + productCategoryKey + "' value='" + productCategoryName + "' />" +
+            "</label>" +
+            "</td>" +
+            "<td style='text-align: center'><div class='btn-group'>" +
+            "<Button type='button' class='btn btn-warning' onclick='updateRecord(" + productCategoryKey + ")'>" +
+            "<i class='fas fa-edit'></i> UPDATE" +
+            "</Button>" +
+            "&nbsp;" +
+            "<Button type='button' class='btn btn-danger' onclick='deleteRecord(" + productCategoryKey + ")'>" +
+            "<i class='fas fa-trash'></i> DELETE" +
+            "</Button>" +
+            "</div></td>" +
+            "</tr>";
+    }
+    function createRecord() {
+        const $productCategoryName = $("#productCategoryName");
+        if ($productCategoryName.val().length == 0) {
+            Swal.fire("System Error", "Please Enter all the form", "error");
+            $productCategoryName.focus();
+        } else {
             $.ajax({
                 type: 'POST',
                 url: "api/setting/productCategory",
@@ -190,9 +194,11 @@
                     mode: 'create',
                     leafCheckKey: @navigationModel.LeafCheckKey,
                     productCategoryName: $productCategoryName.val()
-                }, statusCode: {
+                },
+                statusCode: {
                     500: function () {
                         Swal.fire("System Error", "@SharedUtil.UserErrorNotification", "error");
+                        accessDenied();
                     }
                 },
                 beforeSend: function () {
@@ -202,8 +208,8 @@
                 if (data === void 0) {
                     location.href = "/";
                 }
-                 let status = data.status;
-                 let code = data.code;
+                let status = data.status;
+                let code = data.code;
                 if (status) {
                     const lastInsertKey = data.lastInsertKey;
                     $("#tableBody").prepend(template(lastInsertKey, $productCategoryName.val()));
@@ -215,45 +221,10 @@
                     });
                     $productCategoryName.val('');
                 } else if (status === false) {
-                   if (typeof(code) === 'string'){
-                                               @{
-                                                   if (sharedUtils.GetRoleId().Equals((int) AccessEnum.ADMINISTRATOR_ACCESS))
-                                                   {
-                                                       <text>
-                                                       Swal.fire("Debugging Admin", code, "error");
-                                                       </text>
-                                                   }
-                                                   else
-                                                   {
-                                                       <text>
-                                                       Swal.fire("System", "@SharedUtil.UserErrorNotification", "error");
-                                                       </text>
-                                                   }
-                                               }
-                                           }else  if (parseInt(code) === parseInt(@((int) ReturnCodeEnum.ACCESS_DENIED) )) {
-                        let timerInterval
-                        Swal.fire({
-                            title: 'Auto close alert!',
-                            html: 'Session Out .Pease Re-login.I will close in <b></b> milliseconds.',
-                            timer: 2000,
-                            timerProgressBar: true,
-                            didOpen: () => {
-                                Swal.showLoading()
-                                const b = Swal.getHtmlContainer().querySelector('b')
-                                timerInterval = setInterval(() => {
-                                    b.textContent = Swal.getTimerLeft()
-                                }, 100)
-                            },
-                            willClose: () => {
-                                clearInterval(timerInterval)
-                            }
-                        }).then((result) => {
-
-                            if (result.dismiss === Swal.DismissReason.timer) {
-                                console.log('session out .. ');
-                                location.href = "/";
-                            }
-                        });
+                    if (typeof (code) === 'string') {
+                        callBackError();
+                    } else if (parseInt(code) === parseInt(accessDeniedCode)) {
+                        accessDenied();
                     } else {
                         location.href = "/";
                     }
@@ -267,362 +238,248 @@
                 console.log("always:complete");
             });
         }
-        function readRecord() {
-            $.ajax({
-                type: "post",
-                url: "api/setting/productCategory",
-                async: false,
-                contentType: "application/x-www-form-urlencoded",
-                data: {
-                    mode: "read",
-                    leafCheckKey: @navigationModel.LeafCheckKey
-                    }, statusCode: {
-                    500: function () {
-                        Swal.fire("System Error", "@SharedUtil.UserErrorNotification", "error");
-                    }
-                }, beforeSend() {
-                    console.log("loading ..");
-                }
-            }).done(function (data) {
-                if (data === void 0) {
-                    location.href = "/";
-                }
-                 let status = data.status;
-                 let code = data.code;
-                if (data.status) {
-                    if (data.data === void 0) {
-                        $("#tableBody").html("").html(emptyTemplate());
-                    } else {
-                        if (data.data.length > 0) {
-                            let templateStringBuilder = "";
-                            for (let i = 0; i < data.data.length; i++) {
-                                const row = data.data[i];
-                                templateStringBuilder += template(row.productCategoryKey, row.productCategoryName);
-                            }
-                            $("#tableBody").html("").html(templateStringBuilder);
-                        } else {
-                            $("#tableBody").html("").html(emptyTemplate());
-                        }
-                    }
-                } else if (status === false) {
-                  if (typeof(code) === 'string'){
-                                              @{
-                                                  if (sharedUtils.GetRoleId().Equals((int) AccessEnum.ADMINISTRATOR_ACCESS))
-                                                  {
-                                                      <text>
-                                                      Swal.fire("Debugging Admin", code, "error");
-                                                      </text>
-                                                  }
-                                                  else
-                                                  {
-                                                      <text>
-                                                      Swal.fire("System", "@SharedUtil.UserErrorNotification", "error");
-                                                      </text>
-                                                  }
-                                              }
-                                          }else   if (parseInt(code) === parseInt(@((int) ReturnCodeEnum.ACCESS_DENIED) )) {
-                        let timerInterval
-                        Swal.fire({
-                            title: 'Auto close alert!',
-                            html: 'Session Out .Pease Re-login.I will close in <b></b> milliseconds.',
-                            timer: 2000,
-                            timerProgressBar: true,
-                            didOpen: () => {
-                                Swal.showLoading()
-                                const b = Swal.getHtmlContainer().querySelector('b')
-                                timerInterval = setInterval(() => {
-                                    b.textContent = Swal.getTimerLeft()
-                                }, 100)
-                            },
-                            willClose: () => {
-                                clearInterval(timerInterval)
-                            }
-                        }).then((result) => {
-
-                            if (result.dismiss === Swal.DismissReason.timer) {
-                                console.log('session out .. ');
-                                location.href = "/";
-                            }
-                        });
-                    } else {
-                        location.href = "/";
-                    }
-                } else {
-                    location.href = "/";
-                }
-            }).fail(function (xhr) {
-                console.log(xhr.status)
-                Swal.fire("System", "@SharedUtil.UserErrorNotification", "error");
-            }).always(function () {
-                console.log("always:complete");
-            });
-        }
-        function searchRecord() {
-            $.ajax({
-                type: "post",
-                url: "api/setting/productCategory",
-                async: false,
-                contentType: "application/x-www-form-urlencoded",
-                data: {
-                    mode: "search",
-                    leafCheckKey: @navigationModel.LeafCheckKey,
-                    search: $("#search").val()
-                }, statusCode: {
-                    500: function () {
-                        Swal.fire("System Error", "@SharedUtil.UserErrorNotification", "error");
-                    }
-                }, beforeSend() {
-                    console.log("loading ..");
-                }
-            }).done(function (data) {
-                if (data === void 0) {
-                    location.href = "/";
-                }
-                 let status = data.status;
-                 let code = data.code;
-                if (status) {
-                    if (data.data === void 0) {
-                        $("#tableBody").html("").html(emptyTemplate());
-                    } else {
-                        if (data.data.length > 0) {
-                            let templateStringBuilder = "";
-                            for (let i = 0; i < data.data.length; i++) {
-                                const row = data.data[i];
-
-                                templateStringBuilder += template(row.productCategoryKey, row.productCategoryName);
-                            }
-                            $("#tableBody").html("").html(templateStringBuilder);
-                        }
-                    }
-                } else if (status === false) {
-                   if (typeof(code) === 'string'){
-                                               @{
-                                                   if (sharedUtils.GetRoleId().Equals((int) AccessEnum.ADMINISTRATOR_ACCESS))
-                                                   {
-                                                       <text>
-                                                       Swal.fire("Debugging Admin", code, "error");
-                                                       </text>
-                                                   }
-                                                   else
-                                                   {
-                                                       <text>
-                                                       Swal.fire("System", "@SharedUtil.UserErrorNotification", "error");
-                                                       </text>
-                                                   }
-                                               }
-                                           }else  if (parseInt(code) === parseInt(@((int) ReturnCodeEnum.ACCESS_DENIED) )) {
-                        let timerInterval
-                        Swal.fire({
-                            title: 'Auto close alert!',
-                            html: 'Session Out .Pease Re-login.I will close in <b></b> milliseconds.',
-                            timer: 2000,
-                            timerProgressBar: true,
-                            didOpen: () => {
-                                Swal.showLoading()
-                                const b = Swal.getHtmlContainer().querySelector('b')
-                                timerInterval = setInterval(() => {
-                                    b.textContent = Swal.getTimerLeft()
-                                }, 100)
-                            },
-                            willClose: () => {
-                                clearInterval(timerInterval)
-                            }
-                        }).then((result) => {
-
-                            if (result.dismiss === Swal.DismissReason.timer) {
-                                console.log('session out .. ');
-                                location.href = "/";
-                            }
-                        });
-                    } else {
-                        location.href = "/";
-                    }
-                } else {
-                    location.href = "/";
-                }
-            }).fail(function (xhr) {
-                console.log(xhr.status)
-                Swal.fire("System", "@SharedUtil.UserErrorNotification", "error");
-            }).always(function () {
-                console.log("always:complete");
-            });
-        }
-        function updateRecord(productCategoryKey) {
-            $.ajax({
-                type: 'POST',
-                url: "api/setting/productCategory",
-                async: false,
-                data: {
-                    mode: 'update',
-                    leafCheckKey: @navigationModel.LeafCheckKey,
-                    productCategoryKey: productCategoryKey,
-                    productCategoryName: $("#productCategoryName-" + productCategoryKey).val()
-                }, statusCode: {
-                    500: function () {
-                        Swal.fire("System Error", "@SharedUtil.UserErrorNotification", "error");
-                    }
+    }
+    function readRecord() {
+        $.ajax({
+            type: "post",
+            url: "api/setting/productCategory",
+            async: false,
+            contentType: "application/x-www-form-urlencoded",
+            data: {
+                mode: "read",
+                leafCheckKey: @navigationModel.LeafCheckKey
                 },
-                beforeSend: function () {
-                    console.log("loading ..");
-
+            statusCode: {
+                500: function () {
+                    Swal.fire("System Error", "@SharedUtil.UserErrorNotification", "error");
+                    accessDenied();
                 }
-            }).done(function (data) {
-                if (data === void 0) {
-                    location.href = "/";
-                }
-                let status = data.status;
-                 let code = data.code;
-                if (status) {
-                    Swal.fire("System", "@SharedUtil.RecordUpdated", 'success')
-                } else if (status === false) {
-                if (typeof(code) === 'string'){
-                                            @{
-                                                if (sharedUtils.GetRoleId().Equals((int) AccessEnum.ADMINISTRATOR_ACCESS))
-                                                {
-                                                    <text>
-                                                    Swal.fire("Debugging Admin", code, "error");
-                                                    </text>
-                                                }
-                                                else
-                                                {
-                                                    <text>
-                                                    Swal.fire("System", "@SharedUtil.UserErrorNotification", "error");
-                                                    </text>
-                                                }
-                                            }
-                                        }else     if (parseInt(code) === parseInt(@((int) ReturnCodeEnum.ACCESS_DENIED) )) {
-                        let timerInterval
-                        Swal.fire({
-                            title: 'Auto close alert!',
-                            html: 'Session Out .Pease Re-login.I will close in <b></b> milliseconds.',
-                            timer: 2000,
-                            timerProgressBar: true,
-                            didOpen: () => {
-                                Swal.showLoading()
-                                const b = Swal.getHtmlContainer().querySelector('b')
-                                timerInterval = setInterval(() => {
-                                    b.textContent = Swal.getTimerLeft()
-                                }, 100)
-                            },
-                            willClose: () => {
-                                clearInterval(timerInterval)
-                            }
-                        }).then((result) => {
-
-                            if (result.dismiss === Swal.DismissReason.timer) {
-                                console.log('session out .. ');
-                                location.href = "/";
-                            }
-                        });
+            },
+            beforeSend() {
+                console.log("loading ..");
+            }
+        }).done(function (data) {
+            if (data === void 0) {
+                location.href = "/";
+            }
+            let status = data.status;
+            let code = data.code;
+            if (data.status) {
+                if (data.data === void 0) {
+                    $("#tableBody").html("").html(emptyTemplate());
+                } else {
+                    if (data.data.length > 0) {
+                        let templateStringBuilder = "";
+                        for (let i = 0; i < data.data.length; i++) {
+                            const row = data.data[i];
+                            templateStringBuilder += template(row.productCategoryKey, row.productCategoryName);
+                        }
+                        $("#tableBody").html("").html(templateStringBuilder);
                     } else {
+                        $("#tableBody").html("").html(emptyTemplate());
+                    }
+                }
+            } else if (status === false) {
+                if (typeof (code) === 'string') {
+                    callBackError();
+                } else if (parseInt(code) === parseInt()) {
+                    accessDenied();
+                }).then((result) => {
+
+                    if (result.dismiss === Swal.DismissReason.timer) {
+                        console.log('session out .. ');
                         location.href = "/";
                     }
+                });
+    } else {
+        location.href = "/";
+    }
+                } else {
+        location.href = "/";
+    }
+            }).fail(function (xhr) {
+        console.log(xhr.status)
+        Swal.fire("System", "@SharedUtil.UserErrorNotification", "error");
+    }).always(function () {
+        console.log("always:complete");
+    });
+        }
+    function searchRecord() {
+        $.ajax({
+            type: "post",
+            url: "api/setting/productCategory",
+            async: false,
+            contentType: "application/x-www-form-urlencoded",
+            data: {
+                mode: "search",
+                leafCheckKey: @navigationModel.LeafCheckKey,
+                search: $("#search").val()
+            },
+            statusCode: {
+                500: function () {
+                    Swal.fire("System Error", "@SharedUtil.UserErrorNotification", "error");
+                    accessDenied();
+                }
+            },
+            beforeSend() {
+                console.log("loading ..");
+            }
+        }).done(function (data) {
+            if (data === void 0) {
+                location.href = "/";
+            }
+            let status = data.status;
+            let code = data.code;
+            if (status) {
+                if (data.data === void 0) {
+                    $("#tableBody").html("").html(emptyTemplate());
+                } else {
+                    if (data.data.length > 0) {
+                        let templateStringBuilder = "";
+                        for (let i = 0; i < data.data.length; i++) {
+                            const row = data.data[i];
+
+                            templateStringBuilder += template(row.productCategoryKey, row.productCategoryName);
+                        }
+                        $("#tableBody").html("").html(templateStringBuilder);
+                    }
+                }
+            } else if (status === false) {
+                if (typeof (code) === 'string') {
+                    callBackError();
+                } else if (parseInt(code) === parseInt(accessDeniedCode)) {
+                    accessDenied();
+                }).then((result) => {
+
+                    if (result.dismiss === Swal.DismissReason.timer) {
+                        console.log('session out .. ');
+                        location.href = "/";
+                    }
+                });
+    } else {
+        location.href = "/";
+    }
+                } else {
+        location.href = "/";
+    }
+            }).fail(function (xhr) {
+        console.log(xhr.status)
+        Swal.fire("System", "@SharedUtil.UserErrorNotification", "error");
+    }).always(function () {
+        console.log("always:complete");
+    });
+        }
+    function updateRecord(productCategoryKey) {
+        $.ajax({
+            type: 'POST',
+            url: "api/setting/productCategory",
+            async: false,
+            data: {
+                mode: 'update',
+                leafCheckKey: @navigationModel.LeafCheckKey,
+                productCategoryKey: productCategoryKey,
+                productCategoryName: $("#productCategoryName-" + productCategoryKey).val()
+            },
+            statusCode: {
+                500: function () {
+                    Swal.fire("System Error", "@SharedUtil.UserErrorNotification", "error");
+                    accessDenied();
+                }
+            },
+            beforeSend: function () {
+                console.log("loading ..");
+            }
+        }).done(function (data) {
+            if (data === void 0) {
+                location.href = "/";
+            }
+            let status = data.status;
+            let code = data.code;
+            if (status) {
+                Swal.fire("System", "@SharedUtil.RecordUpdated", 'success')
+            } else if (status === false) {
+                if (typeof (code) === 'string') {
+                    callBackError();
+                } else if (parseInt(code) === parseInt(accessDeniedCode)) {
+                    accessDenied();
                 } else {
                     location.href = "/";
                 }
-            }).fail(function (xhr) {
-                console.log(xhr.status)
-                Swal.fire("System", "@SharedUtil.UserErrorNotification", "error");
-            }).always(function () {
-                console.log("always:complete");
-            });
-        }
-        function deleteRecord(productCategoryKey) {
-            Swal.fire({
-                title: 'Are you sure?',
-                text: "You won't be able to revert this!",
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonText: 'Yes, delete it!',
-                cancelButtonText: 'No, cancel!',
-                reverseButtons: true
-            }).then((result) => {
-                if (result.value) {
-                    $.ajax({
-                        type: 'POST',
-                        url: "api/setting/productCategory",
-                        async: false,
-                        data: {
-                            mode: 'delete',
-                            leafCheckKey: @navigationModel.LeafCheckKey,
-                            productCategoryKey: productCategoryKey
-                        }, statusCode: {
-                            500: function () {
-                                Swal.fire("System Error", "@SharedUtil.UserErrorNotification", "error");
-                            }
-                        },
-                        beforeSend: function () {
-                            console.log("loading ..");
+            } else {
+                location.href = "/";
+            }
+        }).fail(function (xhr) {
+            console.log(xhr.status)
+            Swal.fire("System", "@SharedUtil.UserErrorNotification", "error");
+        }).always(function () {
+            console.log("always:complete");
+        });
+    }
+    function deleteRecord(productCategoryKey) {
+        Swal.fire({
+            title: 'Are you sure?',
+            text: "You won't be able to revert this!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Yes, delete it!',
+            cancelButtonText: 'No, cancel!',
+            reverseButtons: true
+        }).then((result) => {
+            if (result.value) {
+                $.ajax({
+                    type: 'POST',
+                    url: "api/setting/productCategory",
+                    async: false,
+                    data: {
+                        mode: 'delete',
+                        leafCheckKey: @navigationModel.LeafCheckKey,
+                        productCategoryKey: productCategoryKey
+                    },
+                    statusCode: {
+                        500: function () {
+                            Swal.fire("System Error", "@SharedUtil.UserErrorNotification", "error");
+                            accessDenied();
                         }
-                    }).done(function (data) {
-                        if (data === void 0) {
-                            location.href = "/";
-                        }
-                        let status = data.status;
-                         let code = data.code;
-                        if (status) {
-                            $("#productCategory-" + productCategoryKey).remove();
-                            Swal.fire("System", "@SharedUtil.RecordDeleted", "success");
-                        } else if (status === false) {
-                         if (typeof(code) === 'string'){
-                                                     @{
-                                                         if (sharedUtils.GetRoleId().Equals((int) AccessEnum.ADMINISTRATOR_ACCESS))
-                                                         {
-                                                             <text>
-                                                             Swal.fire("Debugging Admin", code, "error");
-                                                             </text>
-                                                         }
-                                                         else
-                                                         {
-                                                             <text>
-                                                             Swal.fire("System", "@SharedUtil.UserErrorNotification", "error");
-                                                             </text>
-                                                         }
-                                                     }
-                                                 }else    if (parseInt(code) === parseInt(@((int) ReturnCodeEnum.ACCESS_DENIED) )) {
-                                let timerInterval
-                                Swal.fire({
-                                    title: 'Auto close alert!',
-                                    html: 'Session Out .Pease Re-login.I will close in <b></b> milliseconds.',
-                                    timer: 2000,
-                                    timerProgressBar: true,
-                                    didOpen: () => {
-                                        Swal.showLoading()
-                                        const b = Swal.getHtmlContainer().querySelector('b')
-                                        timerInterval = setInterval(() => {
-                                            b.textContent = Swal.getTimerLeft()
-                                        }, 100)
-                                    },
-                                    willClose: () => {
-                                        clearInterval(timerInterval)
-                                    }
-                                }).then((result) => {
-
-                                    if (result.dismiss === Swal.DismissReason.timer) {
-                                        console.log('session out .. ');
-                                        location.href = "/";
-                                    }
-                                });
-                            } else {
-                                location.href = "/";
-                            }
+                    },
+                    beforeSend: function () {
+                        console.log("loading ..");
+                    }
+                }).done(function (data) {
+                    if (data === void 0) {
+                        location.href = "/";
+                    }
+                    let status = data.status;
+                    let code = data.code;
+                    if (status) {
+                        $("#productCategory-" + productCategoryKey).remove();
+                        Swal.fire("System", "@SharedUtil.RecordDeleted", "success");
+                    } else if (status === false) {
+                        if (typeof (code) === 'string') {
+                            callBackError();
+                        } else if (parseInt(code) === parseInt(accessDeniedCode)) {
+                            accessDenied();
                         } else {
                             location.href = "/";
                         }
-                    }).fail(function (xhr) {
-                        console.log(xhr.status)
-                        Swal.fire("System", "@SharedUtil.UserErrorNotification", "error");
-                    }).always(function () {
-                        console.log("always:complete");
-                    });
+                    } else {
+                        location.href = "/";
+                    }
+                }).fail(function (xhr) {
+                    console.log(xhr.status)
+                    Swal.fire("System", "@SharedUtil.UserErrorNotification", "error");
+                }).always(function () {
+                    console.log("always:complete");
+                });
 
-                } else if (result.dismiss === swal.DismissReason.cancel) {
-                    swal(
-                        'Cancelled',
-                        'Be careful before delete record',
-                        'error'
-                    )
-                }
-            });
-        }
-    </script>
+            } else if (result.dismiss === swal.DismissReason.cancel) {
+                swal(
+                    'Cancelled',
+                    'Be careful before delete record',
+                    'error'
+                )
+            }
+        });
+    }
+
+
+</script>

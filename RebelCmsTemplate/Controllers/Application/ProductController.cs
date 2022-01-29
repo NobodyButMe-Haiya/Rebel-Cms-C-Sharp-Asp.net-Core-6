@@ -105,7 +105,7 @@ public class ProductController : Controller
                             ProductSellingPrice = productSellingPrice,
                             ProductUnitsInStock = productUnitsInStock,
                             ProductUnitsOnOrder = productUnitsOnOrder,
-                            ProductReOrderLevel = productReOrderLevel,
+                            ProductReOrderLevel = productReOrderLevel
                         };
                         var lastInsertKey = productRepository.Create(productModel);
                         code = ((int) ReturnCodeEnum.CREATE_SUCCESS).ToString();
@@ -185,7 +185,12 @@ public class ProductController : Controller
                                 return Ok(new {status, code});
                             }
 
-                            if (productKey > 0)
+                            if (productKey == 0)
+                            {
+                                code = ((int) ReturnCodeEnum.ACCESS_DENIED).ToString();
+
+                            }
+                            else 
                             {
                                 ProductModel productModel = new()
                                 {
@@ -195,10 +200,6 @@ public class ProductController : Controller
                                 code = ((int) ReturnCodeEnum.READ_SUCCESS).ToString();
                                 status = true;
                                 return Ok(new {status, code, dataSingle});
-                            }
-                            else
-                            {
-                                code = ((int) ReturnCodeEnum.ACCESS_DENIED).ToString();
                             }
                         }
                         catch (Exception ex)
@@ -270,7 +271,7 @@ public class ProductController : Controller
                             ProductSellingPrice = productSellingPrice,
                             ProductUnitsInStock = productUnitsInStock,
                             ProductUnitsOnOrder = productUnitsOnOrder,
-                            ProductReOrderLevel = productReOrderLevel,
+                            ProductReOrderLevel = productReOrderLevel
                         };
                         productRepository.Update(productModel);
                         code = ((int) ReturnCodeEnum.UPDATE_SUCCESS).ToString();

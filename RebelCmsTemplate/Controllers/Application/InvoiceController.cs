@@ -50,7 +50,7 @@ public class InvoiceController : Controller
 
         SharedUtil sharedUtil = new(_httpContextAccessor);
         CheckAccessUtil checkAccessUtil = new(_httpContextAccessor);
-        string code = string.Empty;
+        var code = string.Empty;
         switch (mode)
         {
             case "create":
@@ -246,7 +246,11 @@ public class InvoiceController : Controller
                                 }
                             }
 
-                            if (invoiceKey > 0)
+                            if (invoiceKey == 0)
+                            {
+                                code = ((int) ReturnCodeEnum.ACCESS_DENIED).ToString();
+                            }
+                            else 
                             {
                                 InvoiceModel invoiceModel = new()
                                 {
@@ -256,10 +260,6 @@ public class InvoiceController : Controller
                                 code = ((int) ReturnCodeEnum.READ_SUCCESS).ToString();
                                 status = true;
                                 return Ok(new {status, code, dataSingle});
-                            }
-                            else
-                            {
-                                code = ((int) ReturnCodeEnum.ACCESS_DENIED).ToString();
                             }
                         }
                         catch (Exception ex)

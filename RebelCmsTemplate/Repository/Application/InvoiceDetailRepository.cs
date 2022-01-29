@@ -208,68 +208,6 @@ public class InvoiceDetailRepository
 
         return invoiceDetailModels;
     }
-
-    public InvoiceDetailModel GetSingle(InvoiceDetailModel invoiceDetailModel)
-    {
-        var sql = string.Empty;
-        List<ParameterModel> parameterModels = new();
-        using var connection = SharedUtil.GetConnection();
-        try
-        {
-            connection.Open();
-            sql += @"
-                SELECT  *
-                FROM    invoice_detail 
-	 JOIN invoice 
-	 USING(invoiceId)
-	 JOIN product 
-	 USING(productId)
-                WHERE   invoice_detail.isDelete != 1
-                AND   invoice_detail.invoiceDetailId    =   @invoiceDetailId LIMIT 1";
-            MySqlCommand mySqlCommand = new(sql, connection);
-            parameterModels = new List<ParameterModel>
-            {
-                new()
-                {
-                    Key = "@invoiceDetailId",
-                    Value = invoiceDetailModel.InvoiceDetailKey
-                }
-            };
-            foreach (var parameter in parameterModels)
-            {
-                mySqlCommand.Parameters.AddWithValue(parameter.Key, parameter.Value);
-            }
-
-            _sharedUtil.SetSqlSession(sql, parameterModels);
-            using (var reader = mySqlCommand.ExecuteReader())
-            {
-                while (reader.Read())
-                {
-                    invoiceDetailModel = new InvoiceDetailModel
-                    {
-                        InvoiceDetailKey = Convert.ToInt32(reader["invoiceDetailId"]),
-                        InvoiceKey = Convert.ToInt32(reader["invoiceId"]),
-                        ProductKey = Convert.ToInt32(reader["productId"]),
-                        InvoiceDetailUnitPrice = Convert.ToDecimal(reader["invoiceDetailUnitPrice"]),
-                        InvoiceDetailQuantity = Convert.ToInt32(reader["invoiceDetailQuantity"]),
-                        InvoiceDetailDiscount = Convert.ToDouble(reader["invoiceDetailDiscount"]),
-                        IsDelete = Convert.ToInt32(reader["isDelete"])
-                    };
-                }
-            }
-
-            mySqlCommand.Dispose();
-        }
-        catch (MySqlException ex)
-        {
-            System.Diagnostics.Debug.WriteLine(ex.Message);
-            _sharedUtil.SetQueryException(SharedUtil.GetSqlSessionValue(sql, parameterModels), ex);
-            throw new Exception(ex.Message);
-        }
-
-        return invoiceDetailModel;
-    }
-
     public byte[] GetExcel()
     {
         using var workbook = new XLWorkbook();

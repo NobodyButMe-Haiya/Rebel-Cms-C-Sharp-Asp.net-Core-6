@@ -1,3 +1,6 @@
+using System;
+using System.Collections.Generic;
+
 namespace RebelCmsTemplate.Models.Application;
 
 public partial class InvoiceModel

@@ -1,4 +1,6 @@
-﻿namespace RebelCmsTemplate.Models.Menu;
+﻿using System.Collections.Generic;
+
+namespace RebelCmsTemplate.Models.Menu;
 
 public class MenuModel
 {

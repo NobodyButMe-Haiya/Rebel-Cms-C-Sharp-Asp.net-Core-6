@@ -1,3 +1,5 @@
+using System;
+
 namespace RebelCmsTemplate.Models.Application;
 
 public class EmployeeModel
