@@ -50,7 +50,7 @@ public class InvoiceDetailController : Controller
 
         List<InvoiceDetailModel> data = new();
         InvoiceDetailModel dataSingle = new();
-        string code;
+        string? code;
         var lastInsertKey = 0;
         switch (mode)
         {
@@ -103,6 +103,7 @@ public class InvoiceDetailController : Controller
                         lastInsertKey = invoiceDetailRepository.Create(invoiceDetailModel);
                         code = ((int)ReturnCodeEnum.CREATE_SUCCESS).ToString();
                         status = true;
+                        return Ok(new { status, code, lastInsertKey });
                     }
                     catch (Exception ex)
                     {
@@ -125,6 +126,7 @@ public class InvoiceDetailController : Controller
                         data = invoiceDetailRepository.Read();
                         code = ((int)ReturnCodeEnum.CREATE_SUCCESS).ToString();
                         status = true;
+                        return Ok(new { status, code, data });
                     }
                     catch (Exception ex)
                     {
@@ -151,6 +153,7 @@ public class InvoiceDetailController : Controller
                             data = invoiceDetailRepository.Search(search);
                             code = ((int)ReturnCodeEnum.READ_SUCCESS).ToString();
                             status = true;
+                            return Ok(new { status, code, data });
                         }
                         catch (Exception ex)
                         {
@@ -178,7 +181,7 @@ public class InvoiceDetailController : Controller
                         try
                         {
                             int invoiceDetailKey = 0;
-                            if (!int.TryParse(Request.Form["productCategoryKey"], out productCategoryKey))
+                            if (!int.TryParse(Request.Form["invoiceDetailKey"], out invoiceDetailKey))
                             {
                                 code = ((int)ReturnCodeEnum.ACCESS_DENIED_NO_MODE).ToString();
                                 return Ok(new { status, code });
@@ -259,7 +262,7 @@ public class InvoiceDetailController : Controller
                         try
                         {
                             int invoiceDetailKey = 0;
-                            if (!int.TryParse(Request.Form["productCategoryKey"], out productCategoryKey))
+                            if (!int.TryParse(Request.Form["invoiceDetailKey"], out invoiceDetailKey))
                             {
                                 code = ((int)ReturnCodeEnum.ACCESS_DENIED_NO_MODE).ToString();
                                 return Ok(new { status, code });
@@ -298,16 +301,6 @@ public class InvoiceDetailController : Controller
                 break;
         }
 
-        if (data.Count > 0)
-        {
-            return Ok(new { status, code, data });
-        }
-
-        if (mode.Equals("single"))
-        {
-            return Ok(new { status, code, dataSingle });
-        }
-
-        return lastInsertKey > 0 ? Ok(new { status, code, lastInsertKey }) : Ok(new { status, code });
+        return Ok(new { status, code });
     }
 }

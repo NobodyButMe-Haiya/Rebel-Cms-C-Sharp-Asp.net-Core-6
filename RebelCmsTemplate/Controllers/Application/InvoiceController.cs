@@ -41,6 +41,7 @@ public class InvoiceController : Controller
         var status = false;
         var mode = Request.Form["mode"];
         var leafCheckKey = Convert.ToInt32(Request.Form["leafCheckKey"]);
+
         InvoiceRepository invoiceRepository = new(_httpContextAccessor);
         CustomerRepository customerRepository = new(_httpContextAccessor);
         ShipperRepository shipperRepository = new(_httpContextAccessor);
@@ -49,10 +50,10 @@ public class InvoiceController : Controller
         SharedUtil sharedUtil = new(_httpContextAccessor);
         CheckAccessUtil checkAccessUtil = new(_httpContextAccessor);
 
-
         List<InvoiceModel> data = new();
         InvoiceModel dataSingle = new();
-        string code;
+        string? code = string.Empty;
+        string? message = string.Empty;
         var lastInsertKey = 0;
         switch (mode)
         {
@@ -65,7 +66,6 @@ public class InvoiceController : Controller
                 {
                     try
                     {
-
                         var customerKey = 0;
                         if (!string.IsNullOrWhiteSpace(Request.Form["customerKey"]))
                         {
@@ -159,6 +159,7 @@ public class InvoiceController : Controller
                         lastInsertKey = invoiceRepository.Create(invoiceModel);
                         code = ((int)ReturnCodeEnum.CREATE_SUCCESS).ToString();
                         status = true;
+                        return Ok(new { status, code, lastInsertKey });
                     }
                     catch (Exception ex)
                     {
@@ -181,6 +182,7 @@ public class InvoiceController : Controller
                         data = invoiceRepository.Read();
                         code = ((int)ReturnCodeEnum.CREATE_SUCCESS).ToString();
                         status = true;
+                        return Ok(new { status, code, data });
                     }
                     catch (Exception ex)
                     {
@@ -206,6 +208,7 @@ public class InvoiceController : Controller
                             data = invoiceRepository.Search(search);
                             code = ((int)ReturnCodeEnum.READ_SUCCESS).ToString();
                             status = true;
+                            return Ok(new { status, code, data });
                         }
                         catch (Exception ex)
                         {
@@ -228,7 +231,8 @@ public class InvoiceController : Controller
                 }
                 else
                 {
-                    if (!string.IsNullOrEmpty(Request.Form["invoiceKey"]){
+                    if (!string.IsNullOrEmpty(Request.Form["invoiceKey"]))
+                    {
                         try
                         {
                             var invoiceKey = 0;
@@ -249,6 +253,7 @@ public class InvoiceController : Controller
                                 dataSingle = invoiceRepository.GetSingleWithDetail(invoiceModel);
                                 code = ((int)ReturnCodeEnum.READ_SUCCESS).ToString();
                                 status = true;
+                                return Ok(new { status, code, dataSingle });
                             }
                             else
                             {
@@ -276,7 +281,8 @@ public class InvoiceController : Controller
                 }
                 else
                 {
-                    if (!string.IsNullOrEmpty(Request.Form["invoiceKey"]){
+                    if (!string.IsNullOrEmpty(Request.Form["invoiceKey"]))
+                    {
                         try
                         {
 
@@ -408,7 +414,8 @@ public class InvoiceController : Controller
                 }
                 else
                 {
-                    if (!string.IsNullOrEmpty(Request.Form["invoiceKey"]){
+                    if (!string.IsNullOrEmpty(Request.Form["invoiceKey"]))
+                    {
                         try
                         {
                             var invoiceKey = 0;
@@ -446,24 +453,15 @@ public class InvoiceController : Controller
                     {
                         code = ((int)ReturnCodeEnum.ACCESS_DENIED).ToString();
                     }
-                }
 
+                }
                 break;
             default:
                 code = ((int)ReturnCodeEnum.ACCESS_DENIED_NO_MODE).ToString();
                 break;
         }
 
-        if (data.Count > 0)
-        {
-            return Ok(new { status, code, data });
-        }
-
-        if (mode.Equals("single") || mode.Equals("singleWithDetail"))
-        {
-            return Ok(new { status, code, dataSingle });
-        }
-
-        return lastInsertKey > 0 ? Ok(new { status, code, lastInsertKey }) : Ok(new { status, code });
+        
+        return Ok(new { status, code });
     }
 }

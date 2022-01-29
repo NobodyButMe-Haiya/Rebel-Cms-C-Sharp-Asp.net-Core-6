@@ -47,7 +47,7 @@ public class ProductController : Controller
 
         List<ProductModel> data = new();
         ProductModel dataSingle = new();
-        string code;
+        string? code;
         var lastInsertKey = 0;
         switch (mode)
         {
@@ -91,6 +91,7 @@ public class ProductController : Controller
                         lastInsertKey = productRepository.Create(productModel);
                         code = ((int)ReturnCodeEnum.CREATE_SUCCESS).ToString();
                         status = true;
+                        return Ok(new { status, code, lastInsertKey });
                     }
                     catch (Exception ex)
                     {
@@ -110,6 +111,7 @@ public class ProductController : Controller
                         data = productRepository.Read();
                         code = ((int)ReturnCodeEnum.CREATE_SUCCESS).ToString();
                         status = true;
+                        return Ok(new { status, code, data });
                     }
                     catch (Exception ex)
                     {
@@ -130,6 +132,7 @@ public class ProductController : Controller
                         data = productRepository.Search(search);
                         code = ((int)ReturnCodeEnum.READ_SUCCESS).ToString();
                         status = true;
+                        return Ok(new { status, code, data });
                     }
                     catch (Exception ex)
                     {
@@ -144,19 +147,40 @@ public class ProductController : Controller
                 }
                 else
                 {
-                    try
+                    if (!string.IsNullOrEmpty(Request.Form["productKey"]))
                     {
-                        ProductModel productModel = new()
+                        try
                         {
-                            ProductKey = productKey
-                        };
-                        dataSingle = productRepository.GetSingle(productModel);
-                        code = ((int)ReturnCodeEnum.READ_SUCCESS).ToString();
-                        status = true;
+                            int productKey = 0;
+                            if (!int.TryParse(Request.Form["productKey"], out productKey))
+                            {
+                                code = ((int)ReturnCodeEnum.ACCESS_DENIED_NO_MODE).ToString();
+                                return Ok(new { status, code });
+                            }
+                            if (productKey > 0)
+                            {
+                                ProductModel productModel = new()
+                                {
+                                    ProductKey = productKey
+                                };
+                                dataSingle = productRepository.GetSingle(productModel);
+                                code = ((int)ReturnCodeEnum.READ_SUCCESS).ToString();
+                                status = true;
+                                return Ok(new { status, code, dataSingle });
+                            }
+                            else
+                            {
+                                code = ((int)ReturnCodeEnum.ACCESS_DENIED).ToString();
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            code = sharedUtil.GetRoleId() == (int)AccessEnum.ADMINISTRATOR_ACCESS ? ex.Message : ((int)ReturnCodeEnum.SYSTEM_ERROR).ToString();
+                        }
                     }
-                    catch (Exception ex)
+                    else
                     {
-                        code = sharedUtil.GetRoleId() == (int)AccessEnum.ADMINISTRATOR_ACCESS ? ex.Message : ((int)ReturnCodeEnum.SYSTEM_ERROR).ToString();
+                        code = ((int)ReturnCodeEnum.ACCESS_DENIED).ToString();
                     }
                 }
                 break;
@@ -239,15 +263,7 @@ public class ProductController : Controller
                 code = ((int)ReturnCodeEnum.ACCESS_DENIED_NO_MODE).ToString();
                 break;
         }
-        if (data.Count > 0)
-        {
-            return Ok(new { status, code, data });
-        }
-        if (mode.Equals("single") || mode.Equals("singleWithDetail"))
-        {
-            return Ok(new { status, code, dataSingle });
-        }
-        return lastInsertKey > 0 ? Ok(new { status, code, lastInsertKey }) : Ok(new { status, code });
+        return Ok(new { status, code });
     }
 
 }

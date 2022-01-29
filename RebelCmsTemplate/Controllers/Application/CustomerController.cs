@@ -48,7 +48,7 @@ public class CustomerController : Controller
 
         List<CustomerModel> data = new();
         CustomerModel dataSingle = new();
-        string code;
+        string? code = string.Empty;
         var lastInsertKey = 0;
         switch (mode)
         {
@@ -90,6 +90,7 @@ public class CustomerController : Controller
                         lastInsertKey = customerRepository.Create(customerModel);
                         code = ((int)ReturnCodeEnum.CREATE_SUCCESS).ToString();
                         status = true;
+                        return Ok(new { status, code, lastInsertKey });
                     }
                     catch (Exception ex)
                     {
@@ -112,6 +113,7 @@ public class CustomerController : Controller
                         data = customerRepository.Read();
                         code = ((int)ReturnCodeEnum.CREATE_SUCCESS).ToString();
                         status = true;
+                        return Ok(new { status, code, data });
                     }
                     catch (Exception ex)
                     {
@@ -137,6 +139,7 @@ public class CustomerController : Controller
                             data = customerRepository.Search(search);
                             code = ((int)ReturnCodeEnum.READ_SUCCESS).ToString();
                             status = true;
+                            return Ok(new { status, code, data });
                         }
                         catch (Exception ex)
                         {
@@ -180,6 +183,7 @@ public class CustomerController : Controller
                                 dataSingle = customerRepository.GetSingle(customerModel);
                                 code = ((int)ReturnCodeEnum.READ_SUCCESS).ToString();
                                 status = true;
+                                return Ok(new { status, code, dataSingle });
                             }
                             else
                             {
@@ -289,7 +293,7 @@ public class CustomerController : Controller
                             }
                             if (customerKey > 0)
                             {
-: 0;
+
                                 CustomerModel customerModel = new()
                                 {
                                     CustomerKey = customerKey
@@ -324,15 +328,6 @@ public class CustomerController : Controller
                 break;
         }
 
-        if (data.Count > 0)
-        {
-            return Ok(new { status, code, data });
-        }
-
-        if (mode.Equals("single") || mode.Equals("singleWithDetail"))
-        {
-            return Ok(new { status, code, dataSingle });
-        }
-        return lastInsertKey > 0 ? Ok(new { status, code, lastInsertKey }) : Ok(new { status, code });
+        return Ok(new { status, code });
     }
 }

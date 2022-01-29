@@ -48,7 +48,7 @@ public class SupplierController : Controller
 
         List<SupplierModel> data = new();
         SupplierModel dataSingle = new();
-        string code;
+        string? code = string.Empty;
         var lastInsertKey = 0;
         switch (mode)
         {
@@ -90,6 +90,8 @@ public class SupplierController : Controller
                         lastInsertKey = supplierRepository.Create(supplierModel);
                         code = ((int)ReturnCodeEnum.CREATE_SUCCESS).ToString();
                         status = true;
+                        return Ok(new { status, code, lastInsertKey });
+
                     }
                     catch (Exception ex)
                     {
@@ -112,6 +114,7 @@ public class SupplierController : Controller
                         data = supplierRepository.Read();
                         code = ((int)ReturnCodeEnum.CREATE_SUCCESS).ToString();
                         status = true;
+                        return Ok(new { status, code, data });
                     }
                     catch (Exception ex)
                     {
@@ -137,6 +140,7 @@ public class SupplierController : Controller
                             data = supplierRepository.Search(search);
                             code = ((int)ReturnCodeEnum.READ_SUCCESS).ToString();
                             status = true;
+                            return Ok(new { status, code, data });
                         }
                         catch (Exception ex)
                         {
@@ -178,6 +182,7 @@ public class SupplierController : Controller
                             dataSingle = supplierRepository.GetSingle(supplierModel);
                             code = ((int)ReturnCodeEnum.READ_SUCCESS).ToString();
                             status = true;
+                            return Ok(new { status, code, dataSingle });
                         }
                         catch (Exception ex)
                         {
@@ -299,16 +304,6 @@ public class SupplierController : Controller
                 break;
         }
 
-        if (data.Count > 0)
-        {
-            return Ok(new { status, code, data });
-        }
-
-        if (mode.Equals("single") || mode.Equals("singleWithDetail"))
-        {
-            return Ok(new { status, code, dataSingle });
-        }
-
-        return lastInsertKey > 0 ? Ok(new { status, code, lastInsertKey }) : Ok(new { status, code });
+        return  Ok(new { status, code });
     }
 }

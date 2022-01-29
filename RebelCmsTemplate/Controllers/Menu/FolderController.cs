@@ -34,10 +34,6 @@ public class FolderController : Controller
         var mode = Request.Form["mode"];
         var leafCheckKey = Convert.ToInt32(Request.Form["leafCheckKey"]);
 
-
-
-
-
         FolderRepository folderRepository = new(_httpContextAccessor);
         SharedUtil sharedUtil = new(_httpContextAccessor);
         CheckAccessUtil checkAccessUtil = new(_httpContextAccessor);
@@ -45,8 +41,7 @@ public class FolderController : Controller
         List<FolderModel> data = new();
         var lastInsertKey = 0;
 
-        string? code;
-        // but we think something missing .. what ya ? 
+        string? code =string.Empty;
         switch (mode)
         {
             case "create":
@@ -74,6 +69,7 @@ public class FolderController : Controller
                         lastInsertKey = folderRepository.Create(folderModel);
                         code = ((int)ReturnCodeEnum.CREATE_SUCCESS).ToString();
                         status = true;
+                        return Ok(new { status, code, lastInsertKey });
                     }
                     catch (Exception ex)
                     {
@@ -96,6 +92,7 @@ public class FolderController : Controller
                         data = folderRepository.Read();
                         code = ((int)ReturnCodeEnum.CREATE_SUCCESS).ToString();
                         status = true;
+                        return Ok(new { status, code, data });
                     }
                     catch (Exception ex)
                     {
@@ -121,6 +118,7 @@ public class FolderController : Controller
                             data = folderRepository.Search(search);
                             code = ((int)ReturnCodeEnum.READ_SUCCESS).ToString();
                             status = true;
+                            return Ok(new { status, code, data });
                         }
                         catch (Exception ex)
                         {
@@ -154,7 +152,6 @@ public class FolderController : Controller
                                 return Ok(new { status, code });
                             }
 
-                            var folderKey = Convert.ToInt32(Request.Form["folderKey"]);
                             var folderName = Request.Form["folderName"];
                             var folderFilename = Request.Form["folderFilename"];
                             var folderIcon = Request.Form["folderIcon"];
@@ -248,11 +245,6 @@ public class FolderController : Controller
                 break;
         }
 
-        if (data.Count > 0)
-        {
-            return Ok(new { status, code, data });
-        }
-
-        return lastInsertKey > 0 ? Ok(new { status, code, lastInsertKey }) : Ok(new { status, code });
+        return Ok(new { status, code });
     }
 }

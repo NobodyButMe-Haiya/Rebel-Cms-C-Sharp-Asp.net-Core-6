@@ -67,6 +67,7 @@ public class LogController : Controller
                         data = logRepository.Read();
                         code = ((int) ReturnCodeEnum.CREATE_SUCCESS).ToString();
                         status = true;
+                        return Ok(new { status, code, data });
                     }
                     catch (Exception ex)
                     {
@@ -92,6 +93,7 @@ public class LogController : Controller
                             data = logRepository.Search(search);
                             code = ((int)ReturnCodeEnum.READ_SUCCESS).ToString();
                             status = true;
+                            return Ok(new { status, code, data });
                         }
                         catch (Exception ex)
                         {
@@ -111,7 +113,6 @@ public class LogController : Controller
                 code = ((int) ReturnCodeEnum.ACCESS_DENIED_NO_MODE).ToString();
                 break;
         }
-
-        return data.Count > 0 ? Ok(new {status, code, data}) : Ok(new {status, code});
+        return Ok(new { status, code });
     }
 }

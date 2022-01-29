@@ -34,10 +34,6 @@ public class LeafController : Controller
         var mode = Request.Form["mode"];
         var leafCheckKey = Convert.ToInt32(Request.Form["leafCheckKey"]);
 
-        var leafKey = Convert.ToInt32(Request.Form["leafKey"]);
-        var folderKey = Convert.ToInt32(Request.Form["folderKey"]);
-
-
         LeafRepository leafRepository = new(_httpContextAccessor);
         SharedUtil sharedUtil = new(_httpContextAccessor);
         CheckAccessUtil checkAccessUtil = new(_httpContextAccessor);
@@ -45,7 +41,7 @@ public class LeafController : Controller
         List<LeafModel> data = new();
         var lastInsertKey = 0;
 
-        string? code;
+        string? code = string.Empty;
         // but we think something missing .. what ya ? 
         switch (mode)
         {
@@ -83,6 +79,7 @@ public class LeafController : Controller
                         lastInsertKey = leafRepository.Create(leafModel);
                         code = ((int)ReturnCodeEnum.CREATE_SUCCESS).ToString();
                         status = true;
+                        return Ok(new { status, code, lastInsertKey });
                     }
                     catch (Exception ex)
                     {
@@ -105,6 +102,7 @@ public class LeafController : Controller
                         data = leafRepository.Read();
                         code = ((int)ReturnCodeEnum.CREATE_SUCCESS).ToString();
                         status = true;
+                        return Ok(new { status, code, data });
                     }
                     catch (Exception ex)
                     {
@@ -122,18 +120,26 @@ public class LeafController : Controller
                 }
                 else
                 {
-                    try
+                    if (!string.IsNullOrEmpty(Request.Form["search"]))
                     {
-                        var search = Request.Form["search"];
-                        data = leafRepository.Search(search);
-                        code = ((int)ReturnCodeEnum.READ_SUCCESS).ToString();
-                        status = true;
+                        try
+                        {
+                            var search = Request.Form["search"];
+                            data = leafRepository.Search(search);
+                            code = ((int)ReturnCodeEnum.READ_SUCCESS).ToString();
+                            status = true;
+                            return Ok(new { status, code, data });
+                        }
+                        catch (Exception ex)
+                        {
+                            code = sharedUtil.GetRoleId() == (int)AccessEnum.ADMINISTRATOR_ACCESS
+                                ? ex.Message
+                                : ((int)ReturnCodeEnum.SYSTEM_ERROR).ToString();
+                        }
                     }
-                    catch (Exception ex)
+                    else
                     {
-                        code = sharedUtil.GetRoleId() == (int)AccessEnum.ADMINISTRATOR_ACCESS
-                            ? ex.Message
-                            : ((int)ReturnCodeEnum.SYSTEM_ERROR).ToString();
+                        code = ((int)ReturnCodeEnum.ACCESS_DENIED).ToString();
                     }
                 }
 
@@ -258,11 +264,6 @@ public class LeafController : Controller
                 break;
         }
 
-        if (data.Count > 0)
-        {
-            return Ok(new { status, code, data });
-        }
-
-        return lastInsertKey > 0 ? Ok(new { status, code, lastInsertKey }) : Ok(new { status, code });
+        return Ok(new { status, code });
     }
 }

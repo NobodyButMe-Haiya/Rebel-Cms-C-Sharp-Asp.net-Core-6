@@ -73,7 +73,6 @@ public class ProductTypeController : Controller
                             if (!int.TryParse(Request.Form["productCategoryKey"], out productCategoryKey))
                             {
                                 code = ((int)ReturnCodeEnum.ACCESS_DENIED_NO_MODE).ToString();
-                                return Ok(new { status, code });
                             }
                         }
                         else
@@ -89,6 +88,7 @@ public class ProductTypeController : Controller
                         });
                         code = ((int)ReturnCodeEnum.CREATE_SUCCESS).ToString();
                         status = true;
+                        return Ok(new { status, code, lastInsertKey });
                     }
                     catch (Exception ex)
                     {
@@ -111,6 +111,7 @@ public class ProductTypeController : Controller
                         data = productTypeRepository.Read();
                         code = ((int)ReturnCodeEnum.CREATE_SUCCESS).ToString();
                         status = true;
+                        return Ok(new { status, code, data });
                     }
                     catch (Exception ex)
                     {
@@ -136,6 +137,7 @@ public class ProductTypeController : Controller
                             data = productTypeRepository.Search(search);
                             code = ((int)ReturnCodeEnum.READ_SUCCESS).ToString();
                             status = true;
+                            return Ok(new { status, code, data });
                         }
                         catch (Exception ex)
                         {
@@ -268,11 +270,6 @@ public class ProductTypeController : Controller
                 break;
         }
 
-        if (data.Count > 0)
-        {
-            return Ok(new { status, code, data });
-        }
-
-        return lastInsertKey > 0 ? Ok(new { status, code, lastInsertKey }) : Ok(new { status, code });
+        return  Ok(new { status, code });
     }
 }

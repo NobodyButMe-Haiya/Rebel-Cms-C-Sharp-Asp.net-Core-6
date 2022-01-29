@@ -45,15 +45,13 @@ public class RoleController : Controller
         var mode = Request.Form["mode"];
         var leafCheckKey = Convert.ToInt32(Request.Form["leafCheckKey"]);
 
-        var roleKey = Request.Form["roleKey"];
-
         RoleRepository roleRepository = new(_httpContextAccessor);
         SharedUtil sharedUtil = new(_httpContextAccessor);
         CheckAccessUtil checkAccessUtil = new(_httpContextAccessor);
 
         List<RoleModel> data = new();
 
-        string code;
+        string? code = string.Empty;
         var lastInsertKey = 0;
         switch (mode)
         {
@@ -74,6 +72,7 @@ public class RoleController : Controller
                         lastInsertKey = roleRepository.Create(roleModel);
                         code = ((int)ReturnCodeEnum.CREATE_SUCCESS).ToString();
                         status = true;
+                        return Ok(new { status, code, lastInsertKey });
                     }
                     catch (Exception ex)
                     {
@@ -147,7 +146,7 @@ public class RoleController : Controller
                     {
                         try
                         {
-                            var roleKey = 0;
+                            int roleKey = 0;
 
                             if (!int.TryParse(Request.Form["roleKey"], out roleKey))
                             {
@@ -191,7 +190,7 @@ public class RoleController : Controller
                     {
                         try
                         {
-                            var roleKey = 0;
+                            int roleKey = 0;
 
                             if (!int.TryParse(Request.Form["roleKey"], out roleKey))
                             {

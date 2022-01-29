@@ -72,6 +72,7 @@ public class ShipperController : Controller
                         lastInsertKey = shipperRepository.Create(shipperModel);
                         code = ((int)ReturnCodeEnum.CREATE_SUCCESS).ToString();
                         status = true;
+                        return Ok(new { status, code, lastInsertKey });
                     }
                     catch (Exception ex)
                     {
@@ -94,6 +95,7 @@ public class ShipperController : Controller
                         data = shipperRepository.Read();
                         code = ((int)ReturnCodeEnum.CREATE_SUCCESS).ToString();
                         status = true;
+                        return Ok(new { status, code, data });
                     }
                     catch (Exception ex)
                     {
@@ -119,6 +121,7 @@ public class ShipperController : Controller
                             data = shipperRepository.Search(search);
                             code = ((int)ReturnCodeEnum.READ_SUCCESS).ToString();
                             status = true;
+                            return Ok(new { status, code, data });
                         }
                         catch (Exception ex)
                         {
@@ -160,6 +163,7 @@ public class ShipperController : Controller
                                 dataSingle = shipperRepository.GetSingle(shipperModel);
                                 code = ((int)ReturnCodeEnum.READ_SUCCESS).ToString();
                                 status = true;
+                                return Ok(new { status, code, dataSingle });
                             }
                             else
                             {
@@ -284,17 +288,6 @@ public class ShipperController : Controller
                 code = ((int)ReturnCodeEnum.ACCESS_DENIED_NO_MODE).ToString();
                 break;
         }
-
-        if (data.Count > 0)
-        {
-            return Ok(new { status, code, data });
-        }
-
-        if (mode.Equals("single"))
-        {
-            return Ok(new { status, code, dataSingle });
-        }
-
-        return lastInsertKey > 0 ? Ok(new { status, code, lastInsertKey }) : Ok(new { status, code });
+        return Ok(new { status, code });
     }
 }

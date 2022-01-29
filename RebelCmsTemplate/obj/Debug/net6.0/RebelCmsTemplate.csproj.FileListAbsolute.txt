@@ -97,4 +97,3 @@
 /Users/user/Projects/Rebel-Cms-C-Sharp-Asp.net-Core-6/RebelCmsTemplate/obj/Debug/net6.0/ref/RebelCmsTemplate.dll
 /Users/user/Projects/Rebel-Cms-C-Sharp-Asp.net-Core-6/RebelCmsTemplate/obj/Debug/net6.0/RebelCmsTemplate.pdb
 /Users/user/Projects/Rebel-Cms-C-Sharp-Asp.net-Core-6/RebelCmsTemplate/obj/Debug/net6.0/RebelCmsTemplate.genruntimeconfig.cache
-/Users/user/Projects/Rebel-Cms-C-Sharp-Asp.net-Core-6/RebelCmsTemplate/obj/Debug/net6.0/RebelCmsTemplate.csproj.AssemblyReference.cache

@@ -61,7 +61,7 @@ public class FolderAccessController : Controller
         FolderAccessRepository folderAccessRepository = new(_httpContextAccessor);
         List<FolderAccessModel> data = new();
 
-        string? code;
+        string? code=string.Empty;
         switch (mode)
         {
             case "read":
@@ -77,6 +77,7 @@ public class FolderAccessController : Controller
                         data = folderAccessRepository.Read(roleKey, folderKey);
                         code = ((int) ReturnCodeEnum.CREATE_SUCCESS).ToString();
                         status = true;
+                        return Ok(new { status, code, data });
                     }
                     catch (Exception ex)
                     {
@@ -116,6 +117,6 @@ public class FolderAccessController : Controller
                 break;
         }
 
-        return data.Count > 0 ? Ok(new {status, code, data}) : Ok(new {status, code});
+        return Ok(new {status, code});
     }
 }
