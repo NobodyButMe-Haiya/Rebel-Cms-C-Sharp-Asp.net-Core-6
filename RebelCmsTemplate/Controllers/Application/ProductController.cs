@@ -178,6 +178,7 @@ public class ProductController : Controller
                         var productName = Request.Form["productName"];
                         var productDescription = Request.Form["productDescription"];
                         var productQuantityPerUnit = Request.Form["productQuantityPerUnit"];
+
                         var productCostPrice = !string.IsNullOrEmpty(Request.Form["productCostPrice"]) ? Convert.ToDouble(Request.Form["productCostPrice"]) : 0;
                         var productSellingPrice = !string.IsNullOrEmpty(Request.Form["productSellingPrice"]) ? Convert.ToDouble(Request.Form["productSellingPrice"]) : 0;
                         var productUnitsInStock = !string.IsNullOrEmpty(Request.Form["productUnitsInStock"]) ? Convert.ToDouble(Request.Form["productUnitsInStock"]) : 0;

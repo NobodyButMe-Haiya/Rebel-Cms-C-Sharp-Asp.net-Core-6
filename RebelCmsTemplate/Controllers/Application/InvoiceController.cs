@@ -198,46 +198,12 @@ public class InvoiceController : Controller
                 }
                 else
                 {
-                    try
+                    if (!string.IsNullOrEmpty(Request.Form["search"]))
                     {
-                        var search = Request.Form["search"];
-                        data = invoiceRepository.Search(search);
-                        code = ((int)ReturnCodeEnum.READ_SUCCESS).ToString();
-                        status = true;
-                    }
-                    catch (Exception ex)
-                    {
-                        code = sharedUtil.GetRoleId() == (int)AccessEnum.ADMINISTRATOR_ACCESS
-                            ? ex.Message
-                            : ((int)ReturnCodeEnum.SYSTEM_ERROR).ToString();
-                    }
-                }
-
-                break;
-            case "single":
-                if (!checkAccessUtil.GetPermission(leafCheckKey, AuthenticationEnum.READ_ACCESS))
-                {
-                    code = ((int)ReturnCodeEnum.ACCESS_DENIED).ToString();
-                }
-                else
-                {
-                    if (!string.IsNullOrEmpty(Request.Form["invoiceKey"]){
                         try
                         {
-                            var invoiceKey = 0;
-                            if (!string.IsNullOrWhiteSpace(Request.Form["invoiceKey"]))
-                            {
-                                if (!int.TryParse(Request.Form["invoiceKey"], out invoiceKey))
-                                {
-                                    code = ((int)ReturnCodeEnum.ACCESS_DENIED_NO_MODE).ToString();
-                                    return Ok(new { status, code });
-                                }
-                            }
-                            InvoiceModel invoiceModel = new()
-                            {
-                                InvoiceKey = invoiceKey
-                            };
-                            dataSingle = invoiceRepository.GetSingle(invoiceModel);
+                            var search = Request.Form["search"];
+                            data = invoiceRepository.Search(search);
                             code = ((int)ReturnCodeEnum.READ_SUCCESS).ToString();
                             status = true;
                         }
@@ -274,13 +240,20 @@ public class InvoiceController : Controller
                                     return Ok(new { status, code });
                                 }
                             }
-                            InvoiceModel invoiceModel = new()
+                            if (invoiceKey > 0)
                             {
-                                InvoiceKey = invoiceKey
-                            };
-                            dataSingle = invoiceRepository.GetSingleWithDetail(invoiceModel);
-                            code = ((int)ReturnCodeEnum.READ_SUCCESS).ToString();
-                            status = true;
+                                InvoiceModel invoiceModel = new()
+                                {
+                                    InvoiceKey = invoiceKey
+                                };
+                                dataSingle = invoiceRepository.GetSingleWithDetail(invoiceModel);
+                                code = ((int)ReturnCodeEnum.READ_SUCCESS).ToString();
+                                status = true;
+                            }
+                            else
+                            {
+                                code = ((int)ReturnCodeEnum.ACCESS_DENIED).ToString();
+                            }
                         }
                         catch (Exception ex)
                         {
@@ -316,101 +289,103 @@ public class InvoiceController : Controller
                                     return Ok(new { status, code });
                                 }
                             }
-
-                            var customerKey = 0;
-                            if (!string.IsNullOrWhiteSpace(Request.Form["customerKey"]))
+                            if (invoiceKey > 0)
                             {
-                                if (!int.TryParse(Request.Form["customerKey"], out customerKey))
+                                var customerKey = 0;
+                                if (!string.IsNullOrWhiteSpace(Request.Form["customerKey"]))
                                 {
-                                    code = ((int)ReturnCodeEnum.ACCESS_DENIED_NO_MODE).ToString();
-                                    return Ok(new { status, code });
+                                    if (!int.TryParse(Request.Form["customerKey"], out customerKey))
+                                    {
+                                        code = ((int)ReturnCodeEnum.ACCESS_DENIED_NO_MODE).ToString();
+                                        return Ok(new { status, code });
+                                    }
                                 }
-                            }
-                            else
-                            {
-                                customerKey = customerRepository.GetDefault();
-                            }
-                            var shipperKey = 0;
-                            if (!string.IsNullOrWhiteSpace(Request.Form["shipperKey"]))
-                            {
-                                if (!int.TryParse(Request.Form["shipperKey"], out shipperKey))
+                                else
                                 {
-                                    code = ((int)ReturnCodeEnum.ACCESS_DENIED_NO_MODE).ToString();
-                                    return Ok(new { status, code });
+                                    customerKey = customerRepository.GetDefault();
                                 }
-                            }
-                            else
-                            {
-                                shipperKey = shipperRepository.GetDefault();
-                            }
-                            var employeeKey = 0;
-                            if (!string.IsNullOrWhiteSpace(Request.Form["employeeKey"]))
-                            {
-                                if (!int.TryParse(Request.Form["employeeKey"], out shipperKey))
+                                var shipperKey = 0;
+                                if (!string.IsNullOrWhiteSpace(Request.Form["shipperKey"]))
                                 {
-                                    code = ((int)ReturnCodeEnum.ACCESS_DENIED_NO_MODE).ToString();
-                                    return Ok(new { status, code });
+                                    if (!int.TryParse(Request.Form["shipperKey"], out shipperKey))
+                                    {
+                                        code = ((int)ReturnCodeEnum.ACCESS_DENIED_NO_MODE).ToString();
+                                        return Ok(new { status, code });
+                                    }
                                 }
-                            }
-                            else
-                            {
-                                employeeKey = employeeRepository.GetDefault();
-                            }
+                                else
+                                {
+                                    shipperKey = shipperRepository.GetDefault();
+                                }
+                                var employeeKey = 0;
+                                if (!string.IsNullOrWhiteSpace(Request.Form["employeeKey"]))
+                                {
+                                    if (!int.TryParse(Request.Form["employeeKey"], out shipperKey))
+                                    {
+                                        code = ((int)ReturnCodeEnum.ACCESS_DENIED_NO_MODE).ToString();
+                                        return Ok(new { status, code });
+                                    }
+                                }
+                                else
+                                {
+                                    employeeKey = employeeRepository.GetDefault();
+                                }
 
-                            var invoiceOrderDate = DateOnly.FromDateTime(DateTime.Now);
-                            if (!string.IsNullOrEmpty(Request.Form["invoiceOrderDate"]))
-                            {
-                                var dateString = Request.Form["invoiceOrderDate"].ToString().Split("-");
-                                invoiceOrderDate = new DateOnly(Convert.ToInt32(dateString[0]), Convert.ToInt32(dateString[1]),
-                                    Convert.ToInt32(dateString[2]));
+                                var invoiceOrderDate = DateOnly.FromDateTime(DateTime.Now);
+                                if (!string.IsNullOrEmpty(Request.Form["invoiceOrderDate"]))
+                                {
+                                    var dateString = Request.Form["invoiceOrderDate"].ToString().Split("-");
+                                    invoiceOrderDate = new DateOnly(Convert.ToInt32(dateString[0]), Convert.ToInt32(dateString[1]),
+                                        Convert.ToInt32(dateString[2]));
+                                }
+
+                                var invoiceRequiredDate = DateOnly.FromDateTime(DateTime.Now);
+                                if (!string.IsNullOrEmpty(Request.Form["invoiceRequiredDate"]))
+                                {
+                                    var dateString = Request.Form["invoiceRequiredDate"].ToString().Split("-");
+                                    invoiceRequiredDate = new DateOnly(Convert.ToInt32(dateString[0]), Convert.ToInt32(dateString[1]),
+                                        Convert.ToInt32(dateString[2]));
+                                }
+
+                                var invoiceShippedDate = DateOnly.FromDateTime(DateTime.Now);
+                                if (!string.IsNullOrEmpty(Request.Form["invoiceShippedDate"]))
+                                {
+                                    var dateString = Request.Form["invoiceShippedDate"].ToString().Split("-");
+                                    invoiceShippedDate = new DateOnly(Convert.ToInt32(dateString[0]), Convert.ToInt32(dateString[1]),
+                                        Convert.ToInt32(dateString[2]));
+                                }
+
+                                var invoiceFreight = !string.IsNullOrEmpty(Request.Form["invoiceFreight"])
+                                    ? Convert.ToDecimal(Request.Form["invoiceFreight"])
+                                    : 0;
+                                var invoiceShipName = Request.Form["invoiceShipName"];
+                                var invoiceShipAddress = Request.Form["invoiceShipAddress"];
+                                var invoiceShipCity = Request.Form["invoiceShipCity"];
+                                var invoiceShipRegion = Request.Form["invoiceShipRegion"];
+                                var invoiceShipPostalCode = Request.Form["invoiceShipPostalCode"];
+                                var invoiceShipCountry = Request.Form["invoiceShipCountry"];
+
+                                InvoiceModel invoiceModel = new()
+                                {
+                                    InvoiceKey = invoiceKey,
+                                    CustomerKey = customerKey,
+                                    ShipperKey = shipperKey,
+                                    EmployeeKey = employeeKey,
+                                    InvoiceOrderDate = invoiceOrderDate,
+                                    InvoiceRequiredDate = invoiceRequiredDate,
+                                    InvoiceShippedDate = invoiceShippedDate,
+                                    InvoiceFreight = invoiceFreight,
+                                    InvoiceShipName = invoiceShipName,
+                                    InvoiceShipAddress = invoiceShipAddress,
+                                    InvoiceShipCity = invoiceShipCity,
+                                    InvoiceShipRegion = invoiceShipRegion,
+                                    InvoiceShipPostalCode = invoiceShipPostalCode,
+                                    InvoiceShipCountry = invoiceShipCountry
+                                };
+                                invoiceRepository.Update(invoiceModel);
+                                code = ((int)ReturnCodeEnum.UPDATE_SUCCESS).ToString();
+                                status = true;
                             }
-
-                            var invoiceRequiredDate = DateOnly.FromDateTime(DateTime.Now);
-                            if (!string.IsNullOrEmpty(Request.Form["invoiceRequiredDate"]))
-                            {
-                                var dateString = Request.Form["invoiceRequiredDate"].ToString().Split("-");
-                                invoiceRequiredDate = new DateOnly(Convert.ToInt32(dateString[0]), Convert.ToInt32(dateString[1]),
-                                    Convert.ToInt32(dateString[2]));
-                            }
-
-                            var invoiceShippedDate = DateOnly.FromDateTime(DateTime.Now);
-                            if (!string.IsNullOrEmpty(Request.Form["invoiceShippedDate"]))
-                            {
-                                var dateString = Request.Form["invoiceShippedDate"].ToString().Split("-");
-                                invoiceShippedDate = new DateOnly(Convert.ToInt32(dateString[0]), Convert.ToInt32(dateString[1]),
-                                    Convert.ToInt32(dateString[2]));
-                            }
-
-                            var invoiceFreight = !string.IsNullOrEmpty(Request.Form["invoiceFreight"])
-                                ? Convert.ToDecimal(Request.Form["invoiceFreight"])
-                                : 0;
-                            var invoiceShipName = Request.Form["invoiceShipName"];
-                            var invoiceShipAddress = Request.Form["invoiceShipAddress"];
-                            var invoiceShipCity = Request.Form["invoiceShipCity"];
-                            var invoiceShipRegion = Request.Form["invoiceShipRegion"];
-                            var invoiceShipPostalCode = Request.Form["invoiceShipPostalCode"];
-                            var invoiceShipCountry = Request.Form["invoiceShipCountry"];
-
-                            InvoiceModel invoiceModel = new()
-                            {
-                                InvoiceKey = invoiceKey,
-                                CustomerKey = customerKey,
-                                ShipperKey = shipperKey,
-                                EmployeeKey = employeeKey,
-                                InvoiceOrderDate = invoiceOrderDate,
-                                InvoiceRequiredDate = invoiceRequiredDate,
-                                InvoiceShippedDate = invoiceShippedDate,
-                                InvoiceFreight = invoiceFreight,
-                                InvoiceShipName = invoiceShipName,
-                                InvoiceShipAddress = invoiceShipAddress,
-                                InvoiceShipCity = invoiceShipCity,
-                                InvoiceShipRegion = invoiceShipRegion,
-                                InvoiceShipPostalCode = invoiceShipPostalCode,
-                                InvoiceShipCountry = invoiceShipCountry
-                            };
-                            invoiceRepository.Update(invoiceModel);
-                            code = ((int)ReturnCodeEnum.UPDATE_SUCCESS).ToString();
-                            status = true;
                         }
                         catch (Exception ex)
                         {
@@ -445,13 +420,20 @@ public class InvoiceController : Controller
                                     return Ok(new { status, code });
                                 }
                             }
-                            InvoiceModel invoiceModel = new()
+                            if (invoiceKey > 0)
                             {
-                                InvoiceKey = invoiceKey
-                            };
-                            invoiceRepository.Delete(invoiceModel);
-                            code = ((int)ReturnCodeEnum.DELETE_SUCCESS).ToString();
-                            status = true;
+                                InvoiceModel invoiceModel = new()
+                                {
+                                    InvoiceKey = invoiceKey
+                                };
+                                invoiceRepository.Delete(invoiceModel);
+                                code = ((int)ReturnCodeEnum.DELETE_SUCCESS).ToString();
+                                status = true;
+                            }
+                            else
+                            {
+                                code = ((int)ReturnCodeEnum.ACCESS_DENIED).ToString();
+                            }
                         }
                         catch (Exception ex)
                         {

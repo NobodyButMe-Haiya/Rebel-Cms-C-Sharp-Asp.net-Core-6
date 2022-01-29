@@ -277,24 +277,44 @@ public class CustomerController : Controller
                 }
                 else
                 {
-                    try
+                    if (!string.IsNullOrWhiteSpace(Request.Form["productCategoryKey"]))
                     {
-                        var customerKey = !string.IsNullOrEmpty(Request.Form["customerKey"])
-? Convert.ToInt32(Request.Form["customerKey"])
-: 0;
-                        CustomerModel customerModel = new()
+                        try
                         {
-                            CustomerKey = customerKey
-                        };
-                        customerRepository.Delete(customerModel);
-                        code = ((int)ReturnCodeEnum.DELETE_SUCCESS).ToString();
-                        status = true;
+                            int customerKey = 0;
+                            if (!int.TryParse(Request.Form["customerKey"], out customerKey))
+                            {
+                                code = ((int)ReturnCodeEnum.ACCESS_DENIED_NO_MODE).ToString();
+                                return Ok(new { status, code });
+                            }
+                            if (customerKey > 0)
+                            {
+: 0;
+                                CustomerModel customerModel = new()
+                                {
+                                    CustomerKey = customerKey
+                                };
+                                customerRepository.Delete(customerModel);
+                                code = ((int)ReturnCodeEnum.DELETE_SUCCESS).ToString();
+                                status = true;
+                            }
+                            else
+                            {
+                                code = ((int)ReturnCodeEnum.ACCESS_DENIED).ToString();
+
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            code = sharedUtil.GetRoleId() == (int)AccessEnum.ADMINISTRATOR_ACCESS
+                                ? ex.Message
+                                : ((int)ReturnCodeEnum.SYSTEM_ERROR).ToString();
+                        }
                     }
-                    catch (Exception ex)
+                    else
                     {
-                        code = sharedUtil.GetRoleId() == (int)AccessEnum.ADMINISTRATOR_ACCESS
-                            ? ex.Message
-                            : ((int)ReturnCodeEnum.SYSTEM_ERROR).ToString();
+                        code = ((int)ReturnCodeEnum.ACCESS_DENIED).ToString();
+
                     }
                 }
 

@@ -36,13 +36,7 @@ public class LeafController : Controller
 
         var leafKey = Convert.ToInt32(Request.Form["leafKey"]);
         var folderKey = Convert.ToInt32(Request.Form["folderKey"]);
-        var leafSeq = Convert.ToInt32(Request.Form["leafSeq"]);
 
-        var leafName = Request.Form["leafName"];
-        var leafFilename = Request.Form["leafFilename"];
-        var leafIcon = Request.Form["leafIcon"];
-
-        var search = Request.Form["search"];
 
         LeafRepository leafRepository = new(_httpContextAccessor);
         SharedUtil sharedUtil = new(_httpContextAccessor);
@@ -58,12 +52,26 @@ public class LeafController : Controller
             case "create":
                 if (!checkAccessUtil.GetPermission(leafCheckKey, AuthenticationEnum.CREATE_ACCESS))
                 {
-                    code = ((int) ReturnCodeEnum.ACCESS_DENIED).ToString();
+                    code = ((int)ReturnCodeEnum.ACCESS_DENIED).ToString();
                 }
                 else
                 {
                     try
                     {
+                        int folderKey = 0;
+                        if (!int.TryParse(Request.Form["folderKey"], out folderKey))
+                        {
+                            code = ((int)ReturnCodeEnum.ACCESS_DENIED_NO_MODE).ToString();
+                            return Ok(new { status, code });
+                        }
+                        var leafSeq = Convert.ToInt32(Request.Form["leafSeq"]);
+
+                        var leafName = Request.Form["leafName"];
+                        var leafFilename = Request.Form["leafFilename"];
+                        var leafIcon = Request.Form["leafIcon"];
+
+
+
                         LeafModel leafModel = new()
                         {
                             FolderKey = folderKey,
@@ -73,14 +81,14 @@ public class LeafController : Controller
                             LeafSeq = leafSeq
                         };
                         lastInsertKey = leafRepository.Create(leafModel);
-                        code = ((int) ReturnCodeEnum.CREATE_SUCCESS).ToString();
+                        code = ((int)ReturnCodeEnum.CREATE_SUCCESS).ToString();
                         status = true;
                     }
                     catch (Exception ex)
                     {
-                        code = sharedUtil.GetRoleId() == (int) AccessEnum.ADMINISTRATOR_ACCESS
+                        code = sharedUtil.GetRoleId() == (int)AccessEnum.ADMINISTRATOR_ACCESS
                             ? ex.Message
-                            : ((int) ReturnCodeEnum.SYSTEM_ERROR).ToString();
+                            : ((int)ReturnCodeEnum.SYSTEM_ERROR).ToString();
                     }
                 }
 
@@ -88,21 +96,21 @@ public class LeafController : Controller
             case "read":
                 if (!checkAccessUtil.GetPermission(leafCheckKey, AuthenticationEnum.READ_ACCESS))
                 {
-                    code = ((int) ReturnCodeEnum.ACCESS_DENIED).ToString();
+                    code = ((int)ReturnCodeEnum.ACCESS_DENIED).ToString();
                 }
                 else
                 {
                     try
                     {
                         data = leafRepository.Read();
-                        code = ((int) ReturnCodeEnum.CREATE_SUCCESS).ToString();
+                        code = ((int)ReturnCodeEnum.CREATE_SUCCESS).ToString();
                         status = true;
                     }
                     catch (Exception ex)
                     {
-                        code = sharedUtil.GetRoleId() == (int) AccessEnum.ADMINISTRATOR_ACCESS
+                        code = sharedUtil.GetRoleId() == (int)AccessEnum.ADMINISTRATOR_ACCESS
                             ? ex.Message
-                            : ((int) ReturnCodeEnum.SYSTEM_ERROR).ToString();
+                            : ((int)ReturnCodeEnum.SYSTEM_ERROR).ToString();
                     }
                 }
 
@@ -110,21 +118,22 @@ public class LeafController : Controller
             case "search":
                 if (!checkAccessUtil.GetPermission(leafCheckKey, AuthenticationEnum.READ_ACCESS))
                 {
-                    code = ((int) ReturnCodeEnum.ACCESS_DENIED).ToString();
+                    code = ((int)ReturnCodeEnum.ACCESS_DENIED).ToString();
                 }
                 else
                 {
                     try
                     {
+                        var search = Request.Form["search"];
                         data = leafRepository.Search(search);
-                        code = ((int) ReturnCodeEnum.READ_SUCCESS).ToString();
+                        code = ((int)ReturnCodeEnum.READ_SUCCESS).ToString();
                         status = true;
                     }
                     catch (Exception ex)
                     {
-                        code = sharedUtil.GetRoleId() == (int) AccessEnum.ADMINISTRATOR_ACCESS
+                        code = sharedUtil.GetRoleId() == (int)AccessEnum.ADMINISTRATOR_ACCESS
                             ? ex.Message
-                            : ((int) ReturnCodeEnum.SYSTEM_ERROR).ToString();
+                            : ((int)ReturnCodeEnum.SYSTEM_ERROR).ToString();
                     }
                 }
 
@@ -132,30 +141,62 @@ public class LeafController : Controller
             case "update":
                 if (!checkAccessUtil.GetPermission(leafCheckKey, AuthenticationEnum.UPDATE_ACCESS))
                 {
-                    code = ((int) ReturnCodeEnum.ACCESS_DENIED).ToString();
+                    code = ((int)ReturnCodeEnum.ACCESS_DENIED).ToString();
                 }
                 else
                 {
-                    try
+                    if (!string.IsNullOrEmpty(Request.Form["leafId"]))
                     {
-                        LeafModel leafModel = new()
+
+                        try
                         {
-                            FolderKey = folderKey,
-                            LeafName = leafName,
-                            LeafFilename = leafFilename,
-                            LeafIcon = leafIcon,
-                            LeafSeq = leafSeq,
-                            LeafKey = leafKey
-                        };
-                        leafRepository.Update(leafModel);
-                        code = ((int) ReturnCodeEnum.UPDATE_SUCCESS).ToString();
-                        status = true;
+                            int leafKey = 0;
+                            if (!int.TryParse(Request.Form["leafKey"], out leafKey))
+                            {
+                                code = ((int)ReturnCodeEnum.ACCESS_DENIED_NO_MODE).ToString();
+                                return Ok(new { status, code });
+                            }
+                            if (leafKey > 0)
+                            {
+                                int folderKey = 0;
+                                if (!int.TryParse(Request.Form["folderKey"], out folderKey))
+                                {
+                                    code = ((int)ReturnCodeEnum.ACCESS_DENIED_NO_MODE).ToString();
+                                    return Ok(new { status, code });
+                                }
+                                var leafSeq = Convert.ToInt32(Request.Form["leafSeq"]);
+                                var leafName = Request.Form["leafName"];
+                                var leafFilename = Request.Form["leafFilename"];
+                                var leafIcon = Request.Form["leafIcon"];
+
+                                LeafModel leafModel = new()
+                                {
+                                    FolderKey = folderKey,
+                                    LeafName = leafName,
+                                    LeafFilename = leafFilename,
+                                    LeafIcon = leafIcon,
+                                    LeafSeq = leafSeq,
+                                    LeafKey = leafKey
+                                };
+                                leafRepository.Update(leafModel);
+                                code = ((int)ReturnCodeEnum.UPDATE_SUCCESS).ToString();
+                                status = true;
+                            }
+                            else
+                            {
+                                code = ((int)ReturnCodeEnum.ACCESS_DENIED).ToString();
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            code = sharedUtil.GetRoleId() == (int)AccessEnum.ADMINISTRATOR_ACCESS
+                                ? ex.Message
+                                : ((int)ReturnCodeEnum.SYSTEM_ERROR).ToString();
+                        }
                     }
-                    catch (Exception ex)
+                    else
                     {
-                        code = sharedUtil.GetRoleId() == (int) AccessEnum.ADMINISTRATOR_ACCESS
-                            ? ex.Message
-                            : ((int) ReturnCodeEnum.SYSTEM_ERROR).ToString();
+                        code = ((int)ReturnCodeEnum.ACCESS_DENIED).ToString();
                     }
                 }
 
@@ -163,40 +204,65 @@ public class LeafController : Controller
             case "delete":
                 if (!checkAccessUtil.GetPermission(leafCheckKey, AuthenticationEnum.DELETE_ACCESS))
                 {
-                    code = ((int) ReturnCodeEnum.ACCESS_DENIED).ToString();
+                    code = ((int)ReturnCodeEnum.ACCESS_DENIED).ToString();
                 }
                 else
                 {
-                    try
-                    {
-                        LeafModel leafModel = new()
-                        {
-                            LeafKey = leafKey
-                        };
-                        leafRepository.Delete(leafModel);
 
-                        code = ((int) ReturnCodeEnum.DELETE_SUCCESS).ToString();
-                        status = true;
-                    }
-                    catch (Exception ex)
+                    if (!string.IsNullOrEmpty(Request.Form["leafId"]))
                     {
-                        code = sharedUtil.GetRoleId() == (int) AccessEnum.ADMINISTRATOR_ACCESS
-                            ? ex.Message
-                            : ((int) ReturnCodeEnum.SYSTEM_ERROR).ToString();
+
+                        try
+                        {
+                            int leafKey = 0;
+                            if (!int.TryParse(Request.Form["leafKey"], out leafKey))
+                            {
+                                code = ((int)ReturnCodeEnum.ACCESS_DENIED_NO_MODE).ToString();
+                                return Ok(new { status, code });
+                            }
+                            if (leafKey > 0)
+                            {
+                               
+                                LeafModel leafModel = new()
+                                {
+                                    LeafKey = leafKey
+                                };
+                                leafRepository.Delete(leafModel);
+
+                                code = ((int)ReturnCodeEnum.DELETE_SUCCESS).ToString();
+                                status = true;
+                            }
+                            else
+                            {
+                                code = ((int)ReturnCodeEnum.ACCESS_DENIED).ToString();
+
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            code = sharedUtil.GetRoleId() == (int)AccessEnum.ADMINISTRATOR_ACCESS
+                                ? ex.Message
+                                : ((int)ReturnCodeEnum.SYSTEM_ERROR).ToString();
+                        }
+                    }
+                    else
+                    {
+                        code = ((int)ReturnCodeEnum.ACCESS_DENIED).ToString();
+
                     }
                 }
 
                 break;
             default:
-                code = ((int) ReturnCodeEnum.ACCESS_DENIED_NO_MODE).ToString();
+                code = ((int)ReturnCodeEnum.ACCESS_DENIED_NO_MODE).ToString();
                 break;
         }
 
         if (data.Count > 0)
         {
-            return Ok(new {status, code, data});
+            return Ok(new { status, code, data });
         }
 
-        return lastInsertKey > 0 ? Ok(new {status, code, lastInsertKey}) : Ok(new {status, code});
+        return lastInsertKey > 0 ? Ok(new { status, code, lastInsertKey }) : Ok(new { status, code });
     }
 }

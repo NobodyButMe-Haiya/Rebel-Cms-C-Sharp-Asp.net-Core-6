@@ -170,7 +170,7 @@ public class SupplierController : Controller
                                 code = ((int)ReturnCodeEnum.ACCESS_DENIED_NO_MODE).ToString();
                                 return Ok(new { status, code });
                             }
- : 0;
+
                             SupplierModel supplierModel = new()
                             {
                                 SupplierKey = supplierKey

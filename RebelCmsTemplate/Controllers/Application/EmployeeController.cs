@@ -324,7 +324,7 @@ public class EmployeeController : Controller
                             }
                             else
                             {
-
+                                code = ((int)ReturnCodeEnum.ACCESS_DENIED).ToString();
                             }
                         }
                         catch (Exception ex)
@@ -353,16 +353,26 @@ public class EmployeeController : Controller
                     {
                         try
                         {
-                            var employeeKey = !string.IsNullOrEmpty(Request.Form["employeeKey"])
-         ? Convert.ToInt32(Request.Form["employeeKey"])
-         : 0;
-                            EmployeeModel employeeModel = new()
+                            int employeeKey = 0;
+                            if (!int.TryParse(Request.Form["employeeKey"], out employeeKey))
                             {
-                                EmployeeKey = employeeKey
-                            };
-                            employeeRepository.Delete(employeeModel);
-                            code = ((int)ReturnCodeEnum.DELETE_SUCCESS).ToString();
-                            status = true;
+                                code = ((int)ReturnCodeEnum.ACCESS_DENIED_NO_MODE).ToString();
+                                return Ok(new { status, code });
+                            }
+                            if (employeeKey > 0)
+                            {
+                                EmployeeModel employeeModel = new()
+                                {
+                                    EmployeeKey = employeeKey
+                                };
+                                employeeRepository.Delete(employeeModel);
+                                code = ((int)ReturnCodeEnum.DELETE_SUCCESS).ToString();
+                                status = true;
+                            }
+                            else
+                            {
+                                code = ((int)ReturnCodeEnum.ACCESS_DENIED).ToString();
+                            }
                         }
                         catch (Exception ex)
                         {
@@ -370,6 +380,7 @@ public class EmployeeController : Controller
                                 ? ex.Message
                                 : ((int)ReturnCodeEnum.SYSTEM_ERROR).ToString();
                         }
+
                     }
                     else
                     {
