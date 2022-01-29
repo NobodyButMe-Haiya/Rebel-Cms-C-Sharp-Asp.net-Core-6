@@ -44,11 +44,7 @@ public class ShipperController : Controller
         ShipperRepository shipperRepository = new(_httpContextAccessor);
         SharedUtil sharedUtil = new(_httpContextAccessor);
         CheckAccessUtil checkAccessUtil = new(_httpContextAccessor);
-        var shipperKey = !string.IsNullOrEmpty(Request.Form["shipperKey"])
-            ? Convert.ToInt32(Request.Form["shipperKey"])
-            : 0;
-        var shipperName = Request.Form["shipperName"];
-        var shipperPhone = Request.Form["shipperPhone"];
+  
         var search = Request.Form["search"];
         List<ShipperModel> data = new();
         ShipperModel dataSingle = new();
@@ -65,6 +61,9 @@ public class ShipperController : Controller
                 {
                     try
                     {
+                       
+                        var shipperName = Request.Form["shipperName"];
+                        var shipperPhone = Request.Form["shipperPhone"];
                         ShipperModel shipperModel = new()
                         {
                             ShipperName = shipperName,
@@ -162,6 +161,11 @@ public class ShipperController : Controller
                 {
                     try
                     {
+                        var shipperKey = !string.IsNullOrEmpty(Request.Form["shipperKey"])
+      ? Convert.ToInt32(Request.Form["shipperKey"])
+      : 0;
+                        var shipperName = Request.Form["shipperName"];
+                        var shipperPhone = Request.Form["shipperPhone"];
                         ShipperModel shipperModel = new()
                         {
                             ShipperKey = shipperKey,

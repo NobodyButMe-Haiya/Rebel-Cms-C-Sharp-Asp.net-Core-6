@@ -251,7 +251,7 @@ public class ShipperRepository
         {
             connection.Open();
             sql += @"
-            SELECT  *
+            SELECT  shipperId
             FROM    shipper 
             WHERE   isDelete != 1
             AND     isDefault = 1

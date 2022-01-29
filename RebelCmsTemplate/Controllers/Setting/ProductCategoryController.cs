@@ -46,10 +46,6 @@ public class ProductCategoryController : Controller
         var mode = Request.Form["mode"];
         var leafCheckKey = Convert.ToInt32(Request.Form["leafCheckKey"]);
 
-        var productCategoryName = Request.Form["productCategoryName"];
-        var productCategoryKey = Convert.ToInt32(Request.Form["productCategoryKey"]);
-        var search = Request.Form["search"];
-
         ProductCategoryRepository productCategoryRepository = new(_httpContextAccessor);
         SharedUtil sharedUtil = new(_httpContextAccessor);
         CheckAccessUtil checkAccessUtil = new(_httpContextAccessor);
@@ -63,24 +59,25 @@ public class ProductCategoryController : Controller
             case "create":
                 if (!checkAccessUtil.GetPermission(leafCheckKey, AuthenticationEnum.CREATE_ACCESS))
                 {
-                    code = ((int) ReturnCodeEnum.ACCESS_DENIED).ToString();
+                    code = ((int)ReturnCodeEnum.ACCESS_DENIED).ToString();
                 }
                 else
                 {
                     try
                     {
+                        var productCategoryName = Request.Form["productCategoryName"];
                         lastInsertKey = productCategoryRepository.Create(new ProductCategoryModel
                         {
                             ProductCategoryName = productCategoryName
                         });
-                        code = ((int) ReturnCodeEnum.CREATE_SUCCESS).ToString();
+                        code = ((int)ReturnCodeEnum.CREATE_SUCCESS).ToString();
                         status = true;
                     }
                     catch (Exception ex)
                     {
-                        code = sharedUtil.GetRoleId() == (int) AccessEnum.ADMINISTRATOR_ACCESS
+                        code = sharedUtil.GetRoleId() == (int)AccessEnum.ADMINISTRATOR_ACCESS
                             ? ex.Message
-                            : ((int) ReturnCodeEnum.SYSTEM_ERROR).ToString();
+                            : ((int)ReturnCodeEnum.SYSTEM_ERROR).ToString();
                     }
                 }
 
@@ -88,21 +85,21 @@ public class ProductCategoryController : Controller
             case "read":
                 if (!checkAccessUtil.GetPermission(leafCheckKey, AuthenticationEnum.READ_ACCESS))
                 {
-                    code = ((int) ReturnCodeEnum.ACCESS_DENIED).ToString();
+                    code = ((int)ReturnCodeEnum.ACCESS_DENIED).ToString();
                 }
                 else
                 {
                     try
                     {
                         data = productCategoryRepository.Read();
-                        code = ((int) ReturnCodeEnum.CREATE_SUCCESS).ToString();
+                        code = ((int)ReturnCodeEnum.CREATE_SUCCESS).ToString();
                         status = true;
                     }
                     catch (Exception ex)
                     {
-                        code = sharedUtil.GetRoleId() == (int) AccessEnum.ADMINISTRATOR_ACCESS
+                        code = sharedUtil.GetRoleId() == (int)AccessEnum.ADMINISTRATOR_ACCESS
                             ? ex.Message
-                            : ((int) ReturnCodeEnum.SYSTEM_ERROR).ToString();
+                            : ((int)ReturnCodeEnum.SYSTEM_ERROR).ToString();
                     }
                 }
 
@@ -110,21 +107,29 @@ public class ProductCategoryController : Controller
             case "search":
                 if (!checkAccessUtil.GetPermission(leafCheckKey, AuthenticationEnum.READ_ACCESS))
                 {
-                    code = ((int) ReturnCodeEnum.ACCESS_DENIED).ToString();
+                    code = ((int)ReturnCodeEnum.ACCESS_DENIED).ToString();
                 }
                 else
                 {
-                    try
+                    if (!string.IsNullOrEmpty(Request.Form["search"]))
                     {
-                        data = productCategoryRepository.Search(search);
-                        code = ((int) ReturnCodeEnum.READ_SUCCESS).ToString();
-                        status = true;
+                        try
+                        {
+                            var search = Request.Form["search"];
+                            data = productCategoryRepository.Search(search);
+                            code = ((int)ReturnCodeEnum.READ_SUCCESS).ToString();
+                            status = true;
+                        }
+                        catch (Exception ex)
+                        {
+                            code = sharedUtil.GetRoleId() == (int)AccessEnum.ADMINISTRATOR_ACCESS
+                                ? ex.Message
+                                : ((int)ReturnCodeEnum.SYSTEM_ERROR).ToString();
+                        }
                     }
-                    catch (Exception ex)
+                    else
                     {
-                        code = sharedUtil.GetRoleId() == (int) AccessEnum.ADMINISTRATOR_ACCESS
-                            ? ex.Message
-                            : ((int) ReturnCodeEnum.SYSTEM_ERROR).ToString();
+                        code = ((int)ReturnCodeEnum.ACCESS_DENIED).ToString();
                     }
                 }
 
@@ -132,25 +137,47 @@ public class ProductCategoryController : Controller
             case "update":
                 if (!checkAccessUtil.GetPermission(leafCheckKey, AuthenticationEnum.UPDATE_ACCESS))
                 {
-                    code = ((int) ReturnCodeEnum.ACCESS_DENIED).ToString();
+                    code = ((int)ReturnCodeEnum.ACCESS_DENIED).ToString();
                 }
                 else
                 {
-                    try
+                    if (!string.IsNullOrWhiteSpace(Request.Form["productCategoryKey"]))
                     {
-                        productCategoryRepository.Update(new ProductCategoryModel
+                        try
                         {
-                            ProductCategoryName = productCategoryName,
-                            ProductCategoryKey = productCategoryKey
-                        });
-                        code = ((int) ReturnCodeEnum.UPDATE_SUCCESS).ToString();
-                        status = true;
+                            int productCategoryKey = 0;
+
+                            if (!int.TryParse(Request.Form["productCategoryKey"], out productCategoryKey))
+                            {
+                                code = ((int)ReturnCodeEnum.ACCESS_DENIED_NO_MODE).ToString();
+                                return Ok(new { status, code });
+                            }
+                            if (productCategoryKey > 0)
+                            {
+                                var productCategoryName = Request.Form["productCategoryName"];
+                                productCategoryRepository.Update(new ProductCategoryModel
+                                {
+                                    ProductCategoryName = productCategoryName,
+                                    ProductCategoryKey = productCategoryKey
+                                });
+                                code = ((int)ReturnCodeEnum.UPDATE_SUCCESS).ToString();
+                                status = true;
+                            }
+                            else
+                            {
+                                code = ((int)ReturnCodeEnum.ACCESS_DENIED).ToString();
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            code = sharedUtil.GetRoleId() == (int)AccessEnum.ADMINISTRATOR_ACCESS
+                                ? ex.Message
+                                : ((int)ReturnCodeEnum.SYSTEM_ERROR).ToString();
+                        }
                     }
-                    catch (Exception ex)
+                    else
                     {
-                        code = sharedUtil.GetRoleId() == (int) AccessEnum.ADMINISTRATOR_ACCESS
-                            ? ex.Message
-                            : ((int) ReturnCodeEnum.SYSTEM_ERROR).ToString();
+                        code = ((int)ReturnCodeEnum.ACCESS_DENIED).ToString();
                     }
                 }
 
@@ -158,39 +185,60 @@ public class ProductCategoryController : Controller
             case "delete":
                 if (!checkAccessUtil.GetPermission(leafCheckKey, AuthenticationEnum.DELETE_ACCESS))
                 {
-                    code = ((int) ReturnCodeEnum.ACCESS_DENIED).ToString();
+                    code = ((int)ReturnCodeEnum.ACCESS_DENIED).ToString();
                 }
                 else
                 {
-                    try
+                    if (!string.IsNullOrWhiteSpace(Request.Form["productCategoryKey"]))
                     {
-                        productCategoryRepository.Delete(new ProductCategoryModel
+                        try
                         {
-                            ProductCategoryKey = productCategoryKey
-                        });
+                            int productCategoryKey = 0;
 
-                        code = ((int) ReturnCodeEnum.DELETE_SUCCESS).ToString();
-                        status = true;
+                            if (!int.TryParse(Request.Form["productCategoryKey"], out productCategoryKey))
+                            {
+                                code = ((int)ReturnCodeEnum.ACCESS_DENIED_NO_MODE).ToString();
+                                return Ok(new { status, code });
+                            }
+                            if (productCategoryKey > 0)
+                            {
+                                productCategoryRepository.Delete(new ProductCategoryModel
+                                {
+                                    ProductCategoryKey = productCategoryKey
+                                });
+
+                                code = ((int)ReturnCodeEnum.DELETE_SUCCESS).ToString();
+                                status = true;
+                            }
+                            else
+                            {
+                                code = ((int)ReturnCodeEnum.ACCESS_DENIED).ToString();
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            code = sharedUtil.GetRoleId() == (int)AccessEnum.ADMINISTRATOR_ACCESS
+                                ? ex.Message
+                                : ((int)ReturnCodeEnum.SYSTEM_ERROR).ToString();
+                        }
                     }
-                    catch (Exception ex)
+                    else
                     {
-                        code = sharedUtil.GetRoleId() == (int) AccessEnum.ADMINISTRATOR_ACCESS
-                            ? ex.Message
-                            : ((int) ReturnCodeEnum.SYSTEM_ERROR).ToString();
+                        code = ((int)ReturnCodeEnum.ACCESS_DENIED).ToString();
                     }
                 }
 
                 break;
             default:
-                code = ((int) ReturnCodeEnum.ACCESS_DENIED_NO_MODE).ToString();
+                code = ((int)ReturnCodeEnum.ACCESS_DENIED_NO_MODE).ToString();
                 break;
         }
 
         if (data.Count > 0)
         {
-            return Ok(new {status, code, data});
+            return Ok(new { status, code, data });
         }
 
-        return lastInsertKey > 0 ? Ok(new {status, code, lastInsertKey}) : Ok(new {status, code});
+        return lastInsertKey > 0 ? Ok(new { status, code, lastInsertKey }) : Ok(new { status, code });
     }
 }

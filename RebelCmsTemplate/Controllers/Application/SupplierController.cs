@@ -44,21 +44,8 @@ public class SupplierController : Controller
         SupplierRepository supplierRepository = new(_httpContextAccessor);
         SharedUtil sharedUtil = new(_httpContextAccessor);
         CheckAccessUtil checkAccessUtil = new(_httpContextAccessor);
-        var supplierKey = !string.IsNullOrEmpty(Request.Form["supplierKey"])
-            ? Convert.ToInt32(Request.Form["supplierKey"])
-            : 0;
-        var supplierName = Request.Form["supplierName"];
-        var supplierContactName = Request.Form["supplierContactName"];
-        var supplierContactTitle = Request.Form["supplierContactTitle"];
-        var supplierAddress = Request.Form["supplierAddress"];
-        var supplierCity = Request.Form["supplierCity"];
-        var supplierRegion = Request.Form["supplierRegion"];
-        var supplierPostalCode = Request.Form["supplierPostalCode"];
-        var supplierCountry = Request.Form["supplierCountry"];
-        var supplierPhone = Request.Form["supplierPhone"];
-        var supplierFax = Request.Form["supplierFax"];
-        var supplierHomePage = Request.Form["supplierHomePage"];
-        var search = Request.Form["search"];
+
+
         List<SupplierModel> data = new();
         SupplierModel dataSingle = new();
         string code;
@@ -68,12 +55,24 @@ public class SupplierController : Controller
             case "create":
                 if (!checkAccessUtil.GetPermission(leafCheckKey, AuthenticationEnum.CREATE_ACCESS))
                 {
-                    code = ((int) ReturnCodeEnum.ACCESS_DENIED).ToString();
+                    code = ((int)ReturnCodeEnum.ACCESS_DENIED).ToString();
                 }
                 else
                 {
                     try
                     {
+
+                        var supplierName = Request.Form["supplierName"];
+                        var supplierContactName = Request.Form["supplierContactName"];
+                        var supplierContactTitle = Request.Form["supplierContactTitle"];
+                        var supplierAddress = Request.Form["supplierAddress"];
+                        var supplierCity = Request.Form["supplierCity"];
+                        var supplierRegion = Request.Form["supplierRegion"];
+                        var supplierPostalCode = Request.Form["supplierPostalCode"];
+                        var supplierCountry = Request.Form["supplierCountry"];
+                        var supplierPhone = Request.Form["supplierPhone"];
+                        var supplierFax = Request.Form["supplierFax"];
+                        var supplierHomePage = Request.Form["supplierHomePage"];
                         SupplierModel supplierModel = new()
                         {
                             SupplierName = supplierName,
@@ -89,14 +88,14 @@ public class SupplierController : Controller
                             SupplierHomePage = supplierHomePage,
                         };
                         lastInsertKey = supplierRepository.Create(supplierModel);
-                        code = ((int) ReturnCodeEnum.CREATE_SUCCESS).ToString();
+                        code = ((int)ReturnCodeEnum.CREATE_SUCCESS).ToString();
                         status = true;
                     }
                     catch (Exception ex)
                     {
-                        code = sharedUtil.GetRoleId() == (int) AccessEnum.ADMINISTRATOR_ACCESS
+                        code = sharedUtil.GetRoleId() == (int)AccessEnum.ADMINISTRATOR_ACCESS
                             ? ex.Message
-                            : ((int) ReturnCodeEnum.SYSTEM_ERROR).ToString();
+                            : ((int)ReturnCodeEnum.SYSTEM_ERROR).ToString();
                     }
                 }
 
@@ -104,21 +103,21 @@ public class SupplierController : Controller
             case "read":
                 if (!checkAccessUtil.GetPermission(leafCheckKey, AuthenticationEnum.READ_ACCESS))
                 {
-                    code = ((int) ReturnCodeEnum.ACCESS_DENIED).ToString();
+                    code = ((int)ReturnCodeEnum.ACCESS_DENIED).ToString();
                 }
                 else
                 {
                     try
                     {
                         data = supplierRepository.Read();
-                        code = ((int) ReturnCodeEnum.CREATE_SUCCESS).ToString();
+                        code = ((int)ReturnCodeEnum.CREATE_SUCCESS).ToString();
                         status = true;
                     }
                     catch (Exception ex)
                     {
-                        code = sharedUtil.GetRoleId() == (int) AccessEnum.ADMINISTRATOR_ACCESS
+                        code = sharedUtil.GetRoleId() == (int)AccessEnum.ADMINISTRATOR_ACCESS
                             ? ex.Message
-                            : ((int) ReturnCodeEnum.SYSTEM_ERROR).ToString();
+                            : ((int)ReturnCodeEnum.SYSTEM_ERROR).ToString();
                     }
                 }
 
@@ -126,22 +125,30 @@ public class SupplierController : Controller
             case "search":
                 if (!checkAccessUtil.GetPermission(leafCheckKey, AuthenticationEnum.READ_ACCESS))
                 {
-                    code = ((int) ReturnCodeEnum.ACCESS_DENIED).ToString();
+                    code = ((int)ReturnCodeEnum.ACCESS_DENIED).ToString();
                 }
                 else
                 {
-                    try
+                    if (!string.IsNullOrEmpty(Request.Form["search"]))
                     {
-                        data = supplierRepository.Search(search);
-                        code = ((int) ReturnCodeEnum.READ_SUCCESS).ToString();
-                        status = true;
+                        try
+                        {
+                            var search = Request.Form["search"];
+                            data = supplierRepository.Search(search);
+                            code = ((int)ReturnCodeEnum.READ_SUCCESS).ToString();
+                            status = true;
+                        }
+                        catch (Exception ex)
+                        {
+
+                            code = sharedUtil.GetRoleId() == (int)AccessEnum.ADMINISTRATOR_ACCESS
+                                ? ex.Message
+                                : ((int)ReturnCodeEnum.SYSTEM_ERROR).ToString();
+                        }
                     }
-                    catch (Exception ex)
+                    else
                     {
-                       
-                        code = sharedUtil.GetRoleId() == (int) AccessEnum.ADMINISTRATOR_ACCESS
-                            ? ex.Message
-                            : ((int) ReturnCodeEnum.SYSTEM_ERROR).ToString();
+                        code = ((int)ReturnCodeEnum.ACCESS_DENIED).ToString();
                     }
                 }
 
@@ -149,25 +156,39 @@ public class SupplierController : Controller
             case "single":
                 if (!checkAccessUtil.GetPermission(leafCheckKey, AuthenticationEnum.READ_ACCESS))
                 {
-                    code = ((int) ReturnCodeEnum.ACCESS_DENIED).ToString();
+                    code = ((int)ReturnCodeEnum.ACCESS_DENIED).ToString();
                 }
                 else
                 {
-                    try
+                    if (!string.IsNullOrWhiteSpace(Request.Form["supplierKey"]))
                     {
-                        SupplierModel supplierModel = new()
+                        try
                         {
-                            SupplierKey = supplierKey
-                        };
-                        dataSingle = supplierRepository.GetSingle(supplierModel);
-                        code = ((int) ReturnCodeEnum.READ_SUCCESS).ToString();
-                        status = true;
+                            int supplierKey = 0;
+                            if (!int.TryParse(Request.Form["supplierKey"], out supplierKey))
+                            {
+                                code = ((int)ReturnCodeEnum.ACCESS_DENIED_NO_MODE).ToString();
+                                return Ok(new { status, code });
+                            }
+ : 0;
+                            SupplierModel supplierModel = new()
+                            {
+                                SupplierKey = supplierKey
+                            };
+                            dataSingle = supplierRepository.GetSingle(supplierModel);
+                            code = ((int)ReturnCodeEnum.READ_SUCCESS).ToString();
+                            status = true;
+                        }
+                        catch (Exception ex)
+                        {
+                            code = sharedUtil.GetRoleId() == (int)AccessEnum.ADMINISTRATOR_ACCESS
+                                ? ex.Message
+                                : ((int)ReturnCodeEnum.SYSTEM_ERROR).ToString();
+                        }
                     }
-                    catch (Exception ex)
+                    else
                     {
-                        code = sharedUtil.GetRoleId() == (int) AccessEnum.ADMINISTRATOR_ACCESS
-                            ? ex.Message
-                            : ((int) ReturnCodeEnum.SYSTEM_ERROR).ToString();
+                        code = ((int)ReturnCodeEnum.ACCESS_DENIED).ToString();
                     }
                 }
 
@@ -175,36 +196,61 @@ public class SupplierController : Controller
             case "update":
                 if (!checkAccessUtil.GetPermission(leafCheckKey, AuthenticationEnum.UPDATE_ACCESS))
                 {
-                    code = ((int) ReturnCodeEnum.ACCESS_DENIED).ToString();
+                    code = ((int)ReturnCodeEnum.ACCESS_DENIED).ToString();
                 }
                 else
                 {
-                    try
+                    if (!string.IsNullOrWhiteSpace(Request.Form["supplierKey"]))
                     {
-                        SupplierModel supplierModel = new()
+                        try
                         {
-                            SupplierKey = supplierKey,
-                            SupplierName = supplierName,
-                            SupplierContactName = supplierContactName,
-                            SupplierContactTitle = supplierContactTitle,
-                            SupplierAddress = supplierAddress,
-                            SupplierCity = supplierCity,
-                            SupplierRegion = supplierRegion,
-                            SupplierPostalCode = supplierPostalCode,
-                            SupplierCountry = supplierCountry,
-                            SupplierPhone = supplierPhone,
-                            SupplierFax = supplierFax,
-                            SupplierHomePage = supplierHomePage,
-                        };
-                        supplierRepository.Update(supplierModel);
-                        code = ((int) ReturnCodeEnum.UPDATE_SUCCESS).ToString();
-                        status = true;
+                            int supplierKey = 0;
+                            if (!int.TryParse(Request.Form["supplierKey"], out supplierKey))
+                            {
+                                code = ((int)ReturnCodeEnum.ACCESS_DENIED_NO_MODE).ToString();
+                                return Ok(new { status, code });
+                            }
+                            var supplierName = Request.Form["supplierName"];
+                            var supplierContactName = Request.Form["supplierContactName"];
+                            var supplierContactTitle = Request.Form["supplierContactTitle"];
+                            var supplierAddress = Request.Form["supplierAddress"];
+                            var supplierCity = Request.Form["supplierCity"];
+                            var supplierRegion = Request.Form["supplierRegion"];
+                            var supplierPostalCode = Request.Form["supplierPostalCode"];
+                            var supplierCountry = Request.Form["supplierCountry"];
+                            var supplierPhone = Request.Form["supplierPhone"];
+                            var supplierFax = Request.Form["supplierFax"];
+                            var supplierHomePage = Request.Form["supplierHomePage"];
+                            SupplierModel supplierModel = new()
+                            {
+                                SupplierKey = supplierKey,
+                                SupplierName = supplierName,
+                                SupplierContactName = supplierContactName,
+                                SupplierContactTitle = supplierContactTitle,
+                                SupplierAddress = supplierAddress,
+                                SupplierCity = supplierCity,
+                                SupplierRegion = supplierRegion,
+                                SupplierPostalCode = supplierPostalCode,
+                                SupplierCountry = supplierCountry,
+                                SupplierPhone = supplierPhone,
+                                SupplierFax = supplierFax,
+                                SupplierHomePage = supplierHomePage,
+                            };
+                            supplierRepository.Update(supplierModel);
+                            code = ((int)ReturnCodeEnum.UPDATE_SUCCESS).ToString();
+                            status = true;
+                        }
+                        catch (Exception ex)
+                        {
+                            code = sharedUtil.GetRoleId() == (int)AccessEnum.ADMINISTRATOR_ACCESS
+                                ? ex.Message
+                                : ((int)ReturnCodeEnum.SYSTEM_ERROR).ToString();
+                        }
                     }
-                    catch (Exception ex)
+                    else
                     {
-                        code = sharedUtil.GetRoleId() == (int) AccessEnum.ADMINISTRATOR_ACCESS
-                            ? ex.Message
-                            : ((int) ReturnCodeEnum.SYSTEM_ERROR).ToString();
+                        code = ((int)ReturnCodeEnum.ACCESS_DENIED).ToString();
+
                     }
                 }
 
@@ -212,44 +258,57 @@ public class SupplierController : Controller
             case "delete":
                 if (!checkAccessUtil.GetPermission(leafCheckKey, AuthenticationEnum.DELETE_ACCESS))
                 {
-                    code = ((int) ReturnCodeEnum.ACCESS_DENIED).ToString();
+                    code = ((int)ReturnCodeEnum.ACCESS_DENIED).ToString();
                 }
                 else
                 {
-                    try
+                    if (!string.IsNullOrWhiteSpace(Request.Form["supplierKey"]))
                     {
-                        SupplierModel supplierModel = new()
+                        try
                         {
-                            SupplierKey = supplierKey
-                        };
-                        supplierRepository.Delete(supplierModel);
-                        code = ((int) ReturnCodeEnum.DELETE_SUCCESS).ToString();
-                        status = true;
+                            int supplierKey = 0;
+                            if (!int.TryParse(Request.Form["supplierKey"], out supplierKey))
+                            {
+                                code = ((int)ReturnCodeEnum.ACCESS_DENIED_NO_MODE).ToString();
+                                return Ok(new { status, code });
+                            }
+                            SupplierModel supplierModel = new()
+                            {
+                                SupplierKey = supplierKey
+                            };
+                            supplierRepository.Delete(supplierModel);
+                            code = ((int)ReturnCodeEnum.DELETE_SUCCESS).ToString();
+                            status = true;
+                        }
+                        catch (Exception ex)
+                        {
+                            code = sharedUtil.GetRoleId() == (int)AccessEnum.ADMINISTRATOR_ACCESS
+                                ? ex.Message
+                                : ((int)ReturnCodeEnum.SYSTEM_ERROR).ToString();
+                        }
                     }
-                    catch (Exception ex)
+                    else
                     {
-                        code = sharedUtil.GetRoleId() == (int) AccessEnum.ADMINISTRATOR_ACCESS
-                            ? ex.Message
-                            : ((int) ReturnCodeEnum.SYSTEM_ERROR).ToString();
+                        code = ((int)ReturnCodeEnum.ACCESS_DENIED).ToString();
                     }
                 }
 
                 break;
             default:
-                code = ((int) ReturnCodeEnum.ACCESS_DENIED_NO_MODE).ToString();
+                code = ((int)ReturnCodeEnum.ACCESS_DENIED_NO_MODE).ToString();
                 break;
         }
 
         if (data.Count > 0)
         {
-            return Ok(new {status, code, data});
+            return Ok(new { status, code, data });
         }
 
         if (mode.Equals("single") || mode.Equals("singleWithDetail"))
         {
-            return Ok(new {status, code, dataSingle});
+            return Ok(new { status, code, dataSingle });
         }
 
-        return lastInsertKey > 0 ? Ok(new {status, code, lastInsertKey}) : Ok(new {status, code});
+        return lastInsertKey > 0 ? Ok(new { status, code, lastInsertKey }) : Ok(new { status, code });
     }
 }

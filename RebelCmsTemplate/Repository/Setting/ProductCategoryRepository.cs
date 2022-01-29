@@ -211,7 +211,7 @@ public class ProductCategoryRepository
         {
             connection.Open();
             sql += @"
-            SELECT  *
+            SELECT  productCategoryId
             FROM    product_category
             WHERE   tenantId = @tenantId
             AND     isDelete != 1

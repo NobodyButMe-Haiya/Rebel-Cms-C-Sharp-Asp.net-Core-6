@@ -229,7 +229,7 @@ public class ProductTypeRepository
         {
             connection.Open();
             sql += @"
-            SELECT  *
+            SELECT  productTypeId
             FROM    product_type
             WHERE   tenantId = @tenantId
             AND     isDefault = 1
@@ -291,7 +291,7 @@ public class ProductTypeRepository
 
             using (var reader = mySqlCommand.ExecuteReader())
             {
-                var counter = 1;
+                var counter = 3;
                 while (reader.Read())
                 {
                     var currentRow = counter++;

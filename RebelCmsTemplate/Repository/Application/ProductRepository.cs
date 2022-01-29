@@ -407,21 +407,12 @@ public class ProductRepository
         {
             connection.Open();
             sql += @"
-            SELECT  *
+            SELECT  productId
             FROM    product
 
-            JOIN supplier 
-            USING(supplierId)
-
-            JOIN product_category 
-            USING(productCategoryId)
-
-            JOIN product_type 
-            USING(productTypeId)
-
-            WHERE   product.isDelete    !=  1
-            AND     product.tenantId    =   @tenantId
-            AND     product.productId   =   @productId
+            WHERE   isDelete    !=  1
+            AND     tenantId    =   @tenantId
+            AND     isDefault  = 1
             LIMIT 1";
             MySqlCommand mySqlCommand = new(sql, connection);
             parameterModels = new List<ParameterModel>

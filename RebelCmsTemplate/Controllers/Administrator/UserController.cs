@@ -86,6 +86,12 @@ public class UserController : Controller
                 {
                     try
                     {
+                        var userName = Request.Form["userName"].ToString();
+                        var userPassword = Request.Form["userPassword"].ToString();
+                        var userEmail = Request.Form["userEmail"].ToString();
+                        var userPhone = Request.Form["userPhone"].ToString();
+                        var userAddress = Request.Form["userAddress"].ToString();
+
                         lastInsertKey = userRepository.Create(new UserModel
                         {
                             RoleKey = roleKey,
@@ -160,6 +166,12 @@ public class UserController : Controller
                 {
                     try
                     {
+                        var userName = Request.Form["userName"].ToString();
+                        var userPassword = Request.Form["userPassword"].ToString();
+                        var userEmail = Request.Form["userEmail"].ToString();
+                        var userPhone = Request.Form["userPhone"].ToString();
+                        var userAddress = Request.Form["userAddress"].ToString();
+
                         userRepository.Update(new UserModel
                         {
                             RoleKey = roleKey,

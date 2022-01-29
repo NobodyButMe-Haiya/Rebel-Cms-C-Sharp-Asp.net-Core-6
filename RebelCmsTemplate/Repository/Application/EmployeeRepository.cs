@@ -516,7 +516,7 @@ public class EmployeeRepository
         {
             connection.Open();
             sql += @"
-            SELECT  *
+            SELECT  employeeId
             FROM    employee 
             WHERE   isDelete    != 1
             AND     tenantId    = @tenantId

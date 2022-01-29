@@ -44,50 +44,7 @@ public class EmployeeController : Controller
         EmployeeRepository employeeRepository = new(_httpContextAccessor);
         SharedUtil sharedUtil = new(_httpContextAccessor);
         CheckAccessUtil checkAccessUtil = new(_httpContextAccessor);
-        var employeeKey = !string.IsNullOrEmpty(Request.Form["employeeKey"])
-            ? Convert.ToInt32(Request.Form["employeeKey"])
-            : 0;
-        var employeeLastName = Request.Form["employeeLastName"];
-        var employeeFirstName = Request.Form["employeeFirstName"];
-        var employeeTitle = Request.Form["employeeTitle"];
-        var employeeTitleOfCourtesy = Request.Form["employeeTitleOfCourtesy"];
-        var employeeBirthDate = DateOnly.FromDateTime(DateTime.Now);
-        if (!string.IsNullOrEmpty(Request.Form["employeeBirthDate"]))
-        {
-            var dateString = Request.Form["employeeBirthDate"].ToString().Split("-");
-            employeeBirthDate = new DateOnly(Convert.ToInt32(dateString[0]), Convert.ToInt32(dateString[1]),
-                Convert.ToInt32(dateString[2]));
-        }
 
-        var employeeHireDate = DateOnly.FromDateTime(DateTime.Now);
-        if (!string.IsNullOrEmpty(Request.Form["employeeHireDate"]))
-        {
-            var dateString = Request.Form["employeeHireDate"].ToString().Split("-");
-            employeeHireDate = new DateOnly(Convert.ToInt32(dateString[0]), Convert.ToInt32(dateString[1]),
-                Convert.ToInt32(dateString[2]));
-        }
-
-        var employeeAddress = Request.Form["employeeAddress"];
-        var employeeCity = Request.Form["employeeCity"];
-        var employeeRegion = Request.Form["employeeRegion"];
-        var employeePostalCode = Request.Form["employeePostalCode"];
-        var employeeCountry = Request.Form["employeeCountry"];
-        var employeeHomePhone = Request.Form["employeeHomePhone"];
-        var employeeExtension = Request.Form["employeeExtension"];
-        var employeePhoto = Array.Empty<byte>();
-        foreach (var formFile in Request.Form.Files)
-        {
-            if (!formFile.Name.Equals("employeePhoto")) continue;
-            if (formFile.Length <= 0) continue;
-            employeePhoto = await SharedUtil.GetByteArrayFromImageAsync(formFile);
-        }
-
-        var employeeNotes = Request.Form["employeeNotes"];
-        var employeePhotoPath = Request.Form["employeePhotoPath"];
-        var employeeSalary = !string.IsNullOrEmpty(Request.Form["employeeSalary"])
-            ? Convert.ToDouble(Request.Form["employeeSalary"])
-            : 0;
-        var search = Request.Form["search"];
         List<EmployeeModel> data = new();
         EmployeeModel dataSingle = new();
         string code;
@@ -97,12 +54,53 @@ public class EmployeeController : Controller
             case "create":
                 if (!checkAccessUtil.GetPermission(leafCheckKey, AuthenticationEnum.CREATE_ACCESS))
                 {
-                    code = ((int) ReturnCodeEnum.ACCESS_DENIED).ToString();
+                    code = ((int)ReturnCodeEnum.ACCESS_DENIED).ToString();
                 }
                 else
                 {
                     try
                     {
+
+                        var employeeLastName = Request.Form["employeeLastName"];
+                        var employeeFirstName = Request.Form["employeeFirstName"];
+                        var employeeTitle = Request.Form["employeeTitle"];
+                        var employeeTitleOfCourtesy = Request.Form["employeeTitleOfCourtesy"];
+                        var employeeBirthDate = DateOnly.FromDateTime(DateTime.Now);
+                        if (!string.IsNullOrEmpty(Request.Form["employeeBirthDate"]))
+                        {
+                            var dateString = Request.Form["employeeBirthDate"].ToString().Split("-");
+                            employeeBirthDate = new DateOnly(Convert.ToInt32(dateString[0]), Convert.ToInt32(dateString[1]),
+                                Convert.ToInt32(dateString[2]));
+                        }
+
+                        var employeeHireDate = DateOnly.FromDateTime(DateTime.Now);
+                        if (!string.IsNullOrEmpty(Request.Form["employeeHireDate"]))
+                        {
+                            var dateString = Request.Form["employeeHireDate"].ToString().Split("-");
+                            employeeHireDate = new DateOnly(Convert.ToInt32(dateString[0]), Convert.ToInt32(dateString[1]),
+                                Convert.ToInt32(dateString[2]));
+                        }
+
+                        var employeeAddress = Request.Form["employeeAddress"];
+                        var employeeCity = Request.Form["employeeCity"];
+                        var employeeRegion = Request.Form["employeeRegion"];
+                        var employeePostalCode = Request.Form["employeePostalCode"];
+                        var employeeCountry = Request.Form["employeeCountry"];
+                        var employeeHomePhone = Request.Form["employeeHomePhone"];
+                        var employeeExtension = Request.Form["employeeExtension"];
+                        var employeePhoto = Array.Empty<byte>();
+                        foreach (var formFile in Request.Form.Files)
+                        {
+                            if (!formFile.Name.Equals("employeePhoto")) continue;
+                            if (formFile.Length <= 0) continue;
+                            employeePhoto = await SharedUtil.GetByteArrayFromImageAsync(formFile);
+                        }
+
+                        var employeeNotes = Request.Form["employeeNotes"];
+                        var employeePhotoPath = Request.Form["employeePhotoPath"];
+                        var employeeSalary = !string.IsNullOrEmpty(Request.Form["employeeSalary"])
+                            ? Convert.ToDouble(Request.Form["employeeSalary"])
+                            : 0;
                         EmployeeModel employeeModel = new()
                         {
                             EmployeeLastName = employeeLastName,
@@ -124,14 +122,14 @@ public class EmployeeController : Controller
                             EmployeeSalary = employeeSalary
                         };
                         lastInsertKey = employeeRepository.Create(employeeModel);
-                        code = ((int) ReturnCodeEnum.CREATE_SUCCESS).ToString();
+                        code = ((int)ReturnCodeEnum.CREATE_SUCCESS).ToString();
                         status = true;
                     }
                     catch (Exception ex)
                     {
-                        code = sharedUtil.GetRoleId() == (int) AccessEnum.ADMINISTRATOR_ACCESS
+                        code = sharedUtil.GetRoleId() == (int)AccessEnum.ADMINISTRATOR_ACCESS
                             ? ex.Message
-                            : ((int) ReturnCodeEnum.SYSTEM_ERROR).ToString();
+                            : ((int)ReturnCodeEnum.SYSTEM_ERROR).ToString();
                     }
                 }
 
@@ -139,7 +137,7 @@ public class EmployeeController : Controller
             case "read":
                 if (!checkAccessUtil.GetPermission(leafCheckKey, AuthenticationEnum.READ_ACCESS))
                 {
-                    code = ((int) ReturnCodeEnum.ACCESS_DENIED).ToString();
+                    code = ((int)ReturnCodeEnum.ACCESS_DENIED).ToString();
                 }
                 else
                 {
@@ -147,14 +145,14 @@ public class EmployeeController : Controller
                     {
                         data = employeeRepository.Read();
 
-                        code = ((int) ReturnCodeEnum.CREATE_SUCCESS).ToString();
+                        code = ((int)ReturnCodeEnum.CREATE_SUCCESS).ToString();
                         status = true;
                     }
                     catch (Exception ex)
                     {
-                        code = sharedUtil.GetRoleId() == (int) AccessEnum.ADMINISTRATOR_ACCESS
+                        code = sharedUtil.GetRoleId() == (int)AccessEnum.ADMINISTRATOR_ACCESS
                             ? ex.Message
-                            : ((int) ReturnCodeEnum.SYSTEM_ERROR).ToString();
+                            : ((int)ReturnCodeEnum.SYSTEM_ERROR).ToString();
                     }
                 }
 
@@ -162,22 +160,30 @@ public class EmployeeController : Controller
             case "search":
                 if (!checkAccessUtil.GetPermission(leafCheckKey, AuthenticationEnum.READ_ACCESS))
                 {
-                    code = ((int) ReturnCodeEnum.ACCESS_DENIED).ToString();
+                    code = ((int)ReturnCodeEnum.ACCESS_DENIED).ToString();
                 }
                 else
                 {
-                    try
+                    if (!string.IsNullOrEmpty(Request.Form["search"]))
                     {
-                        data = employeeRepository.Search(search);
+                        try
+                        {
+                            var search = Request.Form["search"];
+                            data = employeeRepository.Search(search);
 
-                        code = ((int) ReturnCodeEnum.READ_SUCCESS).ToString();
-                        status = true;
+                            code = ((int)ReturnCodeEnum.READ_SUCCESS).ToString();
+                            status = true;
+                        }
+                        catch (Exception ex)
+                        {
+                            code = sharedUtil.GetRoleId() == (int)AccessEnum.ADMINISTRATOR_ACCESS
+                                ? ex.Message
+                                : ((int)ReturnCodeEnum.SYSTEM_ERROR).ToString();
+                        }
                     }
-                    catch (Exception ex)
+                    else
                     {
-                        code = sharedUtil.GetRoleId() == (int) AccessEnum.ADMINISTRATOR_ACCESS
-                            ? ex.Message
-                            : ((int) ReturnCodeEnum.SYSTEM_ERROR).ToString();
+                        code = ((int)ReturnCodeEnum.ACCESS_DENIED).ToString();
                     }
                 }
 
@@ -185,28 +191,49 @@ public class EmployeeController : Controller
             case "single":
                 if (!checkAccessUtil.GetPermission(leafCheckKey, AuthenticationEnum.READ_ACCESS))
                 {
-                    code = ((int) ReturnCodeEnum.ACCESS_DENIED).ToString();
+                    code = ((int)ReturnCodeEnum.ACCESS_DENIED).ToString();
                 }
                 else
                 {
-                    try
+                    if (!string.IsNullOrEmpty(Request.Form["employeeKey"]))
                     {
-                        EmployeeModel employeeModel = new()
+                        try
                         {
-                            EmployeeKey = employeeKey
-                        };
-                        dataSingle = employeeRepository.GetSingle(employeeModel);
-                        if (dataSingle.EmployeePhoto != null)
-                            dataSingle.EmployeePhotoBase64String = SharedUtil.GetImageString(dataSingle.EmployeePhoto);
-                        dataSingle.EmployeePhoto = Array.Empty<byte>();
-                        code = ((int) ReturnCodeEnum.READ_SUCCESS).ToString();
-                        status = true;
+                            int employeeKey = 0;
+                            if (!int.TryParse(Request.Form["employeeKey"], out employeeKey))
+                            {
+                                code = ((int)ReturnCodeEnum.ACCESS_DENIED_NO_MODE).ToString();
+                                return Ok(new { status, code });
+                            }
+                            if (employeeKey > 0)
+                            {
+                                EmployeeModel employeeModel = new()
+                                {
+                                    EmployeeKey = employeeKey
+                                };
+                                dataSingle = employeeRepository.GetSingle(employeeModel);
+                                if (dataSingle.EmployeePhoto != null)
+                                    dataSingle.EmployeePhotoBase64String = SharedUtil.GetImageString(dataSingle.EmployeePhoto);
+                                dataSingle.EmployeePhoto = Array.Empty<byte>();
+                                code = ((int)ReturnCodeEnum.READ_SUCCESS).ToString();
+                                status = true;
+                            }
+                            else
+                            {
+                                code = ((int)ReturnCodeEnum.ACCESS_DENIED).ToString();
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            code = sharedUtil.GetRoleId() == (int)AccessEnum.ADMINISTRATOR_ACCESS
+                                ? ex.Message
+                                : ((int)ReturnCodeEnum.SYSTEM_ERROR).ToString();
+                        }
                     }
-                    catch (Exception ex)
+                    else
                     {
-                        code = sharedUtil.GetRoleId() == (int) AccessEnum.ADMINISTRATOR_ACCESS
-                            ? ex.Message
-                            : ((int) ReturnCodeEnum.SYSTEM_ERROR).ToString();
+                        code = ((int)ReturnCodeEnum.ACCESS_DENIED).ToString();
+
                     }
                 }
 
@@ -214,42 +241,103 @@ public class EmployeeController : Controller
             case "update":
                 if (!checkAccessUtil.GetPermission(leafCheckKey, AuthenticationEnum.UPDATE_ACCESS))
                 {
-                    code = ((int) ReturnCodeEnum.ACCESS_DENIED).ToString();
+                    code = ((int)ReturnCodeEnum.ACCESS_DENIED).ToString();
                 }
                 else
                 {
-                    try
+                    if (!string.IsNullOrEmpty(Request.Form["employeeKey"]))
                     {
-                        EmployeeModel employeeModel = new()
+                        try
                         {
-                            EmployeeKey = employeeKey,
-                            EmployeeLastName = employeeLastName,
-                            EmployeeFirstName = employeeFirstName,
-                            EmployeeTitle = employeeTitle,
-                            EmployeeTitleOfCourtesy = employeeTitleOfCourtesy,
-                            EmployeeBirthDate = employeeBirthDate,
-                            EmployeeHireDate = employeeHireDate,
-                            EmployeeAddress = employeeAddress,
-                            EmployeeCity = employeeCity,
-                            EmployeeRegion = employeeRegion,
-                            EmployeePostalCode = employeePostalCode,
-                            EmployeeCountry = employeeCountry,
-                            EmployeeHomePhone = employeeHomePhone,
-                            EmployeeExtension = employeeExtension,
-                            EmployeePhoto = employeePhoto,
-                            EmployeeNotes = employeeNotes,
-                            EmployeePhotoPath = employeePhotoPath,
-                            EmployeeSalary = employeeSalary
-                        };
-                        employeeRepository.Update(employeeModel);
-                        code = ((int) ReturnCodeEnum.UPDATE_SUCCESS).ToString();
-                        status = true;
+                            int employeeKey = 0;
+                            if (!int.TryParse(Request.Form["employeeKey"], out employeeKey))
+                            {
+                                code = ((int)ReturnCodeEnum.ACCESS_DENIED_NO_MODE).ToString();
+                                return Ok(new { status, code });
+                            }
+                            if (employeeKey > 0)
+                            {
+                                var employeeLastName = Request.Form["employeeLastName"];
+                                var employeeFirstName = Request.Form["employeeFirstName"];
+                                var employeeTitle = Request.Form["employeeTitle"];
+                                var employeeTitleOfCourtesy = Request.Form["employeeTitleOfCourtesy"];
+                                var employeeBirthDate = DateOnly.FromDateTime(DateTime.Now);
+                                if (!string.IsNullOrEmpty(Request.Form["employeeBirthDate"]))
+                                {
+                                    var dateString = Request.Form["employeeBirthDate"].ToString().Split("-");
+                                    employeeBirthDate = new DateOnly(Convert.ToInt32(dateString[0]), Convert.ToInt32(dateString[1]),
+                                        Convert.ToInt32(dateString[2]));
+                                }
+
+                                var employeeHireDate = DateOnly.FromDateTime(DateTime.Now);
+                                if (!string.IsNullOrEmpty(Request.Form["employeeHireDate"]))
+                                {
+                                    var dateString = Request.Form["employeeHireDate"].ToString().Split("-");
+                                    employeeHireDate = new DateOnly(Convert.ToInt32(dateString[0]), Convert.ToInt32(dateString[1]),
+                                        Convert.ToInt32(dateString[2]));
+                                }
+
+                                var employeeAddress = Request.Form["employeeAddress"];
+                                var employeeCity = Request.Form["employeeCity"];
+                                var employeeRegion = Request.Form["employeeRegion"];
+                                var employeePostalCode = Request.Form["employeePostalCode"];
+                                var employeeCountry = Request.Form["employeeCountry"];
+                                var employeeHomePhone = Request.Form["employeeHomePhone"];
+                                var employeeExtension = Request.Form["employeeExtension"];
+                                var employeePhoto = Array.Empty<byte>();
+                                foreach (var formFile in Request.Form.Files)
+                                {
+                                    if (!formFile.Name.Equals("employeePhoto")) continue;
+                                    if (formFile.Length <= 0) continue;
+                                    employeePhoto = await SharedUtil.GetByteArrayFromImageAsync(formFile);
+                                }
+
+                                var employeeNotes = Request.Form["employeeNotes"];
+                                var employeePhotoPath = Request.Form["employeePhotoPath"];
+                                var employeeSalary = !string.IsNullOrEmpty(Request.Form["employeeSalary"])
+                                    ? Convert.ToDouble(Request.Form["employeeSalary"])
+                                    : 0;
+                                EmployeeModel employeeModel = new()
+                                {
+                                    EmployeeKey = employeeKey,
+                                    EmployeeLastName = employeeLastName,
+                                    EmployeeFirstName = employeeFirstName,
+                                    EmployeeTitle = employeeTitle,
+                                    EmployeeTitleOfCourtesy = employeeTitleOfCourtesy,
+                                    EmployeeBirthDate = employeeBirthDate,
+                                    EmployeeHireDate = employeeHireDate,
+                                    EmployeeAddress = employeeAddress,
+                                    EmployeeCity = employeeCity,
+                                    EmployeeRegion = employeeRegion,
+                                    EmployeePostalCode = employeePostalCode,
+                                    EmployeeCountry = employeeCountry,
+                                    EmployeeHomePhone = employeeHomePhone,
+                                    EmployeeExtension = employeeExtension,
+                                    EmployeePhoto = employeePhoto,
+                                    EmployeeNotes = employeeNotes,
+                                    EmployeePhotoPath = employeePhotoPath,
+                                    EmployeeSalary = employeeSalary
+                                };
+                                employeeRepository.Update(employeeModel);
+                                code = ((int)ReturnCodeEnum.UPDATE_SUCCESS).ToString();
+                                status = true;
+                            }
+                            else
+                            {
+
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            code = sharedUtil.GetRoleId() == (int)AccessEnum.ADMINISTRATOR_ACCESS
+                                ? ex.Message
+                                : ((int)ReturnCodeEnum.SYSTEM_ERROR).ToString();
+                        }
                     }
-                    catch (Exception ex)
+                    else
                     {
-                        code = sharedUtil.GetRoleId() == (int) AccessEnum.ADMINISTRATOR_ACCESS
-                            ? ex.Message
-                            : ((int) ReturnCodeEnum.SYSTEM_ERROR).ToString();
+                        code = ((int)ReturnCodeEnum.ACCESS_DENIED).ToString();
+
                     }
                 }
 
@@ -257,44 +345,54 @@ public class EmployeeController : Controller
             case "delete":
                 if (!checkAccessUtil.GetPermission(leafCheckKey, AuthenticationEnum.DELETE_ACCESS))
                 {
-                    code = ((int) ReturnCodeEnum.ACCESS_DENIED).ToString();
+                    code = ((int)ReturnCodeEnum.ACCESS_DENIED).ToString();
                 }
                 else
                 {
-                    try
+                    if (!string.IsNullOrEmpty(Request.Form["employeeKey"]))
                     {
-                        EmployeeModel employeeModel = new()
+                        try
                         {
-                            EmployeeKey = employeeKey
-                        };
-                        employeeRepository.Delete(employeeModel);
-                        code = ((int) ReturnCodeEnum.DELETE_SUCCESS).ToString();
-                        status = true;
+                            var employeeKey = !string.IsNullOrEmpty(Request.Form["employeeKey"])
+         ? Convert.ToInt32(Request.Form["employeeKey"])
+         : 0;
+                            EmployeeModel employeeModel = new()
+                            {
+                                EmployeeKey = employeeKey
+                            };
+                            employeeRepository.Delete(employeeModel);
+                            code = ((int)ReturnCodeEnum.DELETE_SUCCESS).ToString();
+                            status = true;
+                        }
+                        catch (Exception ex)
+                        {
+                            code = sharedUtil.GetRoleId() == (int)AccessEnum.ADMINISTRATOR_ACCESS
+                                ? ex.Message
+                                : ((int)ReturnCodeEnum.SYSTEM_ERROR).ToString();
+                        }
                     }
-                    catch (Exception ex)
+                    else
                     {
-                        code = sharedUtil.GetRoleId() == (int) AccessEnum.ADMINISTRATOR_ACCESS
-                            ? ex.Message
-                            : ((int) ReturnCodeEnum.SYSTEM_ERROR).ToString();
+                        code = ((int)ReturnCodeEnum.ACCESS_DENIED).ToString();
                     }
                 }
 
                 break;
             default:
-                code = ((int) ReturnCodeEnum.ACCESS_DENIED_NO_MODE).ToString();
+                code = ((int)ReturnCodeEnum.ACCESS_DENIED_NO_MODE).ToString();
                 break;
         }
 
         if (data.Count > 0)
         {
-            return Ok(new {status, code, data});
+            return Ok(new { status, code, data });
         }
 
         if (mode.Equals("single"))
         {
-            return Ok(new {status, code, dataSingle});
+            return Ok(new { status, code, dataSingle });
         }
 
-        return lastInsertKey > 0 ? Ok(new {status, code, lastInsertKey}) : Ok(new {status, code});
+        return lastInsertKey > 0 ? Ok(new { status, code, lastInsertKey }) : Ok(new { status, code });
     }
 }

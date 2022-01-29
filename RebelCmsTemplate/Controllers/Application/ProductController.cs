@@ -45,20 +45,6 @@ public class ProductController : Controller
         SharedUtil sharedUtil = new(_httpContextAccessor);
         CheckAccessUtil checkAccessUtil = new(_httpContextAccessor);
 
-        var productKey = !string.IsNullOrEmpty(Request.Form["productKey"]) ? Convert.ToInt32(Request.Form["productKey"]) : 0;        
-        var supplierKey = !string.IsNullOrEmpty(Request.Form["supplierKey"]) ? Convert.ToInt32(Request.Form["supplierKey"]) : supplierRepository.GetDefault();
-        var productCategoryKey = !string.IsNullOrEmpty(Request.Form["productCategoryKey"]) ? Convert.ToInt32(Request.Form["productCategoryKey"]) : productCategoryRepository.GetDefault();       
-        var productTypeKey = !string.IsNullOrEmpty(Request.Form["productTypeKey"]) ? Convert.ToInt32(Request.Form["productTypeKey"]) : productTypeRepository.GetDefault();
-
-        var productName = Request.Form["productName"];
-        var productDescription = Request.Form["productDescription"];
-        var productQuantityPerUnit = Request.Form["productQuantityPerUnit"];
-        var productCostPrice = !string.IsNullOrEmpty(Request.Form["productCostPrice"]) ? Convert.ToDouble(Request.Form["productCostPrice"]) : 0;
-        var productSellingPrice = !string.IsNullOrEmpty(Request.Form["productSellingPrice"]) ? Convert.ToDouble(Request.Form["productSellingPrice"]) : 0;
-        var productUnitsInStock = !string.IsNullOrEmpty(Request.Form["productUnitsInStock"]) ? Convert.ToDouble(Request.Form["productUnitsInStock"]) : 0;
-        var productUnitsOnOrder = !string.IsNullOrEmpty(Request.Form["productUnitsOnOrder"]) ? Convert.ToDouble(Request.Form["productUnitsOnOrder"]) : 0;
-        var productReOrderLevel = !string.IsNullOrEmpty(Request.Form["productReOrderLevel"]) ? Convert.ToDouble(Request.Form["productReOrderLevel"]) : 0;
-        var search = Request.Form["search"];
         List<ProductModel> data = new();
         ProductModel dataSingle = new();
         string code;
@@ -74,6 +60,20 @@ public class ProductController : Controller
                 {
                     try
                     {
+
+                        var supplierKey = !string.IsNullOrEmpty(Request.Form["supplierKey"]) ? Convert.ToInt32(Request.Form["supplierKey"]) : supplierRepository.GetDefault();
+                        var productCategoryKey = !string.IsNullOrEmpty(Request.Form["productCategoryKey"]) ? Convert.ToInt32(Request.Form["productCategoryKey"]) : productCategoryRepository.GetDefault();
+                        var productTypeKey = !string.IsNullOrEmpty(Request.Form["productTypeKey"]) ? Convert.ToInt32(Request.Form["productTypeKey"]) : productTypeRepository.GetDefault();
+
+                        var productName = Request.Form["productName"];
+                        var productDescription = Request.Form["productDescription"];
+                        var productQuantityPerUnit = Request.Form["productQuantityPerUnit"];
+                        var productCostPrice = !string.IsNullOrEmpty(Request.Form["productCostPrice"]) ? Convert.ToDouble(Request.Form["productCostPrice"]) : 0;
+                        var productSellingPrice = !string.IsNullOrEmpty(Request.Form["productSellingPrice"]) ? Convert.ToDouble(Request.Form["productSellingPrice"]) : 0;
+                        var productUnitsInStock = !string.IsNullOrEmpty(Request.Form["productUnitsInStock"]) ? Convert.ToDouble(Request.Form["productUnitsInStock"]) : 0;
+                        var productUnitsOnOrder = !string.IsNullOrEmpty(Request.Form["productUnitsOnOrder"]) ? Convert.ToDouble(Request.Form["productUnitsOnOrder"]) : 0;
+                        var productReOrderLevel = !string.IsNullOrEmpty(Request.Form["productReOrderLevel"]) ? Convert.ToDouble(Request.Form["productReOrderLevel"]) : 0;
+
                         ProductModel productModel = new()
                         {
                             SupplierKey = supplierKey,
@@ -126,6 +126,7 @@ public class ProductController : Controller
                 {
                     try
                     {
+                        var search = Request.Form["search"];
                         data = productRepository.Search(search);
                         code = ((int)ReturnCodeEnum.READ_SUCCESS).ToString();
                         status = true;
@@ -168,6 +169,21 @@ public class ProductController : Controller
                 {
                     try
                     {
+
+                        var productKey = !string.IsNullOrEmpty(Request.Form["productKey"]) ? Convert.ToInt32(Request.Form["productKey"]) : 0;
+                        var supplierKey = !string.IsNullOrEmpty(Request.Form["supplierKey"]) ? Convert.ToInt32(Request.Form["supplierKey"]) : supplierRepository.GetDefault();
+                        var productCategoryKey = !string.IsNullOrEmpty(Request.Form["productCategoryKey"]) ? Convert.ToInt32(Request.Form["productCategoryKey"]) : productCategoryRepository.GetDefault();
+                        var productTypeKey = !string.IsNullOrEmpty(Request.Form["productTypeKey"]) ? Convert.ToInt32(Request.Form["productTypeKey"]) : productTypeRepository.GetDefault();
+
+                        var productName = Request.Form["productName"];
+                        var productDescription = Request.Form["productDescription"];
+                        var productQuantityPerUnit = Request.Form["productQuantityPerUnit"];
+                        var productCostPrice = !string.IsNullOrEmpty(Request.Form["productCostPrice"]) ? Convert.ToDouble(Request.Form["productCostPrice"]) : 0;
+                        var productSellingPrice = !string.IsNullOrEmpty(Request.Form["productSellingPrice"]) ? Convert.ToDouble(Request.Form["productSellingPrice"]) : 0;
+                        var productUnitsInStock = !string.IsNullOrEmpty(Request.Form["productUnitsInStock"]) ? Convert.ToDouble(Request.Form["productUnitsInStock"]) : 0;
+                        var productUnitsOnOrder = !string.IsNullOrEmpty(Request.Form["productUnitsOnOrder"]) ? Convert.ToDouble(Request.Form["productUnitsOnOrder"]) : 0;
+                        var productReOrderLevel = !string.IsNullOrEmpty(Request.Form["productReOrderLevel"]) ? Convert.ToDouble(Request.Form["productReOrderLevel"]) : 0;
+
                         ProductModel productModel = new()
                         {
                             ProductKey = productKey,
@@ -202,6 +218,8 @@ public class ProductController : Controller
                 {
                     try
                     {
+                        var productKey = !string.IsNullOrEmpty(Request.Form["productKey"]) ? Convert.ToInt32(Request.Form["productKey"]) : 0;
+
                         ProductModel productModel = new()
                         {
                             ProductKey = productKey

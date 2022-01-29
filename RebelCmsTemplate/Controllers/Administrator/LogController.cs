@@ -44,7 +44,7 @@ public class LogController : Controller
         var status = false;
         var mode = Request.Form["mode"];
         var leafCheckKey = Convert.ToInt32(Request.Form["leafCheckKey"]);
-        var search = Request.Form["search"];
+      
 
         LogRepository logRepository = new(_httpContextAccessor);
         SharedUtil sharedUtil = new(_httpContextAccessor);
@@ -84,17 +84,25 @@ public class LogController : Controller
                 }
                 else
                 {
-                    try
+                    if (!string.IsNullOrEmpty(Request.Form["search"]))
                     {
-                        data = logRepository.Search(search);
-                        code = ((int) ReturnCodeEnum.READ_SUCCESS).ToString();
-                        status = true;
+                        try
+                        {
+                            var search = Request.Form["search"];
+                            data = logRepository.Search(search);
+                            code = ((int)ReturnCodeEnum.READ_SUCCESS).ToString();
+                            status = true;
+                        }
+                        catch (Exception ex)
+                        {
+                            code = sharedUtil.GetRoleId() == (int)AccessEnum.ADMINISTRATOR_ACCESS
+                                ? ex.Message
+                                : ((int)ReturnCodeEnum.SYSTEM_ERROR).ToString();
+                        }
                     }
-                    catch (Exception ex)
+                    else
                     {
-                        code = sharedUtil.GetRoleId() == (int) AccessEnum.ADMINISTRATOR_ACCESS
-                            ? ex.Message
-                            : ((int) ReturnCodeEnum.SYSTEM_ERROR).ToString();
+                        code = ((int)ReturnCodeEnum.ACCESS_DENIED).ToString();
                     }
                 }
 

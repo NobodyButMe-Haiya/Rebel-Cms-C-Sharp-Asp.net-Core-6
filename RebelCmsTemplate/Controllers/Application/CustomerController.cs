@@ -44,36 +44,35 @@ public class CustomerController : Controller
         CustomerRepository customerRepository = new(_httpContextAccessor);
         SharedUtil sharedUtil = new(_httpContextAccessor);
         CheckAccessUtil checkAccessUtil = new(_httpContextAccessor);
-        var customerKey = !string.IsNullOrEmpty(Request.Form["customerKey"])
-            ? Convert.ToInt32(Request.Form["customerKey"])
-            : 0;
-        var customerCode = Request.Form["customerCode"];
-        var customerName = Request.Form["customerName"];
-        var customerContactName = Request.Form["customerContactName"];
-        var customerContactTitle = Request.Form["customerContactTitle"];
-        var customerAddress = Request.Form["customerAddress"];
-        var customerCity = Request.Form["customerCity"];
-        var customerRegion = Request.Form["customerRegion"];
-        var customerPostalCode = Request.Form["customerPostalCode"];
-        var customerCountry = Request.Form["customerCountry"];
-        var customerPhone = Request.Form["customerPhone"];
-        var customerFax = Request.Form["customerFax"];
-        var search = Request.Form["search"];
+
+
         List<CustomerModel> data = new();
         CustomerModel dataSingle = new();
         string code;
-        var lastInsertKey=0;
+        var lastInsertKey = 0;
         switch (mode)
         {
             case "create":
                 if (!checkAccessUtil.GetPermission(leafCheckKey, AuthenticationEnum.CREATE_ACCESS))
                 {
-                    code = ((int) ReturnCodeEnum.ACCESS_DENIED).ToString();
+                    code = ((int)ReturnCodeEnum.ACCESS_DENIED).ToString();
                 }
                 else
                 {
                     try
                     {
+
+                        var customerCode = Request.Form["customerCode"];
+                        var customerName = Request.Form["customerName"];
+                        var customerContactName = Request.Form["customerContactName"];
+                        var customerContactTitle = Request.Form["customerContactTitle"];
+                        var customerAddress = Request.Form["customerAddress"];
+                        var customerCity = Request.Form["customerCity"];
+                        var customerRegion = Request.Form["customerRegion"];
+                        var customerPostalCode = Request.Form["customerPostalCode"];
+                        var customerCountry = Request.Form["customerCountry"];
+                        var customerPhone = Request.Form["customerPhone"];
+                        var customerFax = Request.Form["customerFax"];
                         CustomerModel customerModel = new()
                         {
                             CustomerCode = customerCode,
@@ -89,14 +88,14 @@ public class CustomerController : Controller
                             CustomerFax = customerFax
                         };
                         lastInsertKey = customerRepository.Create(customerModel);
-                        code = ((int) ReturnCodeEnum.CREATE_SUCCESS).ToString();
+                        code = ((int)ReturnCodeEnum.CREATE_SUCCESS).ToString();
                         status = true;
                     }
                     catch (Exception ex)
                     {
-                        code = sharedUtil.GetRoleId() == (int) AccessEnum.ADMINISTRATOR_ACCESS
+                        code = sharedUtil.GetRoleId() == (int)AccessEnum.ADMINISTRATOR_ACCESS
                             ? ex.Message
-                            : ((int) ReturnCodeEnum.SYSTEM_ERROR).ToString();
+                            : ((int)ReturnCodeEnum.SYSTEM_ERROR).ToString();
                     }
                 }
 
@@ -104,21 +103,21 @@ public class CustomerController : Controller
             case "read":
                 if (!checkAccessUtil.GetPermission(leafCheckKey, AuthenticationEnum.READ_ACCESS))
                 {
-                    code = ((int) ReturnCodeEnum.ACCESS_DENIED).ToString();
+                    code = ((int)ReturnCodeEnum.ACCESS_DENIED).ToString();
                 }
                 else
                 {
                     try
                     {
                         data = customerRepository.Read();
-                        code = ((int) ReturnCodeEnum.CREATE_SUCCESS).ToString();
+                        code = ((int)ReturnCodeEnum.CREATE_SUCCESS).ToString();
                         status = true;
                     }
                     catch (Exception ex)
                     {
-                        code = sharedUtil.GetRoleId() == (int) AccessEnum.ADMINISTRATOR_ACCESS
+                        code = sharedUtil.GetRoleId() == (int)AccessEnum.ADMINISTRATOR_ACCESS
                             ? ex.Message
-                            : ((int) ReturnCodeEnum.SYSTEM_ERROR).ToString();
+                            : ((int)ReturnCodeEnum.SYSTEM_ERROR).ToString();
                     }
                 }
 
@@ -126,22 +125,31 @@ public class CustomerController : Controller
             case "search":
                 if (!checkAccessUtil.GetPermission(leafCheckKey, AuthenticationEnum.READ_ACCESS))
                 {
-                    code = ((int) ReturnCodeEnum.ACCESS_DENIED).ToString();
+                    code = ((int)ReturnCodeEnum.ACCESS_DENIED).ToString();
                 }
                 else
                 {
-                    try
+                    if (!string.IsNullOrEmpty(Request.Form["search"]))
                     {
-                        data = customerRepository.Search(search);
-                        code = ((int) ReturnCodeEnum.READ_SUCCESS).ToString();
-                        status = true;
+                        try
+                        {
+                            var search = Request.Form["search"];
+                            data = customerRepository.Search(search);
+                            code = ((int)ReturnCodeEnum.READ_SUCCESS).ToString();
+                            status = true;
+                        }
+                        catch (Exception ex)
+                        {
+
+                            code = sharedUtil.GetRoleId() == (int)AccessEnum.ADMINISTRATOR_ACCESS
+                                ? ex.Message
+                                : ((int)ReturnCodeEnum.SYSTEM_ERROR).ToString();
+                        }
                     }
-                    catch (Exception ex)
+                    else
                     {
-                        
-                        code = sharedUtil.GetRoleId() == (int) AccessEnum.ADMINISTRATOR_ACCESS
-                            ? ex.Message
-                            : ((int) ReturnCodeEnum.SYSTEM_ERROR).ToString();
+                        code = ((int)ReturnCodeEnum.ACCESS_DENIED).ToString();
+
                     }
                 }
 
@@ -149,63 +157,115 @@ public class CustomerController : Controller
             case "single":
                 if (!checkAccessUtil.GetPermission(leafCheckKey, AuthenticationEnum.READ_ACCESS))
                 {
-                    code = ((int) ReturnCodeEnum.ACCESS_DENIED).ToString();
+                    code = ((int)ReturnCodeEnum.ACCESS_DENIED).ToString();
                 }
                 else
                 {
-                    try
+                    if (!string.IsNullOrWhiteSpace(Request.Form["productCategoryKey"]))
                     {
-                        CustomerModel customerModel = new()
+                        try
                         {
-                            CustomerKey = customerKey
-                        };
-                        dataSingle = customerRepository.GetSingle(customerModel);
-                        code = ((int) ReturnCodeEnum.READ_SUCCESS).ToString();
-                        status = true;
+                            int customerKey = 0;
+                            if (!int.TryParse(Request.Form["customerKey"], out customerKey))
+                            {
+                                code = ((int)ReturnCodeEnum.ACCESS_DENIED_NO_MODE).ToString();
+                                return Ok(new { status, code });
+                            }
+                            if (customerKey > 0)
+                            {
+                                CustomerModel customerModel = new()
+                                {
+                                    CustomerKey = customerKey
+                                };
+                                dataSingle = customerRepository.GetSingle(customerModel);
+                                code = ((int)ReturnCodeEnum.READ_SUCCESS).ToString();
+                                status = true;
+                            }
+                            else
+                            {
+                                code = ((int)ReturnCodeEnum.ACCESS_DENIED).ToString();
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            code = sharedUtil.GetRoleId() == (int)AccessEnum.ADMINISTRATOR_ACCESS
+                                ? ex.Message
+                                : ((int)ReturnCodeEnum.SYSTEM_ERROR).ToString();
+                        }
                     }
-                    catch (Exception ex)
+                    else
                     {
-                        code = sharedUtil.GetRoleId() == (int) AccessEnum.ADMINISTRATOR_ACCESS
-                            ? ex.Message
-                            : ((int) ReturnCodeEnum.SYSTEM_ERROR).ToString();
+                        code = ((int)ReturnCodeEnum.ACCESS_DENIED).ToString();
                     }
                 }
 
                 break;
-          
+
             case "update":
                 if (!checkAccessUtil.GetPermission(leafCheckKey, AuthenticationEnum.UPDATE_ACCESS))
                 {
-                    code = ((int) ReturnCodeEnum.ACCESS_DENIED).ToString();
+                    code = ((int)ReturnCodeEnum.ACCESS_DENIED).ToString();
                 }
                 else
                 {
-                    try
+                    if (!string.IsNullOrWhiteSpace(Request.Form["productCategoryKey"]))
                     {
-                        CustomerModel customerModel = new()
+                        try
                         {
-                            CustomerKey = customerKey,
-                            CustomerCode = customerCode,
-                            CustomerName = customerName,
-                            CustomerContactName = customerContactName,
-                            CustomerContactTitle = customerContactTitle,
-                            CustomerAddress = customerAddress,
-                            CustomerCity = customerCity,
-                            CustomerRegion = customerRegion,
-                            CustomerPostalCode = customerPostalCode,
-                            CustomerCountry = customerCountry,
-                            CustomerPhone = customerPhone,
-                            CustomerFax = customerFax
-                        };
-                        customerRepository.Update(customerModel);
-                        code = ((int) ReturnCodeEnum.UPDATE_SUCCESS).ToString();
-                        status = true;
+                            int customerKey = 0;
+                            if (!int.TryParse(Request.Form["customerKey"], out customerKey))
+                            {
+                                code = ((int)ReturnCodeEnum.ACCESS_DENIED_NO_MODE).ToString();
+                                return Ok(new { status, code });
+                            }
+                            if (customerKey > 0)
+                            {
+                                var customerCode = Request.Form["customerCode"];
+                                var customerName = Request.Form["customerName"];
+                                var customerContactName = Request.Form["customerContactName"];
+                                var customerContactTitle = Request.Form["customerContactTitle"];
+                                var customerAddress = Request.Form["customerAddress"];
+                                var customerCity = Request.Form["customerCity"];
+                                var customerRegion = Request.Form["customerRegion"];
+                                var customerPostalCode = Request.Form["customerPostalCode"];
+                                var customerCountry = Request.Form["customerCountry"];
+                                var customerPhone = Request.Form["customerPhone"];
+                                var customerFax = Request.Form["customerFax"];
+                                CustomerModel customerModel = new()
+                                {
+                                    CustomerKey = customerKey,
+                                    CustomerCode = customerCode,
+                                    CustomerName = customerName,
+                                    CustomerContactName = customerContactName,
+                                    CustomerContactTitle = customerContactTitle,
+                                    CustomerAddress = customerAddress,
+                                    CustomerCity = customerCity,
+                                    CustomerRegion = customerRegion,
+                                    CustomerPostalCode = customerPostalCode,
+                                    CustomerCountry = customerCountry,
+                                    CustomerPhone = customerPhone,
+                                    CustomerFax = customerFax
+                                };
+                                customerRepository.Update(customerModel);
+                                code = ((int)ReturnCodeEnum.UPDATE_SUCCESS).ToString();
+                                status = true;
+                            }
+                            else
+                            {
+                                code = ((int)ReturnCodeEnum.ACCESS_DENIED).ToString();
+
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            code = sharedUtil.GetRoleId() == (int)AccessEnum.ADMINISTRATOR_ACCESS
+                                ? ex.Message
+                                : ((int)ReturnCodeEnum.SYSTEM_ERROR).ToString();
+                        }
                     }
-                    catch (Exception ex)
+                    else
                     {
-                        code = sharedUtil.GetRoleId() == (int) AccessEnum.ADMINISTRATOR_ACCESS
-                            ? ex.Message
-                            : ((int) ReturnCodeEnum.SYSTEM_ERROR).ToString();
+                        code = ((int)ReturnCodeEnum.ACCESS_DENIED).ToString();
                     }
                 }
 
@@ -213,43 +273,46 @@ public class CustomerController : Controller
             case "delete":
                 if (!checkAccessUtil.GetPermission(leafCheckKey, AuthenticationEnum.DELETE_ACCESS))
                 {
-                    code = ((int) ReturnCodeEnum.ACCESS_DENIED).ToString();
+                    code = ((int)ReturnCodeEnum.ACCESS_DENIED).ToString();
                 }
                 else
                 {
                     try
                     {
+                        var customerKey = !string.IsNullOrEmpty(Request.Form["customerKey"])
+? Convert.ToInt32(Request.Form["customerKey"])
+: 0;
                         CustomerModel customerModel = new()
                         {
                             CustomerKey = customerKey
                         };
                         customerRepository.Delete(customerModel);
-                        code = ((int) ReturnCodeEnum.DELETE_SUCCESS).ToString();
+                        code = ((int)ReturnCodeEnum.DELETE_SUCCESS).ToString();
                         status = true;
                     }
                     catch (Exception ex)
                     {
-                        code = sharedUtil.GetRoleId() == (int) AccessEnum.ADMINISTRATOR_ACCESS
+                        code = sharedUtil.GetRoleId() == (int)AccessEnum.ADMINISTRATOR_ACCESS
                             ? ex.Message
-                            : ((int) ReturnCodeEnum.SYSTEM_ERROR).ToString();
+                            : ((int)ReturnCodeEnum.SYSTEM_ERROR).ToString();
                     }
                 }
 
                 break;
             default:
-                code = ((int) ReturnCodeEnum.ACCESS_DENIED_NO_MODE).ToString();
+                code = ((int)ReturnCodeEnum.ACCESS_DENIED_NO_MODE).ToString();
                 break;
         }
 
         if (data.Count > 0)
         {
-            return Ok(new {status, code, data});
+            return Ok(new { status, code, data });
         }
 
         if (mode.Equals("single") || mode.Equals("singleWithDetail"))
         {
-            return Ok(new {status, code, dataSingle});
+            return Ok(new { status, code, dataSingle });
         }
-        return lastInsertKey > 0 ? Ok(new {status, code, lastInsertKey}) : Ok(new {status, code});
+        return lastInsertKey > 0 ? Ok(new { status, code, lastInsertKey }) : Ok(new { status, code });
     }
 }

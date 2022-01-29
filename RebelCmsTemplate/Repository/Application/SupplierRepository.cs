@@ -325,7 +325,7 @@ public class SupplierRepository
         {
             connection.Open();
             sql += @"
-            SELECT  *
+            SELECT  supplierId
             FROM    supplier 
             WHERE   isDelete    != 1
             AND     tenantId    =   @tenantId
