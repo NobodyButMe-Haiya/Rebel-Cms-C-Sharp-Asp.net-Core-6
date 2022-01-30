@@ -2,9 +2,9 @@
 
 public partial class UserModel
 {
-    public int UserKey { get; init; }
-    public int TenantKey { get; init; }
-    public int RoleKey { get; init; }
+    public uint UserKey { get; init; }
+    public uint TenantKey { get; init; }
+    public uint RoleKey { get; init; }
     public string? UserName { get; init; }
     public string? UserPassword { get; set; }
     public string? UserAddress { get; init; }

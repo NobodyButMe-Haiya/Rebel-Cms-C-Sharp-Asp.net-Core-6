@@ -62,10 +62,10 @@ public class InvoiceController : Controller
                 {
                     try
                     {
-                        int customerKey;
+                        uint customerKey;
                         if (!string.IsNullOrWhiteSpace(Request.Form["customerKey"]))
                         {
-                            if (!int.TryParse(Request.Form["customerKey"], out customerKey))
+                            if (!uint.TryParse(Request.Form["customerKey"], out customerKey))
                             {
                                 code = ((int) ReturnCodeEnum.ACCESS_DENIED_NO_MODE).ToString();
                                 return Ok(new {status, code});
@@ -76,10 +76,10 @@ public class InvoiceController : Controller
                             customerKey = customerRepository.GetDefault();
                         }
 
-                        int shipperKey;
+                        uint shipperKey;
                         if (!string.IsNullOrWhiteSpace(Request.Form["shipperKey"]))
                         {
-                            if (!int.TryParse(Request.Form["shipperKey"], out shipperKey))
+                            if (!uint.TryParse(Request.Form["shipperKey"], out shipperKey))
                             {
                                 code = ((int) ReturnCodeEnum.ACCESS_DENIED_NO_MODE).ToString();
                                 return Ok(new {status, code});
@@ -90,10 +90,10 @@ public class InvoiceController : Controller
                             shipperKey = shipperRepository.GetDefault();
                         }
 
-                        var employeeKey = 0;
+                        uint employeeKey ;
                         if (!string.IsNullOrWhiteSpace(Request.Form["employeeKey"]))
                         {
-                            if (!int.TryParse(Request.Form["employeeKey"], out shipperKey))
+                            if (!uint.TryParse(Request.Form["employeeKey"], out employeeKey))
                             {
                                 code = ((int) ReturnCodeEnum.ACCESS_DENIED_NO_MODE).ToString();
                                 return Ok(new {status, code});
@@ -236,10 +236,10 @@ public class InvoiceController : Controller
                     {
                         try
                         {
-                            var invoiceKey = 0;
+                            uint invoiceKey = 0;
                             if (!string.IsNullOrWhiteSpace(Request.Form["invoiceKey"]))
                             {
-                                if (!int.TryParse(Request.Form["invoiceKey"], out invoiceKey))
+                                if (!uint.TryParse(Request.Form["invoiceKey"], out invoiceKey))
                                 {
                                     code = ((int) ReturnCodeEnum.ACCESS_DENIED_NO_MODE).ToString();
                                     return Ok(new {status, code});
@@ -287,10 +287,10 @@ public class InvoiceController : Controller
                     {
                         try
                         {
-                            var invoiceKey = 0;
+                            uint invoiceKey = 0;
                             if (!string.IsNullOrWhiteSpace(Request.Form["invoiceKey"]))
                             {
-                                if (!int.TryParse(Request.Form["invoiceKey"], out invoiceKey))
+                                if (!uint.TryParse(Request.Form["invoiceKey"], out invoiceKey))
                                 {
                                     code = ((int) ReturnCodeEnum.ACCESS_DENIED_NO_MODE).ToString();
                                     return Ok(new {status, code});
@@ -299,10 +299,10 @@ public class InvoiceController : Controller
 
                             if (invoiceKey > 0)
                             {
-                                int customerKey;
+                                uint customerKey;
                                 if (!string.IsNullOrWhiteSpace(Request.Form["customerKey"]))
                                 {
-                                    if (!int.TryParse(Request.Form["customerKey"], out customerKey))
+                                    if (!uint.TryParse(Request.Form["customerKey"], out customerKey))
                                     {
                                         code = ((int) ReturnCodeEnum.ACCESS_DENIED_NO_MODE).ToString();
                                         return Ok(new {status, code});
@@ -313,10 +313,10 @@ public class InvoiceController : Controller
                                     customerKey = customerRepository.GetDefault();
                                 }
 
-                                int shipperKey;
+                                uint shipperKey;
                                 if (!string.IsNullOrWhiteSpace(Request.Form["shipperKey"]))
                                 {
-                                    if (!int.TryParse(Request.Form["shipperKey"], out shipperKey))
+                                    if (!uint.TryParse(Request.Form["shipperKey"], out shipperKey))
                                     {
                                         code = ((int) ReturnCodeEnum.ACCESS_DENIED_NO_MODE).ToString();
                                         return Ok(new {status, code});
@@ -327,10 +327,10 @@ public class InvoiceController : Controller
                                     shipperKey = shipperRepository.GetDefault();
                                 }
 
-                                var employeeKey = 0;
+                                uint employeeKey ;
                                 if (!string.IsNullOrWhiteSpace(Request.Form["employeeKey"]))
                                 {
-                                    if (!int.TryParse(Request.Form["employeeKey"], out shipperKey))
+                                    if (!uint.TryParse(Request.Form["employeeKey"], out employeeKey))
                                     {
                                         code = ((int) ReturnCodeEnum.ACCESS_DENIED_NO_MODE).ToString();
                                         return Ok(new {status, code});
@@ -425,10 +425,10 @@ public class InvoiceController : Controller
                     {
                         try
                         {
-                            var invoiceKey = 0;
+                            uint invoiceKey = 0;
                             if (!string.IsNullOrWhiteSpace(Request.Form["invoiceKey"]))
                             {
-                                if (!int.TryParse(Request.Form["invoiceKey"], out invoiceKey))
+                                if (!uint.TryParse(Request.Form["invoiceKey"], out invoiceKey))
                                 {
                                     code = ((int) ReturnCodeEnum.ACCESS_DENIED_NO_MODE).ToString();
                                     return Ok(new {status, code});

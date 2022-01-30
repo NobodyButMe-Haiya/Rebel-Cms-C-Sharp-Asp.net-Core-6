@@ -2,9 +2,9 @@
 
 public partial class ProductTypeModel
 {
-    public int ProductTypeKey { get; init; }
-    public int TenantKey { get; init; }
-    public int ProductCategoryKey { get; init; }
+    public uint ProductTypeKey { get; init; }
+    public uint TenantKey { get; init; }
+    public uint ProductCategoryKey { get; init; }
     public string? ProductTypeName { get; init; }
 }
 

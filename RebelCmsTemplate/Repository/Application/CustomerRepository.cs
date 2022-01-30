@@ -1,8 +1,4 @@
-using System;
-using System.Collections.Generic;
-using System.IO;
 using ClosedXML.Excel;
-using Microsoft.AspNetCore.Http;
 using MySql.Data.MySqlClient;
 using RebelCmsTemplate.Models.Application;
 using RebelCmsTemplate.Models.Shared;
@@ -142,8 +138,8 @@ public class CustomerRepository
                 {
                     customerModels.Add(new CustomerModel
                     {
-                        CustomerKey = Convert.ToInt32(reader["customerId"]),
-                        TenantKey = Convert.ToInt32(reader["tenantId"]),
+                        CustomerKey = Convert.ToUInt32(reader["customerId"]),
+                        TenantKey = Convert.ToUInt32(reader["tenantId"]),
                         CustomerCode = reader["customerCode"].ToString(),
                         CustomerName = reader["customerName"].ToString(),
                         CustomerContactName = reader["customerContactName"].ToString(),
@@ -218,8 +214,8 @@ public class CustomerRepository
                 {
                     customerModels.Add(new CustomerModel
                     {
-                        CustomerKey = Convert.ToInt32(reader["customerId"]),
-                        TenantKey = Convert.ToInt32(reader["tenantId"]),
+                        CustomerKey = Convert.ToUInt32(reader["customerId"]),
+                        TenantKey = Convert.ToUInt32(reader["tenantId"]),
                         CustomerCode = reader["customerCode"].ToString(),
                         CustomerName = reader["customerName"].ToString(),
                         CustomerContactName = reader["customerContactName"].ToString(),
@@ -289,8 +285,8 @@ public class CustomerRepository
                 {
                     customerModel = new CustomerModel
                     {
-                        CustomerKey = Convert.ToInt32(reader["customerId"]),
-                        TenantKey = Convert.ToInt32(reader["tenantId"]),
+                        CustomerKey = Convert.ToUInt32(reader["customerId"]),
+                        TenantKey = Convert.ToUInt32(reader["tenantId"]),
                         CustomerCode = reader["customerCode"].ToString(),
                         CustomerName = reader["customerName"].ToString(),
                         CustomerContactName = reader["customerContactName"].ToString(),
@@ -319,9 +315,9 @@ public class CustomerRepository
         return customerModel;
     }
 
-    public int GetDefault()
+    public uint GetDefault()
     {
-        var customerId = 0;
+        uint customerId ;
         var sql = string.Empty;
         List<ParameterModel> parameterModels = new();
         using var connection = SharedUtil.GetConnection();
@@ -352,7 +348,7 @@ public class CustomerRepository
 
             _sharedUtil.SetSqlSession(sql, parameterModels);
 
-            customerId = (int) mySqlCommand.ExecuteScalar();
+            customerId = (uint) mySqlCommand.ExecuteScalar();
 
             mySqlCommand.Dispose();
         }

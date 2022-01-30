@@ -2,9 +2,9 @@
 
 public partial class LeafAccessModel
 {
-    public int LeafAccessKey { get; init; }
-    public int LeafKey { get; init; }
-    public int RoleKey { get; init; }
+    public uint LeafAccessKey { get; init; }
+    public uint LeafKey { get; init; }
+    public uint RoleKey { get; init; }
     public int LeafAccessCreateValue { get; init; }
     public int LeafAccessReadValue { get; init; }
     public int LeafAccessUpdateValue { get; init; }

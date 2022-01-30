@@ -1,7 +1,4 @@
-﻿using System;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using RebelCmsTemplate.Enum;
 using RebelCmsTemplate.Models.Menu;
 using RebelCmsTemplate.Repository.Menu;
@@ -146,7 +143,7 @@ public class FolderController : Controller
                     {
                         try
                         {
-                            if (!int.TryParse(Request.Form["folderKey"], out var folderKey))
+                            if (!uint.TryParse(Request.Form["folderKey"], out var folderKey))
                             {
                                 code = ((int) ReturnCodeEnum.ACCESS_DENIED_NO_MODE).ToString();
                                 return Ok(new {status, code});
@@ -200,7 +197,7 @@ public class FolderController : Controller
                     {
                         try
                         {
-                            if (!int.TryParse(Request.Form["folderKey"], out var folderKey))
+                            if (!uint.TryParse(Request.Form["folderKey"], out var folderKey))
                             {
                                 code = ((int) ReturnCodeEnum.ACCESS_DENIED_NO_MODE).ToString();
                                 return Ok(new {status, code});
@@ -210,7 +207,7 @@ public class FolderController : Controller
                             {
                                 FolderModel folderModel = new()
                                 {
-                                    FolderKey = Convert.ToInt32(folderKey)
+                                    FolderKey = folderKey
                                 };
                                 folderRepository.Delete(folderModel);
 

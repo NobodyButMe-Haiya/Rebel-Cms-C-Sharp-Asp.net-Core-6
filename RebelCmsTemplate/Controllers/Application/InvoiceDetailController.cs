@@ -60,13 +60,13 @@ public class InvoiceDetailController : Controller
                 {
                     try
                     {
-                        if (!int.TryParse(Request.Form["invoiceKey"], out var invoiceKey))
+                        if (!uint.TryParse(Request.Form["invoiceKey"], out var invoiceKey))
                         {
                             code = ((int) ReturnCodeEnum.ACCESS_DENIED_NO_MODE).ToString();
                             return Ok(new {status, code});
                         }
 
-                        if (!int.TryParse(Request.Form["productKey"], out var productKey))
+                        if (!uint.TryParse(Request.Form["productKey"], out var productKey))
                         {
                             code = ((int) ReturnCodeEnum.ACCESS_DENIED_NO_MODE).ToString();
                             return Ok(new {status, code});
@@ -174,7 +174,7 @@ public class InvoiceDetailController : Controller
                     {
                         try
                         {
-                            if (!int.TryParse(Request.Form["invoiceDetailKey"], out var invoiceDetailKey))
+                            if (!uint.TryParse(Request.Form["invoiceDetailKey"], out var invoiceDetailKey))
                             {
                                 code = ((int) ReturnCodeEnum.ACCESS_DENIED_NO_MODE).ToString();
                                 return Ok(new {status, code});
@@ -182,13 +182,13 @@ public class InvoiceDetailController : Controller
 
                             if (invoiceDetailKey > 0)
                             {
-                                if (!int.TryParse(Request.Form["invoiceKey"], out var invoiceKey))
+                                if (!uint.TryParse(Request.Form["invoiceKey"], out var invoiceKey))
                                 {
                                     code = ((int) ReturnCodeEnum.ACCESS_DENIED_NO_MODE).ToString();
                                     return Ok(new {status, code});
                                 }
 
-                                if (!int.TryParse(Request.Form["productKey"], out var productKey))
+                                if (!uint.TryParse(Request.Form["productKey"], out var productKey))
                                 {
                                     code = ((int) ReturnCodeEnum.ACCESS_DENIED_NO_MODE).ToString();
                                     return Ok(new {status, code});
@@ -251,7 +251,7 @@ public class InvoiceDetailController : Controller
                     {
                         try
                         {
-                            if (!int.TryParse(Request.Form["invoiceDetailKey"], out var invoiceDetailKey))
+                            if (!uint.TryParse(Request.Form["invoiceDetailKey"], out var invoiceDetailKey))
                             {
                                 code = ((int) ReturnCodeEnum.ACCESS_DENIED_NO_MODE).ToString();
                                 return Ok(new {status, code});

@@ -2,7 +2,6 @@
 @using RebelCmsTemplate.Models.Application
 @using RebelCmsTemplate.Repository.Application
 @using RebelCmsTemplate.Util;
-@using RebelCmsTemplate.Enum;
 @using Microsoft.AspNetCore.Http
 @{
     SharedUtil sharedUtils = new(_httpContextAccessor);
@@ -341,7 +340,7 @@
             } else if (status === false) {
                 if (typeof (code) === 'string') {
                     callBackError();
-                } else if (parseInt(code) === parseInt(accessDeniedCode)) {
+                } else if (parseInt(code) === accessDeniedCode) {
                     accessDenied();
                 } else {
                     location.href = "/";
@@ -397,7 +396,7 @@
             } else if (status === false) {
                 if (typeof (code) === 'string') {
                     callBackError();
-                } else if (parseInt(code) === parseInt(accessDeniedCode)) {
+                } else if (parseInt(code) === accessDeniedCode) {
                     accessDenied();
                 } else {
                     location.href = "/";
@@ -451,7 +450,7 @@
             } else if (status === false) {
                 if (typeof (code) === 'string') {
                     callBackError();
-                } else if (parseInt(code) === parseInt(accessDeniedCode)) {
+                } else if (parseInt(code) === accessDeniedCode) {
                     accessDenied();
                 } else {
                     location.href = "/";
@@ -516,7 +515,7 @@
             } else if (status === false) {
                 if (typeof (code) === 'string') {
                     callBackError();
-                } else if (parseInt(code) === parseInt(accessDeniedCode)) {
+                } else if (parseInt(code) === accessDeniedCode) {
                     accessDenied();
                 } else {
                     location.href = "/";
@@ -578,7 +577,7 @@
             } else if (status === false) {
                 if (typeof (code) === 'string') {
                     callBackError();
-                } else if (parseInt(code) === parseInt(accessDeniedCode)) {
+                } else if (parseInt(code) === accessDeniedCode) {
                     accessDenied();
                 } else {
                     location.href = "/";
@@ -634,7 +633,7 @@
                     } else if (status === false) {
                         if (typeof (code) === 'string') {
                             callBackError();
-                        } else if (parseInt(code) === parseInt(accessDeniedCode)) {
+                        } else if (parseInt(code) === accessDeniedCode) {
                             accessDenied();
                         } else {
                             location.href = "/";

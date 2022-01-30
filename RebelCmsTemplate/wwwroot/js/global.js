@@ -1,4 +1,5 @@
-﻿var accessDeniedCode = 500;
+﻿const accessDeniedCode = 500;
+
 function callBackError() {
     Swal.fire("System", "System Error", "error");
 }

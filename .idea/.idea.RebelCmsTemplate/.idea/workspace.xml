@@ -4,18 +4,15 @@
     <projectFile profileName="RebelCmsTemplate">RebelCmsTemplate/RebelCmsTemplate.csproj</projectFile>
     <projectFile profileName="IIS Express">RebelCmsTemplate/RebelCmsTemplate.csproj</projectFile>
   </component>
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
   <component name="ChangeListManager">
     <list default="true" id="a8c2ef3b-a7e0-43bd-a464-513e78306137" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/.idea.RebelCmsTemplate/.idea/.gitignore" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/.idea.RebelCmsTemplate/.idea/dataSources.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.RebelCmsTemplate/.idea/dataSources.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/.idea.RebelCmsTemplate/.idea/jsLibraryMappings.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/.idea.RebelCmsTemplate/.idea/sqldialects.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.vs/RebelCmsTemplate/xs/UserPrefs.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.vs/RebelCmsTemplate/xs/project-cache/RebelCmsConsoleApplication-Debug.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.vs/RebelCmsTemplate/xs/project-cache/RebelCmsTemplate-Debug.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/RebelCmsTemplate/.vs/RebelCmsTemplate/xs/UserPrefs.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/RebelCmsTemplate/.vs/RebelCmsTemplate/xs/project-cache/RebelCmsTemplate-Debug.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/RebelCmsTemplate/Controllers/Administrator/LogController.cs" beforeDir="false" afterPath="$PROJECT_DIR$/RebelCmsTemplate/Controllers/Administrator/LogController.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/.idea.RebelCmsTemplate/.idea/jsLibraryMappings.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/.idea.RebelCmsTemplate/.idea/dataSources/7d80fb68-5ec9-4e51-92de-2905ae43c687.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.RebelCmsTemplate/.idea/dataSources/7d80fb68-5ec9-4e51-92de-2905ae43c687.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/.idea.RebelCmsTemplate/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.RebelCmsTemplate/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/RebelCmsTemplate.sln.DotSettings.user" beforeDir="false" afterPath="$PROJECT_DIR$/RebelCmsTemplate.sln.DotSettings.user" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/RebelCmsTemplate/Controllers/Administrator/RoleController.cs" beforeDir="false" afterPath="$PROJECT_DIR$/RebelCmsTemplate/Controllers/Administrator/RoleController.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/RebelCmsTemplate/Controllers/Administrator/TenantController.cs" beforeDir="false" afterPath="$PROJECT_DIR$/RebelCmsTemplate/Controllers/Administrator/TenantController.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/RebelCmsTemplate/Controllers/Administrator/UserController.cs" beforeDir="false" afterPath="$PROJECT_DIR$/RebelCmsTemplate/Controllers/Administrator/UserController.cs" afterDir="false" />
@@ -26,19 +23,33 @@
       <change beforePath="$PROJECT_DIR$/RebelCmsTemplate/Controllers/Application/ProductController.cs" beforeDir="false" afterPath="$PROJECT_DIR$/RebelCmsTemplate/Controllers/Application/ProductController.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/RebelCmsTemplate/Controllers/Application/ShipperController.cs" beforeDir="false" afterPath="$PROJECT_DIR$/RebelCmsTemplate/Controllers/Application/ShipperController.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/RebelCmsTemplate/Controllers/Application/SupplierController.cs" beforeDir="false" afterPath="$PROJECT_DIR$/RebelCmsTemplate/Controllers/Application/SupplierController.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/RebelCmsTemplate/Controllers/HomeController.cs" beforeDir="false" afterPath="$PROJECT_DIR$/RebelCmsTemplate/Controllers/HomeController.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/RebelCmsTemplate/Controllers/Menu/FolderAccessController.cs" beforeDir="false" afterPath="$PROJECT_DIR$/RebelCmsTemplate/Controllers/Menu/FolderAccessController.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/RebelCmsTemplate/Controllers/Menu/FolderController.cs" beforeDir="false" afterPath="$PROJECT_DIR$/RebelCmsTemplate/Controllers/Menu/FolderController.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/RebelCmsTemplate/Controllers/Menu/LeafAccessController.cs" beforeDir="false" afterPath="$PROJECT_DIR$/RebelCmsTemplate/Controllers/Menu/LeafAccessController.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/RebelCmsTemplate/Controllers/Menu/LeafController.cs" beforeDir="false" afterPath="$PROJECT_DIR$/RebelCmsTemplate/Controllers/Menu/LeafController.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/RebelCmsTemplate/Controllers/RouteController.cs" beforeDir="false" afterPath="$PROJECT_DIR$/RebelCmsTemplate/Controllers/RouteController.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/RebelCmsTemplate/Controllers/Setting/ProductCategoryController.cs" beforeDir="false" afterPath="$PROJECT_DIR$/RebelCmsTemplate/Controllers/Setting/ProductCategoryController.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/RebelCmsTemplate/Controllers/Setting/ProductTypeController.cs" beforeDir="false" afterPath="$PROJECT_DIR$/RebelCmsTemplate/Controllers/Setting/ProductTypeController.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/RebelCmsTemplate/Controllers/Web/WebController.cs" beforeDir="false" afterPath="$PROJECT_DIR$/RebelCmsTemplate/Controllers/Web/WebController.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/RebelCmsTemplate/Database/1december2021_dummy_data" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/RebelCmsTemplate/Models/Administrator/LogModel.cs" beforeDir="false" afterPath="$PROJECT_DIR$/RebelCmsTemplate/Models/Administrator/LogModel.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/RebelCmsTemplate/Models/Administrator/RoleModel.cs" beforeDir="false" afterPath="$PROJECT_DIR$/RebelCmsTemplate/Models/Administrator/RoleModel.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/RebelCmsTemplate/Models/Administrator/TenantModel.cs" beforeDir="false" afterPath="$PROJECT_DIR$/RebelCmsTemplate/Models/Administrator/TenantModel.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/RebelCmsTemplate/Models/Administrator/UserModel.cs" beforeDir="false" afterPath="$PROJECT_DIR$/RebelCmsTemplate/Models/Administrator/UserModel.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/RebelCmsTemplate/Models/Application/CustomerModel.cs" beforeDir="false" afterPath="$PROJECT_DIR$/RebelCmsTemplate/Models/Application/CustomerModel.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/RebelCmsTemplate/Models/Application/EmployeeModel.cs" beforeDir="false" afterPath="$PROJECT_DIR$/RebelCmsTemplate/Models/Application/EmployeeModel.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/RebelCmsTemplate/Models/Application/InvoiceDetailModel.cs" beforeDir="false" afterPath="$PROJECT_DIR$/RebelCmsTemplate/Models/Application/InvoiceDetailModel.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/RebelCmsTemplate/Models/Application/InvoiceModel.cs" beforeDir="false" afterPath="$PROJECT_DIR$/RebelCmsTemplate/Models/Application/InvoiceModel.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/RebelCmsTemplate/Models/Menu/MenuModel.cs" beforeDir="false" afterPath="$PROJECT_DIR$/RebelCmsTemplate/Models/Menu/MenuModel.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/RebelCmsTemplate/Program.cs" beforeDir="false" afterPath="$PROJECT_DIR$/RebelCmsTemplate/Program.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/RebelCmsTemplate/Models/Application/ProductModel.cs" beforeDir="false" afterPath="$PROJECT_DIR$/RebelCmsTemplate/Models/Application/ProductModel.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/RebelCmsTemplate/Models/Application/ShipperModel.cs" beforeDir="false" afterPath="$PROJECT_DIR$/RebelCmsTemplate/Models/Application/ShipperModel.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/RebelCmsTemplate/Models/Application/SupplierModel.cs" beforeDir="false" afterPath="$PROJECT_DIR$/RebelCmsTemplate/Models/Application/SupplierModel.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/RebelCmsTemplate/Models/Menu/FolderAccessModel.cs" beforeDir="false" afterPath="$PROJECT_DIR$/RebelCmsTemplate/Models/Menu/FolderAccessModel.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/RebelCmsTemplate/Models/Menu/FolderModel.cs" beforeDir="false" afterPath="$PROJECT_DIR$/RebelCmsTemplate/Models/Menu/FolderModel.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/RebelCmsTemplate/Models/Menu/FolderOptionModel.cs" beforeDir="false" afterPath="$PROJECT_DIR$/RebelCmsTemplate/Models/Menu/FolderOptionModel.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/RebelCmsTemplate/Models/Menu/LeafAccessModel.cs" beforeDir="false" afterPath="$PROJECT_DIR$/RebelCmsTemplate/Models/Menu/LeafAccessModel.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/RebelCmsTemplate/Models/Menu/LeafModel.cs" beforeDir="false" afterPath="$PROJECT_DIR$/RebelCmsTemplate/Models/Menu/LeafModel.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/RebelCmsTemplate/Models/Menu/LeafOptionModel.cs" beforeDir="false" afterPath="$PROJECT_DIR$/RebelCmsTemplate/Models/Menu/LeafOptionModel.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/RebelCmsTemplate/Models/Setting/ProductCategoryModel.cs" beforeDir="false" afterPath="$PROJECT_DIR$/RebelCmsTemplate/Models/Setting/ProductCategoryModel.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/RebelCmsTemplate/Models/Setting/ProductTypeModel.cs" beforeDir="false" afterPath="$PROJECT_DIR$/RebelCmsTemplate/Models/Setting/ProductTypeModel.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/RebelCmsTemplate/RebelCmsTemplate.csproj" beforeDir="false" afterPath="$PROJECT_DIR$/RebelCmsTemplate/RebelCmsTemplate.csproj" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/RebelCmsTemplate/Repository/Administrator/LogRepository.cs" beforeDir="false" afterPath="$PROJECT_DIR$/RebelCmsTemplate/Repository/Administrator/LogRepository.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/RebelCmsTemplate/Repository/Administrator/RoleRepository.cs" beforeDir="false" afterPath="$PROJECT_DIR$/RebelCmsTemplate/Repository/Administrator/RoleRepository.cs" afterDir="false" />
@@ -58,13 +69,9 @@
       <change beforePath="$PROJECT_DIR$/RebelCmsTemplate/Repository/Setting/ProductCategoryRepository.cs" beforeDir="false" afterPath="$PROJECT_DIR$/RebelCmsTemplate/Repository/Setting/ProductCategoryRepository.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/RebelCmsTemplate/Repository/Setting/ProductTypeRepository.cs" beforeDir="false" afterPath="$PROJECT_DIR$/RebelCmsTemplate/Repository/Setting/ProductTypeRepository.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/RebelCmsTemplate/Util/CheckAccessUtil.cs" beforeDir="false" afterPath="$PROJECT_DIR$/RebelCmsTemplate/Util/CheckAccessUtil.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/RebelCmsTemplate/Util/DateOnlyConvertor.cs" beforeDir="false" afterPath="$PROJECT_DIR$/RebelCmsTemplate/Util/DateOnlyConvertor.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/RebelCmsTemplate/Util/MenuUtil.cs" beforeDir="false" afterPath="$PROJECT_DIR$/RebelCmsTemplate/Util/MenuUtil.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/RebelCmsTemplate/Util/RenderViewToStringUtil.cs" beforeDir="false" afterPath="$PROJECT_DIR$/RebelCmsTemplate/Util/RenderViewToStringUtil.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/RebelCmsTemplate/Util/SharedUtil.cs" beforeDir="false" afterPath="$PROJECT_DIR$/RebelCmsTemplate/Util/SharedUtil.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/RebelCmsTemplate/Util/TimeOnlyConvertor.cs" beforeDir="false" afterPath="$PROJECT_DIR$/RebelCmsTemplate/Util/TimeOnlyConvertor.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/RebelCmsTemplate/Views/Email/Test.cshtml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/RebelCmsTemplate/Views/Home/Main.cshtml" beforeDir="false" afterPath="$PROJECT_DIR$/RebelCmsTemplate/Views/Home/Main.cshtml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/RebelCmsTemplate/Views/Home/Privacy.cshtml" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/RebelCmsTemplate/Views/Pages/Administrator/Log.cshtml" beforeDir="false" afterPath="$PROJECT_DIR$/RebelCmsTemplate/Views/Pages/Administrator/Log.cshtml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/RebelCmsTemplate/Views/Pages/Administrator/Role.cshtml" beforeDir="false" afterPath="$PROJECT_DIR$/RebelCmsTemplate/Views/Pages/Administrator/Role.cshtml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/RebelCmsTemplate/Views/Pages/Administrator/Tenant.cshtml" beforeDir="false" afterPath="$PROJECT_DIR$/RebelCmsTemplate/Views/Pages/Administrator/Tenant.cshtml" afterDir="false" />
@@ -75,21 +82,52 @@
       <change beforePath="$PROJECT_DIR$/RebelCmsTemplate/Views/Pages/Application/Product.cshtml" beforeDir="false" afterPath="$PROJECT_DIR$/RebelCmsTemplate/Views/Pages/Application/Product.cshtml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/RebelCmsTemplate/Views/Pages/Application/Shipper.cshtml" beforeDir="false" afterPath="$PROJECT_DIR$/RebelCmsTemplate/Views/Pages/Application/Shipper.cshtml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/RebelCmsTemplate/Views/Pages/Application/Supplier.cshtml" beforeDir="false" afterPath="$PROJECT_DIR$/RebelCmsTemplate/Views/Pages/Application/Supplier.cshtml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/RebelCmsTemplate/Views/Pages/Menu/Folder.cshtml" beforeDir="false" afterPath="$PROJECT_DIR$/RebelCmsTemplate/Views/Pages/Menu/Folder.cshtml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/RebelCmsTemplate/Views/Pages/Menu/FolderAccess.cshtml" beforeDir="false" afterPath="$PROJECT_DIR$/RebelCmsTemplate/Views/Pages/Menu/FolderAccess.cshtml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/RebelCmsTemplate/Views/Pages/Menu/Leaf.cshtml" beforeDir="false" afterPath="$PROJECT_DIR$/RebelCmsTemplate/Views/Pages/Menu/Leaf.cshtml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/RebelCmsTemplate/Views/Pages/Menu/LeafAccess.cshtml" beforeDir="false" afterPath="$PROJECT_DIR$/RebelCmsTemplate/Views/Pages/Menu/LeafAccess.cshtml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/RebelCmsTemplate/Views/Pages/Setting/ProductCategory.cshtml" beforeDir="false" afterPath="$PROJECT_DIR$/RebelCmsTemplate/Views/Pages/Setting/ProductCategory.cshtml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/RebelCmsTemplate/Views/Pages/Setting/ProductType.cshtml" beforeDir="false" afterPath="$PROJECT_DIR$/RebelCmsTemplate/Views/Pages/Setting/ProductType.cshtml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/RebelCmsTemplate/bin/Debug/net6.0/RebelCmsTemplate.dll" beforeDir="false" afterPath="$PROJECT_DIR$/RebelCmsTemplate/bin/Debug/net6.0/RebelCmsTemplate.dll" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/RebelCmsTemplate/bin/Debug/net6.0/RebelCmsTemplate.pdb" beforeDir="false" afterPath="$PROJECT_DIR$/RebelCmsTemplate/bin/Debug/net6.0/RebelCmsTemplate.pdb" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/RebelCmsTemplate/bin/Debug/net6.0/ref/RebelCmsTemplate.dll" beforeDir="false" afterPath="$PROJECT_DIR$/RebelCmsTemplate/bin/Debug/net6.0/ref/RebelCmsTemplate.dll" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/RebelCmsTemplate/obj/Debug/net6.0/RebelCmsTemplate.GeneratedMSBuildEditorConfig.editorconfig" beforeDir="false" afterPath="$PROJECT_DIR$/RebelCmsTemplate/obj/Debug/net6.0/RebelCmsTemplate.GeneratedMSBuildEditorConfig.editorconfig" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/RebelCmsTemplate/bin/Debug/net6.0/BouncyCastle.Crypto.dll" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/RebelCmsTemplate/bin/Debug/net6.0/ClosedXML.dll" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/RebelCmsTemplate/bin/Debug/net6.0/DocumentFormat.OpenXml.dll" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/RebelCmsTemplate/bin/Debug/net6.0/ExcelNumberFormat.dll" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/RebelCmsTemplate/bin/Debug/net6.0/Google.Protobuf.dll" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/RebelCmsTemplate/bin/Debug/net6.0/K4os.Compression.LZ4.Streams.dll" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/RebelCmsTemplate/bin/Debug/net6.0/K4os.Compression.LZ4.dll" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/RebelCmsTemplate/bin/Debug/net6.0/K4os.Hash.xxHash.dll" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/RebelCmsTemplate/bin/Debug/net6.0/Microsoft.Win32.SystemEvents.dll" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/RebelCmsTemplate/bin/Debug/net6.0/MySql.Data.dll" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/RebelCmsTemplate/bin/Debug/net6.0/RebelCmsTemplate" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/RebelCmsTemplate/bin/Debug/net6.0/RebelCmsTemplate.deps.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/RebelCmsTemplate/bin/Debug/net6.0/RebelCmsTemplate.dll" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/RebelCmsTemplate/bin/Debug/net6.0/RebelCmsTemplate.pdb" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/RebelCmsTemplate/bin/Debug/net6.0/RebelCmsTemplate.runtimeconfig.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/RebelCmsTemplate/bin/Debug/net6.0/RebelCmsTemplate.staticwebassets.runtime.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/RebelCmsTemplate/bin/Debug/net6.0/System.Configuration.ConfigurationManager.dll" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/RebelCmsTemplate/bin/Debug/net6.0/System.Drawing.Common.dll" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/RebelCmsTemplate/bin/Debug/net6.0/System.IO.Packaging.dll" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/RebelCmsTemplate/bin/Debug/net6.0/System.Security.Cryptography.ProtectedData.dll" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/RebelCmsTemplate/bin/Debug/net6.0/System.Security.Permissions.dll" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/RebelCmsTemplate/bin/Debug/net6.0/System.Windows.Extensions.dll" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/RebelCmsTemplate/bin/Debug/net6.0/Ubiety.Dns.Core.dll" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/RebelCmsTemplate/bin/Debug/net6.0/ZstdNet.dll" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/RebelCmsTemplate/bin/Debug/net6.0/appsettings.Development.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/RebelCmsTemplate/bin/Debug/net6.0/appsettings.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/RebelCmsTemplate/bin/Debug/net6.0/ref/RebelCmsTemplate.dll" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/RebelCmsTemplate/bin/Debug/net6.0/runtimes/unix/lib/netcoreapp3.0/System.Drawing.Common.dll" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/RebelCmsTemplate/bin/Debug/net6.0/runtimes/win/lib/netcoreapp3.0/Microsoft.Win32.SystemEvents.dll" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/RebelCmsTemplate/bin/Debug/net6.0/runtimes/win/lib/netcoreapp3.0/System.Drawing.Common.dll" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/RebelCmsTemplate/bin/Debug/net6.0/runtimes/win/lib/netcoreapp3.0/System.Windows.Extensions.dll" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/RebelCmsTemplate/bin/Debug/net6.0/runtimes/win/lib/netstandard2.0/System.Security.Cryptography.ProtectedData.dll" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/RebelCmsTemplate/obj/Debug/net6.0/RebelCmsTemplate.csproj.AssemblyReference.cache" beforeDir="false" afterPath="$PROJECT_DIR$/RebelCmsTemplate/obj/Debug/net6.0/RebelCmsTemplate.csproj.AssemblyReference.cache" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/RebelCmsTemplate/obj/Debug/net6.0/RebelCmsTemplate.csproj.CopyComplete" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/RebelCmsTemplate/obj/Debug/net6.0/RebelCmsTemplate.csproj.FileListAbsolute.txt" beforeDir="false" afterPath="$PROJECT_DIR$/RebelCmsTemplate/obj/Debug/net6.0/RebelCmsTemplate.csproj.FileListAbsolute.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/RebelCmsTemplate/obj/Debug/net6.0/RebelCmsTemplate.dll" beforeDir="false" afterPath="$PROJECT_DIR$/RebelCmsTemplate/obj/Debug/net6.0/RebelCmsTemplate.dll" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/RebelCmsTemplate/obj/Debug/net6.0/RebelCmsTemplate.pdb" beforeDir="false" afterPath="$PROJECT_DIR$/RebelCmsTemplate/obj/Debug/net6.0/RebelCmsTemplate.pdb" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/RebelCmsTemplate/obj/Debug/net6.0/ref/RebelCmsTemplate.dll" beforeDir="false" afterPath="$PROJECT_DIR$/RebelCmsTemplate/obj/Debug/net6.0/ref/RebelCmsTemplate.dll" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/RebelCmsTemplate/obj/rider.project.restore.info" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/RebelCmsTemplate/obj/Debug/net6.0/RebelCmsTemplate.dll" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/RebelCmsTemplate/obj/Debug/net6.0/RebelCmsTemplate.genruntimeconfig.cache" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/RebelCmsTemplate/obj/Debug/net6.0/RebelCmsTemplate.pdb" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/RebelCmsTemplate/obj/Debug/net6.0/ref/RebelCmsTemplate.dll" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/RebelCmsTemplate/obj/Debug/net6.0/scopedcss/Views/Shared/_Layout.cshtml.rz.scp.css" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/RebelCmsTemplate/obj/Debug/net6.0/scopedcss/bundle/RebelCmsTemplate.styles.css" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/RebelCmsTemplate/obj/Debug/net6.0/scopedcss/projectbundle/RebelCmsTemplate.bundle.scp.css" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/RebelCmsTemplate/obj/Debug/net6.0/staticwebassets.build.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/RebelCmsTemplate/obj/Debug/net6.0/staticwebassets.development.json" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/RebelCmsTemplate/obj/staticwebassets.pack.sentinel" beforeDir="false" afterPath="$PROJECT_DIR$/RebelCmsTemplate/obj/staticwebassets.pack.sentinel" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/RebelCmsTemplate/wwwroot/js/global.js" beforeDir="false" afterPath="$PROJECT_DIR$/RebelCmsTemplate/wwwroot/js/global.js" afterDir="false" />
     </list>
@@ -101,6 +139,9 @@
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
+  <component name="HighlightingSettingsPerFile">
+    <setting file="file://$PROJECT_DIR$/RebelCmsTemplate/Repository/Menu/FolderAccessRepository.cs" root0="SKIP_HIGHLIGHTING" />
+  </component>
   <component name="MarkdownSettingsMigration">
     <option name="stateVersion" value="1" />
   </component>
@@ -111,10 +152,13 @@
     <option name="showLibraryContents" value="true" />
   </component>
   <component name="PropertiesComponent">
+    <property name="ASKED_SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="DatabaseDriversLRU" value="mysql" />
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
+    <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
+    <property name="settings.editor.selected.configurable" value="JavaScript.Libraries" />
     <property name="vue.rearranger.settings.migration" value="true" />
   </component>
   <component name="RunManager" selected=".NET Launch Settings Profile.RebelCmsTemplate">
@@ -159,6 +203,7 @@
       <updated>1643454750113</updated>
       <workItem from="1643454755918" duration="1319000" />
       <workItem from="1643473832116" duration="74000" />
+      <workItem from="1643509423242" duration="8760000" />
     </task>
     <servers />
   </component>
@@ -181,5 +226,9 @@
   </component>
   <component name="VcsManagerConfiguration">
     <option name="CLEAR_INITIAL_COMMIT_MESSAGE" value="true" />
+  </component>
+  <component name="XSLT-Support.FileAssociations.UIState">
+    <expand />
+    <select />
   </component>
 </project>

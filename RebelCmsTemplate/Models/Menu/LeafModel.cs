@@ -2,9 +2,10 @@
 
 public class LeafModel
 {
-    public int LeafKey { get; init; }
+    public uint LeafKey { get; init; }
+    public uint FolderKey { get; init; }
     public int LeafSeq { get; init; }
-    public int FolderKey { get; init; }
+  
     public string? LeafFilename { get; init; }
     public string? LeafName { get; init; }
     public string? LeafIcon { get; init; }

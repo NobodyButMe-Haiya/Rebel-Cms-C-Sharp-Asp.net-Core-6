@@ -54,7 +54,7 @@ public class LogRepository
                 {
                     logModels.Add(new LogModel
                     {
-                        LogKey = Convert.ToInt32(reader["logId"]),
+                        LogKey = Convert.ToUInt32(reader["logId"]),
                         LogUserName = reader["logUserName"].ToString(),
                         LogQuery = reader["logQuery"].ToString(),
                         LogError = reader["logError"].ToString(),
@@ -121,7 +121,7 @@ public class LogRepository
                 {
                     logModels.Add(new LogModel
                     {
-                        LogKey = Convert.ToInt32(reader["logId"]),
+                        LogKey = Convert.ToUInt32(reader["logId"]),
                         LogUserName = reader["logUserName"].ToString(),
                         LogQuery = reader["logQuery"].ToString(),
                         LogError = reader["logError"].ToString(),

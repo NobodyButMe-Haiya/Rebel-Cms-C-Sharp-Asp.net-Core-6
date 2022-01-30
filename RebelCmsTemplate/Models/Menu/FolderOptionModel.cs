@@ -2,6 +2,6 @@
 
 public class FolderOptionModel
 {
-    public int FolderKey { get; init; }
+    public uint FolderKey { get; init; }
     public string? FolderName { get; init; }
 }

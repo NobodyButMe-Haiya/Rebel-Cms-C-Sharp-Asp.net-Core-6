@@ -34,7 +34,7 @@ public class TenantRepository
             var mySqlTransaction = connection.BeginTransaction();
 
             sql += @"
-                INSERT INTO tenant VALUES (null,@tenantName,0,@executeBy);";
+                INSERT INTO tenant VALUES (null,@tenantName,0);";
             MySqlCommand mySqlCommand = new(sql, connection);
 
             parameterModels = new List<ParameterModel>
@@ -43,11 +43,6 @@ public class TenantRepository
                 {
                     Key = "@tenantName",
                     Value = tenantModel.TenantName
-                },
-                new()
-                {
-                    Key = "@executeBy",
-                    Value = _sharedUtil.GetUserName()
                 }
             };
             foreach (var parameter in parameterModels)
@@ -96,7 +91,7 @@ public class TenantRepository
                     tenantModels.Add(new TenantModel
                     {
                         TenantName = reader["tenantName"].ToString(),
-                        TenantKey = Convert.ToInt32(reader["tenantId"])
+                        TenantKey = Convert.ToUInt32(reader["tenantId"])
                     });
                 }
             }
@@ -152,7 +147,7 @@ public class TenantRepository
                     tenantModels.Add(new TenantModel
                     {
                         TenantName = reader["tenantName"].ToString(),
-                        TenantKey = Convert.ToInt32(reader["tenantId"])
+                        TenantKey = Convert.ToUInt32(reader["tenantId"])
                     });
                 }
             }
@@ -245,11 +240,6 @@ public class TenantRepository
                 {
                     Key = "@tenantName",
                     Value = tenantModel.TenantName
-                },
-                new()
-                {
-                    Key = "@executeBy",
-                    Value = _sharedUtil.GetUserName()
                 }
             };
             foreach (var parameter in parameterModels)

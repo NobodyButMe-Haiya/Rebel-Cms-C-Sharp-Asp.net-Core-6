@@ -2,6 +2,6 @@
 
 public class RoleModel
 {
-    public int RoleKey { get; init; }
+    public uint RoleKey { get; init; }
     public string? RoleName { get; init; }
 }

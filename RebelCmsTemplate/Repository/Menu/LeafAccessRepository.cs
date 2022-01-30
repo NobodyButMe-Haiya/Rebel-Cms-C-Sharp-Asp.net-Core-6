@@ -99,7 +99,7 @@ public class LeafAccessRepository
                 {
                     leafAccessModels.Add(new LeafAccessModel
                     {
-                        LeafAccessKey = Convert.ToInt32(reader["leafAccessId"]),
+                        LeafAccessKey = Convert.ToUInt32(reader["leafAccessId"]),
                         LeafAccessCreateValue = Convert.ToInt32(reader["leafAccessCreateValue"]),
                         LeafAccessReadValue = Convert.ToInt32(reader["leafAccessReadValue"]),
                         LeafAccessUpdateValue = Convert.ToInt32(reader["leafAccessUpdateValue"]),
@@ -109,8 +109,8 @@ public class LeafAccessRepository
                         RoleName = reader["roleName"].ToString(),
                         LeafName = reader["leafName"].ToString(),
                         FolderName = reader["folderName"].ToString(),
-                        RoleKey = Convert.ToInt32(reader["roleId"]),
-                        LeafKey = Convert.ToInt32(reader["leafId"])
+                        RoleKey = Convert.ToUInt32(reader["roleId"]),
+                        LeafKey = Convert.ToUInt32(reader["leafId"])
                     });
                 }
             }
@@ -136,7 +136,7 @@ public class LeafAccessRepository
             connection.Open();
             var mySqlTransaction = connection.BeginTransaction();
 
-            List<int> primaryKeyAll = new();
+            List<uint> primaryKeyAll = new();
             List<string> access = new()
             {
                 "leafAccessCreateValue",

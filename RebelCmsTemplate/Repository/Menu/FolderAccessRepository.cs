@@ -84,10 +84,10 @@ public class FolderAccessRepository
                 {
                     folderAccessModels.Add(new FolderAccessModel
                     {
-                        FolderAccessKey = Convert.ToInt32(reader["folderAccessId"]),
+                        FolderAccessKey = Convert.ToUInt32(reader["folderAccessId"]),
                         FolderAccessValue = Convert.ToInt32(reader["folderAccessValue"]),
-                        FolderKey = Convert.ToInt32(reader["folderId"]),
-                        RoleKey = Convert.ToInt32(reader["roleId"]),
+                        FolderKey = Convert.ToUInt32(reader["folderId"]),
+                        RoleKey = Convert.ToUInt32(reader["roleId"]),
                         RoleName = reader["roleName"].ToString(),
                         FolderName = reader["folderName"].ToString()
                     });
@@ -117,7 +117,7 @@ public class FolderAccessRepository
 
             var sql = @" UPDATE  `folder_access` " +
                       " SET     `folderAccessValue`			= CASE `folderAccessId` ";
-            List<int> primaryKeyAll = new();
+            List<uint> primaryKeyAll = new();
             foreach (var folderAccessModel in folderAccessModels)
             {
                 sql += " WHEN " + folderAccessModel.FolderAccessKey;

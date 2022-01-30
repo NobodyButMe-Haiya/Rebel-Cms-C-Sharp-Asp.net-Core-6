@@ -162,7 +162,7 @@ public class SupplierController : Controller
                     {
                         try
                         {
-                            if (!int.TryParse(Request.Form["supplierKey"], out var supplierKey))
+                            if (!uint.TryParse(Request.Form["supplierKey"], out var supplierKey))
                             {
                                 code = ((int) ReturnCodeEnum.ACCESS_DENIED_NO_MODE).ToString();
                                 return Ok(new {status, code});
@@ -202,7 +202,7 @@ public class SupplierController : Controller
                     {
                         try
                         {
-                            if (!int.TryParse(Request.Form["supplierKey"], out var supplierKey))
+                            if (!uint.TryParse(Request.Form["supplierKey"], out var supplierKey))
                             {
                                 code = ((int) ReturnCodeEnum.ACCESS_DENIED_NO_MODE).ToString();
                                 return Ok(new {status, code});
@@ -263,7 +263,7 @@ public class SupplierController : Controller
                     {
                         try
                         {
-                            if (!int.TryParse(Request.Form["supplierKey"], out var supplierKey))
+                            if (!uint.TryParse(Request.Form["supplierKey"], out var supplierKey))
                             {
                                 code = ((int) ReturnCodeEnum.ACCESS_DENIED_NO_MODE).ToString();
                                 return Ok(new {status, code});

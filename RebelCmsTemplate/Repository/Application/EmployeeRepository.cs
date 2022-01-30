@@ -293,7 +293,7 @@ public class EmployeeRepository
                 {
                     employeeModels.Add(new EmployeeModel
                     {
-                        EmployeeKey = Convert.ToInt32(reader["employeeId"]),
+                        EmployeeKey = Convert.ToUInt32(reader["employeeId"]),
                         EmployeeFirstName = reader["employeeFirstName"].ToString(),
                         EmployeeLastName = reader["employeeLastName"].ToString(),
                         EmployeeTitle = reader["employeeTitle"].ToString(),
@@ -468,7 +468,7 @@ public class EmployeeRepository
                 {
                     employeeModel = new EmployeeModel
                     {
-                        EmployeeKey = Convert.ToInt32(reader["employeeId"]),
+                        EmployeeKey = Convert.ToUInt32(reader["employeeId"]),
                         EmployeeFirstName = reader["employeeFirstName"].ToString(),
                         EmployeeLastName = reader["employeeLastName"].ToString(),
                         EmployeeTitle = reader["employeeTitle"].ToString(),
@@ -506,9 +506,9 @@ public class EmployeeRepository
         return employeeModel;
     }
 
-    public int GetDefault()
+    public uint GetDefault()
     {
-        var employeeId = 0;
+        uint employeeId ;
         var sql = string.Empty;
         List<ParameterModel> parameterModels = new();
         using var connection = SharedUtil.GetConnection();
@@ -537,7 +537,7 @@ public class EmployeeRepository
             }
 
             _sharedUtil.SetSqlSession(sql, parameterModels);
-            employeeId = (int) (long) mySqlCommand.ExecuteScalar();
+            employeeId = (uint) mySqlCommand.ExecuteScalar();
         }
         catch (MySqlException ex)
         {

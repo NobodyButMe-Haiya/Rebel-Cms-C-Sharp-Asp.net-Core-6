@@ -17,7 +17,7 @@ public class InvoiceDetailRepository
 
     public int Create(InvoiceDetailModel invoiceDetailModel)
     {
-        var lastInsertKey = 0;
+        int lastInsertKey ;
         var sql = string.Empty;
         List<ParameterModel> parameterModels = new();
         using var connection = SharedUtil.GetConnection();
@@ -26,10 +26,15 @@ public class InvoiceDetailRepository
             connection.Open();
             var mySqlTransaction = connection.BeginTransaction();
             sql +=
-                @"INSERT INTO invoice_detail (invoiceDetailId,invoiceId,productId,invoiceDetailUnitPrice,invoiceDetailQuantity,invoiceDetailDiscount,isDelete) VALUES (null,@invoiceId,@productId,@invoiceDetailUnitPrice,@invoiceDetailQuantity,@invoiceDetailDiscount,@isDelete);";
+                @"INSERT INTO invoice_detail (invoiceDetailId,tenantId,invoiceId,productId,invoiceDetailUnitPrice,invoiceDetailQuantity,invoiceDetailDiscount,isDelete) VALUES (null,@invoiceId,@tenantId,@productId,@invoiceDetailUnitPrice,@invoiceDetailQuantity,@invoiceDetailDiscount,@isDelete);";
             MySqlCommand mySqlCommand = new(sql, connection);
             parameterModels = new List<ParameterModel>
             {
+                new()
+                {
+                    Key = "@tenantId",
+                    Value = _sharedUtil.GetTenantId()
+                },
                 new()
                 {
                     Key = "@invoiceId",
@@ -103,9 +108,9 @@ public class InvoiceDetailRepository
                 {
                     invoiceDetailModels.Add(new InvoiceDetailModel
                     {
-                        InvoiceDetailKey = Convert.ToInt32(reader["invoiceDetailId"]),
-                        InvoiceKey = Convert.ToInt32(reader["invoiceId"]),
-                        ProductKey = Convert.ToInt32(reader["productId"]),
+                        InvoiceDetailKey = Convert.ToUInt32(reader["invoiceDetailId"]),
+                        InvoiceKey = Convert.ToUInt32(reader["invoiceId"]),
+                        ProductKey = Convert.ToUInt32(reader["productId"]),
                         InvoiceDetailUnitPrice = reader["invoiceDetailUnitPrice"] != DBNull.Value
                             ? Convert.ToDecimal(reader["invoiceDetailUnitPrice"])
                             : 0,
@@ -152,7 +157,7 @@ public class InvoiceDetailRepository
             USING(productId)
 
             WHERE   invoice_detail.isDelete != 1
-            AND     tenantId = @tenantId 
+            AND     invoice_detail.tenantId = @tenantId 
             AND     (
                         invoice.invoiceId LIKE CONCAT('%',@search,'%') OR
                         invoice.invoiceId LIKE CONCAT('%',@search,'%') OR
@@ -186,9 +191,9 @@ public class InvoiceDetailRepository
                 {
                     invoiceDetailModels.Add(new InvoiceDetailModel
                     {
-                        InvoiceDetailKey = Convert.ToInt32(reader["invoiceDetailId"]),
-                        InvoiceKey = Convert.ToInt32(reader["invoiceId"]),
-                        ProductKey = Convert.ToInt32(reader["productId"]),
+                        InvoiceDetailKey = Convert.ToUInt32(reader["invoiceDetailId"]),
+                        InvoiceKey = Convert.ToUInt32(reader["invoiceId"]),
+                        ProductKey = Convert.ToUInt32(reader["productId"]),
                         InvoiceDetailUnitPrice = Convert.ToDecimal(reader["invoiceDetailUnitPrice"]),
                         InvoiceDetailQuantity = Convert.ToInt32(reader["invoiceDetailQuantity"]),
                         InvoiceDetailDiscount = Convert.ToDouble(reader["invoiceDetailDiscount"]),

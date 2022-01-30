@@ -181,7 +181,7 @@
             } else if (status === false) {
                 if (typeof (code) === 'string') {
                     callBackError();
-                } else if (parseInt(code) === parseInt(accessDeniedCode)) {
+                } else if (parseInt(code) === accessDeniedCode) {
                     accessDenied();
                 } else {
                     location.href = "/";
@@ -236,7 +236,7 @@
             } else if (status === false) {
                 if (typeof (code) === 'string') {
                     callBackError();
-                } else if (parseInt(code) === parseInt(accessDeniedCode)) {
+                } else if (parseInt(code) === accessDeniedCode) {
                     accessDenied();
                 } else {
                     location.href = "/";

@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using ClosedXML.Excel;
-using Microsoft.AspNetCore.Http;
+﻿using ClosedXML.Excel;
 using MySql.Data.MySqlClient;
 using RebelCmsTemplate.Models.Setting;
 using RebelCmsTemplate.Models.Shared;
@@ -34,7 +30,8 @@ public class ProductTypeRepository
             var mySqlTransaction = connection.BeginTransaction();
 
             sql += @"
-                INSERT INTO product_type VALUES (null,@tenantId,@productCategoryId,@productTypeName,0,@executeBy);";
+                INSERT INTO product_type (productTypeId, tenantId, productCategoryId, productTypeName, isDelete, isDefault) 
+                VALUES (null,@tenantId,@productCategoryId,@productTypeName,@isDelete,@isDefault);";
             MySqlCommand mySqlCommand = new(sql, connection);
 
             parameterModels = new List<ParameterModel>
@@ -56,8 +53,13 @@ public class ProductTypeRepository
                 },
                 new()
                 {
-                    Key = "@executeBy",
-                    Value = _sharedUtil.GetUserName()
+                    Key = "@isDelete",
+                    Value = 0
+                },
+                new()
+                {
+                    Key = "@isDefault",
+                    Value = 0
                 }
             };
             foreach (var parameter in parameterModels)
@@ -128,9 +130,9 @@ public class ProductTypeRepository
                     {
                         ProductCategoryName = reader["productCategoryName"].ToString(),
                         ProductTypeName = reader["productTypeName"].ToString(),
-                        ProductCategoryKey = Convert.ToInt32(reader["productCategoryId"]),
-                        ProductTypeKey = Convert.ToInt32(reader["productTypeId"]),
-                        TenantKey = Convert.ToInt32(reader["tenantId"]),
+                        ProductCategoryKey = Convert.ToUInt32(reader["productCategoryId"]),
+                        ProductTypeKey = Convert.ToUInt32(reader["productTypeId"]),
+                        TenantKey = Convert.ToUInt32(reader["tenantId"]),
                         TenantName = reader["tenantName"].ToString()
                     });
                 }
@@ -201,9 +203,9 @@ public class ProductTypeRepository
                     {
                         ProductCategoryName = reader["productCategoryName"].ToString(),
                         ProductTypeName = reader["productTypeName"].ToString(),
-                        ProductCategoryKey = Convert.ToInt32(reader["productCategoryId"]),
-                        ProductTypeKey = Convert.ToInt32(reader["productTypeId"]),
-                        TenantKey = Convert.ToInt32(reader["tenantId"]),
+                        ProductCategoryKey = Convert.ToUInt32(reader["productCategoryId"]),
+                        ProductTypeKey = Convert.ToUInt32(reader["productTypeId"]),
+                        TenantKey = Convert.ToUInt32(reader["tenantId"]),
                         TenantName = reader["tenantName"].ToString()
                     });
                 }
@@ -222,9 +224,9 @@ public class ProductTypeRepository
         return productTypeModels;
     }
 
-    public int GetDefault()
+    public uint GetDefault()
     {
-        int productTypeId;
+        uint productTypeId;
         var sql = string.Empty;
         List<ParameterModel> parameterModels = new();
 
@@ -254,7 +256,7 @@ public class ProductTypeRepository
 
             _sharedUtil.SetSqlSession(sql, parameterModels);
 
-            productTypeId = (int) (long) mySqlCommand.ExecuteScalar();
+            productTypeId = (uint) mySqlCommand.ExecuteScalar();
 
             mySqlCommand.Dispose();
         }
@@ -394,11 +396,6 @@ public class ProductTypeRepository
                 {
                     Key = "@productTypeId",
                     Value = productTypeModel.ProductTypeKey
-                },
-                new()
-                {
-                    Key = "@executeBy",
-                    Value = _sharedUtil.GetUserName()
                 }
             };
             foreach (var parameter in parameterModels)

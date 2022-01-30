@@ -75,11 +75,6 @@ public class LeafRepository
                 {
                     Key = "@leafSeq",
                     Value = leafModel.LeafSeq
-                },
-                new()
-                {
-                    Key = "@executeBy",
-                    Value = _sharedUtil.GetUserName()
                 }
             };
             foreach (var parameter in parameterModels)
@@ -143,8 +138,8 @@ public class LeafRepository
                 {
                     leafModels.Add(new LeafModel
                     {
-                        LeafKey = Convert.ToInt32(reader["LeafId"]),
-                        FolderKey = Convert.ToInt32(reader["folderId"]),
+                        LeafKey = Convert.ToUInt32(reader["LeafId"]),
+                        FolderKey = Convert.ToUInt32(reader["folderId"]),
                         LeafName = reader["leafName"].ToString(),
                         LeafFilename = reader["leafFilename"].ToString(),
                         LeafSeq = Convert.ToInt32(reader["leafSeq"]),
@@ -214,8 +209,8 @@ public class LeafRepository
                 {
                     leafModels.Add(new LeafModel
                     {
-                        LeafKey = Convert.ToInt32(reader["LeafId"]),
-                        FolderKey = Convert.ToInt32(reader["folderId"]),
+                        LeafKey = Convert.ToUInt32(reader["LeafId"]),
+                        FolderKey = Convert.ToUInt32(reader["folderId"]),
                         LeafName = reader["leafName"].ToString(),
                         LeafFilename = reader["leafFilename"].ToString(),
                         LeafSeq = Convert.ToInt32(reader["leafSeq"]),
@@ -291,11 +286,6 @@ public class LeafRepository
                 {
                     Key = "@leafSeq",
                     Value = leafModel.LeafSeq
-                },
-                new()
-                {
-                    Key = "@executeBy",
-                    Value = _sharedUtil.GetUserName()
                 },
                 new()
                 {

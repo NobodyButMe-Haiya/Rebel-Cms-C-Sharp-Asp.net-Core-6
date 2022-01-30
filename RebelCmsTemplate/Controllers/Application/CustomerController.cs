@@ -161,7 +161,7 @@ public class CustomerController : Controller
                     {
                         try
                         {
-                            if (!int.TryParse(Request.Form["customerKey"], out var customerKey))
+                            if (!uint.TryParse(Request.Form["customerKey"], out var customerKey))
                             {
                                 code = ((int) ReturnCodeEnum.ACCESS_DENIED_NO_MODE).ToString();
                                 return Ok(new {status, code});
@@ -209,7 +209,7 @@ public class CustomerController : Controller
                     {
                         try
                         {
-                            if (!int.TryParse(Request.Form["customerKey"], out var customerKey))
+                            if (!uint.TryParse(Request.Form["customerKey"], out var customerKey))
                             {
                                 code = ((int) ReturnCodeEnum.ACCESS_DENIED_NO_MODE).ToString();
                                 return Ok(new {status, code});
@@ -277,7 +277,7 @@ public class CustomerController : Controller
                     {
                         try
                         {
-                            if (!int.TryParse(Request.Form["customerKey"], out var customerKey))
+                            if (!uint.TryParse(Request.Form["customerKey"], out var customerKey))
                             {
                                 code = ((int) ReturnCodeEnum.ACCESS_DENIED_NO_MODE).ToString();
                                 return Ok(new {status, code});

@@ -59,7 +59,7 @@ public class LeafAccessController : Controller
             {
                 leafAccessModels.Add(new LeafAccessModel
                 {
-                    LeafAccessKey = Convert.ToInt32(leafAccessIdValue[i]),
+                    LeafAccessKey = Convert.ToUInt32(leafAccessIdValue[i]),
                     LeafAccessCreateValue = Convert.ToInt32(leafAccessCreateValue[i]),
                     LeafAccessReadValue = Convert.ToInt32(leafAccessReadValue[i]),
                     LeafAccessUpdateValue = Convert.ToInt32(leafAccessUpdateValue[i]),

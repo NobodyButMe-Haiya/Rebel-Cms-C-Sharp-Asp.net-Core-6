@@ -74,11 +74,6 @@ public class FolderRepository
                 {
                     Key = "@folderSeq",
                     Value = folderModel.FolderSeq
-                },
-                new()
-                {
-                    Key = "@executeBy",
-                    Value = _sharedUtil.GetUserName()
                 }
             };
             foreach (var parameter in parameterModels)
@@ -142,7 +137,7 @@ public class FolderRepository
                 {
                     folderModels.Add(new FolderModel
                     {
-                        FolderKey = Convert.ToInt32(reader["folderId"]),
+                        FolderKey = Convert.ToUInt32(reader["folderId"]),
                         FolderName = reader["folderName"].ToString(),
                         FolderFilename = reader["folderFilename"].ToString(),
                         FolderSeq = Convert.ToInt32(reader["folderSeq"]),
@@ -208,7 +203,7 @@ public class FolderRepository
                 {
                     folderModels.Add(new FolderModel
                     {
-                        FolderKey = Convert.ToInt32(reader["FolderId"]),
+                        FolderKey = Convert.ToUInt32(reader["FolderId"]),
                         FolderName = reader["folderName"].ToString(),
                         FolderFilename = reader["folderFilename"].ToString(),
                         FolderSeq = Convert.ToInt32(reader["folderSeq"]),
@@ -278,11 +273,6 @@ public class FolderRepository
                 {
                     Key = "@folderSeq",
                     Value = folderModel.FolderSeq
-                },
-                new()
-                {
-                    Key = "@executeBy",
-                    Value = _sharedUtil.GetUserName()
                 },
                 new()
                 {

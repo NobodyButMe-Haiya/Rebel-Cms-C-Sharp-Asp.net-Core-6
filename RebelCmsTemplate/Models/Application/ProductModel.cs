@@ -2,11 +2,11 @@ namespace RebelCmsTemplate.Models.Application;
 
 public partial class ProductModel
 {
-    public int ProductKey { get; init; }
-    public int TenantKey { get; init; }
-    public int SupplierKey { get; init; }
-    public int ProductCategoryKey { get; init; }
-    public int ProductTypeKey { get; init; }
+    public uint ProductKey { get; init; }
+    public uint TenantKey { get; init; }
+    public uint SupplierKey { get; init; }
+    public uint ProductCategoryKey { get; init; }
+    public uint ProductTypeKey { get; init; }
     public string? ProductName { get; init; }
     public string? ProductDescription { get; init; }
     public string? ProductQuantityPerUnit { get; init; }

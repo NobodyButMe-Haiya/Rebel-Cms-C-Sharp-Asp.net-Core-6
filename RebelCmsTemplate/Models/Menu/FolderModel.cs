@@ -2,7 +2,7 @@
 
 public class FolderModel
 {
-    public int FolderKey { get; init; }
+    public uint FolderKey { get; init; }
     public string? FolderName { get; init; }
     public string? FolderFilename { get; init; }
     public string? FolderIcon { get; init; }

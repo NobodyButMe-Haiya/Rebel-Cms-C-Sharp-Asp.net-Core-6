@@ -1,6 +1,3 @@
-using System;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using RebelCmsTemplate.Enum;
 using RebelCmsTemplate.Models.Administrator;
@@ -47,9 +44,7 @@ public class TenantController : Controller
         var status = false;
         var mode = Request.Form["mode"];
         var leafCheckKey = Convert.ToInt32(Request.Form["leafCheckKey"]);
-
-        var tenantName = Request.Form["tenantName"];
-        var tenantKey = Request.Form["tenantKey"];
+        
         var search = Request.Form["search"];
 
         TenantRepository tenantRepository = new(_httpContextAccessor);
@@ -68,6 +63,7 @@ public class TenantController : Controller
                 }
                 else
                 {
+                    var tenantName = Request.Form["tenantName"];
                     try
                     {
                         TenantModel tenantModel = new()
@@ -141,22 +137,36 @@ public class TenantController : Controller
                 }
                 else
                 {
-                    try
+                    if (!string.IsNullOrEmpty(Request.Form["tenantKey"]))
                     {
-                        TenantModel tenantModel = new()
+                        try
                         {
-                            TenantName = tenantName,
-                            TenantKey = Convert.ToInt32(tenantKey)
-                        };
-                        tenantRepository.Update(tenantModel);
-                        code = ((int) ReturnCodeEnum.UPDATE_SUCCESS).ToString();
-                        status = true;
+                            if (!uint.TryParse(Request.Form["tenantKey"], out var tenantKey))
+                            {
+                                code = ((int) ReturnCodeEnum.ACCESS_DENIED_NO_MODE).ToString();
+                                return Ok(new {status, code});
+                            }
+                            var tenantName = Request.Form["tenantName"];
+                            TenantModel tenantModel = new()
+                            {
+                                TenantName = tenantName,
+                                TenantKey = tenantKey
+                            };
+                            tenantRepository.Update(tenantModel);
+                            code = ((int) ReturnCodeEnum.UPDATE_SUCCESS).ToString();
+                            status = true;
+                        }
+                        catch (Exception ex)
+                        {
+                            code = sharedUtil.GetRoleId() == (int) AccessEnum.ADMINISTRATOR_ACCESS
+                                ? ex.Message
+                                : ((int) ReturnCodeEnum.SYSTEM_ERROR).ToString();
+                        }
                     }
-                    catch (Exception ex)
+                    else
                     {
-                        code = sharedUtil.GetRoleId() == (int) AccessEnum.ADMINISTRATOR_ACCESS
-                            ? ex.Message
-                            : ((int) ReturnCodeEnum.SYSTEM_ERROR).ToString();
+                        code = ((int) ReturnCodeEnum.ACCESS_DENIED).ToString();
+
                     }
                 }
 
@@ -168,23 +178,35 @@ public class TenantController : Controller
                 }
                 else
                 {
-                    try
+                    if (!string.IsNullOrEmpty(Request.Form["tenantKey"]))
                     {
-                        TenantModel tenantModel = new()
+                        try
                         {
-                            TenantName = tenantName,
-                            TenantKey = Convert.ToInt32(tenantKey)
-                        };
-                        tenantRepository.Delete(tenantModel);
+                            if (!uint.TryParse(Request.Form["tenantKey"], out var tenantKey))
+                            {
+                                code = ((int) ReturnCodeEnum.ACCESS_DENIED_NO_MODE).ToString();
+                                return Ok(new {status, code});
+                            }
 
-                        code = ((int) ReturnCodeEnum.DELETE_SUCCESS).ToString();
-                        status = true;
+                            TenantModel tenantModel = new()
+                            {
+                                TenantKey = tenantKey
+                            };
+                            tenantRepository.Delete(tenantModel);
+
+                            code = ((int) ReturnCodeEnum.DELETE_SUCCESS).ToString();
+                            status = true;
+                        }
+                        catch (Exception ex)
+                        {
+                            code = sharedUtil.GetRoleId() == (int) AccessEnum.ADMINISTRATOR_ACCESS
+                                ? ex.Message
+                                : ((int) ReturnCodeEnum.SYSTEM_ERROR).ToString();
+                        }
                     }
-                    catch (Exception ex)
+                    else
                     {
-                        code = sharedUtil.GetRoleId() == (int) AccessEnum.ADMINISTRATOR_ACCESS
-                            ? ex.Message
-                            : ((int) ReturnCodeEnum.SYSTEM_ERROR).ToString();
+                        code = ((int) ReturnCodeEnum.ACCESS_DENIED).ToString();
                     }
                 }
 

@@ -2,8 +2,8 @@ namespace RebelCmsTemplate.Models.Application;
 
 public class SupplierModel
 {
-    public int SupplierKey { get; init; }
-    public int TenantKey { get; init; }
+    public uint SupplierKey { get; init; }
+    public uint TenantKey { get; init; }
     public string? SupplierName { get; init; }
     public string? SupplierContactName { get; init; }
     public string? SupplierContactTitle { get; init; }

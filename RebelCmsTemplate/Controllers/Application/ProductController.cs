@@ -50,8 +50,8 @@ public class ProductController : Controller
 
         SharedUtil sharedUtil = new(_httpContextAccessor);
         CheckAccessUtil checkAccessUtil = new(_httpContextAccessor);
-        
-        string? code;
+
+        string? code = null;
 
         switch (mode)
         {
@@ -64,15 +64,47 @@ public class ProductController : Controller
                 {
                     try
                     {
-                        var supplierKey = !string.IsNullOrEmpty(Request.Form["supplierKey"])
-                            ? Convert.ToInt32(Request.Form["supplierKey"])
-                            : supplierRepository.GetDefault();
-                        var productCategoryKey = !string.IsNullOrEmpty(Request.Form["productCategoryKey"])
-                            ? Convert.ToInt32(Request.Form["productCategoryKey"])
-                            : productCategoryRepository.GetDefault();
-                        var productTypeKey = !string.IsNullOrEmpty(Request.Form["productTypeKey"])
-                            ? Convert.ToInt32(Request.Form["productTypeKey"])
-                            : productTypeRepository.GetDefault();
+                        uint supplierKey;
+                        if (!string.IsNullOrWhiteSpace(Request.Form["supplierKey"]))
+                        {
+                            if (!uint.TryParse(Request.Form["supplierKey"], out supplierKey))
+                            {
+                                code = ((int) ReturnCodeEnum.ACCESS_DENIED_NO_MODE).ToString();
+                                return Ok(new {status, code});
+                            }
+                        }
+                        else
+                        {
+                            supplierKey = supplierRepository.GetDefault();
+                        }
+
+                        uint productCategoryKey;
+                        if (!string.IsNullOrWhiteSpace(Request.Form["productCategoryKey"]))
+                        {
+                            if (!uint.TryParse(Request.Form["productCategoryKey"], out productCategoryKey))
+                            {
+                                code = ((int) ReturnCodeEnum.ACCESS_DENIED_NO_MODE).ToString();
+                                return Ok(new {status, code});
+                            }
+                        }
+                        else
+                        {
+                            productCategoryKey = productCategoryRepository.GetDefault();
+                        }
+
+                        uint productTypeKey;
+                        if (!string.IsNullOrWhiteSpace(Request.Form["productTypeKey"]))
+                        {
+                            if (!uint.TryParse(Request.Form["productTypeKey"], out productTypeKey))
+                            {
+                                code = ((int) ReturnCodeEnum.ACCESS_DENIED_NO_MODE).ToString();
+                                return Ok(new {status, code});
+                            }
+                        }
+                        else
+                        {
+                            productTypeKey = productTypeRepository.GetDefault();
+                        }
 
                         var productName = Request.Form["productName"];
                         var productDescription = Request.Form["productDescription"];
@@ -179,7 +211,7 @@ public class ProductController : Controller
                     {
                         try
                         {
-                            if (!int.TryParse(Request.Form["productKey"], out var productKey))
+                            if (!uint.TryParse(Request.Form["productKey"], out var productKey))
                             {
                                 code = ((int) ReturnCodeEnum.ACCESS_DENIED_NO_MODE).ToString();
                                 return Ok(new {status, code});
@@ -188,9 +220,8 @@ public class ProductController : Controller
                             if (productKey == 0)
                             {
                                 code = ((int) ReturnCodeEnum.ACCESS_DENIED).ToString();
-
                             }
-                            else 
+                            else
                             {
                                 ProductModel productModel = new()
                                 {
@@ -223,65 +254,111 @@ public class ProductController : Controller
                 }
                 else
                 {
-                    try
+                    if (!string.IsNullOrEmpty(Request.Form["productKey"]))
                     {
-                        var productKey = !string.IsNullOrEmpty(Request.Form["productKey"])
-                            ? Convert.ToInt32(Request.Form["productKey"])
-                            : 0;
-                        var supplierKey = !string.IsNullOrEmpty(Request.Form["supplierKey"])
-                            ? Convert.ToInt32(Request.Form["supplierKey"])
-                            : supplierRepository.GetDefault();
-                        var productCategoryKey = !string.IsNullOrEmpty(Request.Form["productCategoryKey"])
-                            ? Convert.ToInt32(Request.Form["productCategoryKey"])
-                            : productCategoryRepository.GetDefault();
-                        var productTypeKey = !string.IsNullOrEmpty(Request.Form["productTypeKey"])
-                            ? Convert.ToInt32(Request.Form["productTypeKey"])
-                            : productTypeRepository.GetDefault();
-
-                        var productName = Request.Form["productName"];
-                        var productDescription = Request.Form["productDescription"];
-                        var productQuantityPerUnit = Request.Form["productQuantityPerUnit"];
-
-                        var productCostPrice = !string.IsNullOrEmpty(Request.Form["productCostPrice"])
-                            ? Convert.ToDouble(Request.Form["productCostPrice"])
-                            : 0;
-                        var productSellingPrice = !string.IsNullOrEmpty(Request.Form["productSellingPrice"])
-                            ? Convert.ToDouble(Request.Form["productSellingPrice"])
-                            : 0;
-                        var productUnitsInStock = !string.IsNullOrEmpty(Request.Form["productUnitsInStock"])
-                            ? Convert.ToDouble(Request.Form["productUnitsInStock"])
-                            : 0;
-                        var productUnitsOnOrder = !string.IsNullOrEmpty(Request.Form["productUnitsOnOrder"])
-                            ? Convert.ToDouble(Request.Form["productUnitsOnOrder"])
-                            : 0;
-                        var productReOrderLevel = !string.IsNullOrEmpty(Request.Form["productReOrderLevel"])
-                            ? Convert.ToDouble(Request.Form["productReOrderLevel"])
-                            : 0;
-
-                        ProductModel productModel = new()
+                        try
                         {
-                            ProductKey = productKey,
-                            SupplierKey = supplierKey,
-                            ProductCategoryKey = productCategoryKey,
-                            ProductTypeKey = productTypeKey,
-                            ProductName = productName,
-                            ProductDescription = productDescription,
-                            ProductQuantityPerUnit = productQuantityPerUnit,
-                            ProductCostPrice = productCostPrice,
-                            ProductSellingPrice = productSellingPrice,
-                            ProductUnitsInStock = productUnitsInStock,
-                            ProductUnitsOnOrder = productUnitsOnOrder,
-                            ProductReOrderLevel = productReOrderLevel
-                        };
-                        productRepository.Update(productModel);
-                        code = ((int) ReturnCodeEnum.UPDATE_SUCCESS).ToString();
-                        status = true;
+                            if (!uint.TryParse(Request.Form["productKey"], out var productKey))
+                            {
+                                code = ((int) ReturnCodeEnum.ACCESS_DENIED_NO_MODE).ToString();
+                                return Ok(new {status, code});
+                            }
+
+                            if (productKey > 0)
+                            {
+                                uint supplierKey;
+                                if (!string.IsNullOrWhiteSpace(Request.Form["supplierKey"]))
+                                {
+                                    if (!uint.TryParse(Request.Form["supplierKey"], out supplierKey))
+                                    {
+                                        code = ((int) ReturnCodeEnum.ACCESS_DENIED_NO_MODE).ToString();
+                                        return Ok(new {status, code});
+                                    }
+                                }
+                                else
+                                {
+                                    supplierKey = supplierRepository.GetDefault();
+                                }
+
+                                uint productCategoryKey;
+                                if (!string.IsNullOrWhiteSpace(Request.Form["productCategoryKey"]))
+                                {
+                                    if (!uint.TryParse(Request.Form["productCategoryKey"], out productCategoryKey))
+                                    {
+                                        code = ((int) ReturnCodeEnum.ACCESS_DENIED_NO_MODE).ToString();
+                                        return Ok(new {status, code});
+                                    }
+                                }
+                                else
+                                {
+                                    productCategoryKey = productCategoryRepository.GetDefault();
+                                }
+
+                                uint productTypeKey;
+                                if (!string.IsNullOrWhiteSpace(Request.Form["productTypeKey"]))
+                                {
+                                    if (!uint.TryParse(Request.Form["productTypeKey"], out productTypeKey))
+                                    {
+                                        code = ((int) ReturnCodeEnum.ACCESS_DENIED_NO_MODE).ToString();
+                                        return Ok(new {status, code});
+                                    }
+                                }
+                                else
+                                {
+                                    productTypeKey = productTypeRepository.GetDefault();
+                                }
+
+
+                                var productName = Request.Form["productName"];
+                                var productDescription = Request.Form["productDescription"];
+                                var productQuantityPerUnit = Request.Form["productQuantityPerUnit"];
+
+                                var productCostPrice = !string.IsNullOrEmpty(Request.Form["productCostPrice"])
+                                    ? Convert.ToDouble(Request.Form["productCostPrice"])
+                                    : 0;
+                                var productSellingPrice = !string.IsNullOrEmpty(Request.Form["productSellingPrice"])
+                                    ? Convert.ToDouble(Request.Form["productSellingPrice"])
+                                    : 0;
+                                var productUnitsInStock = !string.IsNullOrEmpty(Request.Form["productUnitsInStock"])
+                                    ? Convert.ToDouble(Request.Form["productUnitsInStock"])
+                                    : 0;
+                                var productUnitsOnOrder = !string.IsNullOrEmpty(Request.Form["productUnitsOnOrder"])
+                                    ? Convert.ToDouble(Request.Form["productUnitsOnOrder"])
+                                    : 0;
+                                var productReOrderLevel = !string.IsNullOrEmpty(Request.Form["productReOrderLevel"])
+                                    ? Convert.ToDouble(Request.Form["productReOrderLevel"])
+                                    : 0;
+
+                                ProductModel productModel = new()
+                                {
+                                    ProductKey = productKey,
+                                    SupplierKey = supplierKey,
+                                    ProductCategoryKey = productCategoryKey,
+                                    ProductTypeKey = productTypeKey,
+                                    ProductName = productName,
+                                    ProductDescription = productDescription,
+                                    ProductQuantityPerUnit = productQuantityPerUnit,
+                                    ProductCostPrice = productCostPrice,
+                                    ProductSellingPrice = productSellingPrice,
+                                    ProductUnitsInStock = productUnitsInStock,
+                                    ProductUnitsOnOrder = productUnitsOnOrder,
+                                    ProductReOrderLevel = productReOrderLevel
+                                };
+                                productRepository.Update(productModel);
+                                code = ((int) ReturnCodeEnum.UPDATE_SUCCESS).ToString();
+                                status = true;
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            code = sharedUtil.GetRoleId() == (int) AccessEnum.ADMINISTRATOR_ACCESS
+                                ? ex.Message
+                                : ((int) ReturnCodeEnum.SYSTEM_ERROR).ToString();
+                        }
                     }
-                    catch (Exception ex)
+                    else
                     {
-                        code = sharedUtil.GetRoleId() == (int) AccessEnum.ADMINISTRATOR_ACCESS
-                            ? ex.Message
-                            : ((int) ReturnCodeEnum.SYSTEM_ERROR).ToString();
+                        code = ((int) ReturnCodeEnum.ACCESS_DENIED).ToString();
                     }
                 }
 
@@ -293,25 +370,41 @@ public class ProductController : Controller
                 }
                 else
                 {
-                    try
+                    if (!string.IsNullOrEmpty(Request.Form["productKey"]))
                     {
-                        var productKey = !string.IsNullOrEmpty(Request.Form["productKey"])
-                            ? Convert.ToInt32(Request.Form["productKey"])
-                            : 0;
-
-                        ProductModel productModel = new()
+                        try
                         {
-                            ProductKey = productKey
-                        };
-                        productRepository.Delete(productModel);
-                        code = ((int) ReturnCodeEnum.DELETE_SUCCESS).ToString();
-                        status = true;
+                            if (!uint.TryParse(Request.Form["productKey"], out var productKey))
+                            {
+                                code = ((int) ReturnCodeEnum.ACCESS_DENIED_NO_MODE).ToString();
+                                return Ok(new {status, code});
+                            }
+
+                            if (productKey > 0)
+                            {
+                                ProductModel productModel = new()
+                                {
+                                    ProductKey = productKey
+                                };
+                                productRepository.Delete(productModel);
+                                code = ((int) ReturnCodeEnum.DELETE_SUCCESS).ToString();
+                                status = true;
+                            }
+                            else
+                            {
+                                code = ((int) ReturnCodeEnum.ACCESS_DENIED).ToString();
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            code = sharedUtil.GetRoleId() == (int) AccessEnum.ADMINISTRATOR_ACCESS
+                                ? ex.Message
+                                : ((int) ReturnCodeEnum.SYSTEM_ERROR).ToString();
+                        }
                     }
-                    catch (Exception ex)
+                    else
                     {
-                        code = sharedUtil.GetRoleId() == (int) AccessEnum.ADMINISTRATOR_ACCESS
-                            ? ex.Message
-                            : ((int) ReturnCodeEnum.SYSTEM_ERROR).ToString();
+                        code = ((int) ReturnCodeEnum.ACCESS_DENIED).ToString();
                     }
                 }
 

@@ -1,7 +1,4 @@
-﻿using System;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using RebelCmsTemplate.Enum;
 using RebelCmsTemplate.Models.Menu;
 using RebelCmsTemplate.Repository.Menu;
@@ -54,7 +51,7 @@ public class LeafController : Controller
                 {
                     try
                     {
-                        if (!int.TryParse(Request.Form["folderKey"], out var folderKey))
+                        if (!uint.TryParse(Request.Form["folderKey"], out var folderKey))
                         {
                             code = ((int) ReturnCodeEnum.ACCESS_DENIED_NO_MODE).ToString();
                             return Ok(new {status, code});
@@ -154,7 +151,7 @@ public class LeafController : Controller
                     {
                         try
                         {
-                            if (!int.TryParse(Request.Form["leafKey"], out var leafKey))
+                            if (!uint.TryParse(Request.Form["leafKey"], out var leafKey))
                             {
                                 code = ((int) ReturnCodeEnum.ACCESS_DENIED_NO_MODE).ToString();
                                 return Ok(new {status, code});
@@ -162,7 +159,7 @@ public class LeafController : Controller
 
                             if (leafKey > 0)
                             {
-                                if (!int.TryParse(Request.Form["folderKey"], out var folderKey))
+                                if (!uint.TryParse(Request.Form["folderKey"], out var folderKey))
                                 {
                                     code = ((int) ReturnCodeEnum.ACCESS_DENIED_NO_MODE).ToString();
                                     return Ok(new {status, code});
@@ -216,7 +213,7 @@ public class LeafController : Controller
                     {
                         try
                         {
-                            if (!int.TryParse(Request.Form["leafKey"], out var leafKey))
+                            if (!uint.TryParse(Request.Form["leafKey"], out var leafKey))
                             {
                                 code = ((int) ReturnCodeEnum.ACCESS_DENIED_NO_MODE).ToString();
                                 return Ok(new {status, code});

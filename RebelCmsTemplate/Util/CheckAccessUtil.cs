@@ -43,9 +43,9 @@ public class CheckAccessUtil
 
                     UserModel userModel = new()
                     {
-                        UserKey = Convert.ToInt32(reader["userId"]),
-                        TenantKey = Convert.ToInt32(reader["tenantId"]),
-                        RoleKey = Convert.ToInt32(reader["roleId"]),
+                        UserKey = Convert.ToUInt32(reader["userId"]),
+                        TenantKey = Convert.ToUInt32(reader["tenantId"]),
+                        RoleKey = Convert.ToUInt32(reader["roleId"]),
                         UserName = reader["userName"].ToString()
                     };
                     _sharedUtil.SetSession(userModel);
@@ -65,44 +65,7 @@ public class CheckAccessUtil
         return access;
     }
 
-    public bool GetCheckAccessFromMobile(string userToken)
-    {
-        var access = false;
-
-        const string sql = @"
-            SELECT  * 
-            FROM    user 
-            WHERE   isDelete    !=  1 
-            AND     userToken   =   @userToken
-            LIMIT   1";
-        using var connection = SharedUtil.GetConnection();
-        try
-        {
-            connection.Open();
-            MySqlCommand mySqlCommand = new(sql, connection);
-            mySqlCommand.Parameters.AddWithValue("@userToken", userToken);
-
-            using (var reader = mySqlCommand.ExecuteReader())
-            {
-                while (reader.Read())
-                {
-                    access = true;
-                    Token = CalculateSha256(reader["userd"] + "|" + reader["userName"] + "|x76");
-                    break;
-                }
-            }
-
-            mySqlCommand.Dispose();
-        }
-        catch (MySqlException ex)
-        {
-            System.Diagnostics.Debug.WriteLine(ex.Message);
-            _sharedUtil.SetSystemException(ex);
-        }
-
-        return access;
-    }
-
+   
     public static string CalculateSha256(string? rawData)
     {
         StringBuilder builder = new();

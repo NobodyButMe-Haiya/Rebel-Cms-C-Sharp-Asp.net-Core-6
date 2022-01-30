@@ -1,7 +1,4 @@
-﻿using System;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using RebelCmsTemplate.Enum;
 using RebelCmsTemplate.Models.Setting;
 using RebelCmsTemplate.Repository.Setting;
@@ -67,10 +64,10 @@ public class ProductTypeController : Controller
                 {
                     try
                     {
-                        int productCategoryKey;
+                        uint productCategoryKey;
                         if (!string.IsNullOrWhiteSpace(Request.Form["productCategoryKey"]))
                         {
-                            if (!int.TryParse(Request.Form["productCategoryKey"], out productCategoryKey))
+                            if (!uint.TryParse(Request.Form["productCategoryKey"], out productCategoryKey))
                             {
                                 code = ((int) ReturnCodeEnum.ACCESS_DENIED_NO_MODE).ToString();
                                 return Ok(new {status, code});
@@ -166,7 +163,7 @@ public class ProductTypeController : Controller
                     {
                         try
                         {
-                            if (!int.TryParse(Request.Form["productTypeKey"], out var productTypeKey))
+                            if (!uint.TryParse(Request.Form["productTypeKey"], out var productTypeKey))
                             {
                                 code = ((int) ReturnCodeEnum.ACCESS_DENIED_NO_MODE).ToString();
                                 return Ok(new {status, code});
@@ -174,10 +171,10 @@ public class ProductTypeController : Controller
 
                             if (productTypeKey > 0)
                             {
-                                int productCategoryKey;
+                                uint productCategoryKey;
                                 if (!string.IsNullOrWhiteSpace(Request.Form["productCategoryKey"]))
                                 {
-                                    if (!int.TryParse(Request.Form["productCategoryKey"], out productCategoryKey))
+                                    if (!uint.TryParse(Request.Form["productCategoryKey"], out productCategoryKey))
                                     {
                                         code = ((int) ReturnCodeEnum.ACCESS_DENIED_NO_MODE).ToString();
                                         return Ok(new {status, code});
@@ -229,7 +226,7 @@ public class ProductTypeController : Controller
                     {
                         try
                         {
-                            if (!int.TryParse(Request.Form["productTypeKey"], out var productTypeKey))
+                            if (!uint.TryParse(Request.Form["productTypeKey"], out var productTypeKey))
                             {
                                 code = ((int) ReturnCodeEnum.ACCESS_DENIED_NO_MODE).ToString();
                                 return Ok(new {status, code});

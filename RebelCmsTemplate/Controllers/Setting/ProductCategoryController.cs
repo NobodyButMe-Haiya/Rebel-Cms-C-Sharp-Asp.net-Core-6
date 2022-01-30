@@ -1,7 +1,4 @@
-﻿using System;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using RebelCmsTemplate.Enum;
 using RebelCmsTemplate.Models.Setting;
 using RebelCmsTemplate.Repository.Setting;
@@ -148,7 +145,7 @@ public class ProductCategoryController : Controller
                     {
                         try
                         {
-                            if (!int.TryParse(Request.Form["productCategoryKey"], out var productCategoryKey))
+                            if (!uint.TryParse(Request.Form["productCategoryKey"], out var productCategoryKey))
                             {
                                 code = ((int) ReturnCodeEnum.ACCESS_DENIED_NO_MODE).ToString();
                                 return Ok(new {status, code});
@@ -195,7 +192,7 @@ public class ProductCategoryController : Controller
                     {
                         try
                         {
-                            if (!int.TryParse(Request.Form["productCategoryKey"], out var productCategoryKey))
+                            if (!uint.TryParse(Request.Form["productCategoryKey"], out var productCategoryKey))
                             {
                                 code = ((int) ReturnCodeEnum.ACCESS_DENIED_NO_MODE).ToString();
                                 return Ok(new {status, code});

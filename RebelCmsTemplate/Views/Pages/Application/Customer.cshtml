@@ -272,7 +272,7 @@
     function emptyDetailTemplate() {
         return "<tr><td colspan='14'>It's lonely here</td></tr>";
     }
-    function template(customerKey, customerCode, customerName, customerContactName, customerContactTitle, customerAddress, customerCity, customerRegion, customerPostalCode, customerCountry, customerPhone, customerFax) {
+    function template(customerKey, customerCode, customerName, customerContactName, customerContactTitle, customerAddress) {
         let template = "" +
             "<tr id='customer-" + customerKey + "'>" +
             "<td>" + customerCode + "</td>" +
@@ -336,7 +336,7 @@
             let code = data.code;
             if (status) {
                 const lastInsertKey = data.lastInsertKey;
-                $("#tableBody").prepend(template(lastInsertKey, customerCode.val(), customerName.val(), customerContactName.val(), customerContactTitle.val(), customerAddress.val(), customerCity.val(), customerRegion.val(), customerPostalCode.val(), customerCountry.val(), customerPhone.val(), customerFax.val()));
+                $("#tableBody").prepend(template(lastInsertKey, customerCode.val(), customerName.val(), customerContactName.val(), customerContactTitle.val(), customerAddress.val()));
                 $("#customerKey").val(lastInsertKey);
                 $("#createButton").attr("disabled", "disabled");
                 $("#updateButton").removeAttr("disabled");
@@ -350,7 +350,7 @@
             } else if (status === false) {
                 if (typeof (code) === 'string') {
                     callBackError();
-                } else if (parseInt(code) === parseInt(accessDeniedCode)) {
+                } else if (parseInt(code) === accessDeniedCode) {
                     accessDenied();
                 } else {
                     location.href = "/";
@@ -398,7 +398,7 @@
                         let templateStringBuilder = "";
                         for (let i = 0; i < data.data.length; i++) {
                             row = data.data[i];
-                            templateStringBuilder += template(row.customerKey, row.customerCode, row.customerName, row.customerContactName, row.customerContactTitle, row.customerAddress, row.customerCity, row.customerRegion, row.customerPostalCode, row.customerCountry, row.customerPhone, row.customerFax);
+                            templateStringBuilder += template(row.customerKey, row.customerCode, row.customerName, row.customerContactName, row.customerContactTitle, row.customerAddress);
                         }
                         $("#tableBody").html("").html(templateStringBuilder);
                     } else {
@@ -408,7 +408,7 @@
             } else if (status === false) {
                 if (typeof (code) === 'string') {
                     callBackError();
-                } else if (parseInt(code) === parseInt(accessDeniedCode)) {
+                } else if (parseInt(code) === accessDeniedCode) {
                     accessDenied();
                 } else {
                     location.href = "/";
@@ -454,7 +454,7 @@
                         let templateStringBuilder = "";
                         for (let i = 0; i < data.data.length; i++) {
                             row = data.data[i];
-                            templateStringBuilder += template(row.customerKey, row.customerCode, row.customerName, row.customerContactName, row.customerContactTitle, row.customerAddress, row.customerCity, row.customerRegion, row.customerPostalCode, row.customerCountry, row.customerPhone, row.customerFax);
+                            templateStringBuilder += template(row.customerKey, row.customerCode, row.customerName, row.customerContactName, row.customerContactTitle, row.customerAddress);
                         }
                         $("#tableBody").html("").html(templateStringBuilder);
                     }
@@ -462,7 +462,7 @@
             } else if (status === false) {
                 if (typeof (code) === 'string') {
                     callBackError();
-                } else if (parseInt(code) === parseInt(accessDeniedCode)) {
+                } else if (parseInt(code) === accessDeniedCode) {
                     accessDenied();
                 } else {
                     location.href = "/";
@@ -527,7 +527,7 @@
             } else if (status === false) {
                 if (typeof (code) === 'string') {
                     callBackError();
-                } else if (parseInt(code) === parseInt(accessDeniedCode)) {
+                } else if (parseInt(code) === accessDeniedCode) {
                     accessDenied();
                 } else {
                     location.href = "/";
@@ -590,7 +590,7 @@
             } else if (status === false) {
                 if (typeof (code) === 'string') {
                     callBackError();
-                } else if (parseInt(code) === parseInt(accessDeniedCode)) {
+                } else if (parseInt(code) === accessDeniedCode) {
                     accessDenied();
                 } else {
                     location.href = "/";
@@ -661,7 +661,7 @@
                     } else if (status === false) {
                         if (typeof (code) === 'string') {
                             callBackError();
-                        } else if (parseInt(code) === parseInt(accessDeniedCode)) {
+                        } else if (parseInt(code) === accessDeniedCode) {
                             accessDenied();
                         } else {
                             location.href = "/";

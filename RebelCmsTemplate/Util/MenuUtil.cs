@@ -42,7 +42,7 @@ public class MenuUtil
                 {
                     FolderAccessModel folderAccessModel = new()
                     {
-                        FolderKey = Convert.ToInt32(reader["folderId"]),
+                        FolderKey = Convert.ToUInt32(reader["folderId"]),
                         FolderName = reader["folderName"].ToString()
                     };
                     _folderAccessModels.Add(folderAccessModel);

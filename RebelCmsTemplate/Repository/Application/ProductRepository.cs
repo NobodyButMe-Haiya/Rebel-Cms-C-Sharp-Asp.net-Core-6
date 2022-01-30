@@ -162,13 +162,13 @@ public class ProductRepository
                 {
                     productModels.Add(new ProductModel
                     {
-                        ProductKey = Convert.ToInt32(reader["productId"]),
+                        ProductKey = Convert.ToUInt32(reader["productId"]),
                         SupplierName = reader["supplierName"].ToString(),
-                        SupplierKey = Convert.ToInt32(reader["supplierId"]),
+                        SupplierKey = Convert.ToUInt32(reader["supplierId"]),
                         ProductCategoryName = reader["productCategoryName"].ToString(),
-                        ProductCategoryKey = Convert.ToInt32(reader["productCategoryId"]),
+                        ProductCategoryKey = Convert.ToUInt32(reader["productCategoryId"]),
                         ProductTypeName = reader["productTypeName"].ToString(),
-                        ProductTypeKey = Convert.ToInt32(reader["productTypeId"]),
+                        ProductTypeKey = Convert.ToUInt32(reader["productTypeId"]),
                         ProductName = reader["productName"].ToString(),
                         ProductDescription = reader["productDescription"].ToString(),
                         ProductQuantityPerUnit = reader["productQuantityPerUnit"].ToString(),
@@ -290,11 +290,11 @@ public class ProductRepository
                     productModels.Add(new ProductModel
                     {
                         SupplierName = reader["supplierName"].ToString(),
-                        SupplierKey = Convert.ToInt32(reader["supplierId"]),
+                        SupplierKey = Convert.ToUInt32(reader["supplierId"]),
                         ProductCategoryName = reader["productCategoryName"].ToString(),
-                        ProductCategoryKey = Convert.ToInt32(reader["productCategoryId"]),
+                        ProductCategoryKey = Convert.ToUInt32(reader["productCategoryId"]),
                         ProductTypeName = reader["productTypeName"].ToString(),
-                        ProductTypeKey = Convert.ToInt32(reader["productTypeId"]),
+                        ProductTypeKey = Convert.ToUInt32(reader["productTypeId"]),
                         ProductName = reader["productName"].ToString(),
                         ProductDescription = reader["productDescription"].ToString(),
                         ProductQuantityPerUnit = reader["productQuantityPerUnit"].ToString(),
@@ -370,10 +370,10 @@ public class ProductRepository
                 {
                     productModel = new ProductModel
                     {
-                        ProductKey = Convert.ToInt32(reader["productId"]),
-                        SupplierKey = Convert.ToInt32(reader["supplierId"]),
-                        ProductCategoryKey = Convert.ToInt32(reader["productCategoryId"]),
-                        ProductTypeKey = Convert.ToInt32(reader["productTypeId"]),
+                        ProductKey = Convert.ToUInt32(reader["productId"]),
+                        SupplierKey = Convert.ToUInt32(reader["supplierId"]),
+                        ProductCategoryKey = Convert.ToUInt32(reader["productCategoryId"]),
+                        ProductTypeKey = Convert.ToUInt32(reader["productTypeId"]),
                         ProductName = reader["productName"].ToString(),
                         ProductDescription = reader["productDescription"].ToString(),
                         ProductQuantityPerUnit = reader["productQuantityPerUnit"].ToString(),
@@ -398,12 +398,12 @@ public class ProductRepository
         return productModel;
     }
 
-    public int GetDefault()
+    public uint GetDefault()
     {
         var sql = string.Empty;
         List<ParameterModel> parameterModels = new();
         using var connection = SharedUtil.GetConnection();
-        int productId;
+        uint productId;
         try
         {
             connection.Open();
@@ -430,7 +430,7 @@ public class ProductRepository
             }
 
             _sharedUtil.SetSqlSession(sql, parameterModels);
-            productId = (int) (long) mySqlCommand.ExecuteScalar();
+            productId = (uint) mySqlCommand.ExecuteScalar();
 
             mySqlCommand.Dispose();
         }

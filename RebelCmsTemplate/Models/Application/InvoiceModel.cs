@@ -5,11 +5,11 @@ namespace RebelCmsTemplate.Models.Application;
 
 public partial class InvoiceModel
 {
-    public int InvoiceKey { get; init; }
-    public int TenantKey { get; init; }
-    public int CustomerKey { get; init; }
-    public int ShipperKey { get; init; }
-    public int EmployeeKey { get; init; }
+    public uint InvoiceKey { get; init; }
+    public uint TenantKey { get; init; }
+    public uint CustomerKey { get; init; }
+    public uint ShipperKey { get; init; }
+    public uint EmployeeKey { get; init; }
     public DateOnly? InvoiceOrderDate { get; init; }
     public DateOnly? InvoiceRequiredDate { get; init; }
     public DateOnly? InvoiceShippedDate { get; init; }

@@ -182,9 +182,9 @@
     }
     function createRecord() {
         const $productCategoryName = $("#productCategoryName");
-        if ($productCategoryName.val().length == 0) {
+        if ($productCategoryName.val().length === 0) {
             Swal.fire("System Error", "Please Enter all the form", "error");
-            $productCategoryName.focus();
+            $productCategoryName.trigger('focus');
         } else {
             $.ajax({
                 type: 'POST',
@@ -223,7 +223,7 @@
                 } else if (status === false) {
                     if (typeof (code) === 'string') {
                         callBackError();
-                    } else if (parseInt(code) === parseInt(accessDeniedCode)) {
+                    } else if (parseInt(code) === accessDeniedCode) {
                         accessDenied();
                     } else {
                         location.href = "/";
@@ -340,7 +340,7 @@
             } else if (status === false) {
                 if (typeof (code) === 'string') {
                     callBackError();
-                } else if (parseInt(code) === parseInt(accessDeniedCode)) {
+                } else if (parseInt(code) === accessDeniedCode) {
                     accessDenied();
                 } else {
                     location.href = "/";
@@ -386,7 +386,7 @@
             } else if (status === false) {
                 if (typeof (code) === 'string') {
                     callBackError();
-                } else if (parseInt(code) === parseInt(accessDeniedCode)) {
+                } else if (parseInt(code) === accessDeniedCode) {
                     accessDenied();
                 } else {
                     location.href = "/";
@@ -442,7 +442,7 @@
                     } else if (status === false) {
                         if (typeof (code) === 'string') {
                             callBackError();
-                        } else if (parseInt(code) === parseInt(accessDeniedCode)) {
+                        } else if (parseInt(code) === accessDeniedCode) {
                             accessDenied();
                         } else {
                             location.href = "/";

@@ -1,7 +1,4 @@
-﻿using System;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using RebelCmsTemplate.Enum;
 using RebelCmsTemplate.Models.Administrator;
 using RebelCmsTemplate.Repository.Administrator;
@@ -48,22 +45,9 @@ public class UserController : Controller
         string? code;
         var mode = Request.Form["mode"];
         var leafCheckKey = Convert.ToInt32(Request.Form["leafCheckKey"]);
-
-
-        var userKey = Convert.ToInt32(Request.Form["userKey"]);
-
-        var roleKey = 0;
-        if (!string.IsNullOrWhiteSpace(Request.Form["roleKey"]))
-        {
-            var test = int.TryParse(Request.Form["roleKey"], out roleKey);
-            if (!test)
-            {
-                code = ((int) ReturnCodeEnum.ACCESS_DENIED_NO_MODE).ToString();
-                return Ok(new {status, code});
-            }
-        }
-
+        
         UserRepository userRepository = new(_httpContextAccessor);
+        RoleRepository roleRepository = new(_httpContextAccessor);
         SharedUtil sharedUtil = new(_httpContextAccessor);
         CheckAccessUtil checkAccessUtil = new(_httpContextAccessor);
 
@@ -78,6 +62,20 @@ public class UserController : Controller
                 {
                     try
                     {
+          
+                        uint roleKey;
+                        if (!string.IsNullOrWhiteSpace(Request.Form["roleKey"]))
+                        {
+                            if (!uint.TryParse(Request.Form["productCategoryKey"], out roleKey))
+                            {
+                                code = ((int) ReturnCodeEnum.ACCESS_DENIED_NO_MODE).ToString();
+                                return Ok(new {status, code});
+                            }
+                        }
+                        else
+                        {
+                            roleKey = roleRepository.GetDefault();
+                        }
                         var userName = Request.Form["userName"].ToString();
                         var userPassword = Request.Form["userPassword"].ToString();
                         var userEmail = Request.Form["userEmail"].ToString();
@@ -167,32 +165,57 @@ public class UserController : Controller
                 }
                 else
                 {
-                    try
+                    if (!string.IsNullOrEmpty(Request.Form["roleKey"]))
                     {
-                        var userName = Request.Form["userName"].ToString();
-                        var userPassword = Request.Form["userPassword"].ToString();
-                        var userEmail = Request.Form["userEmail"].ToString();
-                        var userPhone = Request.Form["userPhone"].ToString();
-                        var userAddress = Request.Form["userAddress"].ToString();
-
-                        userRepository.Update(new UserModel
+                        try
                         {
-                            RoleKey = roleKey,
-                            UserName = userName,
-                            UserPassword = userPassword,
-                            UserEmail = userEmail,
-                            UserPhone = userPhone,
-                            UserAddress = userAddress,
-                            UserKey = userKey
-                        });
-                        code = ((int) ReturnCodeEnum.UPDATE_SUCCESS).ToString();
-                        status = true;
+                            if (!uint.TryParse(Request.Form["userKey"], out var userKey))
+                            {
+                                code = ((int) ReturnCodeEnum.ACCESS_DENIED_NO_MODE).ToString();
+                                return Ok(new {status, code});
+                            }
+                            uint roleKey;
+                            if (!string.IsNullOrWhiteSpace(Request.Form["roleKey"]))
+                            {
+                                if (!uint.TryParse(Request.Form["productCategoryKey"], out roleKey))
+                                {
+                                    code = ((int) ReturnCodeEnum.ACCESS_DENIED_NO_MODE).ToString();
+                                    return Ok(new {status, code});
+                                }
+                            }
+                            else
+                            {
+                                roleKey = roleRepository.GetDefault();
+                            }
+                            var userName = Request.Form["userName"].ToString();
+                            var userPassword = Request.Form["userPassword"].ToString();
+                            var userEmail = Request.Form["userEmail"].ToString();
+                            var userPhone = Request.Form["userPhone"].ToString();
+                            var userAddress = Request.Form["userAddress"].ToString();
+
+                            userRepository.Update(new UserModel
+                            {
+                                RoleKey = roleKey,
+                                UserName = userName,
+                                UserPassword = userPassword,
+                                UserEmail = userEmail,
+                                UserPhone = userPhone,
+                                UserAddress = userAddress,
+                                UserKey = userKey
+                            });
+                            code = ((int) ReturnCodeEnum.UPDATE_SUCCESS).ToString();
+                            status = true;
+                        }
+                        catch (Exception ex)
+                        {
+                            code = sharedUtil.GetRoleId() == (int) AccessEnum.ADMINISTRATOR_ACCESS
+                                ? ex.Message
+                                : ((int) ReturnCodeEnum.SYSTEM_ERROR).ToString();
+                        }
                     }
-                    catch (Exception ex)
+                    else
                     {
-                        code = sharedUtil.GetRoleId() == (int) AccessEnum.ADMINISTRATOR_ACCESS
-                            ? ex.Message
-                            : ((int) ReturnCodeEnum.SYSTEM_ERROR).ToString();
+                        code = ((int) ReturnCodeEnum.ACCESS_DENIED).ToString();
                     }
                 }
 
@@ -204,21 +227,34 @@ public class UserController : Controller
                 }
                 else
                 {
-                    try
+                    if (!string.IsNullOrEmpty(Request.Form["roleKey"]))
                     {
-                        userRepository.Delete(new UserModel
+                        try
                         {
-                            UserKey = userKey
-                        });
+                            if (!uint.TryParse(Request.Form["userKey"], out var userKey))
+                            {
+                                code = ((int) ReturnCodeEnum.ACCESS_DENIED_NO_MODE).ToString();
+                                return Ok(new {status, code});
+                            }
 
-                        code = ((int) ReturnCodeEnum.DELETE_SUCCESS).ToString();
-                        status = true;
+                            userRepository.Delete(new UserModel
+                            {
+                                UserKey = userKey
+                            });
+
+                            code = ((int) ReturnCodeEnum.DELETE_SUCCESS).ToString();
+                            status = true;
+                        }
+                        catch (Exception ex)
+                        {
+                            code = sharedUtil.GetRoleId() == (int) AccessEnum.ADMINISTRATOR_ACCESS
+                                ? ex.Message
+                                : ((int) ReturnCodeEnum.SYSTEM_ERROR).ToString();
+                        }
                     }
-                    catch (Exception ex)
+                    else
                     {
-                        code = sharedUtil.GetRoleId() == (int) AccessEnum.ADMINISTRATOR_ACCESS
-                            ? ex.Message
-                            : ((int) ReturnCodeEnum.SYSTEM_ERROR).ToString();
+                        code = ((int) ReturnCodeEnum.ACCESS_DENIED).ToString();
                     }
                 }
 

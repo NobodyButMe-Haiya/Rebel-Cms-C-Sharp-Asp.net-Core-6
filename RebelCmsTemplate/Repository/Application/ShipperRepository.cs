@@ -1,8 +1,4 @@
-using System;
-using System.Collections.Generic;
-using System.IO;
 using ClosedXML.Excel;
-using Microsoft.AspNetCore.Http;
 using MySql.Data.MySqlClient;
 using RebelCmsTemplate.Models.Application;
 using RebelCmsTemplate.Models.Shared;
@@ -112,8 +108,8 @@ public class ShipperRepository
                 {
                     shipperModels.Add(new ShipperModel
                     {
-                        ShipperKey = Convert.ToInt32(reader["shipperId"]),
-                        TenantKey = Convert.ToInt32(reader["tenantId"]),
+                        ShipperKey = Convert.ToUInt32(reader["shipperId"]),
+                        TenantKey = Convert.ToUInt32(reader["tenantId"]),
                         ShipperName = reader["shipperName"].ToString(),
                         ShipperPhone = reader["shipperPhone"].ToString(),
                         IsDelete = Convert.ToInt32(reader["isDelete"])
@@ -170,8 +166,8 @@ public class ShipperRepository
                 {
                     shipperModels.Add(new ShipperModel
                     {
-                        ShipperKey = Convert.ToInt32(reader["shipperId"]),
-                        TenantKey = Convert.ToInt32(reader["tenantId"]),
+                        ShipperKey = Convert.ToUInt32(reader["shipperId"]),
+                        TenantKey = Convert.ToUInt32(reader["tenantId"]),
                         ShipperName = reader["shipperName"].ToString(),
                         ShipperPhone = reader["shipperPhone"].ToString(),
                         IsDelete = Convert.ToInt32(reader["isDelete"])
@@ -225,8 +221,8 @@ public class ShipperRepository
                 {
                     shipperModel = new ShipperModel
                     {
-                        ShipperKey = Convert.ToInt32(reader["shipperId"]),
-                        TenantKey = Convert.ToInt32(reader["tenantId"]),
+                        ShipperKey = Convert.ToUInt32(reader["shipperId"]),
+                        TenantKey = Convert.ToUInt32(reader["tenantId"]),
                         ShipperName = reader["shipperName"].ToString(),
                         ShipperPhone = reader["shipperPhone"].ToString(),
                         IsDelete = Convert.ToInt32(reader["isDelete"])
@@ -246,12 +242,12 @@ public class ShipperRepository
         return shipperModel;
     }
 
-    public int GetDefault()
+    public uint GetDefault()
     {
         var sql = string.Empty;
         List<ParameterModel> parameterModels = new();
         using var connection = SharedUtil.GetConnection();
-        int shipperId;
+        uint shipperId;
         try
         {
             connection.Open();
@@ -277,7 +273,7 @@ public class ShipperRepository
             }
 
             _sharedUtil.SetSqlSession(sql, parameterModels);
-            shipperId = (int) (long) mySqlCommand.ExecuteScalar();
+            shipperId = (uint) (long) mySqlCommand.ExecuteScalar();
 
             mySqlCommand.Dispose();
         }

@@ -2,6 +2,6 @@
 
 public class TenantModel
 {
-    public int TenantKey { get; init; }
+    public uint TenantKey { get; init; }
     public string? TenantName { get; init; }
 }

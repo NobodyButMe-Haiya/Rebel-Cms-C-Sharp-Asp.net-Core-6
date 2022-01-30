@@ -239,9 +239,9 @@ public class SharedUtil
     /// <param name="userModel"></param>
     public void SetSession(UserModel userModel)
     {
-        _httpContextAccessor.HttpContext?.Session.SetInt32("userId", userModel.UserKey);
-        _httpContextAccessor.HttpContext?.Session.SetInt32("roleId", userModel.RoleKey);
-        _httpContextAccessor.HttpContext?.Session.SetInt32("tenantId", userModel.TenantKey);
+        _httpContextAccessor.HttpContext?.Session.SetInt32("userId", Convert.ToInt32(userModel.UserKey));
+        _httpContextAccessor.HttpContext?.Session.SetInt32("roleId", Convert.ToInt32(userModel.RoleKey));
+        _httpContextAccessor.HttpContext?.Session.SetInt32("tenantId", Convert.ToInt32(userModel.TenantKey));
         if (userModel.UserName == null)
             return;
         _httpContextAccessor.HttpContext?.Session.SetString("userName", userModel.UserName);

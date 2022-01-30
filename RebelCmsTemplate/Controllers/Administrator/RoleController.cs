@@ -1,7 +1,4 @@
-﻿using System;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using RebelCmsTemplate.Enum;
 using RebelCmsTemplate.Models.Administrator;
 using RebelCmsTemplate.Repository.Administrator;
@@ -149,7 +146,7 @@ public class RoleController : Controller
                     {
                         try
                         {
-                            if (!int.TryParse(Request.Form["roleKey"], out var roleKey))
+                            if (!uint.TryParse(Request.Form["roleKey"], out var roleKey))
                             {
                                 code = ((int) ReturnCodeEnum.ACCESS_DENIED_NO_MODE).ToString();
                                 return Ok(new {status, code});
@@ -160,7 +157,7 @@ public class RoleController : Controller
                             RoleModel roleModel = new()
                             {
                                 RoleName = roleName,
-                                RoleKey = Convert.ToInt32(roleKey)
+                                RoleKey = roleKey
                             };
                             roleRepository.Update(roleModel);
                             code = ((int) ReturnCodeEnum.UPDATE_SUCCESS).ToString();
@@ -191,7 +188,7 @@ public class RoleController : Controller
                     {
                         try
                         {
-                            if (!int.TryParse(Request.Form["roleKey"], out var roleKey))
+                            if (!uint.TryParse(Request.Form["roleKey"], out var roleKey))
                             {
                                 code = ((int) ReturnCodeEnum.ACCESS_DENIED_NO_MODE).ToString();
                                 return Ok(new {status, code});
@@ -199,7 +196,7 @@ public class RoleController : Controller
 
                             RoleModel roleModel = new()
                             {
-                                RoleKey = Convert.ToInt32(roleKey)
+                                RoleKey = roleKey
                             };
                             roleRepository.Delete(roleModel);
 

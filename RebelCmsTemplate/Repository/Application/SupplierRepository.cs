@@ -26,7 +26,7 @@ public class SupplierRepository
             connection.Open();
             var mySqlTransaction = connection.BeginTransaction();
             sql +=
-                @"INSERT INTO supplier (supplierId,tenantId,supplierName,supplierContactName,supplierContactTitle,supplierAddress,supplierCity,supplierRegion,supplierPostalCode,supplierCountry,supplierPhone,supplierFax,supplierHomePage,isDelete) VALUES (null,@tenantId,@supplierName,@supplierContactName,@supplierContactTitle,@supplierAddress,@supplierCity,@supplierRegion,@supplierPostalCode,@supplierCountry,@supplierPhone,@supplierFax,@supplierHomePage,@isDelete);";
+                @"INSERT INTO supplier (supplierId,tenantId,supplierName,supplierContactName,supplierContactTitle,supplierAddress,supplierCity,supplierRegion,supplierPostalCode,supplierCountry,supplierPhone,supplierFax,supplierHomePage,isDelete,isDefault) VALUES (null,@tenantId,@supplierName,@supplierContactName,@supplierContactTitle,@supplierAddress,@supplierCity,@supplierRegion,@supplierPostalCode,@supplierCountry,@supplierPhone,@supplierFax,@supplierHomePage,@isDelete,@isDefault);";
             MySqlCommand mySqlCommand = new(sql, connection);
             parameterModels = new List<ParameterModel>
             {
@@ -94,6 +94,11 @@ public class SupplierRepository
                 {
                     Key = "@isDelete",
                     Value = 0
+                },
+                new()
+                {
+                    Key = "@isDefault",
+                    Value = 0
                 }
             };
             foreach (var parameter in parameterModels)
@@ -152,7 +157,7 @@ public class SupplierRepository
                 {
                     supplierModels.Add(new SupplierModel
                     {
-                        SupplierKey = Convert.ToInt32(reader["supplierId"]),
+                        SupplierKey = Convert.ToUInt32(reader["supplierId"]),
                         SupplierName = reader["supplierName"].ToString(),
                         SupplierContactName = reader["supplierContactName"].ToString(),
                         SupplierContactTitle = reader["supplierContactTitle"].ToString(),
@@ -301,7 +306,7 @@ public class SupplierRepository
                 {
                     supplierModel = new SupplierModel
                     {
-                        SupplierKey = Convert.ToInt32(reader["supplierId"]),
+                        SupplierKey = Convert.ToUInt32(reader["supplierId"]),
                         SupplierName = reader["supplierName"].ToString(),
                         SupplierContactName = reader["supplierContactName"].ToString(),
                         SupplierContactTitle = reader["supplierContactTitle"].ToString(),
@@ -329,12 +334,12 @@ public class SupplierRepository
         return supplierModel;
     }
 
-    public int GetDefault()
+    public uint GetDefault()
     {
         var sql = string.Empty;
         List<ParameterModel> parameterModels = new();
         using var connection = SharedUtil.GetConnection();
-        int supplierId;
+        uint supplierId;
         try
         {
             connection.Open();
@@ -359,7 +364,7 @@ public class SupplierRepository
             }
 
             _sharedUtil.SetSqlSession(sql, parameterModels);
-            supplierId = (int) (long) mySqlCommand.ExecuteScalar();
+            supplierId = (uint)mySqlCommand.ExecuteScalar();
             mySqlCommand.Dispose();
         }
         catch (MySqlException ex)

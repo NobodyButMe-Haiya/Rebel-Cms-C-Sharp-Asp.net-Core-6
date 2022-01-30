@@ -1,5 +1,4 @@
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
+
 using Microsoft.AspNetCore.Mvc;
 using RebelCmsTemplate.Util;
 
@@ -30,18 +29,10 @@ public class WebController : Controller
     public ActionResult Post()
     {
         CheckAccessUtil checkAccessUtil = new(_httpContextAccessor);
-        var mode = Request.Form["mode"];
         var userName = Request.Form["beauty"];
         var userPassword = Request.Form["beast"];
-        var token = Request.Form["disney"];
-        bool status;
-        if (mode == "web")
-        {
-            status = checkAccessUtil.GetCheckAccessFromWeb(userName, userPassword);
-            return Ok(new {status});
-        }
 
-        status = checkAccessUtil.GetCheckAccessFromMobile(token);
-        return Ok(new {status, token = checkAccessUtil.Token});
+        var status = checkAccessUtil.GetCheckAccessFromWeb(userName, userPassword);
+        return Ok(new {status});
     }
 }

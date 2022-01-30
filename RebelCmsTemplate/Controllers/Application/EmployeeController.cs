@@ -201,7 +201,7 @@ public class EmployeeController : Controller
                     {
                         try
                         {
-                            if (!int.TryParse(Request.Form["employeeKey"], out var employeeKey))
+                            if (!uint.TryParse(Request.Form["employeeKey"], out var employeeKey))
                             {
                                 code = ((int) ReturnCodeEnum.ACCESS_DENIED_NO_MODE).ToString();
                                 return Ok(new {status, code});
@@ -252,7 +252,7 @@ public class EmployeeController : Controller
                     {
                         try
                         {
-                            if (!int.TryParse(Request.Form["employeeKey"], out var employeeKey))
+                            if (!uint.TryParse(Request.Form["employeeKey"], out var employeeKey))
                             {
                                 code = ((int) ReturnCodeEnum.ACCESS_DENIED_NO_MODE).ToString();
                                 return Ok(new {status, code});
@@ -357,7 +357,7 @@ public class EmployeeController : Controller
                     {
                         try
                         {
-                            if (!int.TryParse(Request.Form["employeeKey"], out var employeeKey))
+                            if (!uint.TryParse(Request.Form["employeeKey"], out var employeeKey))
                             {
                                 code = ((int) ReturnCodeEnum.ACCESS_DENIED_NO_MODE).ToString();
                                 return Ok(new {status, code});

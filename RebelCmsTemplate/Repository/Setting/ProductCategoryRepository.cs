@@ -118,7 +118,7 @@ public class ProductCategoryRepository
                     productCategoryModels.Add(new ProductCategoryModel
                     {
                         ProductCategoryName = reader["productCategoryName"].ToString(),
-                        ProductCategoryKey = Convert.ToInt32(reader["productCategoryId"])
+                        ProductCategoryKey = Convert.ToUInt32(reader["productCategoryId"])
                     });
                 }
             }
@@ -180,7 +180,7 @@ public class ProductCategoryRepository
                     productCategoryModels.Add(new ProductCategoryModel
                     {
                         ProductCategoryName = reader["productCategoryName"].ToString(),
-                        ProductCategoryKey = Convert.ToInt32(reader["productCategoryId"])
+                        ProductCategoryKey = Convert.ToUInt32(reader["productCategoryId"])
                     });
                 }
             }
@@ -198,13 +198,13 @@ public class ProductCategoryRepository
         return productCategoryModels;
     }
 
-    public int GetDefault()
+    public uint GetDefault()
     {
         var sql = string.Empty;
         List<ParameterModel> parameterModels = new();
 
         using var connection = SharedUtil.GetConnection();
-        int productCategoryId;
+        uint productCategoryId;
         try
         {
             connection.Open();
@@ -231,7 +231,7 @@ public class ProductCategoryRepository
 
             _sharedUtil.SetSqlSession(sql, parameterModels);
 
-            productCategoryId = (int) (long) mySqlCommand.ExecuteScalar();
+            productCategoryId = (uint)mySqlCommand.ExecuteScalar();
 
             mySqlCommand.Dispose();
         }

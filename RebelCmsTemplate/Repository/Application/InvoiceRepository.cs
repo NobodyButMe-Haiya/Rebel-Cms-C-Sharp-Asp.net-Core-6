@@ -155,13 +155,13 @@ public class InvoiceRepository
                 {
                     invoiceModels.Add(new InvoiceModel
                     {
-                        InvoiceKey = Convert.ToInt32(reader["invoiceId"]),
+                        InvoiceKey = Convert.ToUInt32(reader["invoiceId"]),
                         CustomerName = reader["customerName"].ToString(),
-                        CustomerKey = Convert.ToInt32(reader["customerId"]),
+                        CustomerKey = Convert.ToUInt32(reader["customerId"]),
                         ShipperName = reader["shipperName"].ToString(),
-                        ShipperKey = Convert.ToInt32(reader["shipperId"]),
+                        ShipperKey = Convert.ToUInt32(reader["shipperId"]),
                         EmployeeLastName = reader["employeeLastName"].ToString(),
-                        EmployeeKey = Convert.ToInt32(reader["employeeId"]),
+                        EmployeeKey = Convert.ToUInt32(reader["employeeId"]),
                         InvoiceOrderDate = reader["invoiceOrderDate"] != DBNull.Value
                             ? CustomDateTimeConvert.ConvertToDate((DateTime) reader["invoiceOrderDate"])
                             : null,
@@ -218,58 +218,13 @@ public class InvoiceRepository
 
             WHERE   invoice.isDelete != 1
             AND     invoice.tenantId = @tenantId
-     		AND (				customer. LIKE CONCAT('%',@search,'%') OR
-				customer.tenantName LIKE CONCAT('%',@search,'%') OR
+     		AND (				
 				customer.customerCode LIKE CONCAT('%',@search,'%') OR
 				customer.customerName LIKE CONCAT('%',@search,'%') OR
 				customer.customerContactName LIKE CONCAT('%',@search,'%') OR
 				customer.customerContactTitle LIKE CONCAT('%',@search,'%') OR
 				customer.customerAddress LIKE CONCAT('%',@search,'%') OR
-				customer.customerCity LIKE CONCAT('%',@search,'%') OR
-				customer.customerRegion LIKE CONCAT('%',@search,'%') OR
-				customer.customerPostalCode LIKE CONCAT('%',@search,'%') OR
-				customer.customerCountry LIKE CONCAT('%',@search,'%') OR
-				customer.customerPhone LIKE CONCAT('%',@search,'%') OR
-				customer.customerFax LIKE CONCAT('%',@search,'%') OR
-				customer.isDelete LIKE CONCAT('%',@search,'%') OR
-				customer.isDefault LIKE CONCAT('%',@search,'%') OR
-				shipper. LIKE CONCAT('%',@search,'%') OR
-				shipper.tenantName LIKE CONCAT('%',@search,'%') OR
-				shipper.shipperName LIKE CONCAT('%',@search,'%') OR
-				shipper.shipperPhone LIKE CONCAT('%',@search,'%') OR
-				shipper.isDelete LIKE CONCAT('%',@search,'%') OR
-				shipper.isDefault LIKE CONCAT('%',@search,'%') OR
-				employee. LIKE CONCAT('%',@search,'%') OR
-				employee.tenantName LIKE CONCAT('%',@search,'%') OR
-				employee.employeeFirstName LIKE CONCAT('%',@search,'%') OR
-				employee.employeeLastName LIKE CONCAT('%',@search,'%') OR
-				employee.employeeTitle LIKE CONCAT('%',@search,'%') OR
-				employee.employeeTitleOfCourtesy LIKE CONCAT('%',@search,'%') OR
-				employee.employeeBirthDate LIKE CONCAT('%',@search,'%') OR
-				employee.employeeHireDate LIKE CONCAT('%',@search,'%') OR
-				employee.employeeAddress LIKE CONCAT('%',@search,'%') OR
-				employee.employeeCity LIKE CONCAT('%',@search,'%') OR
-				employee.employeeRegion LIKE CONCAT('%',@search,'%') OR
-				employee.employeePostalCode LIKE CONCAT('%',@search,'%') OR
-				employee.employeeCountry LIKE CONCAT('%',@search,'%') OR
-				employee.employeeHomePhone LIKE CONCAT('%',@search,'%') OR
-				employee.employeeExtension LIKE CONCAT('%',@search,'%') OR
-				employee.employeePhoto LIKE CONCAT('%',@search,'%') OR
-				employee.employeeNotes LIKE CONCAT('%',@search,'%') OR
-				employee.employeePhotoPath LIKE CONCAT('%',@search,'%') OR
-				employee.employeeSalary LIKE CONCAT('%',@search,'%') OR
-				employee.isDelete LIKE CONCAT('%',@search,'%') OR
-				employee.isDefault LIKE CONCAT('%',@search,'%') OR
-				invoice.invoiceOrderDate LIKE CONCAT('%',@search,'%') OR
-				invoice.invoiceRequiredDate LIKE CONCAT('%',@search,'%') OR
-				invoice.invoiceShippedDate LIKE CONCAT('%',@search,'%') OR
-				invoice.invoiceFreight LIKE CONCAT('%',@search,'%') OR
-				invoice.invoiceShipName LIKE CONCAT('%',@search,'%') OR
-				invoice.invoiceShipAddress LIKE CONCAT('%',@search,'%') OR
-				invoice.invoiceShipCity LIKE CONCAT('%',@search,'%') OR
-				invoice.invoiceShipRegion LIKE CONCAT('%',@search,'%') OR
-				invoice.invoiceShipPostalCode LIKE CONCAT('%',@search,'%') OR
-				invoice.invoiceShipCountry LIKE CONCAT('%',@search,'%')
+				customer.customerCity LIKE CONCAT('%',@search,'%') 
             ) LIMIT 100 ";
             MySqlCommand mySqlCommand = new(sql, connection);
             parameterModels = new List<ParameterModel>
@@ -298,11 +253,11 @@ public class InvoiceRepository
                     invoiceModels.Add(new InvoiceModel
                     {
                         CustomerName = reader["customerName"].ToString(),
-                        CustomerKey = Convert.ToInt32(reader["customerId"]),
+                        CustomerKey = Convert.ToUInt32(reader["customerId"]),
                         ShipperName = reader["shipperName"].ToString(),
-                        ShipperKey = Convert.ToInt32(reader["shipperId"]),
+                        ShipperKey = Convert.ToUInt32(reader["shipperId"]),
                         EmployeeLastName = reader["employeeLastName"].ToString(),
-                        EmployeeKey = Convert.ToInt32(reader["employeeId"]),
+                        EmployeeKey = Convert.ToUInt32(reader["employeeId"]),
                         InvoiceOrderDate = reader["invoiceOrderDate"] != DBNull.Value
                             ? CustomDateTimeConvert.ConvertToDate((DateTime) reader["invoiceOrderDate"])
                             : null,
@@ -355,7 +310,7 @@ public class InvoiceRepository
             JOIN employee 
             USING(employeeId)
 
-            WHERE   invoice.isDelete !  =   1
+            WHERE   invoice.isDelete    !=   1
             AND     invoice.tenantId    =   @tenantId
             AND     invoice.invoiceId   =   @invoiceId
             LIMIT 1";
@@ -385,10 +340,10 @@ public class InvoiceRepository
                 {
                     invoiceModel = new InvoiceModel
                     {
-                        InvoiceKey = Convert.ToInt32(reader["invoiceId"]),
-                        CustomerKey = Convert.ToInt32(reader["customerId"]),
-                        ShipperKey = Convert.ToInt32(reader["shipperId"]),
-                        EmployeeKey = Convert.ToInt32(reader["employeeId"]),
+                        InvoiceKey = Convert.ToUInt32(reader["invoiceId"]),
+                        CustomerKey = Convert.ToUInt32(reader["customerId"]),
+                        ShipperKey = Convert.ToUInt32(reader["shipperId"]),
+                        EmployeeKey = Convert.ToUInt32(reader["employeeId"]),
                         InvoiceOrderDate = reader["invoiceOrderDate"] != DBNull.Value
                             ? CustomDateTimeConvert.ConvertToDate((DateTime) reader["invoiceOrderDate"])
                             : null,
@@ -455,9 +410,9 @@ public class InvoiceRepository
                 {
                     invoiceDetailModels.Add(new InvoiceDetailModel
                     {
-                        InvoiceDetailKey = Convert.ToInt32(reader["invoiceDetailId"]),
-                        InvoiceKey = Convert.ToInt32(reader["invoiceId"]),
-                        ProductKey = Convert.ToInt32(reader["productId"]),
+                        InvoiceDetailKey = Convert.ToUInt32(reader["invoiceDetailId"]),
+                        InvoiceKey = Convert.ToUInt32(reader["invoiceId"]),
+                        ProductKey = Convert.ToUInt32(reader["productId"]),
                         InvoiceDetailUnitPrice = Convert.ToDecimal(reader["invoiceDetailUnitPrice"]),
                         InvoiceDetailQuantity = Convert.ToInt32(reader["invoiceDetailQuantity"]),
                         InvoiceDetailDiscount = Convert.ToDouble(reader["invoiceDetailDiscount"])

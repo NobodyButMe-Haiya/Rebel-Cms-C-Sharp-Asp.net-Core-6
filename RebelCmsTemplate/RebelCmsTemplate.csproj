@@ -43,12 +43,6 @@
     </ItemGroup>
 
     <ItemGroup>
-        <None Include="wwwroot\lib\jquery\dist\jquery.js" />
-        <None Include="wwwroot\lib\jquery\dist\jquery.min.js" />
-        <None Include="wwwroot\lib\jquery\dist\jquery.min.map" />
-    </ItemGroup>
-
-    <ItemGroup>
         <PackageReference Include="ClosedXML" Version="0.95.4" />
         <PackageReference Include="Microsoft.AspNetCore.Session" Version="2.2.0" />
         <PackageReference Include="MySql.Data" Version="8.0.27" />

@@ -2,8 +2,8 @@ namespace RebelCmsTemplate.Models.Application;
 
 public class CustomerModel
 {
-    public int CustomerKey { get; init; }
-    public int TenantKey { get; init; }
+    public uint CustomerKey { get; init; }
+    public uint TenantKey { get; init; }
     public string? CustomerCode { get; init; }
     public string? CustomerName { get; init; }
     public string? CustomerContactName { get; init; }

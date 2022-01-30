@@ -4,8 +4,8 @@ namespace RebelCmsTemplate.Models.Application;
 
 public class EmployeeModel
 {
-    public int EmployeeKey { get; init; }
-    public int TenantKey { get; init; }
+    public uint EmployeeKey { get; init; }
+    public uint TenantKey { get; init; }
     public string? EmployeeLastName { get; init; }
     public string? EmployeeFirstName { get; init; }
     public string? EmployeeTitle { get; init; }

@@ -2,9 +2,9 @@
 
 public partial class FolderAccessModel
 {
-    public int FolderAccessKey { get; init; }
-    public int FolderKey { get; init; }
-    public int RoleKey { get; init; }
+    public uint FolderAccessKey { get; init; }
+    public uint FolderKey { get; init; }
+    public uint RoleKey { get; init; }
     public int FolderAccessValue { get; init; }
 }
 

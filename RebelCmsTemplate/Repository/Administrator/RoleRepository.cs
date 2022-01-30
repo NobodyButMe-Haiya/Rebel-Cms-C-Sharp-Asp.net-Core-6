@@ -35,7 +35,7 @@ public class RoleRepository
             var mySqlTransaction = connection.BeginTransaction();
 
             sql += @"
-                INSERT INTO role (roleId,tenantId, roleName, isDelete, executeBy) VALUES (null,@tenantId,@roleName,0,@executeBy);";
+                INSERT INTO role (roleId,tenantId, roleName, isDelete) VALUES (null,@tenantId,@roleName,0);";
             MySqlCommand mySqlCommand = new(sql, connection);
             parameterModels = new List<ParameterModel>
             {
@@ -48,11 +48,6 @@ public class RoleRepository
                 {
                     Key = "@roleName",
                     Value = roleModel.RoleName
-                },
-                new()
-                {
-                    Key = "@executeBy",
-                    Value = _sharedUtil.GetUserName()
                 }
             };
             foreach (var parameter in parameterModels)
@@ -118,7 +113,7 @@ public class RoleRepository
                     roleModels.Add(new RoleModel
                     {
                         RoleName = reader["roleName"].ToString(),
-                        RoleKey = Convert.ToInt32(reader["roleId"])
+                        RoleKey = Convert.ToUInt32(reader["roleId"])
                     });
                 }
             }
@@ -181,7 +176,7 @@ public class RoleRepository
                     roleModels.Add(new RoleModel
                     {
                         RoleName = reader["roleName"].ToString(),
-                        RoleKey = Convert.ToInt32(reader["roleId"])
+                        RoleKey = Convert.ToUInt32(reader["roleId"])
                     });
                 }
             }
@@ -198,7 +193,53 @@ public class RoleRepository
 
         return roleModels;
     }
+    public uint GetDefault()
+    {
+        var sql = string.Empty;
+        List<ParameterModel> parameterModels = new();
 
+        using var connection = SharedUtil.GetConnection();
+        uint roleId;
+        try
+        {
+            connection.Open();
+            sql += @"
+            SELECT  roleId
+            FROM    role
+            WHERE   tenantId = @tenantId
+            AND     isDelete != 1
+            AND     isDefault = 1
+            LIMIT   1";
+            MySqlCommand mySqlCommand = new(sql, connection);
+            parameterModels = new List<ParameterModel>
+            {
+                new()
+                {
+                    Key = "@tenantId",
+                    Value = _sharedUtil.GetTenantId()
+                }
+            };
+            foreach (var parameter in parameterModels)
+            {
+                mySqlCommand.Parameters.AddWithValue(parameter.Key, parameter.Value);
+            }
+
+            _sharedUtil.SetSqlSession(sql, parameterModels);
+
+            roleId = (uint)mySqlCommand.ExecuteScalar();
+
+            mySqlCommand.Dispose();
+        }
+        catch (MySqlException ex)
+        {
+            System.Diagnostics.Debug.WriteLine(ex.Message);
+            _sharedUtil.SetQueryException(SharedUtil.GetSqlSessionValue(sql, parameterModels), ex);
+            throw new Exception(ex.Message);
+        }
+
+
+        return roleId;
+    }
     public byte[] GetExcel()
     {
         using var workbook = new XLWorkbook();
@@ -258,8 +299,7 @@ public class RoleRepository
 
             sql += @"
             UPDATE  role
-            SET     roleName    =   @roleName,
-                    executeBy   =   @executeBy
+            SET     roleName    =   @roleName
             WHERE   roleId      =   @roleId ";
             MySqlCommand mySqlCommand = new(sql, connection);
             parameterModels = new List<ParameterModel>

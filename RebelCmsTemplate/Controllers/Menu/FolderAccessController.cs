@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using RebelCmsTemplate.Enum;
 using RebelCmsTemplate.Models.Menu;
 using RebelCmsTemplate.Repository.Menu;
@@ -56,7 +52,7 @@ public class FolderAccessController : Controller
             {
                 folderAccessModels.Add(new FolderAccessModel
                 {
-                    FolderAccessKey = Convert.ToInt32(folderAccessKeyValue[i]),
+                    FolderAccessKey = Convert.ToUInt32(folderAccessKeyValue[i]),
                     FolderAccessValue = Convert.ToInt32(folderAccessValue[i])
                 });
             }

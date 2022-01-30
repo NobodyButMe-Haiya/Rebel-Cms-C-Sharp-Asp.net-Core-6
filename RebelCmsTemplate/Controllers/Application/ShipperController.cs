@@ -144,7 +144,7 @@ public class ShipperController : Controller
                     {
                         try
                         {
-                            if (!int.TryParse(Request.Form["shipperKey"], out var shipperKey))
+                            if (!uint.TryParse(Request.Form["shipperKey"], out var shipperKey))
                             {
                                 code = ((int) ReturnCodeEnum.ACCESS_DENIED_NO_MODE).ToString();
                                 return Ok(new {status, code});
@@ -191,7 +191,7 @@ public class ShipperController : Controller
                     {
                         try
                         {
-                            if (!int.TryParse(Request.Form["shipperKey"], out var shipperKey))
+                            if (!uint.TryParse(Request.Form["shipperKey"], out var shipperKey))
                             {
                                 code = ((int) ReturnCodeEnum.ACCESS_DENIED_NO_MODE).ToString();
                                 return Ok(new {status, code});
@@ -241,7 +241,7 @@ public class ShipperController : Controller
                     {
                         try
                         {
-                            if (!int.TryParse(Request.Form["shipperKey"], out var shipperKey))
+                            if (!uint.TryParse(Request.Form["shipperKey"], out var shipperKey))
                             {
                                 code = ((int) ReturnCodeEnum.ACCESS_DENIED_NO_MODE).ToString();
                                 return Ok(new {status, code});

@@ -37,13 +37,11 @@ public class UserRepository
                 INSERT INTO `user` (
                     `userId`,       `tenantId`,     `roleId`,
                     `userName`,     `userPassword`, 
-                    `userEmail`,    `isDelete`,     `isConform`,
-                    `executeBy`,`executeTime`
+                    `userEmail`,    `isDelete`,     `isConform`
                 ) VALUES (
                     null,           @tenantId,      @roleId,
                     @userName,      @userPassword,  
-                    @userEmail,     0,              0,
-                    @executeBy,NOW()
+                    @userEmail,     0,              0
                 );";
             MySqlCommand mySqlCommand = new(sql, connection);
 
@@ -73,11 +71,6 @@ public class UserRepository
                 {
                     Key = "@userEmail",
                     Value = userModel.UserEmail
-                },
-                new()
-                {
-                    Key = "@executeBy",
-                    Value = _sharedUtil.GetUserName()
                 }
             };
             foreach (var parameter in parameterModels)
@@ -143,12 +136,12 @@ public class UserRepository
                 {
                     userModels.Add(new UserModel
                     {
-                        RoleKey = Convert.ToInt32(reader["roleId"]),
+                        RoleKey = Convert.ToUInt32(reader["roleId"]),
                         UserName = reader["userName"].ToString(),
                         UserEmail = reader["userEmail"].ToString(),
                         UserPhone = reader["userPhone"].ToString(),
                         UserAddress = reader["userAddress"].ToString(),
-                        UserKey = Convert.ToInt32(reader["userId"])
+                        UserKey = Convert.ToUInt32(reader["userId"])
                     });
                 }
             }
@@ -210,12 +203,12 @@ public class UserRepository
                 {
                     userModels.Add(new UserModel
                     {
-                        RoleKey = Convert.ToInt32(reader["roleId"]),
+                        RoleKey = Convert.ToUInt32(reader["roleId"]),
                         UserName = reader["userName"].ToString(),
                         UserEmail = reader["userEmail"].ToString(),
                         UserPhone = reader["userPhone"].ToString(),
                         UserAddress = reader["userAddress"].ToString(),
-                        UserKey = Convert.ToInt32(reader["userId"])
+                        UserKey = Convert.ToUInt32(reader["userId"])
                     });
                 }
             }
@@ -298,17 +291,13 @@ public class UserRepository
                     SET     `roleId`=@roleId,
                             `userName`=@userName,
                             `userPassword`=@userPassword,
-                            `userEmail`=@userEmail,
-                            `executeBy`=@executeBy,
-                            `executeTime`= NOW() 
+                            `userEmail`=@userEmail
                     WHERE   userId = @userId "
                 : @"
                     UPDATE  `user` 
                     SET     `roleId`=@roleId,
                             `userName`=@userName,
-                            `userEmail`=@userEmail,
-                            `executeBy`=@executeBy,
-                            `executeTime`= NOW() 
+                            `userEmail`=@userEmail
                     WHERE   `userId` = @userId ";
 
             MySqlCommand mySqlCommand = new(sql, connection);
@@ -335,11 +324,6 @@ public class UserRepository
                 {
                     Key = "@userEmail",
                     Value = userModel.UserEmail
-                },
-                new()
-                {
-                    Key = "@executeBy",
-                    Value = _sharedUtil.GetUserName()
                 },
                 new()
                 {
