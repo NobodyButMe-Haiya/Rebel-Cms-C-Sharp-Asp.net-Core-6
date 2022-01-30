@@ -121,6 +121,7 @@ public class EmployeeController : Controller
                             EmployeePhotoPath = employeePhotoPath,
                             EmployeeSalary = employeeSalary
                         };
+                        
                         var lastInsertKey = employeeRepository.Create(employeeModel);
                         code = ((int) ReturnCodeEnum.CREATE_SUCCESS).ToString();
                         status = true;

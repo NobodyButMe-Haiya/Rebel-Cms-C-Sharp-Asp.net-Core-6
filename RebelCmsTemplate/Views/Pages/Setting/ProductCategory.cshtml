@@ -184,8 +184,9 @@
         const $productCategoryName = $("#productCategoryName");
         if ($productCategoryName.val().length === 0) {
             Swal.fire("System Error", "Please Enter all the form", "error");
-            $productCategoryName.trigger('focus');
+            $productCategoryName.addClass("is-invalid").trigger('focus');
         } else {
+            $productCategoryName.removeClass("is-invalid");
             $.ajax({
                 type: 'POST',
                 url: "api/setting/productCategory",
@@ -282,7 +283,7 @@
             } else if (status === false) {
                 if (typeof (code) === 'string') {
                     callBackError();
-                } else if (parseInt(code) === parseInt()) {
+                } else if (parseInt(code) === accessDeniedCode) {
                     accessDenied();
                 } else {
                     location.href = "/";
@@ -331,7 +332,6 @@
                         let templateStringBuilder = "";
                         for (let i = 0; i < data.data.length; i++) {
                             const row = data.data[i];
-
                             templateStringBuilder += template(row.productCategoryKey, row.productCategoryName);
                         }
                         $("#tableBody").html("").html(templateStringBuilder);
@@ -356,50 +356,57 @@
         });
     }
     function updateRecord(productCategoryKey) {
-        $.ajax({
-            type: 'POST',
-            url: "api/setting/productCategory",
-            async: false,
-            data: {
-                mode: 'update',
-                leafCheckKey: @navigationModel.LeafCheckKey,
-                productCategoryKey: productCategoryKey,
-                productCategoryName: $("#productCategoryName-" + productCategoryKey).val()
-            },
-            statusCode: {
-                500: function () {
-                    Swal.fire("System Error", "@SharedUtil.UserErrorNotification", "error");
-                    accessDenied();
+        let $productCategoryName = $("#productCategoryName-" + productCategoryKey);
+        if ($productCategoryName.val().length === 0) {
+            Swal.fire("System Error", "Please Enter all the form", "error");
+            $productCategoryName.addClass("is-invalid").trigger('focus');
+        } else {
+            $productCategoryName.removeClass("is-invalid");
+            $.ajax({
+                type: 'POST',
+                url: "api/setting/productCategory",
+                async: false,
+                data: {
+                    mode: 'update',
+                    leafCheckKey: @navigationModel.LeafCheckKey,
+                    productCategoryKey: productCategoryKey,
+                    productCategoryName: $productCategoryName.val()
+                },
+                statusCode: {
+                    500: function () {
+                        Swal.fire("System Error", "@SharedUtil.UserErrorNotification", "error");
+                        accessDenied();
+                    }
+                },
+                beforeSend: function () {
+                    console.log("loading ..");
                 }
-            },
-            beforeSend: function () {
-                console.log("loading ..");
-            }
-        }).done(function (data) {
-            if (data === void 0) {
-                location.href = "/";
-            }
-            let status = data.status;
-            let code = data.code;
-            if (status) {
-                Swal.fire("System", "@SharedUtil.RecordUpdated", 'success')
-            } else if (status === false) {
-                if (typeof (code) === 'string') {
-                    callBackError();
-                } else if (parseInt(code) === accessDeniedCode) {
-                    accessDenied();
+            }).done(function (data) {
+                if (data === void 0) {
+                    location.href = "/";
+                }
+                let status = data.status;
+                let code = data.code;
+                if (status) {
+                    Swal.fire("System", "@SharedUtil.RecordUpdated", 'success')
+                } else if (status === false) {
+                    if (typeof (code) === 'string') {
+                        callBackError();
+                    } else if (parseInt(code) === accessDeniedCode) {
+                        accessDenied();
+                    } else {
+                        location.href = "/";
+                    }
                 } else {
                     location.href = "/";
                 }
-            } else {
-                location.href = "/";
-            }
-        }).fail(function (xhr) {
-            console.log(xhr.status)
-            Swal.fire("System", "@SharedUtil.UserErrorNotification", "error");
-        }).always(function () {
-            console.log("always:complete");
-        });
+            }).fail(function (xhr) {
+                console.log(xhr.status)
+                Swal.fire("System", "@SharedUtil.UserErrorNotification", "error");
+            }).always(function () {
+                console.log("always:complete");
+            });
+        }
     }
     function deleteRecord(productCategoryKey) {
         Swal.fire({

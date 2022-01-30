@@ -181,58 +181,64 @@
     }
 
     function createRecord() {
-        const roleName = $("#roleName");
-        $.ajax({
-            type: 'POST',
-            url: "api/administrator/role",
-            async: false,
-            data: {
-                mode: 'create',
-                leafCheckKey: @navigationModel.LeafCheckKey,
-                roleName: roleName.val()
-            },
-            statusCode: {
-                500: function () {
-                    Swal.fire("System Error", "@SharedUtil.UserErrorNotification", "error");
-                    accessDenied();
+        const $roleName = $("#roleName");
+        if ($roleName.val().length === 0) {
+            Swal.fire("System Error", "Please Enter all the form", "error");
+            $roleName.addClass("is-invalid").trigger('focus');
+        } else {
+            $roleName.removeClass("is-invalid");
+            $.ajax({
+                type: 'POST',
+                url: "api/administrator/role",
+                async: false,
+                data: {
+                    mode: 'create',
+                    leafCheckKey: @navigationModel.LeafCheckKey,
+                    roleName: $roleName.val()
+                },
+                statusCode: {
+                    500: function () {
+                        Swal.fire("System Error", "@SharedUtil.UserErrorNotification", "error");
+                        accessDenied();
+                    }
+                },
+                beforeSend: function () {
+                    console.log("loading ..");
                 }
-            },
-            beforeSend: function () {
-                console.log("loading ..");
-            }
-        }).done(function (data) {
-            if (data === void 0) {
-                location.href = "/";
-            }
-            let status = data.status;
-            let code = data.code;
-            if (status) {
-                const lastInsertKey = data.lastInsertKey;
-                $("#tableBody").prepend(template(lastInsertKey, roleName.val()));
-                Swal.fire({
-                    title: 'Success!',
-                    text: '@SharedUtil.RecordCreated',
-                    icon: 'success',
-                    confirmButtonText: 'Cool'
-                });
-                roleName.val('');
-            } else if (status === false) {
-                if (typeof (code) === 'string') {
-                    callBackError();
-                } else if (parseInt(code) === accessDeniedCode) {
-                    accessDenied();
+            }).done(function (data) {
+                if (data === void 0) {
+                    location.href = "/";
+                }
+                let status = data.status;
+                let code = data.code;
+                if (status) {
+                    const lastInsertKey = data.lastInsertKey;
+                    $("#tableBody").prepend(template(lastInsertKey, roleName.val()));
+                    Swal.fire({
+                        title: 'Success!',
+                        text: '@SharedUtil.RecordCreated',
+                        icon: 'success',
+                        confirmButtonText: 'Cool'
+                    });
+                    roleName.val('');
+                } else if (status === false) {
+                    if (typeof (code) === 'string') {
+                        callBackError();
+                    } else if (parseInt(code) === accessDeniedCode) {
+                        accessDenied();
+                    } else {
+                        location.href = "/";
+                    }
                 } else {
                     location.href = "/";
                 }
-            } else {
-                location.href = "/";
-            }
-        }).fail(function (xhr) {
-            console.log(xhr.status)
-            Swal.fire("System", "@SharedUtil.UserErrorNotification", "error");
-        }).always(function () {
-            console.log("always:complete");
-        });
+            }).fail(function (xhr) {
+                console.log(xhr.status)
+                Swal.fire("System", "@SharedUtil.UserErrorNotification", "error");
+            }).always(function () {
+                console.log("always:complete");
+            });
+        }
     }
     function readRecord() {
         let row = { roleKey: "", folderName: "" }
@@ -354,50 +360,57 @@
         window.open("api/administrator/role");
     }
     function updateRecord(roleKey) {
-        $.ajax({
-            type: 'POST',
-            url: "api/administrator/role",
-            async: false,
-            data: {
-                mode: 'update',
-                leafCheckKey: @navigationModel.LeafCheckKey,
-                roleKey: roleKey,
-                roleName: $("#roleName-" + roleKey).val()
-            },
-            statusCode: {
-                500: function () {
-                    Swal.fire("System Error", "@SharedUtil.UserErrorNotification", "error");
-                    accessDenied();
+        let $roleName = $("#roleName-" + roleKey);
+        if ($roleName.val().length === 0) {
+            Swal.fire("System Error", "Please Enter all the form", "error");
+            $roleName.addClass("is-invalid").trigger('focus');
+        } else {
+            $roleName.removeClass("is-invalid");
+            $.ajax({
+                type: 'POST',
+                url: "api/administrator/role",
+                async: false,
+                data: {
+                    mode: 'update',
+                    leafCheckKey: @navigationModel.LeafCheckKey,
+                    roleKey: roleKey,
+                    roleName: $roleName.val()
+                },
+                statusCode: {
+                    500: function () {
+                        Swal.fire("System Error", "@SharedUtil.UserErrorNotification", "error");
+                        accessDenied();
+                    }
+                },
+                beforeSend: function () {
+                    console.log("loading..");
                 }
-            },
-            beforeSend: function () {
-                console.log("loading..");
-            }
-        }).done(function (data) {
-            if (data === void 0) {
-                location.href = "/";
-            }
-            let status = data.status;
-            let code = data.code;
-            if (status) {
-                Swal.fire("System", "@SharedUtil.RecordUpdated", 'success')
-            } else if (status === false) {
-                if (typeof (code) === 'string') {
-                    callBackError();
-                } else if (parseInt(code) === accessDeniedCode) {
-                    accessDenied();
+            }).done(function (data) {
+                if (data === void 0) {
+                    location.href = "/";
+                }
+                let status = data.status;
+                let code = data.code;
+                if (status) {
+                    Swal.fire("System", "@SharedUtil.RecordUpdated", 'success')
+                } else if (status === false) {
+                    if (typeof (code) === 'string') {
+                        callBackError();
+                    } else if (parseInt(code) === accessDeniedCode) {
+                        accessDenied();
+                    } else {
+                        location.href = "/";
+                    }
                 } else {
                     location.href = "/";
                 }
-            } else {
-                location.href = "/";
-            }
-        }).fail(function (xhr) {
-            console.log(xhr.status)
-            Swal.fire("System", "@SharedUtil.UserErrorNotification", "error");
-        }).always(function () {
-            console.log("always:complete");
-        });
+            }).fail(function (xhr) {
+                console.log(xhr.status)
+                Swal.fire("System", "@SharedUtil.UserErrorNotification", "error");
+            }).always(function () {
+                console.log("always:complete");
+            });
+        }
     }
     function deleteRecord(roleKey) {
         Swal.fire({

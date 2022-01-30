@@ -370,6 +370,23 @@
     var shipperModels = @Json.Serialize(shipperModels);
     var employeeModels = @Json.Serialize(employeeModels);
     var productModels = @Json.Serialize(productModels);
+</script>
+<script>
+    var $invoiceKey = $("#invoiceKey");
+    var $customerKey = $("#customerKey");
+    var $shipperKey = $("#shipperKey");
+    var $employeeKey = $("#employeeKey");
+    var $invoiceOrderDate = $("#invoiceOrderDate");
+    var $invoiceRequiredDate = $("#invoiceRequiredDate");
+    var $invoiceShippedDate = $("#invoiceShippedDate");
+    var $invoiceFreight = $("#invoiceFreight");
+    var $invoiceShipName = $("#invoiceShipName");
+    var $invoiceShipAddress = $("#invoiceShipAddress");
+    var $invoiceShipCity = $("#invoiceShipCity");
+    var $invoiceShipRegion = $("#invoiceShipRegion");
+    var $invoiceShipPostalCode = $("#invoiceShipPostalCode");
+    var $nvoiceShipCountry = $("#invoiceShipCountry");
+
     function newRecord() {
         $("#listView").hide();
         $("#formView").show();
@@ -380,41 +397,31 @@
         $("#formView").hide();
     }
     function resetForm() {
-        $("#invoiceKey").val('');
-        $("#customerKey").val('');
-        $("#shipperKey").val('');
-        $("#employeeKey").val('');
-        $("#invoiceOrderDate").val('');
-        $("#invoiceRequiredDate").val('');
-        $("#invoiceShippedDate").val('');
-        $("#invoiceFreight").val('');
-        $("#invoiceShipName").val('');
-        $("#invoiceShipAddress").val('');
-        $("#invoiceShipCity").val('');
-        $("#invoiceShipRegion").val('');
-        $("#invoiceShipPostalCode").val('');
-        $("#invoiceShipCountry").val('');
+        emptyForm();
         $("#createButton").removeAttr("disabled");
         $("#updateButton").attr("disabled", "disabled");
         $("#deleteButton").attr("disabled", "disabled");
     }
+    function emptyForm() {
+        $invoiceKey.val("");
+        $customerKey.val("");
+        $shipperKey.val("");
+        $employeeKey.val("");
+        $invoiceOrderDate.val("");
+        $invoiceRequiredDate.val("");
+        $invoiceShippedDate.val("");
+        $invoiceFreight.val("");
+        $invoiceShipName.val("");
+        $invoiceShipAddress.val("");
+        $invoiceShipCity.val("");
+        $invoiceShipRegion.val("");
+        $invoiceShipPostalCode.val("");
+        $nvoiceShipCountry.val("");
+    }
     function resetRecord() {
         readRecord();
+        emptyForm();
         $("#search").val("");
-        $("#invoiceKey").val('');
-        $("#customerKey").val('');
-        $("#shipperKey").val('');
-        $("#employeeKey").val('');
-        $("#invoiceOrderDate").val('');
-        $("#invoiceRequiredDate").val('');
-        $("#invoiceShippedDate").val('');
-        $("#invoiceFreight").val('');
-        $("#invoiceShipName").val('');
-        $("#invoiceShipAddress").val('');
-        $("#invoiceShipCity").val('');
-        $("#invoiceShipRegion").val('');
-        $("#invoiceShipPostalCode").val('');
-        $("#invoiceShipCountry").val('');
 
     }
     function emptyTemplate() {
@@ -484,133 +491,159 @@
         return template;
     }
     function createRecord() {
-
-        $.ajax({
-            type: 'POST',
-            url: "api/application/invoice",
-            async: false,
-            data: {
-                mode: 'create',
-                leafCheckKey: @navigationModel.LeafCheckKey,
-                customerKey: $("#customerKey").val(),
-                shipperKey: $("#shipperKey").val(),
-                employeeKey: $("#employeeKey").val(),
-                invoiceOrderDate: $("#invoiceOrderDate").val(),
-                invoiceRequiredDate: $("#invoiceRequiredDate").val(),
-                invoiceShippedDate: $("#invoiceShippedDate").val(),
-                invoiceFreight: $("#invoiceFreight").val(),
-                invoiceShipName: $("#invoiceShipName").val(),
-                invoiceShipAddress: $("#invoiceShipAddress").val(),
-                invoiceShipCity: $("#invoiceShipCity").val(),
-                invoiceShipRegion: $("#invoiceShipRegion").val(),
-                invoiceShipPostalCode: $("#invoiceShipPostalCode").val(),
-                invoiceShipCountry: $("#invoiceShipCountry").val(),
-            }, statusCode: {
-                500: function () {
-                    Swal.fire("System Error", "@SharedUtil.UserErrorNotification", "error");
+        if ($customerKey.val().length === 0) {
+            Swal.fire("System Error", "Please Enter all the form", "error");
+            $customerKey.addClass("is-invalid").trigger('focus');
+        }
+        else if ($shipperKey.val().length === 0) {
+            Swal.fire("System Error", "Please Enter all the form", "error");
+            $shipperKey.addClass("is-invalid").trigger('focus');
+        }
+        else if ($employeeKey.val().length === 0) {
+            Swal.fire("System Error", "Please Enter all the form", "error");
+            $employeeKey.addClass("is-invalid").trigger('focus');
+        }
+        else {
+            $customerKey.removeClass("is-invalid");
+            $shipperKey.removeClass("is-invalid");
+            $employeeKey.removeClass("is-invalid");
+            $.ajax({
+                type: 'POST',
+                url: "api/application/invoice",
+                async: false,
+                data: {
+                    mode: 'create',
+                    leafCheckKey: @navigationModel.LeafCheckKey,
+                    customerKey: $customerKey.val(),
+                    shipperKey: $shipperKey.val(),
+                    employeeKey: $employeeKey.val(),
+                    invoiceOrderDate: $invoiceOrderDate.val(),
+                    invoiceRequiredDate: $invoiceRequiredDate.val(),
+                    invoiceShippedDate: $invoiceShippedDate.val(),
+                    invoiceFreight: $invoiceFreight.val(),
+                    invoiceShipName: $invoiceShipName.val(),
+                    invoiceShipAddress: $invoiceShipAddress.val(),
+                    invoiceShipCity: $invoiceShipCity.val(),
+                    invoiceShipRegion: $invoiceShipRegion.val(),
+                    invoiceShipPostalCode: $invoiceShipPostalCode.val(),
+                    invoiceShipCountry: $invoiceShipCountry.val(),
+                }, statusCode: {
+                    500: function () {
+                        Swal.fire("System Error", "@SharedUtil.UserErrorNotification", "error");
+                    }
+                },
+                beforeSend: function () {
+                    console.log("loading ..");
                 }
-            },
-            beforeSend: function () {
-                console.log("loading ..");
-            }
-        }).done(function (data) {
-            if (data === void 0) {
-                location.href = "/";
-            }
-            let status = data.status;
-            let code = data.code;
-            if (status) {
-                const lastInsertKey = data.lastInsertKey;
-                $("#invoiceKey").val(lastInsertKey);
-                $("#createButton").attr("disabled", "disabled");
-                $("#updateButton").removeAttr("disabled");
-                $("#deleteButton").removeAttr("disabled");
-                Swal.fire({
-                    title: 'Success!',
-                    text: '@SharedUtil.RecordCreated',
-                    icon: 'success',
-                    confirmButtonText: 'Cool'
-                });
-            } else if (status === false) {
-                if (typeof (code) === 'string') {
-                    callBackError();
-                } else if (parseInt(code) === accessDeniedCode) {
-                    accessDenied();
+            }).done(function (data) {
+                if (data === void 0) {
+                    location.href = "/";
+                }
+                let status = data.status;
+                let code = data.code;
+                if (status) {
+                    const lastInsertKey = data.lastInsertKey;
+                    $("#invoiceKey").val(lastInsertKey);
+                    $("#createButton").attr("disabled", "disabled");
+                    $("#updateButton").removeAttr("disabled");
+                    $("#deleteButton").removeAttr("disabled");
+                    Swal.fire({
+                        title: 'Success!',
+                        text: '@SharedUtil.RecordCreated',
+                        icon: 'success',
+                        confirmButtonText: 'Cool'
+                    });
+                } else if (status === false) {
+                    if (typeof (code) === 'string') {
+                        callBackError();
+                    } else if (parseInt(code) === accessDeniedCode) {
+                        accessDenied();
+                    } else {
+                        location.href = "/";
+                    }
                 } else {
                     location.href = "/";
                 }
-            } else {
-                location.href = "/";
-            }
-        }).fail(function (xhr) {
-            console.log(xhr.status);
-            Swal.fire("System", "@SharedUtil.UserErrorNotification", "error");
-        }).always(function () {
-            console.log("always:complete");
-        });
+            }).fail(function (xhr) {
+                console.log(xhr.status);
+                Swal.fire("System", "@SharedUtil.UserErrorNotification", "error");
+            }).always(function () {
+                console.log("always:complete");
+            });
+        }
     }
     function createDetailRecord() {
-        const invoiceKey = $("#invoiceKey");
-        const productKey = $("#detail_productKey");
-        const invoiceDetailUnitPrice = $("#detail_invoiceDetailUnitPrice");
-        const invoiceDetailQuantity = $("#detail_invoiceDetailQuantity");
-        const invoiceDetailDiscount = $("#detail_invoiceDetailDiscount");
-        $.ajax({
-            type: 'POST',
-            url: "api/application/invoiceDetail",
-            async: false,
-            data: {
-                mode: 'create',
-                leafCheckKey: @navigationModel.LeafCheckKey,
-                invoiceKey: invoiceKey.val(),
-                productKey: productKey.val(),
-                invoiceDetailUnitPrice: invoiceDetailUnitPrice.val(),
-                invoiceDetailQuantity: invoiceDetailQuantity.val(),
-                invoiceDetailDiscount: invoiceDetailDiscount.val(),
-            }, statusCode: {
-                500: function () {
-                    Swal.fire("System Error", "@SharedUtil.UserErrorNotification", "error");
+        const $invoiceKey = $("#invoiceKey");
+        const $productKey = $("#detail_productKey");
+        const $invoiceDetailUnitPrice = $("#detail_invoiceDetailUnitPrice");
+        const $invoiceDetailQuantity = $("#detail_invoiceDetailQuantity");
+        const $invoiceDetailDiscount = $("#detail_invoiceDetailDiscount");
+
+        if ($productKey.val().length === 0) {
+            Swal.fire("System Error", "Please Enter all the form", "error");
+            $productKey.addClass("is-invalid").trigger('focus');
+        }
+        else {
+            $productKey.removeClass("is-invalid");
+            $.ajax({
+                type: 'POST',
+                url: "api/application/invoiceDetail",
+                async: false,
+                data: {
+                    mode: 'create',
+                    leafCheckKey: @navigationModel.LeafCheckKey,
+                    invoiceKey: $invoiceKey.val(),
+                    productKey: $productKey.val(),
+                    invoiceDetailUnitPrice: $invoiceDetailUnitPrice.val(),
+                    invoiceDetailQuantity: $invoiceDetailQuantity.val(),
+                    invoiceDetailDiscount: $invoiceDetailDiscount.val(),
+                },
+                statusCode: {
+                    500: function () {
+                        Swal.fire("System Error", "@SharedUtil.UserErrorNotification", "error");
+                        accessDenied();
+                    }
+                },
+                beforeSend: function () {
+                    console.log("loading ..");
                 }
-            },
-            beforeSend: function () {
-                console.log("loading ..");
-            }
-        }).done(function (data) {
-            if (data === void 0) {
-                location.href = "/";
-            }
-            let status = data.status;
-            let code = data.code;
-            if (status) {
-                const lastInsertKey = data.lastInsertKey;
-                $("#tableDetailBody").prepend(templateDetail(lastInsertKey, invoiceKey.val(), productKey.val(), invoiceDetailUnitPrice.val(), invoiceDetailQuantity.val(), invoiceDetailDiscount.val()));
-                Swal.fire({
-                    title: 'Success!',
-                    text: '@SharedUtil.RecordCreated',
-                    icon: 'success',
-                    confirmButtonText: 'Cool'
-                });
-                productKey.val('');
-                invoiceDetailUnitPrice.val('');
-                invoiceDetailQuantity.val('');
-                invoiceDetailDiscount.val('');
-            } else if (status === false) {
-                if (typeof (code) === 'string') {
-                    callBackError();
-                } else if (parseInt(code) === accessDeniedCode) {
-                    accessDenied();
+            }).done(function (data) {
+                if (data === void 0) {
+                    location.href = "/";
+                }
+                let status = data.status;
+                let code = data.code;
+                if (status) {
+                    const lastInsertKey = data.lastInsertKey;
+                    $("#tableDetailBody").prepend(templateDetail(lastInsertKey, invoiceKey.val(), productKey.val(), invoiceDetailUnitPrice.val(), invoiceDetailQuantity.val(), invoiceDetailDiscount.val()));
+                    Swal.fire({
+                        title: 'Success!',
+                        text: '@SharedUtil.RecordCreated',
+                        icon: 'success',
+                        confirmButtonText: 'Cool'
+                    });
+                    $productKey.val('');
+                    $invoiceDetailUnitPrice.val('');
+                    $invoiceDetailQuantity.val('');
+                    $invoiceDetailDiscount.val('');
+                } else if (status === false) {
+                    if (typeof (code) === 'string') {
+                        callBackError();
+                    } else if (parseInt(code) === accessDeniedCode) {
+                        accessDenied();
+                    } else {
+                        location.href = "/";
+                    }
                 } else {
                     location.href = "/";
                 }
-            } else {
-                location.href = "/";
-            }
-        }).fail(function (xhr) {
-            console.log(xhr.status);
-            Swal.fire("System", "@SharedUtil.UserErrorNotification", "error");
-        }).always(function () {
-            console.log("always:complete");
-        });
+            }).fail(function (xhr) {
+                console.log(xhr.status);
+                Swal.fire("System", "@SharedUtil.UserErrorNotification", "error");
+            }).always(function () {
+                console.log("always:complete");
+            });
+        }
     }
     function readRecord() {
         $.ajax({
@@ -624,6 +657,7 @@
             }, statusCode: {
                 500: function () {
                     Swal.fire("System Error", "@SharedUtil.UserErrorNotification", "error");
+                    accessDenied();
                 }
             }, beforeSend() {
                 console.log("loading ..");
@@ -676,9 +710,11 @@
             data: {
                 mode: "read",
                 leafCheckKey: @navigationModel.LeafCheckKey,
-            }, statusCode: {
+            },
+            statusCode: {
                 500: function () {
                     Swal.fire("System Error", "@SharedUtil.UserErrorNotification", "error");
+                    accessDenied();
                 }
             }, beforeSend() {
                 console.log("loading ..");
@@ -736,6 +772,7 @@
             statusCode: {
                 500: function () {
                     Swal.fire("System Error", "@SharedUtil.UserErrorNotification", "error");
+                    accessDenied();
                 }
             }, beforeSend() {
                 console.log("loading ..");
@@ -794,6 +831,7 @@
             statusCode: {
                 500: function () {
                     Swal.fire("System Error", "@SharedUtil.UserErrorNotification", "error");
+                    accessDenied();
                 }
             }, beforeSend() {
                 console.log("loading ..");
@@ -806,20 +844,20 @@
                 if (data.dataSingle === void 0) {
                     $("#tableBody").html("").html(emptyTemplate());
                 } else {
-                    $("#invoiceKey").val(data.dataSingle.invoiceKey);
-                    $("#customerKey").val(data.dataSingle.customerKey);
-                    $("#shipperKey").val(data.dataSingle.shipperKey);
-                    $("#employeeKey").val(data.dataSingle.employeeKey);
-                    $("#invoiceOrderDate").val(data.dataSingle.invoiceOrderDate);
-                    $("#invoiceRequiredDate").val(data.dataSingle.invoiceRequiredDate);
-                    $("#invoiceShippedDate").val(data.dataSingle.invoiceShippedDate);
-                    $("#invoiceFreight").val(data.dataSingle.invoiceFreight);
-                    $("#invoiceShipName").val(data.dataSingle.invoiceShipName);
-                    $("#invoiceShipAddress").val(data.dataSingle.invoiceShipAddress);
-                    $("#invoiceShipCity").val(data.dataSingle.invoiceShipCity);
-                    $("#invoiceShipRegion").val(data.dataSingle.invoiceShipRegion);
-                    $("#invoiceShipPostalCode").val(data.dataSingle.invoiceShipPostalCode);
-                    $("#invoiceShipCountry").val(data.dataSingle.invoiceShipCountry);
+                    $invoiceKey.val(data.dataSingle.invoiceKey);
+                    $customerKey.val(data.dataSingle.customerKey);
+                    $shipperKey.val(data.dataSingle.shipperKey);
+                    $employeeKey.val(data.dataSingle.employeeKey);
+                    $invoiceOrderDate.val(data.dataSingle.invoiceOrderDate);
+                    $invoiceRequiredDate.val(data.dataSingle.invoiceRequiredDate);
+                    $invoiceShippedDate.val(data.dataSingle.invoiceShippedDate);
+                    $invoiceFreight.val(data.dataSingle.invoiceFreight);
+                    $invoiceShipName.val(data.dataSingle.invoiceShipName);
+                    $invoiceShipAddress.val(data.dataSingle.invoiceShipAddress);
+                    $invoiceShipCity.val(data.dataSingle.invoiceShipCity);
+                    $invoiceShipRegion.val(data.dataSingle.invoiceShipRegion);
+                    $invoiceShipPostalCode.val(data.dataSingle.invoiceShipPostalCode);
+                    $invoiceShipCountry.val(data.dataSingle.invoiceShipCountry);
                     if (data.dataSingle.data.length > 0) {
                         let templateStringBuilder = "";
                         for (let i = 0; i < data.dataSingle.data.length; i++) {
@@ -855,112 +893,143 @@
         window.open("api/application/invoice");
     }
     function updateRecord() {
-        $.ajax({
-            type: 'POST',
-            url: "api/application/invoice",
-            async: false,
-            data: {
-                mode: 'update',
-                leafCheckKey: @navigationModel.LeafCheckKey,
-                invoiceKey: $("#invoiceKey").val(),
-                invoiceKey: $("#invoiceKey").val(),
-                customerKey: $("#customerKey").val(),
-                shipperKey: $("#shipperKey").val(),
-                employeeKey: $("#employeeKey").val(),
-                invoiceOrderDate: $("#invoiceOrderDate").val(),
-                invoiceRequiredDate: $("#invoiceRequiredDate").val(),
-                invoiceShippedDate: $("#invoiceShippedDate").val(),
-                invoiceFreight: $("#invoiceFreight").val(),
-                invoiceShipName: $("#invoiceShipName").val(),
-                invoiceShipAddress: $("#invoiceShipAddress").val(),
-                invoiceShipCity: $("#invoiceShipCity").val(),
-                invoiceShipRegion: $("#invoiceShipRegion").val(),
-                invoiceShipPostalCode: $("#invoiceShipPostalCode").val(),
-                invoiceShipCountry: $("#invoiceShipCountry").val(),
-            }, statusCode: {
-                500: function () {
-                    Swal.fire("System Error", "@SharedUtil.UserErrorNotification", "error");
+        if ($customerKey.val().length === 0) {
+            Swal.fire("System Error", "Please Enter all the form", "error");
+            $customerKey.addClass("is-invalid").trigger('focus');
+        }
+        else if ($shipperKey.val().length === 0) {
+            Swal.fire("System Error", "Please Enter all the form", "error");
+            $shipperKey.addClass("is-invalid").trigger('focus');
+        }
+        else if ($employeeKey.val().length === 0) {
+            Swal.fire("System Error", "Please Enter all the form", "error");
+            $employeeKey.addClass("is-invalid").trigger('focus');
+        }
+        else {
+            $customerKey.removeClass("is-invalid");
+            $shipperKey.removeClass("is-invalid");
+            $employeeKey.removeClass("is-invalid");
+            $.ajax({
+                type: 'POST',
+                url: "api/application/invoice",
+                async: false,
+                data: {
+                    mode: 'update',
+                    leafCheckKey: @navigationModel.LeafCheckKey,
+                    invoiceKey: $invoiceKey.val(),
+                    customerKey: $customerKey.val(),
+                    shipperKey: $shipperKey.val(),
+                    employeeKey: $employeeKey.val(),
+                    invoiceOrderDate: $invoiceOrderDate.val(),
+                    invoiceRequiredDate: $invoiceRequiredDate.val(),
+                    invoiceShippedDate: $invoiceShippedDate.val(),
+                    invoiceFreight: $invoiceFreight.val(),
+                    invoiceShipName: $invoiceShipName.val(),
+                    invoiceShipAddress: $invoiceShipAddress.val(),
+                    invoiceShipCity: $invoiceShipCity.val(),
+                    invoiceShipRegion: $invoiceShipRegion.val(),
+                    invoiceShipPostalCode: $invoiceShipPostalCode.val(),
+                    invoiceShipCountry: $invoiceShipCountry.val(),
+                },
+                statusCode: {
+                    500: function () {
+                        Swal.fire("System Error", "@SharedUtil.UserErrorNotification", "error");
+                        accessDenied();
+                    }
+                },
+                beforeSend: function () {
+                    console.log("loading..");
                 }
-            },
-            beforeSend: function () {
-                console.log("loading..");
-            }
-        }).done(function (data) {
-            if (data === void 0) {
-                location.href = "/";
-            }
-            let status = data.status;
-            let code = data.code;
-            if (status) {
-                $("#createButton").attr("disabled", "disabled");
-                $("#updateButton").removeAttr("disabled");
-                $("#deleteButton").removeAttr("disabled");
-                Swal.fire("System", "@SharedUtil.RecordUpdated", 'success');
-            } else if (status === false) {
-                if (typeof (code) === 'string') {
-                    callBackError();
-                } else if (parseInt(code) === accessDeniedCode) {
-                    accessDenied();
+            }).done(function (data) {
+                if (data === void 0) {
+                    location.href = "/";
+                }
+                let status = data.status;
+                let code = data.code;
+                if (status) {
+                    $("#createButton").attr("disabled", "disabled");
+                    $("#updateButton").removeAttr("disabled");
+                    $("#deleteButton").removeAttr("disabled");
+                    Swal.fire("System", "@SharedUtil.RecordUpdated", 'success');
+                } else if (status === false) {
+                    if (typeof (code) === 'string') {
+                        callBackError();
+                    } else if (parseInt(code) === accessDeniedCode) {
+                        accessDenied();
+                    } else {
+                        location.href = "/";
+                    }
                 } else {
                     location.href = "/";
                 }
-            } else {
-                location.href = "/";
-            }
-        }).fail(function (xhr) {
-            console.log(xhr.status);
-            Swal.fire("System", "@SharedUtil.UserErrorNotification", "error");
-        }).always(function () {
-            console.log("always:complete");
-        });
+            }).fail(function (xhr) {
+                console.log(xhr.status);
+                Swal.fire("System", "@SharedUtil.UserErrorNotification", "error");
+            }).always(function () {
+                console.log("always:complete");
+            });
+        }
     }
     function updateDetailRecord(invoiceDetailKey) {
-        $.ajax({
-            type: 'POST',
-            url: "api/application/invoiceDetail",
-            async: false,
-            data: {
-                mode: 'update',
-                leafCheckKey: @navigationModel.LeafCheckKey,
-                invoiceDetailKey: invoiceDetailKey,
-                invoiceKey: $("#invoiceKey").val(),
-                productKey: $("#productKey-" + invoiceDetailKey).val(),
-                invoiceDetailUnitPrice: $("#invoiceDetailUnitPrice-" + invoiceDetailKey).val(),
-                invoiceDetailQuantity: $("#invoiceDetailQuantity-" + invoiceDetailKey).val(),
-                invoiceDetailDiscount: $("#invoiceDetailDiscount-" + invoiceDetailKey).val(),
-            }, statusCode: {
-                500: function () {
-                    Swal.fire("System Error", "@SharedUtil.UserErrorNotification", "error");
+        let $productKey = $("#productKey-" + invoiceDetailKey);
+        let $invoiceDetailUnitPrice = $("#invoiceDetailUnitPrice-" + invoiceDetailKey);
+        let $invoiceDetailQuantity = $("#invoiceDetailQuantity-" + invoiceDetailKey);
+        let invoiceDetailDiscount = $("#invoiceDetailDiscount-" + invoiceDetailKey);
+        if ($productKey.val().length === 0) {
+            Swal.fire("System Error", "Please Enter all the form", "error");
+            $productKey.addClass("is-invalid").trigger('focus');
+        }
+        else {
+            $productKey.removeClass("is-invalid");
+            $.ajax({
+                type: 'POST',
+                url: "api/application/invoiceDetail",
+                async: false,
+                data: {
+                    mode: 'update',
+                    leafCheckKey: @navigationModel.LeafCheckKey,
+                    invoiceDetailKey: invoiceDetailKey,
+                    invoiceKey: $invoiceKey.val(),
+                    productKey: $productKey.val(),
+                    invoiceDetailUnitPrice: $invoiceDetailUnitPrice.val(),
+                    invoiceDetailQuantity: $invoiceDetailQuantity.val(),
+                    invoiceDetailDiscount: $invoiceDetailDiscount.val(),
+                },
+                statusCode: {
+                    500: function () {
+                        Swal.fire("System Error", "@SharedUtil.UserErrorNotification", "error");
+                        accessDenied();
+                    }
+                },
+                beforeSend: function () {
+                    console.log("loading..");
                 }
-            },
-            beforeSend: function () {
-                console.log("loading..");
-            }
-        }).done(function (data) {
-            if (data === void 0) {
-                location.href = "/";
-            }
-            let status = data.status;
-            let code = data.code;
-            if (status) {
-                Swal.fire("System", "@SharedUtil.RecordUpdated", 'success');
-            } else if (status === false) {
-                if (typeof (code) === 'string') {
-                    callBackError();
-                } else if (parseInt(code) === accessDeniedCode) {
-                    accessDenied();
+            }).done(function (data) {
+                if (data === void 0) {
+                    location.href = "/";
+                }
+                let status = data.status;
+                let code = data.code;
+                if (status) {
+                    Swal.fire("System", "@SharedUtil.RecordUpdated", 'success');
+                } else if (status === false) {
+                    if (typeof (code) === 'string') {
+                        callBackError();
+                    } else if (parseInt(code) === accessDeniedCode) {
+                        accessDenied();
+                    } else {
+                        location.href = "/";
+                    }
                 } else {
                     location.href = "/";
                 }
-            } else {
-                location.href = "/";
-            }
-        }).fail(function (xhr) {
-            console.log(xhr.status);
-            Swal.fire("System", "@SharedUtil.UserErrorNotification", "error");
-        }).always(function () {
-            console.log("always:complete");
-        });
+            }).fail(function (xhr) {
+                console.log(xhr.status);
+                Swal.fire("System", "@SharedUtil.UserErrorNotification", "error");
+            }).always(function () {
+                console.log("always:complete");
+            });
+        }
     }
     function deleteRecord() {
         Swal.fire({
@@ -981,9 +1050,11 @@
                         mode: 'delete',
                         leafCheckKey: @navigationModel.LeafCheckKey,
                         invoiceKey: $("#invoiceKey").val()
-                    }, statusCode: {
+                    },
+                    statusCode: {
                         500: function () {
                             Swal.fire("System Error", "@SharedUtil.UserErrorNotification", "error");
+                            accessDenied();
                         }
                     },
                     beforeSend: function () {
@@ -997,21 +1068,7 @@
                         $("#createButton").removeAttr("disabled");
                         $("#updateButton").attr("disabled", "disabled");
                         $("#deleteButton").attr("disabled", "disabled");
-                        $("#invoiceKey").val('');
-
-                        $("#customerKey").val('');
-                        $("#shipperKey").val('');
-                        $("#employeeKey").val('');
-                        $("#invoiceOrderDate").val('');
-                        $("#invoiceRequiredDate").val('');
-                        $("#invoiceShippedDate").val('');
-                        $("#invoiceFreight").val('');
-                        $("#invoiceShipName").val('');
-                        $("#invoiceShipAddress").val('');
-                        $("#invoiceShipCity").val('');
-                        $("#invoiceShipRegion").val('');
-                        $("#invoiceShipPostalCode").val('');
-                        $("#invoiceShipCountry").val('');
+                        emptyForm();
 
                         readRecord();
                         Swal.fire("System", "@SharedUtil.RecordDeleted", "success");
@@ -1060,9 +1117,11 @@
                         mode: 'delete',
                         leafCheckKey: @navigationModel.LeafCheckKey,
                         invoiceDetailKey: invoiceDetailKey
-                    }, statusCode: {
+                    },
+                    statusCode: {
                         500: function () {
                             Swal.fire("System Error", "@SharedUtil.UserErrorNotification", "error");
+                            accessDenied();
                         }
                     },
                     beforeSend: function () {

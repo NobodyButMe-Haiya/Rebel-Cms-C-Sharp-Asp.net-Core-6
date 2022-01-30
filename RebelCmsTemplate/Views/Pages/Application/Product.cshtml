@@ -294,44 +294,44 @@
     var supplierModels = @Json.Serialize(supplierModels);
     var productCategoryModels = @Json.Serialize(productCategoryModels);
     var productTypeModels = @Json.Serialize(productTypeModels);
+</script>
+<script>
+    var $productKey = $("#productKey");
+    var $supplierKey = $("#supplierKey");
+    var $productCategoryKey = $("#productCategoryKey");
+    var $productTypeKey = $("#productTypeKey");
+    var $productName = $("#productName");
+    var $productDescription = $("#productDescription");
+    var $productQuantityPerUnit = $("#productQuantityPerUnit");
+    var $productCostPrice = $("#productCostPrice");
+    var $productSellingPrice = $("#productSellingPrice");
+    var $productUnitsInStock = $("#productUnitsInStock");
+    var $productUnitsOnOrder = $("#productUnitsOnOrder");
+    var $productReOrderLevel = $("#productReOrderLevel");
     function resetForm() {
-        $("#productKey").val('');
-
-        $("#supplierKey").val('');
-        $("#productCategoryKey").val('');
-        $("#productTypeKey").val('');
-        $("#productName").val('');
-        $("#productDescription").val('');
-        $("#productQuantityPerUnit").val('');
-        $("#productCostPrice").val('');
-        $("#productSellingPrice").val('');
-        $("#productUnitsInStock").val('');
-        $("#productUnitsOnOrder").val('');
-        $("#productReOrderLevel").val('');
-
-
+        emptyForm();
         $("#createButton").removeAttr("disabled");
         $("#updateButton").attr("disabled", "disabled");
         $("#deleteButton").attr("disabled", "disabled");
     }
+    function emptyForm() {
+        $productKey = $("#productKey").val('');
+        $supplierKey = $("#supplierKey").val('');
+        $productCategoryKey = $("#productCategoryKey").val('');
+        $productTypeKey = $("#productTypeKey").val('');
+        $productName = $("#productName").val('');
+        $productDescription = $("#productDescription").val('');
+        $productQuantityPerUnit = $("#productQuantityPerUnit").val('');
+        $productCostPrice = $("#productCostPrice").val('');
+        $productSellingPrice = $("#productSellingPrice").val('');
+        $productUnitsInStock = $("#productUnitsInStock").val('');
+        $productUnitsOnOrder = $("#productUnitsOnOrder").val('');
+        $productReOrderLevel = $("#productReOrderLevel").val('');
+    }
     function resetRecord() {
         readRecord();
+        emptyForm();
         $("#search").val("");
-        $("#productKey").val('');
-
-        $("#supplierKey").val('');
-        $("#productCategoryKey").val('');
-        $("#productTypeKey").val('');
-        $("#productName").val('');
-        $("#productDescription").val('');
-        $("#productQuantityPerUnit").val('');
-        $("#productCostPrice").val('');
-        $("#productSellingPrice").val('');
-        $("#productUnitsInStock").val('');
-        $("#productUnitsOnOrder").val('');
-        $("#productReOrderLevel").val('');
-
-
     }
     function emptyTemplate() {
         return "<tr><td colspan='6'>It's lonely here</td></tr>";
@@ -356,68 +356,91 @@
             "</tr>";
     }
     function createRecord() {
-        $.ajax({
-            type: 'POST',
-            url: "api/application/product",
-            async: false,
-            data: {
-                mode: 'create',
-                leafCheckKey: @navigationModel.LeafCheckKey,
-                supplierKey: $("#supplierKey").val(),
-                productCategoryKey: $("#productCategoryKey").val(),
-                productTypeKey: $("#productTypeKey").val(),
-                productName: $("#productName").val(),
-                productDescription: $("#productDescription").val(),
-                productQuantityPerUnit: $("#productQuantityPerUnit").val(),
-                productCostPrice: $("#productCostPrice").val(),
-                productSellingPrice: $("#productSellingPrice").val(),
-                productUnitsInStock: $("#productUnitsInStock").val(),
-                productUnitsOnOrder: $("#productUnitsOnOrder").val(),
-                productReOrderLevel: $("#productReOrderLevel").val(),
-            }, statusCode: {
-                500: function () {
-                    Swal.fire("System Error", "@SharedUtil.UserErrorNotification", "error");
+        if ($supplierKey.val().length === 0) {
+            Swal.fire("System Error", "Please Enter all the form", "error");
+            $supplierKey.addClass("is-invalid").trigger('focus');
+        }
+        else if ($productCategoryKey.val().length === 0) {
+            Swal.fire("System Error", "Please Enter all the form", "error");
+            $productCategoryKey.addClass("is-invalid").trigger('focus');
+        }
+        else if ($productTypeKey.val().length === 0) {
+            Swal.fire("System Error", "Please Enter all the form", "error");
+            $productTypeKey.addClass("is-invalid").trigger('focus');
+        }
+        else if ($productName.val().length === 0) {
+            Swal.fire("System Error", "Please Enter all the form", "error");
+            $productName.addClass("is-invalid").trigger('focus');
+        }
+        else {
+            $supplierKey.removeClass("is-invalid");
+            $productCategoryKey.removeClass("is-invalid");
+            $productTypeKey.removeClass("is-invalid");
+            $productName.removeClass("is-invalid");
+            $.ajax({
+                type: 'POST',
+                url: "api/application/product",
+                async: false,
+                data: {
+                    mode: 'create',
+                    leafCheckKey: @navigationModel.LeafCheckKey,
+                    supplierKey: $supplierKey.val(),
+                    productCategoryKey: $productCategoryKey.val(),
+                    productTypeKey: $productTypeKey.val(),
+                    productName: $productName.val(),
+                    productDescription: $productDescription.val(),
+                    productQuantityPerUnit: $productQuantityPerUnit.val(),
+                    productCostPrice: $productCostPrice.val(),
+                    productSellingPrice: $productSellingPrice.val(),
+                    productUnitsInStock: $productUnitsInStock.val(),
+                    productUnitsOnOrder: $productUnitsOnOrder.val(),
+                    productReOrderLevel: $productReOrderLevel.val(),
+                },
+                statusCode: {
+                    500: function () {
+                        Swal.fire("System Error", "@SharedUtil.UserErrorNotification", "error");
+                    }
+                },
+                beforeSend: function () {
+                    console.log("loading ..");
                 }
-            },
-            beforeSend: function () {
-                console.log("loading ..");
-            }
-        }).done(function (data) {
-            if (data === void 0) {
-                location.href = "/";
-            }
-            let status = data.status;
-            let code = data.code;
-            if (status) {
-                const lastInsertKey = data.lastInsertKey;
-                readRecord();
-                $("#productKey").val(lastInsertKey);
-                $("#createButton").attr("disabled", "disabled");
-                $("#updateButton").removeAttr("disabled");
-                $("#deleteButton").removeAttr("disabled");
-                Swal.fire({
-                    title: 'Success!',
-                    text: '@SharedUtil.RecordCreated',
-                    icon: 'success',
-                    confirmButtonText: 'Cool'
-                });
-            } else if (status === false) {
-                if (typeof (code) === 'string') {
-                    callBackError();
-                } else if (parseInt(code) === accessDeniedCode) {
-                    accessDenied();
+            }).done(function (data) {
+                if (data === void 0) {
+                    location.href = "/";
+                }
+                let status = data.status;
+                let code = data.code;
+                if (status) {
+                    const lastInsertKey = data.lastInsertKey;
+                    readRecord();
+                    $productKey.val(lastInsertKey);
+                    $("#createButton").attr("disabled", "disabled");
+                    $("#updateButton").removeAttr("disabled");
+                    $("#deleteButton").removeAttr("disabled");
+                    Swal.fire({
+                        title: 'Success!',
+                        text: '@SharedUtil.RecordCreated',
+                        icon: 'success',
+                        confirmButtonText: 'Cool'
+                    });
+                } else if (status === false) {
+                    if (typeof (code) === 'string') {
+                        callBackError();
+                    } else if (parseInt(code) === accessDeniedCode) {
+                        accessDenied();
+                    } else {
+                        location.href = "/";
+                    }
                 } else {
                     location.href = "/";
                 }
-            } else {
-                location.href = "/";
-            }
-        }).fail(function (xhr) {
-            console.log(xhr.status);
-            Swal.fire("System", "@SharedUtil.UserErrorNotification", "error");
-        }).always(function () {
-            console.log("always:complete");
-        });
+            }).fail(function (xhr) {
+                console.log(xhr.status);
+                Swal.fire("System", "@SharedUtil.UserErrorNotification", "error");
+            }).always(function () {
+                console.log("always:complete");
+            });
+        }
     }
     function readRecord() {
         $.ajax({
@@ -556,18 +579,18 @@
                 if (data.dataSingle === void 0) {
                     $("#tableBody").html("").html(emptyTemplate());
                 } else {
-                    $("#productKey").val(data.dataSingle.productKey);
-                    $("#supplierKey").val(data.dataSingle.supplierKey);
-                    $("#productCategoryKey").val(data.dataSingle.productCategoryKey);
-                    $("#productTypeKey").val(data.dataSingle.productTypeKey);
-                    $("#productName").val(data.dataSingle.productName);
-                    $("#productDescription").val(data.dataSingle.productDescription);
-                    $("#productQuantityPerUnit").val(data.dataSingle.productQuantityPerUnit);
-                    $("#productCostPrice").val(data.dataSingle.productCostPrice);
-                    $("#productSellingPrice").val(data.dataSingle.productSellingPrice);
-                    $("#productUnitsInStock").val(data.dataSingle.productUnitsInStock);
-                    $("#productUnitsOnOrder").val(data.dataSingle.productUnitsOnOrder);
-                    $("#productReOrderLevel").val(data.dataSingle.productReOrderLevel);
+                    $productKey.val(data.dataSingle.productKey);
+                    $supplierKey.val(data.dataSingle.supplierKey);
+                    $productCategoryKey.val(data.dataSingle.productCategoryKey);
+                    $productTypeKey.val(data.dataSingle.productTypeKey);
+                    $productName.val(data.dataSingle.productName);
+                    $productDescription.val(data.dataSingle.productDescription);
+                    $productQuantityPerUnit.val(data.dataSingle.productQuantityPerUnit);
+                    $productCostPrice.val(data.dataSingle.productCostPrice);
+                    $productSellingPrice.val(data.dataSingle.productSellingPrice);
+                    $productUnitsInStock.val(data.dataSingle.productUnitsInStock);
+                    $productUnitsOnOrder.val(data.dataSingle.productUnitsOnOrder);
+                    $productReOrderLevel.val(data.dataSingle.productReOrderLevel);
                     $("#createButton").attr("disabled", "disabled");
                     $("#updateButton").removeAttr("disabled");
                     $("#deleteButton").removeAttr("disabled");
@@ -595,62 +618,83 @@
         window.open("api/application/product");
     }
     function updateRecord() {
-        $.ajax({
-            type: 'POST',
-            url: "api/application/product",
-            async: false,
-            data: {
-                mode: 'update',
-                leafCheckKey: @navigationModel.LeafCheckKey,
-                productKey: $("#productKey").val(),
-                productKey: $("#productKey").val(),
-                supplierKey: $("#supplierKey").val(),
-                productCategoryKey: $("#productCategoryKey").val(),
-                productTypeKey: $("#productTypeKey").val(),
-                productName: $("#productName").val(),
-                productDescription: $("#productDescription").val(),
-                productQuantityPerUnit: $("#productQuantityPerUnit").val(),
-                productCostPrice: $("#productCostPrice").val(),
-                productSellingPrice: $("#productSellingPrice").val(),
-                productUnitsInStock: $("#productUnitsInStock").val(),
-                productUnitsOnOrder: $("#productUnitsOnOrder").val(),
-                productReOrderLevel: $("#productReOrderLevel").val(),
-            }, statusCode: {
-                500: function () {
-                    Swal.fire("System Error", "@SharedUtil.UserErrorNotification", "error");
+        if ($supplierKey.val().length === 0) {
+            Swal.fire("System Error", "Please Enter all the form", "error");
+            $supplierKey.addClass("is-invalid").trigger('focus');
+        }
+        else if ($productCategoryKey.val().length === 0) {
+            Swal.fire("System Error", "Please Enter all the form", "error");
+            $productCategoryKey.addClass("is-invalid").trigger('focus');
+        }
+        else if ($productTypeKey.val().length === 0) {
+            Swal.fire("System Error", "Please Enter all the form", "error");
+            $productTypeKey.addClass("is-invalid").trigger('focus');
+        }
+        else if ($productName.val().length === 0) {
+            Swal.fire("System Error", "Please Enter all the form", "error");
+            $productName.addClass("is-invalid").trigger('focus');
+        }
+        else {
+            $supplierKey.removeClass("is-invalid");
+            $productCategoryKey.removeClass("is-invalid");
+            $productTypeKey.removeClass("is-invalid");
+            $productName.removeClass("is-invalid");
+            $.ajax({
+                type: 'POST',
+                url: "api/application/product",
+                async: false,
+                data: {
+                    mode: 'update',
+                    leafCheckKey: @navigationModel.LeafCheckKey,
+                    productKey: $productKey.val(),
+                    supplierKey: $supplierKey.val(),
+                    productCategoryKey: $productCategoryKey.val(),
+                    productTypeKey: $productTypeKey.val(),
+                    productName: $productName.val(),
+                    productDescription: $productDescription.val(),
+                    productQuantityPerUnit: $productQuantityPerUnit.val(),
+                    productCostPrice: $productCostPrice.val(),
+                    productSellingPrice: $productSellingPrice.val(),
+                    productUnitsInStock: $productUnitsInStock.val(),
+                    productUnitsOnOrder: $productUnitsOnOrder.val(),
+                    productReOrderLevel: $productReOrderLevel.val(),
+                }, statusCode: {
+                    500: function () {
+                        Swal.fire("System Error", "@SharedUtil.UserErrorNotification", "error");
+                    }
+                },
+                beforeSend: function () {
+                    console.log("loading..");
                 }
-            },
-            beforeSend: function () {
-                console.log("loading..");
-            }
-        }).done(function (data) {
-            if (data === void 0) {
-                location.href = "/";
-            }
-            let status = data.status;
-            let code = data.code;
-            if (status) {
-                $("#createButton").attr("disabled", "disabled");
-                $("#updateButton").removeAttr("disabled");
-                $("#deleteButton").removeAttr("disabled");
-                Swal.fire("System", "@SharedUtil.RecordUpdated", 'success');
-            } else if (status === false) {
-                if (typeof (code) === 'string') {
-                    callBackError();
-                } else if (parseInt(code) === accessDeniedCode) {
-                    accessDenied();
+            }).done(function (data) {
+                if (data === void 0) {
+                    location.href = "/";
+                }
+                let status = data.status;
+                let code = data.code;
+                if (status) {
+                    $("#createButton").attr("disabled", "disabled");
+                    $("#updateButton").removeAttr("disabled");
+                    $("#deleteButton").removeAttr("disabled");
+                    Swal.fire("System", "@SharedUtil.RecordUpdated", 'success');
+                } else if (status === false) {
+                    if (typeof (code) === 'string') {
+                        callBackError();
+                    } else if (parseInt(code) === accessDeniedCode) {
+                        accessDenied();
+                    } else {
+                        location.href = "/";
+                    }
                 } else {
                     location.href = "/";
                 }
-            } else {
-                location.href = "/";
-            }
-        }).fail(function (xhr) {
-            console.log(xhr.status);
-            Swal.fire("System", "@SharedUtil.UserErrorNotification", "error");
-        }).always(function () {
-            console.log("always:complete");
-        });
+            }).fail(function (xhr) {
+                console.log(xhr.status);
+                Swal.fire("System", "@SharedUtil.UserErrorNotification", "error");
+            }).always(function () {
+                console.log("always:complete");
+            });
+        }
     }
     function deleteRecord() {
         Swal.fire({

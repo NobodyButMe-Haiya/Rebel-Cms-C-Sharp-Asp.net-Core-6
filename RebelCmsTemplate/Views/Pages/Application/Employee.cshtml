@@ -351,82 +351,88 @@
         return template;
     }
     function createRecord() {
-
-        var formData = new FormData();
-        formData.append("mode", "create");
-        formData.append("leafCheckKey", @navigationModel.LeafCheckKey);
-        formData.append('employeeLastName', $employeeLastName.val());
-        formData.append('employeeFirstName', $employeeFirstName.val());
-        formData.append('employeeTitle', $employeeTitle.val());
-        formData.append('employeeTitleOfCourtesy', $employeeTitleOfCourtesy.val());
-        formData.append('employeeBirthDate', $employeeBirthDate.val());
-        formData.append('employeeHireDate', $employeeHireDate.val());
-        formData.append('employeeAddress', $employeeAddress.val());
-        formData.append('employeeCity', $employeeCity.val());
-        formData.append('employeeRegion', $employeeRegion.val());
-        formData.append('employeePostalCode', $employeePostalCode.val());
-        formData.append('employeeCountry', $employeeCountry.val());
-        formData.append('employeeHomePhone', $employeeHomePhone.val());
-        formData.append('employeeExtension', $employeeExtension.val());
-        var filesEmployeePhoto = $('#employeePhoto')[0].files;
-        if (filesEmployeePhoto.length > 0) {
-            formData.append('employeePhoto', filesEmployeePhoto[0]);
+        if ($employeeFirstName.val().length === 0) {
+            Swal.fire("System Error", "Please Enter all the form", "error");
+            $employeeFirstName.addClass("is-invalid").trigger('focus');
         }
-        formData.append('employeeNotes', $employeeNotes.val());
-        formData.append('employeePhotoPath', $employeePhotoPath.val());
-        formData.append('employeeSalary', $employeeSalary.val());
-        $.ajax({
-            type: 'POST',
-            url: "api/application/employee",
-            async: false,
-            contentType: false,
-            processData: false,
-            data: formData,
-            statusCode: {
-                500: function () {
-                    Swal.fire("System Error", "@SharedUtil.UserErrorNotification", "error");
-                    accessDenied();
+        else {
+            $employeeFirstName.removeClass("is-invalid");
+            var formData = new FormData();
+            formData.append("mode", "create");
+            formData.append("leafCheckKey", @navigationModel.LeafCheckKey);
+            formData.append('employeeLastName', $employeeLastName.val());
+            formData.append('employeeFirstName', $employeeFirstName.val());
+            formData.append('employeeTitle', $employeeTitle.val());
+            formData.append('employeeTitleOfCourtesy', $employeeTitleOfCourtesy.val());
+            formData.append('employeeBirthDate', $employeeBirthDate.val());
+            formData.append('employeeHireDate', $employeeHireDate.val());
+            formData.append('employeeAddress', $employeeAddress.val());
+            formData.append('employeeCity', $employeeCity.val());
+            formData.append('employeeRegion', $employeeRegion.val());
+            formData.append('employeePostalCode', $employeePostalCode.val());
+            formData.append('employeeCountry', $employeeCountry.val());
+            formData.append('employeeHomePhone', $employeeHomePhone.val());
+            formData.append('employeeExtension', $employeeExtension.val());
+            var filesEmployeePhoto = $('#employeePhoto')[0].files;
+            if (filesEmployeePhoto.length > 0) {
+                formData.append('employeePhoto', filesEmployeePhoto[0]);
+            }
+            formData.append('employeeNotes', $employeeNotes.val());
+            formData.append('employeePhotoPath', $employeePhotoPath.val());
+            formData.append('employeeSalary', $employeeSalary.val());
+            $.ajax({
+                type: 'POST',
+                url: "api/application/employee",
+                async: false,
+                contentType: false,
+                processData: false,
+                data: formData,
+                statusCode: {
+                    500: function () {
+                        Swal.fire("System Error", "@SharedUtil.UserErrorNotification", "error");
+                        accessDenied();
+                    }
+                },
+                beforeSend: function () {
+                    console.log("loading ..");
                 }
-            },
-            beforeSend: function () {
-                console.log("loading ..");
-            }
-        }).done(function (data) {
-            if (data === void 0) {
-                location.href = "/";
-            }
-            let status = data.status;
-            let code = data.code;
-            if (status) {
-                const lastInsertKey = data.lastInsertKey;
-                $("#tableBody").prepend(template(lastInsertKey, employeeLastName.val(), employeeFirstName.val(), employeeTitle.val(), employeeTitleOfCourtesy.val(), employeeBirthDate.val()));
-                $("#employeeKey").val(lastInsertKey);
-                $("#createButton").attr("disabled", "disabled");
-                $("#updateButton").removeAttr("disabled");
-                $("#deleteButton").removeAttr("disabled");
-                Swal.fire({
-                    title: 'Success!',
-                    text: '@SharedUtil.RecordCreated',
-                    icon: 'success',
-                    confirmButtonText: 'Cool'
-                });
-            } else if (status === false) {
-                if (typeof (code) === 'string') {
-                    callBackError();
-                } else if (parseInt(code) === accessDeniedCode) {
-                    accessDenied();
+            }).done(function (data) {
+                if (data === void 0) {
+                    location.href = "/";
+                }
+                let status = data.status;
+                let code = data.code;
+                if (status) {
+                    const lastInsertKey = data.lastInsertKey;
+                    $("#tableBody").prepend(template(lastInsertKey, employeeLastName.val(), employeeFirstName.val(), employeeTitle.val(), employeeTitleOfCourtesy.val(), employeeBirthDate.val()));
+                    $("#employeeKey").val(lastInsertKey);
+                    $("#createButton").attr("disabled", "disabled");
+                    $("#updateButton").removeAttr("disabled");
+                    $("#deleteButton").removeAttr("disabled");
+                    Swal.fire({
+                        title: 'Success!',
+                        text: '@SharedUtil.RecordCreated',
+                        icon: 'success',
+                        confirmButtonText: 'Cool'
+                    });
+                } else if (status === false) {
+                    if (typeof (code) === 'string') {
+                        callBackError();
+                    } else if (parseInt(code) === accessDeniedCode) {
+                        accessDenied();
+                    } else {
+                        location.href = "/";
+                    }
                 } else {
                     location.href = "/";
                 }
-            } else {
-                location.href = "/";
-            }
-        }).fail(function (xhr) {
-            console.log(xhr.status);
-            Swal.fire("System", "@SharedUtil.UserErrorNotification", "error");
-        }).always(function () {
-            console.log("always:complete");
-        });
+            }).fail(function (xhr) {
+                console.log(xhr.status);
+                Swal.fire("System", "@SharedUtil.UserErrorNotification", "error");
+            }).always(function () {
+                console.log("always:complete");
+            });
+        }
     }
     function readRecord() {
         $.ajax({
@@ -437,13 +443,13 @@
             data: {
                 mode: "read",
                 leafCheckKey: @navigationModel.LeafCheckKey,
-            }, 
+            },
             statusCode: {
                 500: function () {
                     Swal.fire("System Error", "@SharedUtil.UserErrorNotification", "error");
                     accessDenied();
                 }
-            }, 
+            },
             beforeSend() {
                 console.log("loading ..");
             }
@@ -616,72 +622,79 @@
         window.open("api/application/employee");
     }
     function updateRecord() {
-        let formData = new FormData();
-        formData.append("mode", "update");
-        formData.append("leafCheckKey", @navigationModel.LeafCheckKey);
-        formData.append('employeeKey', $employeeKey.val());
-        formData.append('employeeLastName', $employeeLastName.val());
-        formData.append('employeeFirstName', $employeeFirstName.val());
-        formData.append('employeeTitle', $employeeTitle.val());
-        formData.append('employeeTitleOfCourtesy', $employeeTitleOfCourtesy.val());
-        formData.append('employeeBirthDate', $employeeBirthDate.val());
-        formData.append('employeeHireDate', $employeeHireDate.val());
-        formData.append('employeeAddress', $employeeAddress.val());
-        formData.append('employeeCity', $employeeCity.val());
-        formData.append('employeeRegion', $employeeRegion.val());
-        formData.append('employeePostalCode', $employeePostalCode.val());
-        formData.append('employeeCountry', $employeeCountry.val());
-        formData.append('employeeHomePhone', $employeeHomePhone.val());
-        formData.append('employeeExtension', $employeeExtension.val());
-        let filesEmployeePhoto = $('#employeePhoto')[0].files;
-        if (filesEmployeePhoto.length > 0) {
-            formData.append('employeePhoto', filesEmployeePhoto[0]);
+        if ($employeeFirstName.val().length === 0) {
+            Swal.fire("System Error", "Please Enter all the form", "error");
+            $employeeFirstName.addClass("is-invalid").trigger('focus');
         }
-        formData.append('employeeNotes', $employeeNotes.val());
-        formData.append('employeePhotoPath', $employeePhotoPath.val());
-        formData.append('employeeSalary', $employeeSalary.val());
-        $.ajax({
-            type: 'POST',
-            url: "api/application/employee",
-            async: false,
-            contentType: false,
-            processData: false,
-            data: formData,
-            statusCode: {
-                500: function () {
-                    Swal.fire("System Error", "@SharedUtil.UserErrorNotification", "error");
+        else {
+            $employeeFirstName.removeClass("is-invalid");
+            let formData = new FormData();
+            formData.append("mode", "update");
+            formData.append("leafCheckKey", @navigationModel.LeafCheckKey);
+            formData.append('employeeKey', $employeeKey.val());
+            formData.append('employeeLastName', $employeeLastName.val());
+            formData.append('employeeFirstName', $employeeFirstName.val());
+            formData.append('employeeTitle', $employeeTitle.val());
+            formData.append('employeeTitleOfCourtesy', $employeeTitleOfCourtesy.val());
+            formData.append('employeeBirthDate', $employeeBirthDate.val());
+            formData.append('employeeHireDate', $employeeHireDate.val());
+            formData.append('employeeAddress', $employeeAddress.val());
+            formData.append('employeeCity', $employeeCity.val());
+            formData.append('employeeRegion', $employeeRegion.val());
+            formData.append('employeePostalCode', $employeePostalCode.val());
+            formData.append('employeeCountry', $employeeCountry.val());
+            formData.append('employeeHomePhone', $employeeHomePhone.val());
+            formData.append('employeeExtension', $employeeExtension.val());
+            let filesEmployeePhoto = $('#employeePhoto')[0].files;
+            if (filesEmployeePhoto.length > 0) {
+                formData.append('employeePhoto', filesEmployeePhoto[0]);
+            }
+            formData.append('employeeNotes', $employeeNotes.val());
+            formData.append('employeePhotoPath', $employeePhotoPath.val());
+            formData.append('employeeSalary', $employeeSalary.val());
+            $.ajax({
+                type: 'POST',
+                url: "api/application/employee",
+                async: false,
+                contentType: false,
+                processData: false,
+                data: formData,
+                statusCode: {
+                    500: function () {
+                        Swal.fire("System Error", "@SharedUtil.UserErrorNotification", "error");
+                    }
+                }, beforeSend() {
+                    console.log("loading..");
                 }
-            }, beforeSend() {
-                console.log("loading..");
-            }
-        }).done(function (data) {
-            if (data === void 0) {
-                location.href = "/";
-            }
-            let status = data.status;
-            let code = data.code;
-            if (status) {
-                $("#createButton").attr("disabled", "disabled");
-                $("#updateButton").removeAttr("disabled");
-                $("#deleteButton").removeAttr("disabled");
-                Swal.fire("System", "@SharedUtil.RecordUpdated", 'success')
-            } else if (status === false) {
-                if (typeof (code) === 'string') {
-                    callBackError();
-                } else if (parseInt(code) === accessDeniedCode) {
-                    accessDenied();
+            }).done(function (data) {
+                if (data === void 0) {
+                    location.href = "/";
+                }
+                let status = data.status;
+                let code = data.code;
+                if (status) {
+                    $("#createButton").attr("disabled", "disabled");
+                    $("#updateButton").removeAttr("disabled");
+                    $("#deleteButton").removeAttr("disabled");
+                    Swal.fire("System", "@SharedUtil.RecordUpdated", 'success')
+                } else if (status === false) {
+                    if (typeof (code) === 'string') {
+                        callBackError();
+                    } else if (parseInt(code) === accessDeniedCode) {
+                        accessDenied();
+                    } else {
+                        location.href = "/";
+                    }
                 } else {
                     location.href = "/";
                 }
-            } else {
-                location.href = "/";
-            }
-        }).fail(function (xhr) {
-            console.log(xhr.status);
-            Swal.fire("System", "@SharedUtil.UserErrorNotification", "error");
-        }).always(function () {
-            console.log("always:complete");
-        });
+            }).fail(function (xhr) {
+                console.log(xhr.status);
+                Swal.fire("System", "@SharedUtil.UserErrorNotification", "error");
+            }).always(function () {
+                console.log("always:complete");
+            });
+        }
     }
     function deleteRecord() {
         Swal.fire({
@@ -702,7 +715,7 @@
                         mode: 'delete',
                         leafCheckKey: @navigationModel.LeafCheckKey,
                         employeeKey: $("#employeeKey").val()
-                    }, 
+                    },
                     statusCode: {
                         500: function () {
                             Swal.fire("System Error", "@SharedUtil.UserErrorNotification", "error");

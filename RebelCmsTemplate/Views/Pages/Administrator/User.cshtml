@@ -254,62 +254,75 @@
         const $userName = $("#userName");
         const $userEmail = $("#userEmail");
         const $userPassword = $("#userPassword");
-        $.ajax({
-            type: 'POST',
-            url: "api/administrator/user",
-            async: false,
-            data: {
-                mode: 'create',
-                leafCheckKey: @navigationModel.LeafCheckKey,
-                roleKey: $roleKey.val(),
-                userName: $userName.val(),
-                userEmail: $userEmail.val(),
-                userPassword: $userPassword.val()
-            },
-            statusCode: {
-                500: function () {
-                    Swal.fire("System Error", "@SharedUtil.UserErrorNotification", "error");
-                    accessDenied();
+
+        if ($roleKey.val().length === 0) {
+            Swal.fire("System Error", "Please Enter all the form", "error");
+            $roleKey.addClass("is-invalid").trigger('focus');
+        }
+        else if ($userName.val().length === 0) {
+            Swal.fire("System Error", "Please Enter all the form", "error");
+            $userName.addClass("is-invalid").trigger('focus');
+        }
+        else {
+            $roleKey.removeClass("is-invalid");
+            $userName.removeClass("is-invalid");
+            $.ajax({
+                type: 'POST',
+                url: "api/administrator/user",
+                async: false,
+                data: {
+                    mode: 'create',
+                    leafCheckKey: @navigationModel.LeafCheckKey,
+                    roleKey: $roleKey.val(),
+                    userName: $userName.val(),
+                    userEmail: $userEmail.val(),
+                    userPassword: $userPassword.val()
+                },
+                statusCode: {
+                    500: function () {
+                        Swal.fire("System Error", "@SharedUtil.UserErrorNotification", "error");
+                        accessDenied();
+                    }
+                },
+                beforeSend: function () {
+                    console.log("loading");
                 }
-            },
-            beforeSend: function () {
-                console.log("loading");
-            }
-        }).done(function (data) {
-            if (data === void 0) {
-                location.href = "/";
-            }
-            let status = data.status;
-            let code = data.code;
-            if (status) {
-                $("#tableBody").prepend(template(data.lastInsertKey, $roleKey.val(), $userName.val(), $userEmail.val()));
-                Swal.fire({
-                    title: 'Success!',
-                    text: '@SharedUtil.RecordCreated',
-                    icon: 'success',
-                    confirmButtonText: 'Cool'
-                })
-                $roleKey.val("");
-                $userName.val("");
-                $userEmail.val("");
-                $userPassword.val("");
-            } else if (status === false) {
-                if (typeof (code) === 'string') {
-                    callBackError();
-                } else if (parseInt(code) === accessDeniedCode) {
-                    accessDenied();
+            }).done(function (data) {
+                if (data === void 0) {
+                    location.href = "/";
+                }
+                let status = data.status;
+                let code = data.code;
+                if (status) {
+                    $("#tableBody").prepend(template(data.lastInsertKey, $roleKey.val(), $userName.val(), $userEmail.val()));
+                    Swal.fire({
+                        title: 'Success!',
+                        text: '@SharedUtil.RecordCreated',
+                        icon: 'success',
+                        confirmButtonText: 'Cool'
+                    })
+                    $roleKey.val("");
+                    $userName.val("");
+                    $userEmail.val("");
+                    $userPassword.val("");
+                } else if (status === false) {
+                    if (typeof (code) === 'string') {
+                        callBackError();
+                    } else if (parseInt(code) === accessDeniedCode) {
+                        accessDenied();
+                    } else {
+                        location.href = "/";
+                    }
                 } else {
                     location.href = "/";
                 }
-            } else {
-                location.href = "/";
-            }
-        }).fail(function (xhr) {
-            console.log(xhr.status)
-            Swal.fire("System", "@SharedUtil.UserErrorNotification", "error");
-        }).always(function () {
-            console.log("always:complete");
-        });
+            }).fail(function (xhr) {
+                console.log(xhr.status)
+                Swal.fire("System", "@SharedUtil.UserErrorNotification", "error");
+            }).always(function () {
+                console.log("always:complete");
+            });
+        }
     }
     function readRecord() {
         $.ajax({
@@ -426,53 +439,68 @@
         });
     }
     function updateRecord(userKey) {
-        $.ajax({
-            type: 'POST',
-            url: "api/administrator/user",
-            async: false,
-            data: {
-                mode: 'update',
-                leafCheckKey: @navigationModel.LeafCheckKey,
-                roleKey: $("#roleKey-" + userKey).val(),
-                userName: $("#userName-" + userKey).val(),
-                userEmail: $("#userEmail-" + userKey).val(),
-                userPassword: $("#userPassword-" + userKey).val(),
-                userKey: userKey
-            }, 
-            statusCode: {
-                500: function () {
-                    Swal.fire("System Error", "@SharedUtil.UserErrorNotification", "error");
-                    accessDenied();
+        let $roleKey = $("#roleKey-" + userKey);
+        let $userName = $("#userName-" + userKey).val();
+        let $userPassword = $("#userPassword-" + userKey).val()
+        if ($roleKey.val().length === 0) {
+            Swal.fire("System Error", "Please Enter all the form", "error");
+            $roleKey.addClass("is-invalid").trigger('focus');
+        }
+        else if ($userName.val().length === 0) {
+            Swal.fire("System Error", "Please Enter all the form", "error");
+            $userName.addClass("is-invalid").trigger('focus');
+        }
+        else {
+            $roleKey.removeClass("is-invalid");
+            $userName.removeClass("is-invalid");
+            $.ajax({
+                type: 'POST',
+                url: "api/administrator/user",
+                async: false,
+                data: {
+                    mode: 'update',
+                    leafCheckKey: @navigationModel.LeafCheckKey,
+                    roleKey: $roleKey.val(),
+                    userName: $userName.val(),
+                    userEmail: $userName.val(),
+                    userPassword: $userPassword.val(),
+                    userKey: userKey
+                },
+                statusCode: {
+                    500: function () {
+                        Swal.fire("System Error", "@SharedUtil.UserErrorNotification", "error");
+                        accessDenied();
+                    }
+                },
+                beforeSend: function () {
+                    console.log("loading..");
                 }
-            },
-            beforeSend: function () {
-                console.log("loading..");
-            }
-        }).done(function (data) {
-            if (data === void 0) {
-                location.href = "/";
-            }
-            let status = data.status;
-            let code = data.code;
-            if (status) {
-                Swal.fire("System", "@SharedUtil.RecordUpdated", 'success')
-            } else if (status === false) {
-                if (typeof (code) === 'string') {
-                    callBackError();
-                } else if (parseInt(code) === accessDeniedCode) {
-                    accessDenied();
+            }).done(function (data) {
+                if (data === void 0) {
+                    location.href = "/";
+                }
+                let status = data.status;
+                let code = data.code;
+                if (status) {
+                    Swal.fire("System", "@SharedUtil.RecordUpdated", 'success')
+                } else if (status === false) {
+                    if (typeof (code) === 'string') {
+                        callBackError();
+                    } else if (parseInt(code) === accessDeniedCode) {
+                        accessDenied();
+                    } else {
+                        location.href = "/";
+                    }
                 } else {
                     location.href = "/";
                 }
-            } else {
-                location.href = "/";
-            }
-        }).fail(function (xhr) {
-            console.log(xhr.status)
-            Swal.fire("System", "@SharedUtil.UserErrorNotification", "error");
-        }).always(function () {
-            console.log("always:complete");
-        });
+            }).fail(function (xhr) {
+                console.log(xhr.status)
+                Swal.fire("System", "@SharedUtil.UserErrorNotification", "error");
+            }).always(function () {
+                console.log("always:complete");
+            });
+        }
     }
     function deleteRecord(userKey) {
         Swal.fire({
@@ -493,7 +521,7 @@
                         mode: 'delete',
                         leafCheckKey: @navigationModel.LeafCheckKey,
                         userKey: userKey
-                    }, 
+                    },
                     statusCode: {
                         500: function () {
                             Swal.fire("System Error", "@SharedUtil.UserErrorNotification", "error");

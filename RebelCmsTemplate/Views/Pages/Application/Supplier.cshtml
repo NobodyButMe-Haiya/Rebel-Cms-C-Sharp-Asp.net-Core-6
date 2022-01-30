@@ -289,71 +289,77 @@
         return template;
     }
     function createRecord() {
-
-        $.ajax({
-            type: 'POST',
-            url: "api/application/supplier",
-            async: false,
-            data: {
-                mode: 'create',
-                leafCheckKey: @navigationModel.LeafCheckKey,
-                supplierName: $supplierName.val(),
-                supplierContactName: $supplierContactName.val(),
-                supplierContactTitle: $supplierContactTitle.val(),
-                supplierAddress: $supplierAddress.val(),
-                supplierCity: $supplierCity.val(),
-                supplierRegion: $supplierRegion.val(),
-                supplierPostalCode: $supplierPostalCode.val(),
-                supplierCountry: $supplierCountry.val(),
-                supplierPhone: $supplierPhone.val(),
-                supplierFax: $supplierFax.val(),
-                supplierHomePage: $supplierHomePage.val(),
-            },
-            statusCode: {
-                500: function () {
-                    Swal.fire("System Error", "@SharedUtil.UserErrorNotification", "error");
-                    accessDenied();
+        const $supplierName = $("#supplierName");
+        if ($supplierName.val().length === 0) {
+            Swal.fire("System Error", "Please Enter all the form", "error");
+            $supplierName.addClass("is-invalid").trigger('focus');
+        } else {
+            $supplierName.removeClass("is-invalid");
+            $.ajax({
+                type: 'POST',
+                url: "api/application/supplier",
+                async: false,
+                data: {
+                    mode: 'create',
+                    leafCheckKey: @navigationModel.LeafCheckKey,
+                    supplierName: $supplierName.val(),
+                    supplierContactName: $supplierContactName.val(),
+                    supplierContactTitle: $supplierContactTitle.val(),
+                    supplierAddress: $supplierAddress.val(),
+                    supplierCity: $supplierCity.val(),
+                    supplierRegion: $supplierRegion.val(),
+                    supplierPostalCode: $supplierPostalCode.val(),
+                    supplierCountry: $supplierCountry.val(),
+                    supplierPhone: $supplierPhone.val(),
+                    supplierFax: $supplierFax.val(),
+                    supplierHomePage: $supplierHomePage.val(),
+                },
+                statusCode: {
+                    500: function () {
+                        Swal.fire("System Error", "@SharedUtil.UserErrorNotification", "error");
+                        accessDenied();
+                    }
+                },
+                beforeSend: function () {
+                    console.log("loading ..");
                 }
-            },
-            beforeSend: function () {
-                console.log("loading ..");
-            }
-        }).done(function (data) {
-            if (data === void 0) {
-                location.href = "/";
-            }
-            let status = data.status;
-            let code = data.code;
-            if (status) {
-                const lastInsertKey = data.lastInsertKey;
-                $("#tableBody").prepend(template(lastInsertKey, supplierName.val(), supplierContactName.val(), supplierContactTitle.val(), supplierAddress.val(), supplierCity.val()));
-                $("#supplierKey").val(lastInsertKey);
-                $("#createButton").attr("disabled", "disabled");
-                $("#updateButton").removeAttr("disabled");
-                $("#deleteButton").removeAttr("disabled");
-                Swal.fire({
-                    title: 'Success!',
-                    text: '@SharedUtil.RecordCreated',
-                    icon: 'success',
-                    confirmButtonText: 'Cool'
-                });
-            } else if (status === false) {
-                if (typeof (code) === 'string') {
-                    callBackError();
-                } else if (parseInt(code) === accessDeniedCode) {
-                    accessDenied();
+            }).done(function (data) {
+                if (data === void 0) {
+                    location.href = "/";
+                }
+                let status = data.status;
+                let code = data.code;
+                if (status) {
+                    const lastInsertKey = data.lastInsertKey;
+                    $("#tableBody").prepend(template(lastInsertKey, supplierName.val(), supplierContactName.val(), supplierContactTitle.val(), supplierAddress.val(), supplierCity.val()));
+                    $("#supplierKey").val(lastInsertKey);
+                    $("#createButton").attr("disabled", "disabled");
+                    $("#updateButton").removeAttr("disabled");
+                    $("#deleteButton").removeAttr("disabled");
+                    Swal.fire({
+                        title: 'Success!',
+                        text: '@SharedUtil.RecordCreated',
+                        icon: 'success',
+                        confirmButtonText: 'Cool'
+                    });
+                } else if (status === false) {
+                    if (typeof (code) === 'string') {
+                        callBackError();
+                    } else if (parseInt(code) === accessDeniedCode) {
+                        accessDenied();
+                    } else {
+                        location.href = "/";
+                    }
                 } else {
                     location.href = "/";
                 }
-            } else {
-                location.href = "/";
-            }
-        }).fail(function (xhr) {
-            console.log(xhr.status);
-            Swal.fire("System", "@SharedUtil.UserErrorNotification", "error");
-        }).always(function () {
-            console.log("always:complete");
-        });
+            }).fail(function (xhr) {
+                console.log(xhr.status);
+                Swal.fire("System", "@SharedUtil.UserErrorNotification", "error");
+            }).always(function () {
+                console.log("always:complete");
+            });
+        }
     }
     function readRecord() {
         $.ajax({
@@ -534,63 +540,70 @@
         window.open("api/application/supplier");
     }
     function updateRecord() {
-        $.ajax({
-            type: 'POST',
-            url: "api/application/supplier",
-            async: false,
-            data: {
-                mode: 'update',
-                leafCheckKey: @navigationModel.LeafCheckKey,
-                supplierKey: $supplierKey.val(),
-                supplierName: $supplierName.val(),
-                supplierContactName: $supplierContactName.val(),
-                supplierContactTitle: $supplierContactTitle.val(),
-                supplierAddress: $supplierAddress.val(),
-                supplierCity: $supplierCity.val(),
-                supplierRegion: $supplierRegion.val(),
-                supplierPostalCode: $supplierPostalCode.val(),
-                supplierCountry: $supplierCountry.val(),
-                supplierPhone: $supplierPhone.val(),
-                supplierFax: $supplierFax.val(),
-                supplierHomePage: $supplierHomePage.val(),
-            },
-            statusCode: {
-                500: function () {
-                    Swal.fire("System Error", "@SharedUtil.UserErrorNotification", "error");
-                    accessDenied();
+        const $supplierName = $("#supplierName");
+        if ($supplierName.val().length === 0) {
+            Swal.fire("System Error", "Please Enter all the form", "error");
+            $supplierName.addClass("is-invalid").trigger('focus');
+        } else {
+            $supplierName.removeClass("is-invalid");
+            $.ajax({
+                type: 'POST',
+                url: "api/application/supplier",
+                async: false,
+                data: {
+                    mode: 'update',
+                    leafCheckKey: @navigationModel.LeafCheckKey,
+                    supplierKey: $supplierKey.val(),
+                    supplierName: $supplierName.val(),
+                    supplierContactName: $supplierContactName.val(),
+                    supplierContactTitle: $supplierContactTitle.val(),
+                    supplierAddress: $supplierAddress.val(),
+                    supplierCity: $supplierCity.val(),
+                    supplierRegion: $supplierRegion.val(),
+                    supplierPostalCode: $supplierPostalCode.val(),
+                    supplierCountry: $supplierCountry.val(),
+                    supplierPhone: $supplierPhone.val(),
+                    supplierFax: $supplierFax.val(),
+                    supplierHomePage: $supplierHomePage.val(),
+                },
+                statusCode: {
+                    500: function () {
+                        Swal.fire("System Error", "@SharedUtil.UserErrorNotification", "error");
+                        accessDenied();
+                    }
+                },
+                beforeSend: function () {
+                    console.log("loading..");
                 }
-            },
-            beforeSend: function () {
-                console.log("loading..");
-            }
-        }).done(function (data) {
-            if (data === void 0) {
-                location.href = "/";
-            }
-            let status = data.status;
-            let code = data.code;
-            if (status) {
-                $("#createButton").attr("disabled", "disabled");
-                $("#updateButton").removeAttr("disabled");
-                $("#deleteButton").removeAttr("disabled");
-                Swal.fire("System", "@SharedUtil.RecordUpdated", 'success');
-            } else if (status === false) {
-                if (typeof (code) === 'string') {
-                    callBackError();
-                } else if (parseInt(code) === accessDeniedCode) {
-                    accessDenied();
+            }).done(function (data) {
+                if (data === void 0) {
+                    location.href = "/";
+                }
+                let status = data.status;
+                let code = data.code;
+                if (status) {
+                    $("#createButton").attr("disabled", "disabled");
+                    $("#updateButton").removeAttr("disabled");
+                    $("#deleteButton").removeAttr("disabled");
+                    Swal.fire("System", "@SharedUtil.RecordUpdated", 'success');
+                } else if (status === false) {
+                    if (typeof (code) === 'string') {
+                        callBackError();
+                    } else if (parseInt(code) === accessDeniedCode) {
+                        accessDenied();
+                    } else {
+                        location.href = "/";
+                    }
                 } else {
                     location.href = "/";
                 }
-            } else {
-                location.href = "/";
-            }
-        }).fail(function (xhr) {
-            console.log(xhr.status);
-            Swal.fire("System", "@SharedUtil.UserErrorNotification", "error");
-        }).always(function () {
-            console.log("always:complete");
-        });
+            }).fail(function (xhr) {
+                console.log(xhr.status);
+                Swal.fire("System", "@SharedUtil.UserErrorNotification", "error");
+            }).always(function () {
+                console.log("always:complete");
+            });
+        }
     }
     function deleteRecord() {
         Swal.fire({

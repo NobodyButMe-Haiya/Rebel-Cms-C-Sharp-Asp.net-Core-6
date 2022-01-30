@@ -189,61 +189,66 @@
             "</tr>";
     }
     function createRecord() {
-        const shipperKey = $("#shipperKey");
-        const shipperName = $("#shipperName");
-        const shipperPhone = $("#shipperPhone");
-        $.ajax({
-            type: 'POST',
-            url: "api/application/shipper",
-            async: false,
-            data: {
-                mode: 'create',
-                leafCheckKey: @navigationModel.LeafCheckKey,
-                shipperName: shipperName.val(),
-                shipperPhone: shipperPhone.val(),
-            }, statusCode: {
-                500: function () {
-                    Swal.fire("System Error", "@SharedUtil.UserErrorNotification", "error");
+        const $shipperName = $("#shipperName");
+        const $shipperPhone = $("#shipperPhone");
+        if ($shipperName.val().length === 0) {
+            Swal.fire("System Error", "Please Enter all the form", "error");
+            $shipperName.addClass("is-invalid").trigger('focus');
+        } else {
+            $shipperName.removeClass("is-invalid");
+            $.ajax({
+                type: 'POST',
+                url: "api/application/shipper",
+                async: false,
+                data: {
+                    mode: 'create',
+                    leafCheckKey: @navigationModel.LeafCheckKey,
+                    shipperName: shipperName.val(),
+                    shipperPhone: shipperPhone.val(),
+                }, statusCode: {
+                    500: function () {
+                        Swal.fire("System Error", "@SharedUtil.UserErrorNotification", "error");
+                    }
+                },
+                beforeSend: function () {
+                    console.log("loading ..");
                 }
-            },
-            beforeSend: function () {
-                console.log("loading ..");
-            }
-        }).done(function (data) {
-            if (data === void 0) {
-                location.href = "/";
-            }
-            let status = data.status;
-            let code = data.code;
-            if (status) {
-                const lastInsertKey = data.lastInsertKey;
-                $("#tableBody").prepend(template(lastInsertKey, shipperName.val(), shipperPhone.val()));
-                Swal.fire({
-                    title: 'Success!',
-                    text: '@SharedUtil.RecordCreated',
-                    icon: 'success',
-                    confirmButtonText: 'Cool'
-                });
-                shipperKey.val('');
-                shipperName.val('');
-                shipperPhone.val('');
-            } else if (status === false) {
-                if (typeof (code) === 'string') {
-                    callBackError();
-                } else if (parseInt(code) === accessDeniedCode) {
-                    accessDenied();
+            }).done(function (data) {
+                if (data === void 0) {
+                    location.href = "/";
+                }
+                let status = data.status;
+                let code = data.code;
+                if (status) {
+                    const lastInsertKey = data.lastInsertKey;
+                    $("#tableBody").prepend(template(lastInsertKey, shipperName.val(), shipperPhone.val()));
+                    Swal.fire({
+                        title: 'Success!',
+                        text: '@SharedUtil.RecordCreated',
+                        icon: 'success',
+                        confirmButtonText: 'Cool'
+                    });
+                    shipperKey.val('');
+                    shipperName.val('');
+                    shipperPhone.val('');
+                } else if (status === false) {
+                    if (typeof (code) === 'string') {
+                        callBackError();
+                    } else if (parseInt(code) === accessDeniedCode) {
+                        accessDenied();
+                    } else {
+                        location.href = "/";
+                    }
                 } else {
                     location.href = "/";
                 }
-            } else {
-                location.href = "/";
-            }
-        }).fail(function (xhr) {
-            console.log(xhr.status);
-            Swal.fire("System", "@SharedUtil.UserErrorNotification", "error");
-        }).always(function () {
-            console.log("always:complete");
-        });
+            }).fail(function (xhr) {
+                console.log(xhr.status);
+                Swal.fire("System", "@SharedUtil.UserErrorNotification", "error");
+            }).always(function () {
+                console.log("always:complete");
+            });
+        }
     }
     function readRecord() {
         $.ajax({
@@ -357,108 +362,115 @@
         window.open("api/application/shipper");
     }
     function updateRecord(shipperKey) {
-        $.ajax({
-            type: 'POST',
-            url: "api/application/shipper",
-            async: false,
-            data: {
-                mode: 'update',
-                leafCheckKey: @navigationModel.LeafCheckKey,
-                shipperKey: shipperKey,
-                shipperName: $("#shipperName-" + shipperKey).val(),
-                shipperPhone: $("#shipperPhone-" + shipperKey).val(),
-            }, statusCode: {
-                500: function () {
-                    Swal.fire("System Error", "@SharedUtil.UserErrorNotification", "error");
+        const $supplierName = $("#shipperName-" + shipperKey);
+        const $supplierPhone = $("#shipperPhone-" + shipperKey).val()
+        if ($supplierName.val().length === 0) {
+            Swal.fire("System Error", "Please Enter all the form", "error");
+            $supplierName.addClass("is-invalid").trigger('focus');
+        } else {
+            $supplierName.removeClass("is-invalid");
+            $.ajax({
+                type: 'POST',
+                url: "api/application/shipper",
+                async: false,
+                data: {
+                    mode: 'update',
+                    leafCheckKey: @navigationModel.LeafCheckKey,
+                    shipperKey: shipperKey,
+                    shipperName: $shipperName.val(),
+                    shipperPhone: $supplierName.val(),
+                }, statusCode: {
+                    500: function () {
+                        Swal.fire("System Error", "@SharedUtil.UserErrorNotification", "error");
+                    }
+                },
+                beforeSend: function () {
+                    console.log("loading..");
                 }
-            },
-            beforeSend: function () {
-                console.log("loading..");
-            }
-        }).done(function (data) {
-            if (data === void 0) {
-                location.href = "/";
-            }
-            let status = data.status;
-            let code = data.code;
-            if (status) {
-                Swal.fire("System", "@SharedUtil.RecordUpdated", 'success')
-            } else if (status === false) {
-                if (typeof (code) === 'string') {
-                    callBackError();
-                } else if (parseInt(code) === accessDeniedCode) {
-                    accessDenied();
-                } else {
+            }).done(function (data) {
+                if (data === void 0) {
                     location.href = "/";
                 }
-            } else {
-                location.href = "/";
-            }
-        }).fail(function (xhr) {
-            console.log(xhr.status);
-            Swal.fire("System", "@SharedUtil.UserErrorNotification", "error");
-        }).always(function () {
-            console.log("always:complete");
-        });
-    }
-    function deleteRecord(shipperKey) {
-        Swal.fire({
-            title: 'Are you sure?',
-            text: "You won't be able to revert this!",
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonText: 'Yes, delete it!',
-            cancelButtonText: 'No, cancel!',
-            reverseButtons: true
-        }).then((result) => {
-            if (result.value) {
-                $.ajax({
-                    type: 'POST',
-                    url: "api/application/shipper",
-                    async: false,
-                    data: {
-                        mode: 'delete',
-                        leafCheckKey: @navigationModel.LeafCheckKey,
-                        shipperKey: shipperKey
-                    }, statusCode: {
-                        500: function () {
-                            Swal.fire("System Error", "@SharedUtil.UserErrorNotification", "error");
-                        }
-                    },
-                    beforeSend: function () {
-                        console.log("loading..");
-                    }
-                }).done(function (data) {
-                    if (data === void 0) { location.href = "/"; }
-                    let status = data.status;
-                    let code = data.code;
-                    if (status) {
-                        $("#shipper-" + shipperKey).remove();
-                        Swal.fire("System", "@SharedUtil.RecordDeleted", "success");
-                    } else if (status === false) {
-                        if (typeof (code) === 'string') {
-                            callBackError();
-                        } else if (parseInt(code) === accessDeniedCode) {
-                            accessDenied();
-                        } else {
-                            location.href = "/";
-                        }
+                let status = data.status;
+                let code = data.code;
+                if (status) {
+                    Swal.fire("System", "@SharedUtil.RecordUpdated", 'success')
+                } else if (status === false) {
+                    if (typeof (code) === 'string') {
+                        callBackError();
+                    } else if (parseInt(code) === accessDeniedCode) {
+                        accessDenied();
                     } else {
                         location.href = "/";
                     }
-                }).fail(function (xhr) {
-                    console.log(xhr.status);
-                    Swal.fire("System", "@SharedUtil.UserErrorNotification", "error");
-                }).always(function () {
-                    console.log("always:complete");
-                });
-            } else if (result.dismiss === swal.DismissReason.cancel) {
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Cancelled',
-                    text: 'Be careful before delete record'
-                })
-            }
-        });
-    }
+                } else {
+                    location.href = "/";
+                }
+            }).fail(function (xhr) {
+                console.log(xhr.status);
+                Swal.fire("System", "@SharedUtil.UserErrorNotification", "error");
+            }).always(function () {
+                console.log("always:complete");
+            });
+        }
+        function deleteRecord(shipperKey) {
+            Swal.fire({
+                title: 'Are you sure?',
+                text: "You won't be able to revert this!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'Yes, delete it!',
+                cancelButtonText: 'No, cancel!',
+                reverseButtons: true
+            }).then((result) => {
+                if (result.value) {
+                    $.ajax({
+                        type: 'POST',
+                        url: "api/application/shipper",
+                        async: false,
+                        data: {
+                            mode: 'delete',
+                            leafCheckKey: @navigationModel.LeafCheckKey,
+                            shipperKey: shipperKey
+                        }, statusCode: {
+                            500: function () {
+                                Swal.fire("System Error", "@SharedUtil.UserErrorNotification", "error");
+                            }
+                        },
+                        beforeSend: function () {
+                            console.log("loading..");
+                        }
+                    }).done(function (data) {
+                        if (data === void 0) { location.href = "/"; }
+                        let status = data.status;
+                        let code = data.code;
+                        if (status) {
+                            $("#shipper-" + shipperKey).remove();
+                            Swal.fire("System", "@SharedUtil.RecordDeleted", "success");
+                        } else if (status === false) {
+                            if (typeof (code) === 'string') {
+                                callBackError();
+                            } else if (parseInt(code) === accessDeniedCode) {
+                                accessDenied();
+                            } else {
+                                location.href = "/";
+                            }
+                        } else {
+                            location.href = "/";
+                        }
+                    }).fail(function (xhr) {
+                        console.log(xhr.status);
+                        Swal.fire("System", "@SharedUtil.UserErrorNotification", "error");
+                    }).always(function () {
+                        console.log("always:complete");
+                    });
+                } else if (result.dismiss === swal.DismissReason.cancel) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Cancelled',
+                        text: 'Be careful before delete record'
+                    })
+                }
+            });
+        }
 </script>

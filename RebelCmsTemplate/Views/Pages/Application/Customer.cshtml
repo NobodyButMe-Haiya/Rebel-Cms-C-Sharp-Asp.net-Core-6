@@ -229,41 +229,43 @@
     </div>
 </section>
 <script>
+    var $customerKey = $("#customerKey");
+    var $customerCode = $("#customerCode");
+    var $customerName = $("#customerName");
+    var $customerContactName = $("#customerContactName");
+    var $customerContactTitle = $("#customerContactTitle");
+    var $customerAddress = $("#customerAddress");
+    var $customerCity = $("#customerCity");
+    var $customerRegion = $("#customerRegion");
+    var $customerPostalCode = $("#customerPostalCode");
+    var $customerCountry = $("#customerCountry");
+    var $customerPhone = $("#customerPhone");
+    var $customerFax = $("#customerFax");
+
     function resetForm(attributeName) {
-        $("#customerKey").val('');
-
-        $("#customerCode").val('');
-        $("#customerName").val('');
-        $("#customerContactName").val('');
-        $("#customerContactTitle").val('');
-        $("#customerAddress").val('');
-        $("#customerCity").val('');
-        $("#customerRegion").val('');
-        $("#customerPostalCode").val('');
-        $("#customerCountry").val('');
-        $("#customerPhone").val('');
-        $("#customerFax").val('');
-
+        emptyForm();
         $("#createButton").removeAttr("disabled");
         $("#updateButton").attr("disabled", "disabled");
         $("#deleteButton").attr("disabled", "disabled");
     }
+    function emptyForm() {
+        $customerKey.val('');
+        $customerCode.val('');
+        $customerName.val('');
+        $customerContactName.val('');
+        $customerContactTitle.val('');
+        $customerAddress.val('');
+        $customerCity.val('');
+        $customerRegion.val('');
+        $customerPostalCode.val('');
+        $customerCountry.val('');
+        $customerPhone.val('');
+        $customerFax.val('');
+    }
     function resetRecord() {
         readRecord();
+        emptyForm();
         $("#search").val("");
-        $("#customerKey").val('');
-
-        $("#customerCode").val('');
-        $("#customerName").val('');
-        $("#customerContactName").val('');
-        $("#customerContactTitle").val('');
-        $("#customerAddress").val('');
-        $("#customerCity").val('');
-        $("#customerRegion").val('');
-        $("#customerPostalCode").val('');
-        $("#customerCountry").val('');
-        $("#customerPhone").val('');
-        $("#customerFax").val('');
 
     }
     function emptyTemplate() {
@@ -289,81 +291,77 @@
         return template;
     }
     function createRecord() {
-        const customerCode = $("#customerCode");
-        const customerName = $("#customerName");
-        const customerContactName = $("#customerContactName");
-        const customerContactTitle = $("#customerContactTitle");
-        const customerAddress = $("#customerAddress");
-        const customerCity = $("#customerCity");
-        const customerRegion = $("#customerRegion");
-        const customerPostalCode = $("#customerPostalCode");
-        const customerCountry = $("#customerCountry");
-        const customerPhone = $("#customerPhone");
-        const customerFax = $("#customerFax");
-        $.ajax({
-            type: 'POST',
-            url: "api/application/customer",
-            async: false,
-            data: {
-                mode: 'create',
-                leafCheckKey: @navigationModel.LeafCheckKey,
-                customerCode: $("#customerCode").val(),
-                customerName: $("#customerName").val(),
-                customerContactName: $("#customerContactName").val(),
-                customerContactTitle: $("#customerContactTitle").val(),
-                customerAddress: $("#customerAddress").val(),
-                customerCity: $("#customerCity").val(),
-                customerRegion: $("#customerRegion").val(),
-                customerPostalCode: $("#customerPostalCode").val(),
-                customerCountry: $("#customerCountry").val(),
-                customerPhone: $("#customerPhone").val(),
-                customerFax: $("#customerFax").val(),
-            }, 
-            statusCode: {
-                500: function () {
-                    Swal.fire("System Error", "@SharedUtil.UserErrorNotification", "error");
-                    accessDenied();
+        if ($customerName.val().length === 0) {
+            Swal.fire("System Error", "Please Enter all the form", "error");
+            $customerName.addClass("is-invalid").trigger('focus');
+        }
+        else {
+            $customerName.removeClass("is-invalid");
+            $.ajax({
+                type: 'POST',
+                url: "api/application/customer",
+                async: false,
+                data: {
+                    mode: 'create',
+                    leafCheckKey: @navigationModel.LeafCheckKey,
+                    customerCode: $customerCode.val(),
+                    customerName: $customerName.val(),
+                    customerContactName: $customerContactName.val(),
+                    customerContactTitle: $customerContactTitle.val(),
+                    customerAddress: $customerAddress.val(),
+                    customerCity: $customerCity.val(),
+                    customerRegion: $customerRegion.val(),
+                    customerPostalCode: $customerPostalCode.val(),
+                    customerCountry: $customerCountry.val(),
+                    customerPhone: $customerPhone.val(),
+                    customerFax: $customerFax.val(),
+                },
+                statusCode: {
+                    500: function () {
+                        Swal.fire("System Error", "@SharedUtil.UserErrorNotification", "error");
+                        accessDenied();
+                    }
+                },
+                beforeSend: function () {
+                    console.log("loading ..");
                 }
-            },
-            beforeSend: function () {
-                console.log("loading ..");
-            }
-        }).done(function (data) {
-            if (data === void 0) {
-                location.href = "/";
-            }
-            let status = data.status;
-            let code = data.code;
-            if (status) {
-                const lastInsertKey = data.lastInsertKey;
-                $("#tableBody").prepend(template(lastInsertKey, customerCode.val(), customerName.val(), customerContactName.val(), customerContactTitle.val(), customerAddress.val()));
-                $("#customerKey").val(lastInsertKey);
-                $("#createButton").attr("disabled", "disabled");
-                $("#updateButton").removeAttr("disabled");
-                $("#deleteButton").removeAttr("disabled");
-                Swal.fire({
-                    title: 'Success!',
-                    text: '@SharedUtil.RecordCreated',
-                    icon: 'success',
-                    confirmButtonText: 'Cool'
-                });
-            } else if (status === false) {
-                if (typeof (code) === 'string') {
-                    callBackError();
-                } else if (parseInt(code) === accessDeniedCode) {
-                    accessDenied();
+            }).done(function (data) {
+                if (data === void 0) {
+                    location.href = "/";
+                }
+                let status = data.status;
+                let code = data.code;
+                if (status) {
+                    const lastInsertKey = data.lastInsertKey;
+                    $("#tableBody").prepend(template(lastInsertKey, customerCode.val(), customerName.val(), customerContactName.val(), customerContactTitle.val(), customerAddress.val()));
+                    $("#customerKey").val(lastInsertKey);
+                    $("#createButton").attr("disabled", "disabled");
+                    $("#updateButton").removeAttr("disabled");
+                    $("#deleteButton").removeAttr("disabled");
+                    Swal.fire({
+                        title: 'Success!',
+                        text: '@SharedUtil.RecordCreated',
+                        icon: 'success',
+                        confirmButtonText: 'Cool'
+                    });
+                } else if (status === false) {
+                    if (typeof (code) === 'string') {
+                        callBackError();
+                    } else if (parseInt(code) === accessDeniedCode) {
+                        accessDenied();
+                    } else {
+                        location.href = "/";
+                    }
                 } else {
                     location.href = "/";
                 }
-            } else {
-                location.href = "/";
-            }
-        }).fail(function (xhr) {
-            console.log(xhr.status);
-            Swal.fire("System", "@SharedUtil.UserErrorNotification", "error");
-        }).always(function () {
-            console.log("always:complete");
-        });
+            }).fail(function (xhr) {
+                console.log(xhr.status);
+                Swal.fire("System", "@SharedUtil.UserErrorNotification", "error");
+            }).always(function () {
+                console.log("always:complete");
+            });
+        }
     }
     function readRecord() {
         $.ajax({
@@ -507,18 +505,18 @@
                 if (data.dataSingle === void 0) {
                     $("#tableBody").html("").html(emptyTemplate());
                 } else {
-                    $("#customerKey").val(data.dataSingle.customerKey);
-                    $("#customerCode").val(data.dataSingle.customerCode);
-                    $("#customerName").val(data.dataSingle.customerName);
-                    $("#customerContactName").val(data.dataSingle.customerContactName);
-                    $("#customerContactTitle").val(data.dataSingle.customerContactTitle);
-                    $("#customerAddress").val(data.dataSingle.customerAddress);
-                    $("#customerCity").val(data.dataSingle.customerCity);
-                    $("#customerRegion").val(data.dataSingle.customerRegion);
-                    $("#customerPostalCode").val(data.dataSingle.customerPostalCode);
-                    $("#customerCountry").val(data.dataSingle.customerCountry);
-                    $("#customerPhone").val(data.dataSingle.customerPhone);
-                    $("#customerFax").val(data.dataSingle.customerFax);
+                    $customerKey.val(data.dataSingle.customerKey);
+                    $customerCode.val(data.dataSingle.customerCode);
+                    $customerName.val(data.dataSingle.customerName);
+                    $customerContactName.val(data.dataSingle.customerContactName);
+                    $customerContactTitle.val(data.dataSingle.customerContactTitle);
+                    $customerAddress.val(data.dataSingle.customerAddress);
+                    $customerCity.val(data.dataSingle.customerCity);
+                    $customerRegion.val(data.dataSingle.customerRegion);
+                    $customerPostalCode.val(data.dataSingle.customerPostalCode);
+                    $customerCountry.val(data.dataSingle.customerCountry);
+                    $customerPhone.val(data.dataSingle.customerPhone);
+                    $customerFax.val(data.dataSingle.customerFax);
                     $("#createButton").attr("disabled", "disabled");
                     $("#updateButton").removeAttr("disabled");
                     $("#deleteButton").removeAttr("disabled");
@@ -546,64 +544,70 @@
         window.open("api/application/customer");
     }
     function updateRecord() {
-        $.ajax({
-            type: 'POST',
-            url: "api/application/customer",
-            async: false,
-            data: {
-                mode: 'update',
-                leafCheckKey: @navigationModel.LeafCheckKey,
-                customerKey: $("#customerKey").val(),
-                customerKey: $("#customerKey").val(),
-                customerCode: $("#customerCode").val(),
-                customerName: $("#customerName").val(),
-                customerContactName: $("#customerContactName").val(),
-                customerContactTitle: $("#customerContactTitle").val(),
-                customerAddress: $("#customerAddress").val(),
-                customerCity: $("#customerCity").val(),
-                customerRegion: $("#customerRegion").val(),
-                customerPostalCode: $("#customerPostalCode").val(),
-                customerCountry: $("#customerCountry").val(),
-                customerPhone: $("#customerPhone").val(),
-                customerFax: $("#customerFax").val(),
-            }, 
-            statusCode: {
-                500: function () {
-                    Swal.fire("System Error", "@SharedUtil.UserErrorNotification", "error");
-                    accessDenied();
+        if ($customerName.val().length === 0) {
+            Swal.fire("System Error", "Please Enter all the form", "error");
+            $customerName.addClass("is-invalid").trigger('focus');
+        }
+        else {
+            $customerName.removeClass("is-invalid");
+            $.ajax({
+                type: 'POST',
+                url: "api/application/customer",
+                async: false,
+                data: {
+                    mode: 'update',
+                    leafCheckKey: @navigationModel.LeafCheckKey,
+                    customerKey: $customerKey.val(),
+                    customerCode: $customerCode.val(),
+                    customerName: $customerName.val(),
+                    customerContactName: $customerContactName.val(),
+                    customerContactTitle: $customerContactTitle.val(),
+                    customerAddress: $customerAddress.val(),
+                    customerCity: $customerCity.val(),
+                    customerRegion: $customerRegion.val(),
+                    customerPostalCode: $customerPostalCode.val(),
+                    customerCountry: $customerCountry.val(),
+                    customerPhone: $customerPhone.val(),
+                    customerFax: $customerFax.val(),
+                },
+                statusCode: {
+                    500: function () {
+                        Swal.fire("System Error", "@SharedUtil.UserErrorNotification", "error");
+                        accessDenied();
+                    }
+                },
+                beforeSend: function () {
+                    console.log("loading..");
                 }
-            },
-            beforeSend: function () {
-                console.log("loading..");
-            }
-        }).done(function (data) {
-            if (data === void 0) {
-                location.href = "/";
-            }
-            let status = data.status;
-            let code = data.code;
-            if (status) {
-                $("#createButton").attr("disabled", "disabled");
-                $("#updateButton").removeAttr("disabled");
-                $("#deleteButton").removeAttr("disabled");
-                Swal.fire("System", "@SharedUtil.RecordUpdated", 'success')
-            } else if (status === false) {
-                if (typeof (code) === 'string') {
-                    callBackError();
-                } else if (parseInt(code) === accessDeniedCode) {
-                    accessDenied();
+            }).done(function (data) {
+                if (data === void 0) {
+                    location.href = "/";
+                }
+                let status = data.status;
+                let code = data.code;
+                if (status) {
+                    $("#createButton").attr("disabled", "disabled");
+                    $("#updateButton").removeAttr("disabled");
+                    $("#deleteButton").removeAttr("disabled");
+                    Swal.fire("System", "@SharedUtil.RecordUpdated", 'success')
+                } else if (status === false) {
+                    if (typeof (code) === 'string') {
+                        callBackError();
+                    } else if (parseInt(code) === accessDeniedCode) {
+                        accessDenied();
+                    } else {
+                        location.href = "/";
+                    }
                 } else {
                     location.href = "/";
                 }
-            } else {
-                location.href = "/";
-            }
-        }).fail(function (xhr) {
-            console.log(xhr.status);
-            Swal.fire("System", "@SharedUtil.UserErrorNotification", "error");
-        }).always(function () {
-            console.log("always:complete");
-        });
+            }).fail(function (xhr) {
+                console.log(xhr.status);
+                Swal.fire("System", "@SharedUtil.UserErrorNotification", "error");
+            }).always(function () {
+                console.log("always:complete");
+            });
+        }
     }
     function deleteRecord() {
         Swal.fire({
@@ -642,19 +646,7 @@
                         $("#createButton").removeAttr("disabled");
                         $("#updateButton").attr("disabled", "disabled");
                         $("#deleteButton").attr("disabled", "disabled");
-                        $("#customerKey").val('');
-
-                        $("#customerCode").val('');
-                        $("#customerName").val('');
-                        $("#customerContactName").val('');
-                        $("#customerContactTitle").val('');
-                        $("#customerAddress").val('');
-                        $("#customerCity").val('');
-                        $("#customerRegion").val('');
-                        $("#customerPostalCode").val('');
-                        $("#customerCountry").val('');
-                        $("#customerPhone").val('');
-                        $("#customerFax").val('');
+                        emptyForm();
 
                         readRecord();
                         Swal.fire("System", "@SharedUtil.RecordDeleted", "success");

@@ -1,0 +1,38 @@
+﻿<Properties StartupConfiguration="{0D6E5960-46B7-41B8-9D5E-4E041993E9B1}|Default" GitUserInfo="UsingGIT">
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
+  <MultiItemStartupConfigurations />
+  <MonoDevelop.Ide.DebuggingService.PinnedWatches />
+  <MonoDevelop.Ide.Workbench ActiveDocument="RebelCmsTemplate/Views/Pages/Setting/ProductType.cshtml">
+    <Files>
+      <File FileName="RebelCmsTemplate/Program.cs" Line="45" Column="1" />
+      <File FileName="RebelCmsTemplate/Views/Pages/Setting/ProductCategory.cshtml" Line="190" Column="25" />
+      <File FileName="RebelCmsTemplate/Views/Pages/Setting/ProductType.cshtml" Line="492" Column="54" />
+      <File FileName="RebelCmsTemplate/wwwroot/js/global.js" Line="3" Column="50" />
+    </Files>
+    <Pads>
+      <Pad Id="ProjectPad">
+        <State name="__root__">
+          <Node name="RebelCmsTemplate" expanded="True">
+            <Node name="RebelCmsTemplate" expanded="True">
+              <Node name="Views" expanded="True">
+                <Node name="Pages" expanded="True">
+                  <Node name="Setting" expanded="True" />
+                </Node>
+              </Node>
+              <Node name="wwwroot" expanded="True">
+                <Node name="js" expanded="True" />
+              </Node>
+            </Node>
+          </Node>
+        </State>
+      </Pad>
+      <Pad Id="MonoDevelop.Debugger.WatchPad">
+        <State />
+      </Pad>
+    </Pads>
+  </MonoDevelop.Ide.Workbench>
+  <MonoDevelop.Ide.ItemProperties.RebelCmsTemplate PreferredExecutionTarget="/Applications/Safari.app" />
+  <MonoDevelop.Ide.DebuggingService.Breakpoints>
+    <BreakpointStore />
+  </MonoDevelop.Ide.DebuggingService.Breakpoints>
+</Properties>
