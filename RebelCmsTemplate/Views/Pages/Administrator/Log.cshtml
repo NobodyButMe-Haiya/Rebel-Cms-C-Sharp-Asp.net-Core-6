@@ -147,10 +147,10 @@
             data: {
                 mode: "read",
                 leafCheckKey: @navigationModel.LeafCheckKey
-            }, 
+            },
             beforeSend() {
                 console.log("loading ..");
-            }, 
+            },
             statusCode: {
                 500: function () {
                     Swal.fire("System Error", "@SharedUtil.UserErrorNotification", "error");
@@ -179,19 +179,20 @@
                     }
                 }
             } else if (status === false) {
-                if (typeof (code) === 'string') {
-                    callBackError();
-                } else if (parseInt(code) === accessDeniedCode) {
+                if (parseInt(code) === accessDeniedCode) {
                     accessDenied();
-                } else {
+                } else if (typeof (code) === 'string') {
+                    callBackError();
+                } else if {
                     location.href = "/";
                 }
             }).fail(function (xhr) {
-                console.log(xhr.status)
-                Swal.fire("System", "@SharedUtil.UserErrorNotification", "error");
-            }).always(function () {
-                console.log("always:complete");
-            });
+                    console.log(xhr.status)
+                    Swal.fire("System", "@SharedUtil.UserErrorNotification", "error");
+                    accessDenied();
+                }).always(function () {
+                    console.log("always:complete");
+                });
     }
     function searchRecord() {
         let row = { logKey: "", logUserName: "", logQuery: "", logQueryError: "", logDatetime: "" };
@@ -234,18 +235,19 @@
                     }
                 }
             } else if (status === false) {
-                if (typeof (code) === 'string') {
-                    callBackError();
-                } else if (parseInt(code) === accessDeniedCode) {
+                if (parseInt(code) === accessDeniedCode) {
                     accessDenied();
-                } else {
+                } else if (typeof (code) === 'string') {
+                    callBackError();
+                } else if {
                     location.href = "/";
                 }
             }).fail(function (xhr) {
-                console.log(xhr.status)
-                Swal.fire("System", "@SharedUtil.UserErrorNotification", "error");
-            }).always(function () {
-                console.log("always:complete");
-            });
+                    console.log(xhr.status)
+                    Swal.fire("System", "@SharedUtil.UserErrorNotification", "error");
+                    accessDenied();
+                }).always(function () {
+                    console.log("always:complete");
+                });
     }
 </script>

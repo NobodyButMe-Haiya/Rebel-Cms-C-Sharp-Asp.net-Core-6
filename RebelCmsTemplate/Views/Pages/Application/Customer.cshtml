@@ -82,7 +82,7 @@
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label for="customerName">Name</label>
-                                <input type="text" id="customerName" class="form-control" value=" " maxlength="40" />
+                                <input type="text" id="customerName" class="form-control" value="" maxlength="40" />
                             </div>
                         </div>
                     </div>
@@ -333,7 +333,7 @@
                 let code = data.code;
                 if (status) {
                     const lastInsertKey = data.lastInsertKey;
-                    $("#tableBody").prepend(template(lastInsertKey, customerCode.val(), customerName.val(), customerContactName.val(), customerContactTitle.val(), customerAddress.val()));
+                    $("#tableBody").prepend(template(lastInsertKey, $customerCode.val(), $customerName.val(), $customerContactName.val(), $customerContactTitle.val(), $customerAddress.val()));
                     $("#customerKey").val(lastInsertKey);
                     $("#createButton").attr("disabled", "disabled");
                     $("#updateButton").removeAttr("disabled");

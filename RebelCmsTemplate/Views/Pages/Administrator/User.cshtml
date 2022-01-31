@@ -306,11 +306,11 @@
                     $userEmail.val("");
                     $userPassword.val("");
                 } else if (status === false) {
-                    if (typeof (code) === 'string') {
-                        callBackError();
-                    } else if (parseInt(code) === accessDeniedCode) {
+                    if (parseInt(code) === accessDeniedCode) {
                         accessDenied();
-                    } else {
+                    } else if (typeof (code) === 'string') {
+                        callBackError();
+                    } else if {
                         location.href = "/";
                     }
                 } else {

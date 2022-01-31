@@ -416,11 +416,11 @@
                         confirmButtonText: 'Cool'
                     });
                 } else if (status === false) {
-                    if (typeof (code) === 'string') {
-                        callBackError();
-                    } else if (parseInt(code) === accessDeniedCode) {
+                    if (parseInt(code) === accessDeniedCode) {
                         accessDenied();
-                    } else {
+                    } else if (typeof (code) === 'string') {
+                        callBackError();
+                    } else if {
                         location.href = "/";
                     }
                 } else {
@@ -475,11 +475,11 @@
                     }
                 }
             } else if (status === false) {
-                if (typeof (code) === 'string') {
-                    callBackError();
-                } else if (parseInt(code) === accessDeniedCode) {
+                if (parseInt(code) === accessDeniedCode) {
                     accessDenied();
-                } else {
+                } else if (typeof (code) === 'string') {
+                    callBackError();
+                } else if {
                     location.href = "/";
                 }
             } else {
@@ -529,11 +529,11 @@
                     }
                 }
             } else if (status === false) {
-                if (typeof (code) === 'string') {
-                    callBackError();
-                } else if (parseInt(code) === accessDeniedCode) {
+                if (parseInt(code) === accessDeniedCode) {
                     accessDenied();
-                } else {
+                } else if (typeof (code) === 'string') {
+                    callBackError();
+                } else if {
                     location.href = "/";
                 }
             } else {
@@ -601,11 +601,11 @@
                     $("html, body").animate({ scrollTop: 0 }, "slow");
                 }
             } else if (status === false) {
-                if (typeof (code) === 'string') {
-                    callBackError();
-                } else if (parseInt(code) === accessDeniedCode) {
+                if (parseInt(code) === accessDeniedCode) {
                     accessDenied();
-                } else {
+                } else if (typeof (code) === 'string') {
+                    callBackError();
+                } else if {
                     location.href = "/";
                 }
             } else {
@@ -678,11 +678,11 @@
                     $("#deleteButton").removeAttr("disabled");
                     Swal.fire("System", "@SharedUtil.RecordUpdated", 'success')
                 } else if (status === false) {
-                    if (typeof (code) === 'string') {
-                        callBackError();
-                    } else if (parseInt(code) === accessDeniedCode) {
+                    if (parseInt(code) === accessDeniedCode) {
                         accessDenied();
-                    } else {
+                    } else if (typeof (code) === 'string') {
+                        callBackError();
+                    } else if {
                         location.href = "/";
                     }
                 } else {
@@ -738,11 +738,11 @@
                         readRecord();
                         Swal.fire("System", "@SharedUtil.RecordDeleted", "success");
                     } else if (status === false) {
-                        if (typeof (code) === 'string') {
-                            callBackError();
-                        } else if (parseInt(code) === accessDeniedCode) {
+                        if (parseInt(code) === accessDeniedCode) {
                             accessDenied();
-                        } else {
+                        } else if (typeof (code) === 'string') {
+                            callBackError();
+                        } else if {
                             location.href = "/";
                         }
                     } else {

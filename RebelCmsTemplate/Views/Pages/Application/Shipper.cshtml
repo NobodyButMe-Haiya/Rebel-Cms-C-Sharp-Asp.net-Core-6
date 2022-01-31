@@ -232,11 +232,11 @@
                     shipperName.val('');
                     shipperPhone.val('');
                 } else if (status === false) {
-                    if (typeof (code) === 'string') {
-                        callBackError();
-                    } else if (parseInt(code) === accessDeniedCode) {
+                    if (parseInt(code) === accessDeniedCode) {
                         accessDenied();
-                    } else {
+                    } else if (typeof (code) === 'string') {
+                        callBackError();
+                    } else if {
                         location.href = "/";
                     }
                 } else {
@@ -288,11 +288,11 @@
                     }
                 }
             } else if (status === false) {
-                if (typeof (code) === 'string') {
-                    callBackError();
-                } else if (parseInt(code) === accessDeniedCode) {
+                if (parseInt(code) === accessDeniedCode) {
                     accessDenied();
-                } else {
+                } else if (typeof (code) === 'string') {
+                    callBackError();
+                } else if {
                     location.href = "/";
                 }
             } else {
@@ -341,11 +341,11 @@
                     }
                 }
             } else if (status === false) {
-                if (typeof (code) === 'string') {
-                    callBackError();
-                } else if (parseInt(code) === accessDeniedCode) {
+                if (parseInt(code) === accessDeniedCode) {
                     accessDenied();
-                } else {
+                } else if (typeof (code) === 'string') {
+                    callBackError();
+                } else if {
                     location.href = "/";
                 }
             } else {
@@ -396,11 +396,11 @@
                 if (status) {
                     Swal.fire("System", "@SharedUtil.RecordUpdated", 'success')
                 } else if (status === false) {
-                    if (typeof (code) === 'string') {
-                        callBackError();
-                    } else if (parseInt(code) === accessDeniedCode) {
+                    if (parseInt(code) === accessDeniedCode) {
                         accessDenied();
-                    } else {
+                    } else if (typeof (code) === 'string') {
+                        callBackError();
+                    } else if {
                         location.href = "/";
                     }
                 } else {
@@ -448,11 +448,11 @@
                             $("#shipper-" + shipperKey).remove();
                             Swal.fire("System", "@SharedUtil.RecordDeleted", "success");
                         } else if (status === false) {
-                            if (typeof (code) === 'string') {
-                                callBackError();
-                            } else if (parseInt(code) === accessDeniedCode) {
+                            if (parseInt(code) === accessDeniedCode) {
                                 accessDenied();
-                            } else {
+                            } else if (typeof (code) === 'string') {
+                                callBackError();
+                            } else if {
                                 location.href = "/";
                             }
                         } else {

@@ -300,23 +300,24 @@
                     $productTypeName.val('');
 
                 } else if (status === false) {
-                    if (typeof (data.code) === 'string') {
-                        callBackError();
-                    } else if (parseInt(code) === accessDeniedCode) {
+                    if (parseInt(code) === accessDeniedCode) {
                         accessDenied();
-                    } else {
+                    } else if (typeof (code) === 'string') {
+                        callBackError();
+                    } else if {
                         location.href = "/";
                     }
-                } else {
-                    location.href = "/";
                 }
+            } else {
+                location.href = "/";
+            }
             }).fail(function (xhr) {
                 console.log(xhr.status)
                 Swal.fire("System", "@SharedUtil.UserErrorNotification", "error");
             }).always(function () {
                 console.log("always:complete");
             });
-        }
+    }
     }
     function readRecord() {
         $.ajax({
@@ -359,11 +360,11 @@
                     }
                 }
             } else if (status === false) {
-                if (typeof (data.code) === 'string') {
-                    callBackError();
-                } else if (parseInt(code) === accessDeniedCode) {
+                if (parseInt(code) === accessDeniedCode) {
                     accessDenied();
-                } else {
+                } else if (typeof (code) === 'string') {
+                    callBackError();
+                } else if {
                     location.href = "/";
                 }
             } else {
@@ -416,11 +417,11 @@
                     }
                 }
             } else if (status === false) {
-                if (typeof (data.code) === 'string') {
-                    callBackError();
-                } else if (parseInt(code) === accessDeniedCode) {
+                if (parseInt(code) === accessDeniedCode) {
                     accessDenied();
-                } else {
+                } else if (typeof (code) === 'string') {
+                    callBackError();
+                } else if {
                     location.href = "/";
                 }
             } else {
@@ -476,23 +477,24 @@
                 if (status) {
                     Swal.fire("System", "@SharedUtil.RecordUpdated", 'success')
                 } else if (status === false) {
-                    if (typeof (data.code) === 'string') {
-                        callBackError();
-                    } else if (parseInt(code) === accessDeniedCode) {
+                    if (parseInt(code) === accessDeniedCode) {
                         accessDenied();
-                    } else {
+                    } else if (typeof (code) === 'string') {
+                        callBackError();
+                    } else if {
                         location.href = "/";
                     }
-                } else {
-                    location.href = "/";
                 }
+            } else {
+                location.href = "/";
+            }
             }).fail(function (xhr) {
                 console.log(xhr.status)
                 Swal.fire("System", "@SharedUtil.UserErrorNotification", "error");
             }).always(function () {
                 console.log("always:complete");
             });
-        }
+    }
     }
     function deleteRecord(productTypeKey) {
         Swal.fire({
@@ -533,11 +535,11 @@
                         $("#productType-" + productTypeKey).remove();
                         Swal.fire("System", "@SharedUtil.RecordDeleted", "success");
                     } else if (status === false) {
-                        if (typeof (data.code) === 'string') {
-                            callBackError();
-                        } else if (parseInt(code) === accessDeniedCode) {
+                        if (parseInt(code) === accessDeniedCode) {
                             accessDenied();
-                        } else {
+                        } else if (typeof (code) === 'string') {
+                            callBackError();
+                        } else if {
                             location.href = "/";
                         }
                     } else {
@@ -546,6 +548,10 @@
                 }).fail(function (xhr) {
                     console.log(xhr.status)
                     Swal.fire("System", "@SharedUtil.UserErrorNotification", "error");
+                    if(xhr.status == 500){
+                        accessDenied();
+                    }
+
                 }).always(function () {
                     console.log("always:complete");
                 });
