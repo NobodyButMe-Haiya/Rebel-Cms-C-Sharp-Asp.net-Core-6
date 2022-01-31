@@ -285,9 +285,11 @@
                     leafName: $leafName.val(),
                     leafFilename: $leafFilename.val(),
                     leafSeq: $leafSeq.val()
-                }, statusCode: {
+                }, 
+                statusCode: {
                     500: function () {
                         Swal.fire("System Error", "@SharedUtil.UserErrorNotification", "error");
+                        accessDenied();
                     }
                 },
                 beforeSend: function () {
@@ -389,6 +391,7 @@
         }).fail(function (xhr) {
             console.log(xhr.status)
             Swal.fire("System", "@SharedUtil.UserErrorNotification", "error");
+            accessDenied();
         }).always(function () {
             console.log("always:complete");
         });
@@ -406,11 +409,14 @@
                 mode: "search",
                 leafCheckKey: @navigationModel.LeafCheckKey,
                 search: $("#search").val()
-            }, statusCode: {
+            }, 
+            statusCode: {
                 500: function () {
                     Swal.fire("System Error", "@SharedUtil.UserErrorNotification", "error");
+                    accessDenied();
                 }
-            }, beforeSend() {
+            }, 
+            beforeSend() {
                 console.log("loading ..");
             }
         }).done(function (data) {
@@ -449,6 +455,7 @@
         }).fail(function (xhr) {
             console.log(xhr.status)
             Swal.fire("System", "@SharedUtil.UserErrorNotification", "error");
+            accessDenied();
         }).always(function () {
             console.log("always:complete");
         });
@@ -466,9 +473,11 @@
                 leafName: $("#leafName-" + leafKey).val(),
                 leafFilename: $("#leafFilename-" + leafKey).val(),
                 leafSeq: $("#leafSeq-" + leafKey).val()
-            }, statusCode: {
+            }, 
+            statusCode: {
                 500: function () {
                     Swal.fire("System Error", "@SharedUtil.UserErrorNotification", "error");
+                    accessDenied()
                 }
             },
             beforeSend: function () {
@@ -485,7 +494,7 @@
             } else if (status === false) {
                 if (parseInt(code) === accessDeniedCode) {
                     console.log("here problem")
-                  //  accessDenied();
+                    accessDenied();
                 } else if (typeof (code) === 'string') {
                     callBackError();
                 } else {
@@ -498,6 +507,7 @@
         }).fail(function (xhr) {
             console.log(xhr.status)
             Swal.fire("System", "@SharedUtil.UserErrorNotification", "error");
+            accessDenied();
         }).always(function () {
             console.log("always:complete");
         });
@@ -526,6 +536,7 @@
                     }, statusCode: {
                         500: function () {
                             Swal.fire("System Error", "@SharedUtil.UserErrorNotification", "error");
+                            accessDenied();
                         }
                     },
                     beforeSend: function () {
@@ -555,6 +566,7 @@
                 }).fail(function (xhr) {
                     console.log(xhr.status)
                     Swal.fire("System", "@SharedUtil.UserErrorNotification", "error");
+                    accessDenied();
                 }).always(function () {
                     console.log("always:complete");
                 });

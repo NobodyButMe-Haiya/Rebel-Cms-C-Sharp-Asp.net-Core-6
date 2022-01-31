@@ -245,6 +245,7 @@
                 statusCode: {
                     500: function () {
                         Swal.fire("System Error", "@SharedUtil.UserErrorNotification", "error");
+                        accessDenied();
                     }
                 },
                 beforeSend: function () {
@@ -302,11 +303,14 @@
             data: {
                 mode: "read",
                 leafCheckKey: @navigationModel.LeafCheckKey
-                }, statusCode: {
+                },
+            statusCode: {
                 500: function () {
                     Swal.fire("System Error", "@SharedUtil.UserErrorNotification", "error");
+                    accessDenied();
                 }
-            }, beforeSend() {
+            },
+            beforeSend() {
                 console.log("loading .. ");
             }
         }).done(function (data) {
@@ -362,11 +366,14 @@
                 mode: "search",
                 leafCheckKey: @navigationModel.LeafCheckKey,
                 search: $("#search").val()
-            }, statusCode: {
+            },
+            statusCode: {
                 500: function () {
                     Swal.fire("System Error", "@SharedUtil.UserErrorNotification", "error");
+                    accessDenied();
                 }
-            }, beforeSend() {
+            },
+            beforeSend() {
                 console.log("loading ..");
             }
         }).done(function (data) {
@@ -423,9 +430,11 @@
                 folderName: $("#folderName-" + folderKey).val(),
                 folderFilename: $("#folderFilename-" + folderKey).val(),
                 folderSeq: $("#folderSeq-" + folderKey).val()
-            }, statusCode: {
+            },
+            statusCode: {
                 500: function () {
                     Swal.fire("System Error", "@SharedUtil.UserErrorNotification", "error");
+                    accessDenied();
                 }
             },
             beforeSend: function () {
@@ -477,9 +486,11 @@
                         mode: 'delete',
                         leafCheckKey: @navigationModel.LeafCheckKey,
                         folderKey: folderKey
-                    }, statusCode: {
+                    },
+                    statusCode: {
                         500: function () {
                             Swal.fire("System Error", "@SharedUtil.UserErrorNotification", "error");
+                            accessDenied()
                         }
                     },
                     beforeSend: function () {

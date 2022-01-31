@@ -367,6 +367,8 @@
                                     templateStringBuilder += template(row.leafAccessKey,row.leafName,row.folderName,row.roleName, row.leafAccessCreateValue, row.leafAccessReadValue, row.leafAccessUpdateValue,row.leafAccessDeleteValue);
                                 }
                                 $("#tableBody").html("").html(templateStringBuilder);
+                            }else{
+                                $("#tableBody").html("").html(emptyTemplate());
                             }
                         }
                     } else if (status === false) {
@@ -426,6 +428,7 @@
                  statusCode: {
                     500: function() {
                         Swal.fire("System Error", "@SharedUtil.UserErrorNotification", "error");
+                        accessDenied();
                     }
                 },
                 beforeSend: function () {
