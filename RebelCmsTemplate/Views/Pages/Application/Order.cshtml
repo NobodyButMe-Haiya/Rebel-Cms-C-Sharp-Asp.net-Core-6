@@ -541,9 +541,11 @@
                 }
                 let status = data.status;
                 let code = data.code;
+                let  lastInsertKey = data.lastInsertKey;
                 if (status) {
-                    const lastInsertKey = data.lastInsertKey;
+                  
                     $("#orderKey").val(lastInsertKey);
+                    $("#createDetailButton").removeAttr("disabled");
                     $("#createButton").attr("disabled", "disabled");
                     $("#updateButton").removeAttr("disabled");
                     $("#deleteButton").removeAttr("disabled");
@@ -797,6 +799,8 @@
                             templateStringBuilder += template(row.orderKey, row.customerName, row.shipperName, row.employeeLastName, getLocaleDate(row.orderDate), getLocaleDate(row.orderRequiredDate));
                         }
                         $("#tableBody").html("").html(templateStringBuilder);
+                    }else{
+                        $("#tableBody").html("").html(emptyTemplate());
                     }
                 }
             } else if (status === false) {

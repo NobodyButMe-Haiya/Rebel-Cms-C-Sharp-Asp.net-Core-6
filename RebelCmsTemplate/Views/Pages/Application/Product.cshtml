@@ -530,6 +530,8 @@
                             templateStringBuilder += template(row.productKey, row.supplierName, row.productCategoryName, row.productTypeName, row.productName, row.productDescription);
                         }
                         $("#tableBody").html("").html(templateStringBuilder);
+                    }else {
+                        $("#tableBody").html("").html(emptyTemplate());
                     }
                 }
             } else if (status === false) {

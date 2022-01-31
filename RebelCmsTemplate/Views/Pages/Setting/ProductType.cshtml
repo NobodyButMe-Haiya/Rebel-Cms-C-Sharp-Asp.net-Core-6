@@ -414,6 +414,8 @@
                             templateStringBuilder += template(row.productTypeKey, row.productCategoryKey, row.productTypeName);
                         }
                         $("#tableBody").html("").html(templateStringBuilder);
+                    }else {
+                        $("#tableBody").html("").html(emptyTemplate());
                     }
                 }
             } else if (status === false) {

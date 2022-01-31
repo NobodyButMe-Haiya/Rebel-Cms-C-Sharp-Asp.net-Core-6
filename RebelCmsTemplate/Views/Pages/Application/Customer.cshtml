@@ -454,6 +454,8 @@
                             templateStringBuilder += template(row.customerKey, row.customerCode, row.customerName, row.customerContactName, row.customerContactTitle, row.customerAddress);
                         }
                         $("#tableBody").html("").html(templateStringBuilder);
+                    }else{
+                        $("#tableBody").html("").html(emptyTemplate());
                     }
                 }
             } else if (status === false) {

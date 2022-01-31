@@ -335,6 +335,8 @@
                             templateStringBuilder += template(row.roleKey, row.roleName);
                         }
                         $("#tableBody").html("").html(templateStringBuilder);
+                    }else{
+                        $("#tableBody").html("").html(emptyTemplate());
                     }
                 }
             } else if (status === false) {

@@ -331,6 +331,8 @@
                             templateStringBuilder += template(data.data[i].logId, data.data[i].logUserId, data.data[i].logUserName, data.data[i].logQuery, data.data[i].logQueryError, data.data[i].logDateTime);
                         }
                         $("#tableBody").html("").html(templateStringBuilder);
+                    }else{
+                        $("#tableBody").html("").html(emptyTemplate());
                     }
                 }
             } else if (status === false) {

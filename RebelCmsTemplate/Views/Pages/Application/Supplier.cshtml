@@ -451,6 +451,8 @@
                             templateStringBuilder += template(row.supplierKey, row.supplierName, row.supplierContactName, row.supplierContactTitle, row.supplierAddress, row.supplierCity);
                         }
                         $("#tableBody").html("").html(templateStringBuilder);
+                    }else{
+                        $("#tableBody").html("").html(emptyTemplate());
                     }
                 }
             } else if (status === false) {

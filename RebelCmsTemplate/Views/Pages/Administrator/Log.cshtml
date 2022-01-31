@@ -129,7 +129,7 @@
     }
     function template(logKey, logUserName, logQuery, logError, logDateTime) {
         return "" +
-            "<tr id=\"log-" + logKey + "'>" +
+            "<tr id=\"log-" + logKey + "\">" +
             "<td>" + logUserName + "</td>" +
             "<td>" + logQuery + "</td>" +
             "<td>" + logError + "</td>" +
@@ -169,11 +169,12 @@
                     if (data.data.length > 0) {
                         let templateStringBuilder = "";
                         for (let i = 0; i < data.data.length; i++) {
-                            row = data.data[i];
+                            let row = data.data[i];
                             templateStringBuilder += template(row.logKey, row.logUserName, row.logQuery, row.logError, row.logDateTime);
                         }
                         $("#tableBody").html("").html(templateStringBuilder);
                     } else {
+                        console.log("wrong");
                         $("#tableBody").html("").html(emptyTemplate());
                     }
                 }
@@ -228,10 +229,12 @@
                     if (data.data.length > 0) {
                         let templateStringBuilder = "";
                         for (let i = 0; i < data.data.length; i++) {
-                            row = data.data[i];
+                            let row = data.data[i];
                             templateStringBuilder += template(row.logKey, row.logUserName, row.logQuery, row.logError, row.logDateTime);
                         }
                         $("#tableBody").html("").html(templateStringBuilder);
+                    } else {
+                        $("#tableBody").html("").html(emptyTemplate());
                     }
                 }
             } else if (status === false) {

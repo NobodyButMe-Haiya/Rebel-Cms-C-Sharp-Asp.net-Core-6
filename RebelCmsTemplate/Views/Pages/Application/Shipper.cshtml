@@ -337,6 +337,8 @@
                             templateStringBuilder += template(row.shipperKey, row.shipperName, row.shipperPhone);
                         }
                         $("#tableBody").html("").html(templateStringBuilder);
+                    } else {
+                        $("#tableBody").html("").html(emptyTemplate());
                     }
                 }
             } else if (status === false) {

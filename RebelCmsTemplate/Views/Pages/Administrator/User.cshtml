@@ -192,6 +192,9 @@
 </section>
 <script>
     var rowModels = @Json.Serialize(roleModels);
+</script>
+<script>
+write me  lloo
     function resetRecord() {
         readRecord();
         $("#search").val("");
@@ -309,7 +312,7 @@
                         accessDenied();
                     } else if (typeof (code) === 'string') {
                         callBackError();
-                    } else  {
+                    } else {
                         location.href = "/";
                     }
                 } else {
@@ -416,8 +419,9 @@
                             templateStringBuilder += template(row.userKey, row.roleKey, row.userName, row.userEmail);
                         }
                         $("#tableBody").html("").html(templateStringBuilder);
+                    } else {
+                        $("#tableBody").html("").html(emptyTemplate());
                     }
-                    console.log(data.data);
                 }
             } else if (status === false) {
                 if (typeof (code) === 'string') {

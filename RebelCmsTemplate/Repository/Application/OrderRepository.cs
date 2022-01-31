@@ -225,7 +225,7 @@ public class OrderRepository
 				customer.customerContactTitle LIKE CONCAT('%',@search,'%') OR
 				customer.customerAddress LIKE CONCAT('%',@search,'%') OR
 				customer.customerCity LIKE CONCAT('%',@search,'%') 
-            ) LIMIT 100 ";
+            ) ORDER BY `order`.`orderId` DESC LIMIT 100 ";
             MySqlCommand mySqlCommand = new(sql, connection);
             parameterModels = new List<ParameterModel>
             {

@@ -529,6 +529,8 @@
                             templateStringBuilder += template(row.employeeKey, row.employeeLastName, row.employeeFirstName, row.employeeTitle, row.employeeTitleOfCourtesy, row.employeeBirthDate);
                         }
                         $("#tableBody").html("").html(templateStringBuilder);
+                    }else {
+                        $("#tableBody").html("").html(emptyTemplate());
                     }
                 }
             } else if (status === false) {
