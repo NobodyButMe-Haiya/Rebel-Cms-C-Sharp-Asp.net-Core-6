@@ -369,58 +369,24 @@
                                 $("#tableBody").html("").html(templateStringBuilder);
                             }
                         }
-                  } else if (status === false) {
-                      if (typeof(code) === 'string'){
-                                                  @{
-                                                      if (sharedUtils.GetRoleId().Equals((int) AccessEnum.ADMINISTRATOR_ACCESS))
-                                                      {
-                                                          <text>
-                                                          Swal.fire("Debugging Admin", code, "error");
-                                                          </text>
-                                                      }
-                                                      else
-                                                      {
-                                                          <text>
-                                                          Swal.fire("System", "@SharedUtil.UserErrorNotification", "error");
-                                                          </text>
-                                                      }
-                                                  }
-                                              }else   if (parseInt(code) === parseInt(@((int) ReturnCodeEnum.ACCESS_DENIED) )) {
-                            let timerInterval
-                            Swal.fire({
-                                title: 'Auto close alert!',
-                                html: 'Session Out .Pease Re-login.I will close in <b></b> milliseconds.',
-                                timer: 2000,
-                                timerProgressBar: true,
-                                didOpen: () => {
-                                    Swal.showLoading()
-                                    const b = Swal.getHtmlContainer().querySelector('b')
-                                    timerInterval = setInterval(() => {
-                                        b.textContent = Swal.getTimerLeft()
-                                    }, 100)
-                                },
-                                willClose: () => {
-                                    clearInterval(timerInterval)
-                                }
-                            }).then((result) => {
-                                
-                                if (result.dismiss === Swal.DismissReason.timer) {
-                                    console.log('session out .. ');
-                                    location.href = "/";
-                                }
-                            });
+                    } else if (status === false) {
+                        if (parseInt(code) === accessDeniedCode) {
+                            accessDenied();
+                        } else if (typeof (code) === 'string') {
+                            callBackError();
                         } else {
                             location.href = "/";
                         }
+
                     } else {
                         location.href = "/";
                     }
               }).fail(function(xhr)  {
-                                                                     console.log(xhr.status)
-                                                                     Swal.fire("System", "@SharedUtil.UserErrorNotification", "error");
-                                                                 }).always(function (){
-                                                                     console.log("always:complete");    
-                                                                 });
+                    console.log(xhr.status)
+                    Swal.fire("System", "@SharedUtil.UserErrorNotification", "error");
+                }).always(function (){
+                    console.log("always:complete");    
+                });
         }
 
         function updateRecord() {
@@ -456,7 +422,8 @@
                     readValue: readValue,
                     updateValue: updateValue,
                     deleteValue: deleteValue
-                }, statusCode: {
+                },
+                 statusCode: {
                     500: function() {
                         Swal.fire("System Error", "@SharedUtil.UserErrorNotification", "error");
                     }
@@ -471,57 +438,23 @@
                     let code = data.code;
                     if (status) {
                         Swal.fire("System", " @SharedUtil.RecordUpdated", 'success')
-                    } else if (status === false) {
-                          if (typeof(code) === 'string'){
-                                                      @{
-                                                          if (sharedUtils.GetRoleId().Equals((int) AccessEnum.ADMINISTRATOR_ACCESS))
-                                                          {
-                                                              <text>
-                                                              Swal.fire("Debugging Admin", code, "error");
-                                                              </text>
-                                                          }
-                                                          else
-                                                          {
-                                                              <text>
-                                                              Swal.fire("System", "@SharedUtil.UserErrorNotification", "error");
-                                                              </text>
-                                                          }
-                                                      }
-                                                  }else   if (parseInt(code) === parseInt(@((int) ReturnCodeEnum.ACCESS_DENIED) )) {
-                                let timerInterval
-                                Swal.fire({
-                                    title: 'Auto close alert!',
-                                    html: 'Session Out .Pease Re-login.I will close in <b></b> milliseconds.',
-                                    timer: 2000,
-                                    timerProgressBar: true,
-                                    didOpen: () => {
-                                        Swal.showLoading()
-                                        const b = Swal.getHtmlContainer().querySelector('b')
-                                        timerInterval = setInterval(() => {
-                                            b.textContent = Swal.getTimerLeft()
-                                        }, 100)
-                                    },
-                                    willClose: () => {
-                                        clearInterval(timerInterval)
-                                    }
-                                }).then((result) => {
-                                    
-                                    if (result.dismiss === Swal.DismissReason.timer) {
-                                        console.log('session out .. ');
-                                        location.href = "/";
-                                    }
-                                });
-                            } else {
-                                location.href = "/";
-                            }
+                   } else if (status === false) {
+                        if (parseInt(code) === accessDeniedCode) {
+                            accessDenied();
+                        } else if (typeof (code) === 'string') {
+                            callBackError();
                         } else {
                             location.href = "/";
                         }
+
+                    } else {
+                        location.href = "/";
+                    }
             }).fail(function(xhr)  {
-                                                                   console.log(xhr.status)
-                                                                   Swal.fire("System", "@SharedUtil.UserErrorNotification", "error");
-                                                               }).always(function (){
-                                                                   console.log("always:complete");    
-                                                               });
+                console.log(xhr.status)
+                Swal.fire("System", "@SharedUtil.UserErrorNotification", "error");
+            }).always(function (){
+                console.log("always:complete");    
+            });
         }
     </script>

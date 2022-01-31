@@ -7,9 +7,7 @@ public partial class UserModel
     public uint RoleKey { get; init; }
     public string? UserName { get; init; }
     public string? UserPassword { get; set; }
-    public string? UserAddress { get; init; }
     public string? UserEmail { get; init; }
-    public string? UserPhone { get; init; }
 }
 
 public partial class UserModel

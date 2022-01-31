@@ -136,7 +136,7 @@
                                     <td class="tdNormalAlign">
                                         <label>
                                             <select name="productCategoryKey[]"
-                                            id="productCategoryKey-@row.ProductCategoryKey" class="form-control">
+                                            id="productCategoryKey-@row.ProductTypeKey" class="form-control">
 
                                                 @if (productCategoryModels.Count == 0)
                                                 {
@@ -250,7 +250,7 @@
     function createRecord() {
         let $productCategoryKey = $("#productCategoryKey");
         let $productTypeName = $("#productTypeName");
-        if ($productCategoryKey.val().length === 0) {
+        if (!$productCategoryKey.val()) {
             Swal.fire("System Error", "Please Enter all the form", "error");
             $productCategoryKey.addClass("is-invalid").trigger('focus');
         }
@@ -304,21 +304,21 @@
                         accessDenied();
                     } else if (typeof (code) === 'string') {
                         callBackError();
-                    } else if {
+                    } else {
                         location.href = "/";
                     }
+                } else {
+                    location.href = "/";
                 }
-            } else {
-                location.href = "/";
-            }
             }).fail(function (xhr) {
                 console.log(xhr.status)
                 Swal.fire("System", "@SharedUtil.UserErrorNotification", "error");
             }).always(function () {
                 console.log("always:complete");
             });
+        }
     }
-    }
+
     function readRecord() {
         $.ajax({
             type: "post",
@@ -364,7 +364,7 @@
                     accessDenied();
                 } else if (typeof (code) === 'string') {
                     callBackError();
-                } else if {
+                } else {
                     location.href = "/";
                 }
             } else {
@@ -421,7 +421,7 @@
                     accessDenied();
                 } else if (typeof (code) === 'string') {
                     callBackError();
-                } else if {
+                } else {
                     location.href = "/";
                 }
             } else {
@@ -437,17 +437,20 @@
     function updateRecord(productTypeKey) {
         let $productCategoryKey = $("#productCategoryKey-" + productTypeKey);
         let $productTypeName = $("#productTypeName-" + productTypeKey);
-        if ($productCategoryKey.val().length === 0) {
-            Swal.fire("System Error", "Please Enter all the form", "error");
+        if (!$productCategoryKey.val()) {
+            console.log("sdfsf:["+$productCategoryKey.val()+"]");
+
+            Swal.fire("System Error", "Please Enter all the form (Category) ", "error");
             $productCategoryKey.addClass("is-invalid").trigger('focus');
         }
 
         else if ($productTypeName.val().length === 0) {
-            Swal.fire("System Error", "Please Enter all the form", "error");
+            Swal.fire("System Error", "Please Enter all the form (Name)", "error");
             $productTypeName.addClass("is-invalid").trigger('focus');
         }
         else {
             $productCategoryKey.removeClass("is-invalid");
+            $productTypeName.removeClass("is-invalid");
             $.ajax({
                 type: 'POST',
                 url: "api/setting/productType",
@@ -481,20 +484,19 @@
                         accessDenied();
                     } else if (typeof (code) === 'string') {
                         callBackError();
-                    } else if {
+                    } else {
                         location.href = "/";
                     }
+                } else {
+                    location.href = "/";
                 }
-            } else {
-                location.href = "/";
-            }
             }).fail(function (xhr) {
                 console.log(xhr.status)
                 Swal.fire("System", "@SharedUtil.UserErrorNotification", "error");
             }).always(function () {
                 console.log("always:complete");
             });
-    }
+        }
     }
     function deleteRecord(productTypeKey) {
         Swal.fire({
@@ -539,7 +541,7 @@
                             accessDenied();
                         } else if (typeof (code) === 'string') {
                             callBackError();
-                        } else if {
+                        } else {
                             location.href = "/";
                         }
                     } else {
@@ -548,7 +550,7 @@
                 }).fail(function (xhr) {
                     console.log(xhr.status)
                     Swal.fire("System", "@SharedUtil.UserErrorNotification", "error");
-                    if(xhr.status == 500){
+                    if (xhr.status == 500) {
                         accessDenied();
                     }
 

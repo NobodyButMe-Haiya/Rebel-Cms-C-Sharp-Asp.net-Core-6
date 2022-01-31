@@ -1,8 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using RebelCmsTemplate.Models;
 using System.Diagnostics;
-using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.Logging;
 using RebelCmsTemplate.Util;
 
 namespace RebelCmsTemplate.Controllers;
@@ -35,11 +33,7 @@ public class HomeController : Controller
         return View();
     }
 
-    [Route("Privacy")]
-    public IActionResult Privacy()
-    {
-        return View();
-    }
+    
 
     [Route("LogOut")]
     public IActionResult LogOut()

@@ -9,7 +9,6 @@ namespace RebelCmsTemplate.Util;
 public class CheckAccessUtil
 {
     private readonly SharedUtil _sharedUtil;
-    public string? Token;
 
     public CheckAccessUtil(IHttpContextAccessor httpContextAccessor) =>
         _sharedUtil = new SharedUtil(httpContextAccessor);

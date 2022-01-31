@@ -6,16 +6,16 @@ using RebelCmsTemplate.Util;
 
 namespace RebelCmsTemplate.Repository.Application;
 
-public class InvoiceRepository
+public class OrderRepository
 {
     private readonly SharedUtil _sharedUtil;
 
-    public InvoiceRepository(IHttpContextAccessor httpContextAccessor)
+    public OrderRepository(IHttpContextAccessor httpContextAccessor)
     {
         _sharedUtil = new SharedUtil(httpContextAccessor);
     }
 
-    public int Create(InvoiceModel invoiceModel)
+    public int Create(OrderModel orderModel)
     {
         int lastInsertKey;
         var sql = string.Empty;
@@ -26,7 +26,7 @@ public class InvoiceRepository
             connection.Open();
             var mySqlTransaction = connection.BeginTransaction();
             sql +=
-                @"INSERT INTO invoice (invoiceId,tenantId,customerId,shipperId,employeeId,invoiceOrderDate,invoiceRequiredDate,invoiceShippedDate,invoiceFreight,invoiceShipName,invoiceShipAddress,invoiceShipCity,invoiceShipRegion,invoiceShipPostalCode,invoiceShipCountry,isDelete) VALUES (null,@tenantId,@customerId,@shipperId,@employeeId,@invoiceOrderDate,@invoiceRequiredDate,@invoiceShippedDate,@invoiceFreight,@invoiceShipName,@invoiceShipAddress,@invoiceShipCity,@invoiceShipRegion,@invoiceShipPostalCode,@invoiceShipCountry,@isDelete);";
+                @"INSERT INTO `order` (orderId,tenantId,customerId,shipperId,employeeId,orderDate,orderRequiredDate,orderShippedDate,orderFreight,orderShipName,orderShipAddress,orderShipCity,orderShipRegion,orderShipPostalCode,orderShipCountry,isDelete) VALUES (null,@tenantId,@customerId,@shipperId,@employeeId,@orderDate,@orderRequiredDate,@orderShippedDate,@orderFreight,@orderShipName,@orderShipAddress,@orderShipCity,@orderShipRegion,@orderShipPostalCode,@orderShipCountry,@isDelete);";
             MySqlCommand mySqlCommand = new(sql, connection);
             parameterModels = new List<ParameterModel>
             {
@@ -38,67 +38,67 @@ public class InvoiceRepository
                 new()
                 {
                     Key = "@customerId",
-                    Value = invoiceModel.CustomerKey
+                    Value = orderModel.CustomerKey
                 },
                 new()
                 {
                     Key = "@shipperId",
-                    Value = invoiceModel.ShipperKey
+                    Value = orderModel.ShipperKey
                 },
                 new()
                 {
                     Key = "@employeeId",
-                    Value = invoiceModel.EmployeeKey
+                    Value = orderModel.EmployeeKey
                 },
                 new()
                 {
-                    Key = "@invoiceOrderDate",
-                    Value = invoiceModel.InvoiceOrderDate?.ToString("yyyy-MM-dd")
+                    Key = "@orderDate",
+                    Value = orderModel.OrderDate?.ToString("yyyy-MM-dd")
                 },
                 new()
                 {
-                    Key = "@invoiceRequiredDate",
-                    Value = invoiceModel.InvoiceRequiredDate?.ToString("yyyy-MM-dd")
+                    Key = "@orderRequiredDate",
+                    Value = orderModel.OrderRequiredDate?.ToString("yyyy-MM-dd")
                 },
                 new()
                 {
-                    Key = "@invoiceShippedDate",
-                    Value = invoiceModel.InvoiceShippedDate?.ToString("yyyy-MM-dd")
+                    Key = "@orderShippedDate",
+                    Value = orderModel.OrderShippedDate?.ToString("yyyy-MM-dd")
                 },
                 new()
                 {
-                    Key = "@invoiceFreight",
-                    Value = invoiceModel.InvoiceFreight
+                    Key = "@orderFreight",
+                    Value = orderModel.OrderFreight
                 },
                 new()
                 {
-                    Key = "@invoiceShipName",
-                    Value = invoiceModel.InvoiceShipName
+                    Key = "@orderShipName",
+                    Value = orderModel.OrderShipName
                 },
                 new()
                 {
-                    Key = "@invoiceShipAddress",
-                    Value = invoiceModel.InvoiceShipAddress
+                    Key = "@orderShipAddress",
+                    Value = orderModel.OrderShipAddress
                 },
                 new()
                 {
-                    Key = "@invoiceShipCity",
-                    Value = invoiceModel.InvoiceShipCity
+                    Key = "@orderShipCity",
+                    Value = orderModel.OrderShipCity
                 },
                 new()
                 {
-                    Key = "@invoiceShipRegion",
-                    Value = invoiceModel.InvoiceShipRegion
+                    Key = "@orderShipRegion",
+                    Value = orderModel.OrderShipRegion
                 },
                 new()
                 {
-                    Key = "@invoiceShipPostalCode",
-                    Value = invoiceModel.InvoiceShipPostalCode
+                    Key = "@orderShipPostalCode",
+                    Value = orderModel.OrderShipPostalCode
                 },
                 new()
                 {
-                    Key = "@invoiceShipCountry",
-                    Value = invoiceModel.InvoiceShipCountry
+                    Key = "@orderShipCountry",
+                    Value = orderModel.OrderShipCountry
                 },
                 new()
                 {
@@ -113,7 +113,7 @@ public class InvoiceRepository
 
             mySqlCommand.ExecuteNonQuery();
             mySqlTransaction.Commit();
-            lastInsertKey = (int) mySqlCommand.LastInsertedId;
+            lastInsertKey = (int)mySqlCommand.LastInsertedId;
             mySqlCommand.Dispose();
         }
         catch (MySqlException ex)
@@ -126,9 +126,9 @@ public class InvoiceRepository
         return lastInsertKey;
     }
 
-    public List<InvoiceModel> Read()
+    public List<OrderModel> Read()
     {
-        List<InvoiceModel> invoiceModels = new();
+        List<OrderModel> orderModels = new();
         var sql = string.Empty;
         List<ParameterModel> parameterModels = new();
         using var connection = SharedUtil.GetConnection();
@@ -138,46 +138,46 @@ public class InvoiceRepository
             connection.Open();
             sql = @"
                 SELECT      *
-                FROM        invoice 
+                FROM        `order` 
 	 JOIN customer 
 	 USING(customerId)
 	 JOIN shipper 
 	 USING(shipperId)
 	 JOIN employee 
 	 USING(employeeId)
-	 WHERE   invoice.isDelete != 1
-                ORDER BY    invoiceId DESC LIMIT 100 ";
+	 WHERE   `order`.isDelete != 1
+                ORDER BY    orderId DESC LIMIT 100 ";
             MySqlCommand mySqlCommand = new(sql, connection);
             _sharedUtil.SetSqlSession(sql, parameterModels);
             using (var reader = mySqlCommand.ExecuteReader())
             {
                 while (reader.Read())
                 {
-                    invoiceModels.Add(new InvoiceModel
+                    orderModels.Add(new OrderModel
                     {
-                        InvoiceKey = Convert.ToUInt32(reader["invoiceId"]),
+                        OrderKey = Convert.ToUInt32(reader["orderId"]),
                         CustomerName = reader["customerName"].ToString(),
                         CustomerKey = Convert.ToUInt32(reader["customerId"]),
                         ShipperName = reader["shipperName"].ToString(),
                         ShipperKey = Convert.ToUInt32(reader["shipperId"]),
                         EmployeeLastName = reader["employeeLastName"].ToString(),
                         EmployeeKey = Convert.ToUInt32(reader["employeeId"]),
-                        InvoiceOrderDate = reader["invoiceOrderDate"] != DBNull.Value
-                            ? CustomDateTimeConvert.ConvertToDate((DateTime) reader["invoiceOrderDate"])
+                        OrderDate = reader["orderDate"] != DBNull.Value
+                            ? CustomDateTimeConvert.ConvertToDate((DateTime)reader["orderDate"])
                             : null,
-                        InvoiceRequiredDate = reader["invoiceRequiredDate"] != DBNull.Value
-                            ? CustomDateTimeConvert.ConvertToDate((DateTime) reader["invoiceRequiredDate"])
+                        OrderRequiredDate = reader["orderRequiredDate"] != DBNull.Value
+                            ? CustomDateTimeConvert.ConvertToDate((DateTime)reader["orderRequiredDate"])
                             : null,
-                        InvoiceShippedDate = reader["invoiceShippedDate"] != DBNull.Value
-                            ? CustomDateTimeConvert.ConvertToDate((DateTime) reader["invoiceShippedDate"])
+                        OrderShippedDate = reader["orderShippedDate"] != DBNull.Value
+                            ? CustomDateTimeConvert.ConvertToDate((DateTime)reader["orderShippedDate"])
                             : null,
-                        InvoiceFreight = Convert.ToDecimal(reader["invoiceFreight"]),
-                        InvoiceShipName = reader["invoiceShipName"].ToString(),
-                        InvoiceShipAddress = reader["invoiceShipAddress"].ToString(),
-                        InvoiceShipCity = reader["invoiceShipCity"].ToString(),
-                        InvoiceShipRegion = reader["invoiceShipRegion"].ToString(),
-                        InvoiceShipPostalCode = reader["invoiceShipPostalCode"].ToString(),
-                        InvoiceShipCountry = reader["invoiceShipCountry"].ToString()
+                        OrderFreight = Convert.ToDecimal(reader["orderFreight"]),
+                        OrderShipName = reader["orderShipName"].ToString(),
+                        OrderShipAddress = reader["orderShipAddress"].ToString(),
+                        OrderShipCity = reader["orderShipCity"].ToString(),
+                        OrderShipRegion = reader["orderShipRegion"].ToString(),
+                        OrderShipPostalCode = reader["orderShipPostalCode"].ToString(),
+                        OrderShipCountry = reader["orderShipCountry"].ToString()
                     });
                 }
             }
@@ -191,12 +191,12 @@ public class InvoiceRepository
             throw new Exception(ex.Message);
         }
 
-        return invoiceModels;
+        return orderModels;
     }
 
-    public List<InvoiceModel> Search(string search)
+    public List<OrderModel> Search(string search)
     {
-        List<InvoiceModel> invoiceModels = new();
+        List<OrderModel> orderModels = new();
         var sql = string.Empty;
         List<ParameterModel> parameterModels = new();
         using var connection = SharedUtil.GetConnection();
@@ -205,7 +205,7 @@ public class InvoiceRepository
             connection.Open();
             sql += @"
             SELECT  *
-            FROM    invoice
+            FROM    `order`
 
             JOIN customer 
             USING(customerId)
@@ -216,8 +216,8 @@ public class InvoiceRepository
             JOIN employee 
             USING(employeeId)
 
-            WHERE   invoice.isDelete != 1
-            AND     invoice.tenantId = @tenantId
+            WHERE   `order`.isDelete != 1
+            AND     `order`.tenantId = @tenantId
      		AND (				
 				customer.customerCode LIKE CONCAT('%',@search,'%') OR
 				customer.customerName LIKE CONCAT('%',@search,'%') OR
@@ -250,7 +250,7 @@ public class InvoiceRepository
             {
                 while (reader.Read())
                 {
-                    invoiceModels.Add(new InvoiceModel
+                    orderModels.Add(new OrderModel
                     {
                         CustomerName = reader["customerName"].ToString(),
                         CustomerKey = Convert.ToUInt32(reader["customerId"]),
@@ -258,22 +258,22 @@ public class InvoiceRepository
                         ShipperKey = Convert.ToUInt32(reader["shipperId"]),
                         EmployeeLastName = reader["employeeLastName"].ToString(),
                         EmployeeKey = Convert.ToUInt32(reader["employeeId"]),
-                        InvoiceOrderDate = reader["invoiceOrderDate"] != DBNull.Value
-                            ? CustomDateTimeConvert.ConvertToDate((DateTime) reader["invoiceOrderDate"])
+                        OrderDate = reader["orderDate"] != DBNull.Value
+                            ? CustomDateTimeConvert.ConvertToDate((DateTime)reader["orderDate"])
                             : null,
-                        InvoiceRequiredDate = reader["invoiceRequiredDate"] != DBNull.Value
-                            ? CustomDateTimeConvert.ConvertToDate((DateTime) reader["invoiceRequiredDate"])
+                        OrderRequiredDate = reader["orderRequiredDate"] != DBNull.Value
+                            ? CustomDateTimeConvert.ConvertToDate((DateTime)reader["orderRequiredDate"])
                             : null,
-                        InvoiceShippedDate = reader["invoiceShippedDate"] != DBNull.Value
-                            ? CustomDateTimeConvert.ConvertToDate((DateTime) reader["invoiceShippedDate"])
+                        OrderShippedDate = reader["orderShippedDate"] != DBNull.Value
+                            ? CustomDateTimeConvert.ConvertToDate((DateTime)reader["orderShippedDate"])
                             : null,
-                        InvoiceFreight = Convert.ToDecimal(reader["invoiceFreight"]),
-                        InvoiceShipName = reader["invoiceShipName"].ToString(),
-                        InvoiceShipAddress = reader["invoiceShipAddress"].ToString(),
-                        InvoiceShipCity = reader["invoiceShipCity"].ToString(),
-                        InvoiceShipRegion = reader["invoiceShipRegion"].ToString(),
-                        InvoiceShipPostalCode = reader["invoiceShipPostalCode"].ToString(),
-                        InvoiceShipCountry = reader["invoiceShipCountry"].ToString()
+                        OrderFreight = Convert.ToDecimal(reader["orderFreight"]),
+                        OrderShipName = reader["orderShipName"].ToString(),
+                        OrderShipAddress = reader["orderShipAddress"].ToString(),
+                        OrderShipCity = reader["orderShipCity"].ToString(),
+                        OrderShipRegion = reader["orderShipRegion"].ToString(),
+                        OrderShipPostalCode = reader["orderShipPostalCode"].ToString(),
+                        OrderShipCountry = reader["orderShipCountry"].ToString()
                     });
                 }
             }
@@ -287,9 +287,9 @@ public class InvoiceRepository
             throw new Exception(ex.Message);
         }
 
-        return invoiceModels;
+        return orderModels;
     }
-    public InvoiceModel GetSingleWithDetail(InvoiceModel invoiceModel)
+    public OrderModel GetSingleWithDetail(OrderModel orderModel)
     {
         var sql = string.Empty;
         List<ParameterModel> parameterModels = new();
@@ -299,7 +299,7 @@ public class InvoiceRepository
             connection.Open();
             sql += @"
             SELECT  *
-            FROM    invoice
+            FROM    `order`
 
             JOIN customer 
             USING(customerId)
@@ -310,9 +310,9 @@ public class InvoiceRepository
             JOIN employee 
             USING(employeeId)
 
-            WHERE   invoice.isDelete    !=   1
-            AND     invoice.tenantId    =   @tenantId
-            AND     invoice.invoiceId   =   @invoiceId
+            WHERE   `order`.isDelete    !=   1
+            AND     `order`.tenantId    =   @tenantId
+            AND     `order`.orderId   =   @orderId
             LIMIT 1";
             MySqlCommand mySqlCommand = new(sql, connection);
             parameterModels = new List<ParameterModel>
@@ -324,8 +324,8 @@ public class InvoiceRepository
                 },
                 new()
                 {
-                    Key = "@invoiceId",
-                    Value = invoiceModel.InvoiceKey
+                    Key = "@orderId",
+                    Value = orderModel.OrderKey
                 }
             };
             foreach (var parameter in parameterModels)
@@ -338,28 +338,28 @@ public class InvoiceRepository
             {
                 while (reader.Read())
                 {
-                    invoiceModel = new InvoiceModel
+                    orderModel = new OrderModel
                     {
-                        InvoiceKey = Convert.ToUInt32(reader["invoiceId"]),
+                        OrderKey = Convert.ToUInt32(reader["orderId"]),
                         CustomerKey = Convert.ToUInt32(reader["customerId"]),
                         ShipperKey = Convert.ToUInt32(reader["shipperId"]),
                         EmployeeKey = Convert.ToUInt32(reader["employeeId"]),
-                        InvoiceOrderDate = reader["invoiceOrderDate"] != DBNull.Value
-                            ? CustomDateTimeConvert.ConvertToDate((DateTime) reader["invoiceOrderDate"])
+                        OrderDate = reader["orderDate"] != DBNull.Value
+                            ? CustomDateTimeConvert.ConvertToDate((DateTime)reader["orderDate"])
                             : null,
-                        InvoiceRequiredDate = reader["invoiceRequiredDate"] != DBNull.Value
-                            ? CustomDateTimeConvert.ConvertToDate((DateTime) reader["invoiceRequiredDate"])
+                        OrderRequiredDate = reader["orderRequiredDate"] != DBNull.Value
+                            ? CustomDateTimeConvert.ConvertToDate((DateTime)reader["orderRequiredDate"])
                             : null,
-                        InvoiceShippedDate = reader["invoiceShippedDate"] != DBNull.Value
-                            ? CustomDateTimeConvert.ConvertToDate((DateTime) reader["invoiceShippedDate"])
+                        OrderShippedDate = reader["orderShippedDate"] != DBNull.Value
+                            ? CustomDateTimeConvert.ConvertToDate((DateTime)reader["orderShippedDate"])
                             : null,
-                        InvoiceFreight = Convert.ToDecimal(reader["invoiceFreight"]),
-                        InvoiceShipName = reader["invoiceShipName"].ToString(),
-                        InvoiceShipAddress = reader["invoiceShipAddress"].ToString(),
-                        InvoiceShipCity = reader["invoiceShipCity"].ToString(),
-                        InvoiceShipRegion = reader["invoiceShipRegion"].ToString(),
-                        InvoiceShipPostalCode = reader["invoiceShipPostalCode"].ToString(),
-                        InvoiceShipCountry = reader["invoiceShipCountry"].ToString()
+                        OrderFreight = Convert.ToDecimal(reader["orderFreight"]),
+                        OrderShipName = reader["orderShipName"].ToString(),
+                        OrderShipAddress = reader["orderShipAddress"].ToString(),
+                        OrderShipCity = reader["orderShipCity"].ToString(),
+                        OrderShipRegion = reader["orderShipRegion"].ToString(),
+                        OrderShipPostalCode = reader["orderShipPostalCode"].ToString(),
+                        OrderShipCountry = reader["orderShipCountry"].ToString()
                     };
                 }
             }
@@ -373,23 +373,23 @@ public class InvoiceRepository
             throw new Exception(ex.Message);
         }
 
-        List<InvoiceDetailModel> invoiceDetailModels = new();
+        List<OrderDetailModel> orderDetailModels = new();
         try
         {
             sql = @"
             SELECT      *
-            FROM        invoice_detail
+            FROM        order_detail
 
-            JOIN invoice 
-            USING(invoiceId)
+            JOIN `order` 
+            USING(orderId)
 
             JOIN product 
             USING(productId)
 
-            WHERE   invoice.isDelete        !=  1
-            AND     invoice.tenantId        =   @tenantId
-            AND     invoice_detail.isDelete != 1
-            AND   invoice_detail.invoiceId  =   @invoiceId";
+            WHERE   `order`.isDelete        !=  1
+            AND     `order`.tenantId        =   @tenantId
+            AND     order_detail.isDelete != 1
+            AND   order_detail.orderId  =   @orderId";
             MySqlCommand mySqlCommand = new(sql, connection);
             parameterModels = new List<ParameterModel>
             {
@@ -397,6 +397,11 @@ public class InvoiceRepository
                 {
                     Key = "@tenantId",
                     Value = _sharedUtil.GetTenantId()
+                },
+                new()
+                {
+                    Key = "@orderId",
+                    Value = orderModel.OrderKey
                 }
             };
             foreach (var parameter in parameterModels)
@@ -408,14 +413,14 @@ public class InvoiceRepository
             {
                 while (reader.Read())
                 {
-                    invoiceDetailModels.Add(new InvoiceDetailModel
+                    orderDetailModels.Add(new OrderDetailModel
                     {
-                        InvoiceDetailKey = Convert.ToUInt32(reader["invoiceDetailId"]),
-                        InvoiceKey = Convert.ToUInt32(reader["invoiceId"]),
+                        OrderDetailKey = Convert.ToUInt32(reader["orderDetailId"]),
+                        OrderKey = Convert.ToUInt32(reader["orderId"]),
                         ProductKey = Convert.ToUInt32(reader["productId"]),
-                        InvoiceDetailUnitPrice = Convert.ToDecimal(reader["invoiceDetailUnitPrice"]),
-                        InvoiceDetailQuantity = Convert.ToInt32(reader["invoiceDetailQuantity"]),
-                        InvoiceDetailDiscount = Convert.ToDouble(reader["invoiceDetailDiscount"])
+                        OrderDetailUnitPrice = Convert.ToDecimal(reader["orderDetailUnitPrice"]),
+                        OrderDetailQuantity = Convert.ToInt32(reader["orderDetailQuantity"]),
+                        OrderDetailDiscount = Convert.ToDouble(reader["orderDetailDiscount"])
                     });
                 }
             }
@@ -430,16 +435,16 @@ public class InvoiceRepository
         }
 
 
-        invoiceModel.Data = invoiceDetailModels;
+        orderModel.Data = orderDetailModels;
 
 
-        return invoiceModel;
+        return orderModel;
     }
 
     public byte[] GetExcel()
     {
         using var workbook = new XLWorkbook();
-        var worksheet = workbook.Worksheets.Add("Administrator > Invoice ");
+        var worksheet = workbook.Worksheets.Add("Administrator > Order ");
 
         worksheet.Cell(1, 1).Value = "Customer";
         worksheet.Cell(1, 2).Value = "Shipper";
@@ -471,23 +476,23 @@ public class InvoiceRepository
 
             using (var reader = mySqlCommand.ExecuteReader())
             {
-                var counter = 1;
+                var counter = 3;
                 while (reader.Read())
                 {
                     var currentRow = counter++;
                     worksheet.Cell(currentRow, 1).Value = reader["customerName"].ToString();
                     worksheet.Cell(currentRow, 2).Value = reader["shipperName"].ToString();
                     worksheet.Cell(currentRow, 3).Value = reader["employeeLastName"].ToString();
-                    worksheet.Cell(currentRow, 4).Value = reader["invoiceOrderDate"].ToString();
-                    worksheet.Cell(currentRow, 5).Value = reader["invoiceRequiredDate"].ToString();
-                    worksheet.Cell(currentRow, 6).Value = reader["invoiceShippedDate"].ToString();
-                    worksheet.Cell(currentRow, 7).Value = reader["invoiceFreight"].ToString();
-                    worksheet.Cell(currentRow, 8).Value = reader["invoiceShipName"].ToString();
-                    worksheet.Cell(currentRow, 9).Value = reader["invoiceShipAddress"].ToString();
-                    worksheet.Cell(currentRow, 10).Value = reader["invoiceShipCity"].ToString();
-                    worksheet.Cell(currentRow, 11).Value = reader["invoiceShipRegion"].ToString();
-                    worksheet.Cell(currentRow, 12).Value = reader["invoiceShipPostalCode"].ToString();
-                    worksheet.Cell(currentRow, 13).Value = reader["invoiceShipCountry"].ToString();
+                    worksheet.Cell(currentRow, 4).Value = reader["orderDate"].ToString();
+                    worksheet.Cell(currentRow, 5).Value = reader["orderRequiredDate"].ToString();
+                    worksheet.Cell(currentRow, 6).Value = reader["orderShippedDate"].ToString();
+                    worksheet.Cell(currentRow, 7).Value = reader["orderFreight"].ToString();
+                    worksheet.Cell(currentRow, 8).Value = reader["orderShipName"].ToString();
+                    worksheet.Cell(currentRow, 9).Value = reader["orderShipAddress"].ToString();
+                    worksheet.Cell(currentRow, 10).Value = reader["orderShipCity"].ToString();
+                    worksheet.Cell(currentRow, 11).Value = reader["orderShipRegion"].ToString();
+                    worksheet.Cell(currentRow, 12).Value = reader["orderShipPostalCode"].ToString();
+                    worksheet.Cell(currentRow, 13).Value = reader["orderShipCountry"].ToString();
                 }
             }
 
@@ -504,7 +509,7 @@ public class InvoiceRepository
         return stream.ToArray();
     }
 
-    public void Update(InvoiceModel invoiceModel)
+    public void Update(OrderModel orderModel)
     {
         var sql = string.Empty;
         List<ParameterModel> parameterModels = new();
@@ -514,29 +519,29 @@ public class InvoiceRepository
             connection.Open();
             var mySqlTransaction = connection.BeginTransaction();
             sql = @"
-            UPDATE  invoice 
+            UPDATE  `order` 
             SET     customerId              =   @customerId,
                     shipperId               =   @shipperId,
                     employeeId              =   @employeeId,
-                    invoiceOrderDate        =   @invoiceOrderDate,
-                    invoiceRequiredDate     =   @invoiceRequiredDate,
-                    invoiceShippedDate      =   @invoiceShippedDate,
-                    invoiceFreight          =   @invoiceFreight,
-                    invoiceShipName         =   @invoiceShipName,
-                    invoiceShipAddress      =   @invoiceShipAddress,
-                    invoiceShipCity         =   @invoiceShipCity,
-                    invoiceShipRegion       =   @invoiceShipRegion,
-                    invoiceShipPostalCode   =   @invoiceShipPostalCode,
-                    invoiceShipCountry      =   @invoiceShipCountry
+                    orderDate        =   @orderDate,
+                    orderRequiredDate     =   @orderRequiredDate,
+                    orderShippedDate      =   @orderShippedDate,
+                    orderFreight          =   @orderFreight,
+                    orderShipName         =   @orderShipName,
+                    orderShipAddress      =   @orderShipAddress,
+                    orderShipCity         =   @orderShipCity,
+                    orderShipRegion       =   @orderShipRegion,
+                    orderShipPostalCode   =   @orderShipPostalCode,
+                    orderShipCountry      =   @orderShipCountry
 
-            WHERE   invoiceId    =   @invoiceId";
+            WHERE   orderId    =   @orderId";
             MySqlCommand mySqlCommand = new(sql, connection);
             parameterModels = new List<ParameterModel>
             {
                 new()
                 {
-                    Key = "@invoiceId",
-                    Value = invoiceModel.InvoiceKey
+                    Key = "@orderId",
+                    Value = orderModel.OrderKey
                 },
                 new()
                 {
@@ -546,67 +551,67 @@ public class InvoiceRepository
                 new()
                 {
                     Key = "@customerId",
-                    Value = invoiceModel.CustomerKey
+                    Value = orderModel.CustomerKey
                 },
                 new()
                 {
                     Key = "@shipperId",
-                    Value = invoiceModel.ShipperKey
+                    Value = orderModel.ShipperKey
                 },
                 new()
                 {
                     Key = "@employeeId",
-                    Value = invoiceModel.EmployeeKey
+                    Value = orderModel.EmployeeKey
                 },
                 new()
                 {
-                    Key = "@invoiceOrderDate",
-                    Value = invoiceModel.InvoiceOrderDate?.ToString("yyyy-MM-dd")
+                    Key = "@orderDate",
+                    Value = orderModel.OrderDate?.ToString("yyyy-MM-dd")
                 },
                 new()
                 {
-                    Key = "@invoiceRequiredDate",
-                    Value = invoiceModel.InvoiceRequiredDate?.ToString("yyyy-MM-dd")
+                    Key = "@orderRequiredDate",
+                    Value = orderModel.OrderRequiredDate?.ToString("yyyy-MM-dd")
                 },
                 new()
                 {
-                    Key = "@invoiceShippedDate",
-                    Value = invoiceModel.InvoiceShippedDate?.ToString("yyyy-MM-dd")
+                    Key = "@orderShippedDate",
+                    Value = orderModel.OrderShippedDate?.ToString("yyyy-MM-dd")
                 },
                 new()
                 {
-                    Key = "@invoiceFreight",
-                    Value = invoiceModel.InvoiceFreight
+                    Key = "@orderFreight",
+                    Value = orderModel.OrderFreight
                 },
                 new()
                 {
-                    Key = "@invoiceShipName",
-                    Value = invoiceModel.InvoiceShipName
+                    Key = "@orderShipName",
+                    Value = orderModel.OrderShipName
                 },
                 new()
                 {
-                    Key = "@invoiceShipAddress",
-                    Value = invoiceModel.InvoiceShipAddress
+                    Key = "@orderShipAddress",
+                    Value = orderModel.OrderShipAddress
                 },
                 new()
                 {
-                    Key = "@invoiceShipCity",
-                    Value = invoiceModel.InvoiceShipCity
+                    Key = "@orderShipCity",
+                    Value = orderModel.OrderShipCity
                 },
                 new()
                 {
-                    Key = "@invoiceShipRegion",
-                    Value = invoiceModel.InvoiceShipRegion
+                    Key = "@orderShipRegion",
+                    Value = orderModel.OrderShipRegion
                 },
                 new()
                 {
-                    Key = "@invoiceShipPostalCode",
-                    Value = invoiceModel.InvoiceShipPostalCode
+                    Key = "@orderShipPostalCode",
+                    Value = orderModel.OrderShipPostalCode
                 },
                 new()
                 {
-                    Key = "@invoiceShipCountry",
-                    Value = invoiceModel.InvoiceShipCountry
+                    Key = "@orderShipCountry",
+                    Value = orderModel.OrderShipCountry
                 }
             };
             foreach (var parameter in parameterModels)
@@ -626,7 +631,7 @@ public class InvoiceRepository
         }
     }
 
-    public void Delete(InvoiceModel invoiceModel)
+    public void Delete(OrderModel orderModel)
     {
         var sql = string.Empty;
         List<ParameterModel> parameterModels = new();
@@ -636,16 +641,16 @@ public class InvoiceRepository
             connection.Open();
             var mySqlTransaction = connection.BeginTransaction();
             sql = @"
-            UPDATE  invoice 
+            UPDATE  `order` 
             SET     isDelete    =   1
-            WHERE   invoiceId    =   @invoiceId";
+            WHERE   orderId    =   @orderId";
             MySqlCommand mySqlCommand = new(sql, connection);
             parameterModels = new List<ParameterModel>
             {
                 new()
                 {
-                    Key = "@invoiceId",
-                    Value = invoiceModel.InvoiceKey
+                    Key = "@orderId",
+                    Value = orderModel.OrderKey
                 }
             };
             foreach (var parameter in parameterModels)

@@ -2,7 +2,6 @@
 @using RebelCmsTemplate.Models.Application
 @using RebelCmsTemplate.Repository.Application
 @using RebelCmsTemplate.Util;
-@using RebelCmsTemplate.Enum;
 @using Microsoft.AspNetCore.Http
 @{
     SharedUtil sharedUtils = new(_httpContextAccessor);
@@ -221,7 +220,7 @@
                 let code = data.code;
                 if (status) {
                     const lastInsertKey = data.lastInsertKey;
-                    $("#tableBody").prepend(template(lastInsertKey, shipperName.val(), shipperPhone.val()));
+                    $("#tableBody").prepend(template(lastInsertKey, $shipperName.val(), $shipperPhone.val()));
                     Swal.fire({
                         title: 'Success!',
                         text: '@SharedUtil.RecordCreated',
@@ -236,7 +235,7 @@
                         accessDenied();
                     } else if (typeof (code) === 'string') {
                         callBackError();
-                    } else if {
+                    } else {
                         location.href = "/";
                     }
                 } else {
@@ -292,7 +291,7 @@
                     accessDenied();
                 } else if (typeof (code) === 'string') {
                     callBackError();
-                } else if {
+                } else {
                     location.href = "/";
                 }
             } else {
@@ -345,7 +344,7 @@
                     accessDenied();
                 } else if (typeof (code) === 'string') {
                     callBackError();
-                } else if {
+                } else {
                     location.href = "/";
                 }
             } else {
@@ -400,7 +399,7 @@
                         accessDenied();
                     } else if (typeof (code) === 'string') {
                         callBackError();
-                    } else if {
+                    } else {
                         location.href = "/";
                     }
                 } else {
@@ -413,64 +412,65 @@
                 console.log("always:complete");
             });
         }
-        function deleteRecord(shipperKey) {
-            Swal.fire({
-                title: 'Are you sure?',
-                text: "You won't be able to revert this!",
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonText: 'Yes, delete it!',
-                cancelButtonText: 'No, cancel!',
-                reverseButtons: true
-            }).then((result) => {
-                if (result.value) {
-                    $.ajax({
-                        type: 'POST',
-                        url: "api/application/shipper",
-                        async: false,
-                        data: {
-                            mode: 'delete',
-                            leafCheckKey: @navigationModel.LeafCheckKey,
-                            shipperKey: shipperKey
-                        }, statusCode: {
-                            500: function () {
-                                Swal.fire("System Error", "@SharedUtil.UserErrorNotification", "error");
-                            }
-                        },
-                        beforeSend: function () {
-                            console.log("loading..");
+    }
+    function deleteRecord(shipperKey) {
+        Swal.fire({
+            title: 'Are you sure?',
+            text: "You won't be able to revert this!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Yes, delete it!',
+            cancelButtonText: 'No, cancel!',
+            reverseButtons: true
+        }).then((result) => {
+            if (result.value) {
+                $.ajax({
+                    type: 'POST',
+                    url: "api/application/shipper",
+                    async: false,
+                    data: {
+                        mode: 'delete',
+                        leafCheckKey: @navigationModel.LeafCheckKey,
+                        shipperKey: shipperKey
+                    }, statusCode: {
+                        500: function () {
+                            Swal.fire("System Error", "@SharedUtil.UserErrorNotification", "error");
                         }
-                    }).done(function (data) {
-                        if (data === void 0) { location.href = "/"; }
-                        let status = data.status;
-                        let code = data.code;
-                        if (status) {
-                            $("#shipper-" + shipperKey).remove();
-                            Swal.fire("System", "@SharedUtil.RecordDeleted", "success");
-                        } else if (status === false) {
-                            if (parseInt(code) === accessDeniedCode) {
-                                accessDenied();
-                            } else if (typeof (code) === 'string') {
-                                callBackError();
-                            } else if {
-                                location.href = "/";
-                            }
+                    },
+                    beforeSend: function () {
+                        console.log("loading..");
+                    }
+                }).done(function (data) {
+                    if (data === void 0) { location.href = "/"; }
+                    let status = data.status;
+                    let code = data.code;
+                    if (status) {
+                        $("#shipper-" + shipperKey).remove();
+                        Swal.fire("System", "@SharedUtil.RecordDeleted", "success");
+                    } else if (status === false) {
+                        if (parseInt(code) === accessDeniedCode) {
+                            accessDenied();
+                        } else if (typeof (code) === 'string') {
+                            callBackError();
                         } else {
                             location.href = "/";
                         }
-                    }).fail(function (xhr) {
-                        console.log(xhr.status);
-                        Swal.fire("System", "@SharedUtil.UserErrorNotification", "error");
-                    }).always(function () {
-                        console.log("always:complete");
-                    });
-                } else if (result.dismiss === swal.DismissReason.cancel) {
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Cancelled',
-                        text: 'Be careful before delete record'
-                    })
-                }
-            });
-        }
+                    } else {
+                        location.href = "/";
+                    }
+                }).fail(function (xhr) {
+                    console.log(xhr.status);
+                    Swal.fire("System", "@SharedUtil.UserErrorNotification", "error");
+                }).always(function () {
+                    console.log("always:complete");
+                });
+            } else if (result.dismiss === swal.DismissReason.cancel) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Cancelled',
+                    text: 'Be careful before delete record'
+                })
+            }
+        });
+    }
 </script>

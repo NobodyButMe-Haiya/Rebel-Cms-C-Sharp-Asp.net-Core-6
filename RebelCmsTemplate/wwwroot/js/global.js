@@ -1,5 +1,8 @@
 ﻿const accessDeniedCode = 500;
-
+function getLocaleDate(dateString){
+    let dateStringOutput = new Date(dateString);
+    return dateStringOutput.toLocaleDateString(); 
+}
 function callBackError() {
     Swal.fire("System", "System Error", "error");
 }

@@ -8,12 +8,12 @@ namespace RebelCmsTemplate.Controllers.Application;
 
 [Route("api/application/[controller]")]
 [ApiController]
-public class InvoiceDetailController : Controller
+public class OrderDetailController : Controller
 {
     private readonly IHttpContextAccessor _httpContextAccessor;
     private readonly RenderViewToStringUtil _renderViewToStringUtil;
 
-    public InvoiceDetailController(RenderViewToStringUtil renderViewToStringUtil,
+    public OrderDetailController(RenderViewToStringUtil renderViewToStringUtil,
         IHttpContextAccessor httpContextAccessor)
     {
         _renderViewToStringUtil = renderViewToStringUtil;
@@ -31,10 +31,10 @@ public class InvoiceDetailController : Controller
             return Ok(page);
         }
 
-        InvoiceDetailRepository invoiceDetailRepository = new(_httpContextAccessor);
-        var content = invoiceDetailRepository.GetExcel();
+        OrderDetailRepository orderDetailRepository = new(_httpContextAccessor);
+        var content = orderDetailRepository.GetExcel();
         return File(content, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-            "invoiceDetail39.xlsx");
+            "orderDetail39.xlsx");
     }
 
     [HttpPost]
@@ -43,7 +43,7 @@ public class InvoiceDetailController : Controller
         var status = false;
         var mode = Request.Form["mode"];
         var leafCheckKey = Convert.ToInt32(Request.Form["leafCheckKey"]);
-        InvoiceDetailRepository invoiceDetailRepository = new(_httpContextAccessor);
+        OrderDetailRepository orderDetailRepository = new(_httpContextAccessor);
         ProductRepository productRepository = new(_httpContextAccessor);
         SharedUtil sharedUtil = new(_httpContextAccessor);
         CheckAccessUtil checkAccessUtil = new(_httpContextAccessor);
@@ -60,7 +60,7 @@ public class InvoiceDetailController : Controller
                 {
                     try
                     {
-                        if (!uint.TryParse(Request.Form["invoiceKey"], out var invoiceKey))
+                        if (!uint.TryParse(Request.Form["orderKey"], out var orderKey))
                         {
                             code = ((int) ReturnCodeEnum.ACCESS_DENIED_NO_MODE).ToString();
                             return Ok(new {status, code});
@@ -76,25 +76,25 @@ public class InvoiceDetailController : Controller
                             productKey = productRepository.GetDefault();
                         }
 
-                        var invoiceDetailUnitPrice = !string.IsNullOrEmpty(Request.Form["invoiceDetailUnitPrice"])
-                            ? Convert.ToDecimal(Request.Form["invoiceDetailUnitPrice"])
+                        var orderDetailUnitPrice = !string.IsNullOrEmpty(Request.Form["orderDetailUnitPrice"])
+                            ? Convert.ToDecimal(Request.Form["orderDetailUnitPrice"])
                             : 0;
-                        var invoiceDetailQuantity = !string.IsNullOrEmpty(Request.Form["invoiceDetailQuantity"])
-                            ? Convert.ToInt32(Request.Form["invoiceDetailQuantity"])
+                        var orderDetailQuantity = !string.IsNullOrEmpty(Request.Form["orderDetailQuantity"])
+                            ? Convert.ToInt32(Request.Form["orderDetailQuantity"])
                             : 0;
-                        var invoiceDetailDiscount = !string.IsNullOrEmpty(Request.Form["invoiceDetailDiscount"])
-                            ? Convert.ToDouble(Request.Form["invoiceDetailDiscount"])
+                        var orderDetailDiscount = !string.IsNullOrEmpty(Request.Form["orderDetailDiscount"])
+                            ? Convert.ToDouble(Request.Form["orderDetailDiscount"])
                             : 0;
 
-                        InvoiceDetailModel invoiceDetailModel = new()
+                        OrderDetailModel orderDetailModel = new()
                         {
-                            InvoiceKey = invoiceKey,
+                            OrderKey = orderKey,
                             ProductKey = productKey,
-                            InvoiceDetailUnitPrice = invoiceDetailUnitPrice,
-                            InvoiceDetailQuantity = invoiceDetailQuantity,
-                            InvoiceDetailDiscount = invoiceDetailDiscount
+                            OrderDetailUnitPrice = orderDetailUnitPrice,
+                            OrderDetailQuantity = orderDetailQuantity,
+                            OrderDetailDiscount = orderDetailDiscount
                         };
-                        var lastInsertKey = invoiceDetailRepository.Create(invoiceDetailModel);
+                        var lastInsertKey = orderDetailRepository.Create(orderDetailModel);
                         code = ((int) ReturnCodeEnum.CREATE_SUCCESS).ToString();
                         status = true;
                         return Ok(new {status, code, lastInsertKey});
@@ -117,7 +117,7 @@ public class InvoiceDetailController : Controller
                 {
                     try
                     {
-                        var data = invoiceDetailRepository.Read();
+                        var data = orderDetailRepository.Read();
                         code = ((int) ReturnCodeEnum.CREATE_SUCCESS).ToString();
                         status = true;
                         return Ok(new {status, code, data});
@@ -144,7 +144,7 @@ public class InvoiceDetailController : Controller
                         {
                             var search = Request.Form["search"];
 
-                            var data = invoiceDetailRepository.Search(search);
+                            var data = orderDetailRepository.Search(search);
                             code = ((int) ReturnCodeEnum.READ_SUCCESS).ToString();
                             status = true;
                             return Ok(new {status, code, data});
@@ -170,19 +170,19 @@ public class InvoiceDetailController : Controller
                 }
                 else
                 {
-                    if (!string.IsNullOrEmpty(Request.Form["invoiceDetailKey"]))
+                    if (!string.IsNullOrEmpty(Request.Form["orderDetailKey"]))
                     {
                         try
                         {
-                            if (!uint.TryParse(Request.Form["invoiceDetailKey"], out var invoiceDetailKey))
+                            if (!uint.TryParse(Request.Form["orderDetailKey"], out var orderDetailKey))
                             {
                                 code = ((int) ReturnCodeEnum.ACCESS_DENIED_NO_MODE).ToString();
                                 return Ok(new {status, code});
                             }
 
-                            if (invoiceDetailKey > 0)
+                            if (orderDetailKey > 0)
                             {
-                                if (!uint.TryParse(Request.Form["invoiceKey"], out var invoiceKey))
+                                if (!uint.TryParse(Request.Form["orderKey"], out var orderKey))
                                 {
                                     code = ((int) ReturnCodeEnum.ACCESS_DENIED_NO_MODE).ToString();
                                     return Ok(new {status, code});
@@ -198,26 +198,26 @@ public class InvoiceDetailController : Controller
                                     productKey = productRepository.GetDefault();
                                 }
 
-                                var invoiceDetailUnitPrice =
-                                    !string.IsNullOrEmpty(Request.Form["invoiceDetailUnitPrice"])
-                                        ? Convert.ToDecimal(Request.Form["invoiceDetailUnitPrice"])
+                                var orderDetailUnitPrice =
+                                    !string.IsNullOrEmpty(Request.Form["orderDetailUnitPrice"])
+                                        ? Convert.ToDecimal(Request.Form["orderDetailUnitPrice"])
                                         : 0;
-                                var invoiceDetailQuantity = !string.IsNullOrEmpty(Request.Form["invoiceDetailQuantity"])
-                                    ? Convert.ToInt32(Request.Form["invoiceDetailQuantity"])
+                                var orderDetailQuantity = !string.IsNullOrEmpty(Request.Form["orderDetailQuantity"])
+                                    ? Convert.ToInt32(Request.Form["orderDetailQuantity"])
                                     : 0;
-                                var invoiceDetailDiscount = !string.IsNullOrEmpty(Request.Form["invoiceDetailDiscount"])
-                                    ? Convert.ToDouble(Request.Form["invoiceDetailDiscount"])
+                                var orderDetailDiscount = !string.IsNullOrEmpty(Request.Form["orderDetailDiscount"])
+                                    ? Convert.ToDouble(Request.Form["orderDetailDiscount"])
                                     : 0;
-                                InvoiceDetailModel invoiceDetailModel = new()
+                                OrderDetailModel orderDetailModel = new()
                                 {
-                                    InvoiceDetailKey = invoiceDetailKey,
-                                    InvoiceKey = invoiceKey,
+                                    OrderDetailKey = orderDetailKey,
+                                    OrderKey = orderKey,
                                     ProductKey = productKey,
-                                    InvoiceDetailUnitPrice = invoiceDetailUnitPrice,
-                                    InvoiceDetailQuantity = invoiceDetailQuantity,
-                                    InvoiceDetailDiscount = invoiceDetailDiscount
+                                    OrderDetailUnitPrice = orderDetailUnitPrice,
+                                    OrderDetailQuantity = orderDetailQuantity,
+                                    OrderDetailDiscount = orderDetailDiscount
                                 };
-                                invoiceDetailRepository.Update(invoiceDetailModel);
+                                orderDetailRepository.Update(orderDetailModel);
                                 code = ((int) ReturnCodeEnum.UPDATE_SUCCESS).ToString();
                                 status = true;
                             }
@@ -247,23 +247,23 @@ public class InvoiceDetailController : Controller
                 }
                 else
                 {
-                    if (!string.IsNullOrEmpty(Request.Form["invoiceDetailKey"]))
+                    if (!string.IsNullOrEmpty(Request.Form["orderDetailKey"]))
                     {
                         try
                         {
-                            if (!uint.TryParse(Request.Form["invoiceDetailKey"], out var invoiceDetailKey))
+                            if (!uint.TryParse(Request.Form["orderDetailKey"], out var orderDetailKey))
                             {
                                 code = ((int) ReturnCodeEnum.ACCESS_DENIED_NO_MODE).ToString();
                                 return Ok(new {status, code});
                             }
 
-                            if (invoiceDetailKey > 0)
+                            if (orderDetailKey > 0)
                             {
-                                InvoiceDetailModel invoiceDetailModel = new()
+                                OrderDetailModel orderDetailModel = new()
                                 {
-                                    InvoiceDetailKey = invoiceDetailKey
+                                    OrderDetailKey = orderDetailKey
                                 };
-                                invoiceDetailRepository.Delete(invoiceDetailModel);
+                                orderDetailRepository.Delete(orderDetailModel);
                                 code = ((int) ReturnCodeEnum.DELETE_SUCCESS).ToString();
                                 status = true;
                             }

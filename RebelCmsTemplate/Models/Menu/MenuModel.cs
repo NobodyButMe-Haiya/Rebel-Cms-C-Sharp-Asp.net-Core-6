@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-
-namespace RebelCmsTemplate.Models.Menu;
+﻿namespace RebelCmsTemplate.Models.Menu;
 
 public class MenuModel
 {

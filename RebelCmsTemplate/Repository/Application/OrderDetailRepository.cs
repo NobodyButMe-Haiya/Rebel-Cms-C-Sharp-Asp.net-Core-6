@@ -6,16 +6,16 @@ using RebelCmsTemplate.Util;
 
 namespace RebelCmsTemplate.Repository.Application;
 
-public class InvoiceDetailRepository
+public class OrderDetailRepository
 {
     private readonly SharedUtil _sharedUtil;
 
-    public InvoiceDetailRepository(IHttpContextAccessor httpContextAccessor)
+    public OrderDetailRepository(IHttpContextAccessor httpContextAccessor)
     {
         _sharedUtil = new SharedUtil(httpContextAccessor);
     }
 
-    public int Create(InvoiceDetailModel invoiceDetailModel)
+    public int Create(OrderDetailModel orderDetailModel)
     {
         int lastInsertKey ;
         var sql = string.Empty;
@@ -26,7 +26,7 @@ public class InvoiceDetailRepository
             connection.Open();
             var mySqlTransaction = connection.BeginTransaction();
             sql +=
-                @"INSERT INTO invoice_detail (invoiceDetailId,tenantId,invoiceId,productId,invoiceDetailUnitPrice,invoiceDetailQuantity,invoiceDetailDiscount,isDelete) VALUES (null,@invoiceId,@tenantId,@productId,@invoiceDetailUnitPrice,@invoiceDetailQuantity,@invoiceDetailDiscount,@isDelete);";
+                @"INSERT INTO order_detail (orderDetailId,tenantId,orderId,productId,orderDetailUnitPrice,orderDetailQuantity,orderDetailDiscount,isDelete) VALUES (null,@tenantId,@orderId,@productId,@orderDetailUnitPrice,@orderDetailQuantity,@orderDetailDiscount,@isDelete);";
             MySqlCommand mySqlCommand = new(sql, connection);
             parameterModels = new List<ParameterModel>
             {
@@ -37,28 +37,28 @@ public class InvoiceDetailRepository
                 },
                 new()
                 {
-                    Key = "@invoiceId",
-                    Value = invoiceDetailModel.InvoiceKey
+                    Key = "@orderId",
+                    Value = orderDetailModel.OrderKey
                 },
                 new()
                 {
                     Key = "@productId",
-                    Value = invoiceDetailModel.ProductKey
+                    Value = orderDetailModel.ProductKey
                 },
                 new()
                 {
-                    Key = "@invoiceDetailUnitPrice",
-                    Value = invoiceDetailModel.InvoiceDetailUnitPrice
+                    Key = "@orderDetailUnitPrice",
+                    Value = orderDetailModel.OrderDetailUnitPrice
                 },
                 new()
                 {
-                    Key = "@invoiceDetailQuantity",
-                    Value = invoiceDetailModel.InvoiceDetailQuantity
+                    Key = "@orderDetailQuantity",
+                    Value = orderDetailModel.OrderDetailQuantity
                 },
                 new()
                 {
-                    Key = "@invoiceDetailDiscount",
-                    Value = invoiceDetailModel.InvoiceDetailDiscount
+                    Key = "@orderDetailDiscount",
+                    Value = orderDetailModel.OrderDetailDiscount
                 },
                 new()
                 {
@@ -86,9 +86,9 @@ public class InvoiceDetailRepository
         return lastInsertKey;
     }
 
-    public List<InvoiceDetailModel> Read()
+    public List<OrderDetailModel> Read()
     {
-        List<InvoiceDetailModel> invoiceDetailModels = new();
+        List<OrderDetailModel> orderDetailModels = new();
         var sql = string.Empty;
         List<ParameterModel> parameterModels = new();
         using var connection = SharedUtil.GetConnection();
@@ -97,28 +97,28 @@ public class InvoiceDetailRepository
             connection.Open();
             sql = @"
             SELECT      *
-            FROM        invoice_detail 
+            FROM        order_detail 
             WHERE       isDelete !=1
             AND         tenantId = @tenantId
-            ORDER BY    invoiceDetailId DESC ";
+            ORDER BY    orderDetailId DESC ";
             MySqlCommand mySqlCommand = new(sql, connection);
             using (var reader = mySqlCommand.ExecuteReader())
             {
                 while (reader.Read())
                 {
-                    invoiceDetailModels.Add(new InvoiceDetailModel
+                    orderDetailModels.Add(new OrderDetailModel
                     {
-                        InvoiceDetailKey = Convert.ToUInt32(reader["invoiceDetailId"]),
-                        InvoiceKey = Convert.ToUInt32(reader["invoiceId"]),
+                        OrderDetailKey = Convert.ToUInt32(reader["orderDetailId"]),
+                        OrderKey = Convert.ToUInt32(reader["orderId"]),
                         ProductKey = Convert.ToUInt32(reader["productId"]),
-                        InvoiceDetailUnitPrice = reader["invoiceDetailUnitPrice"] != DBNull.Value
-                            ? Convert.ToDecimal(reader["invoiceDetailUnitPrice"])
+                        OrderDetailUnitPrice = reader["orderDetailUnitPrice"] != DBNull.Value
+                            ? Convert.ToDecimal(reader["orderDetailUnitPrice"])
                             : 0,
-                        InvoiceDetailQuantity = reader["invoiceDetailQuantity"] != DBNull.Value
-                            ? Convert.ToInt32(reader["invoiceDetailQuantity"])
+                        OrderDetailQuantity = reader["orderDetailQuantity"] != DBNull.Value
+                            ? Convert.ToInt32(reader["orderDetailQuantity"])
                             : 0,
-                        InvoiceDetailDiscount = reader["invoiceDetailDiscount"] != DBNull.Value
-                            ? Convert.ToDouble(reader["invoiceDetailDiscount"])
+                        OrderDetailDiscount = reader["orderDetailDiscount"] != DBNull.Value
+                            ? Convert.ToDouble(reader["orderDetailDiscount"])
                             : 0,
                         IsDelete = Convert.ToInt32(reader["isDelete"])
                     });
@@ -134,12 +134,12 @@ public class InvoiceDetailRepository
             throw new Exception(ex.Message);
         }
 
-        return invoiceDetailModels;
+        return orderDetailModels;
     }
 
-    public List<InvoiceDetailModel> Search(string search)
+    public List<OrderDetailModel> Search(string search)
     {
-        List<InvoiceDetailModel> invoiceDetailModels = new();
+        List<OrderDetailModel> orderDetailModels = new();
         var sql = string.Empty;
         List<ParameterModel> parameterModels = new();
         using var connection = SharedUtil.GetConnection();
@@ -148,28 +148,28 @@ public class InvoiceDetailRepository
             connection.Open();
             sql += @"
             SELECT  *
-            FROM    invoice_detail
+            FROM    order_detail
 
-            JOIN invoice 
-            USING(invoiceId)
+            JOIN order 
+            USING(orderId)
 
             JOIN product 
             USING(productId)
 
-            WHERE   invoice_detail.isDelete != 1
-            AND     invoice_detail.tenantId = @tenantId 
+            WHERE   order_detail.isDelete != 1
+            AND     order_detail.tenantId = @tenantId 
             AND     (
-                        invoice.invoiceId LIKE CONCAT('%',@search,'%') OR
-                        invoice.invoiceId LIKE CONCAT('%',@search,'%') OR
-                        invoice.invoiceId LIKE CONCAT('%',@search,'%') OR
-                        invoice.invoiceId LIKE CONCAT('%',@search,'%') OR
-                        invoice.invoiceId LIKE CONCAT('%',@search,'%') OR
-                        invoice.invoiceId LIKE CONCAT('%',@search,'%') OR
-                        invoice.invoiceId LIKE CONCAT('%',@search,'%') OR
-                        invoice.invoiceId LIKE CONCAT('%',@search,'%') OR	 invoice.invoiceId LIKE CONCAT('%',@search,'%') OR	 invoice.invoiceId LIKE CONCAT('%',@search,'%') OR	 invoice.invoiceId LIKE CONCAT('%',@search,'%') OR	 invoice.invoiceId LIKE CONCAT('%',@search,'%') OR	 invoice.invoiceId LIKE CONCAT('%',@search,'%') OR	 invoice.invoiceId LIKE CONCAT('%',@search,'%') OR	 invoice.invoiceId LIKE CONCAT('%',@search,'%') OR	 invoice.invoiceId LIKE CONCAT('%',@search,'%') OR	 product.productId LIKE CONCAT('%',@search,'%') OR	 product.productId LIKE CONCAT('%',@search,'%') OR	 product.productId LIKE CONCAT('%',@search,'%') OR	 product.productId LIKE CONCAT('%',@search,'%') OR	 product.productId LIKE CONCAT('%',@search,'%') OR	 product.productId LIKE CONCAT('%',@search,'%') OR	 product.productId LIKE CONCAT('%',@search,'%') OR	 product.productId LIKE CONCAT('%',@search,'%') OR	 product.productId LIKE CONCAT('%',@search,'%') OR	 product.productId LIKE CONCAT('%',@search,'%') OR	 product.productId LIKE CONCAT('%',@search,'%') OR	 product.productId LIKE CONCAT('%',@search,'%') OR	 product.productId LIKE CONCAT('%',@search,'%') OR	 product.productId LIKE CONCAT('%',@search,'%') OR	 product.productId LIKE CONCAT('%',@search,'%') OR
-            invoice_detail.invoiceDetailUnitPrice LIKE CONCAT('%',@search,'%') OR
-            invoice_detail.invoiceDetailQuantity LIKE CONCAT('%',@search,'%') OR
-            invoice_detail.invoiceDetailDiscount LIKE CONCAT('%',@search,'%') )";
+                        order.orderId LIKE CONCAT('%',@search,'%') OR
+                        order.orderId LIKE CONCAT('%',@search,'%') OR
+                        order.orderId LIKE CONCAT('%',@search,'%') OR
+                        order.orderId LIKE CONCAT('%',@search,'%') OR
+                        order.orderId LIKE CONCAT('%',@search,'%') OR
+                        order.orderId LIKE CONCAT('%',@search,'%') OR
+                        order.orderId LIKE CONCAT('%',@search,'%') OR
+                        order.orderId LIKE CONCAT('%',@search,'%') OR	 order.orderId LIKE CONCAT('%',@search,'%') OR	 order.orderId LIKE CONCAT('%',@search,'%') OR	 order.orderId LIKE CONCAT('%',@search,'%') OR	 order.orderId LIKE CONCAT('%',@search,'%') OR	 order.orderId LIKE CONCAT('%',@search,'%') OR	 order.orderId LIKE CONCAT('%',@search,'%') OR	 order.orderId LIKE CONCAT('%',@search,'%') OR	 order.orderId LIKE CONCAT('%',@search,'%') OR	 product.productId LIKE CONCAT('%',@search,'%') OR	 product.productId LIKE CONCAT('%',@search,'%') OR	 product.productId LIKE CONCAT('%',@search,'%') OR	 product.productId LIKE CONCAT('%',@search,'%') OR	 product.productId LIKE CONCAT('%',@search,'%') OR	 product.productId LIKE CONCAT('%',@search,'%') OR	 product.productId LIKE CONCAT('%',@search,'%') OR	 product.productId LIKE CONCAT('%',@search,'%') OR	 product.productId LIKE CONCAT('%',@search,'%') OR	 product.productId LIKE CONCAT('%',@search,'%') OR	 product.productId LIKE CONCAT('%',@search,'%') OR	 product.productId LIKE CONCAT('%',@search,'%') OR	 product.productId LIKE CONCAT('%',@search,'%') OR	 product.productId LIKE CONCAT('%',@search,'%') OR	 product.productId LIKE CONCAT('%',@search,'%') OR
+            order_detail.orderDetailUnitPrice LIKE CONCAT('%',@search,'%') OR
+            order_detail.orderDetailQuantity LIKE CONCAT('%',@search,'%') OR
+            order_detail.orderDetailDiscount LIKE CONCAT('%',@search,'%') )";
             MySqlCommand mySqlCommand = new(sql, connection);
             parameterModels = new List<ParameterModel>
             {
@@ -189,14 +189,14 @@ public class InvoiceDetailRepository
             {
                 while (reader.Read())
                 {
-                    invoiceDetailModels.Add(new InvoiceDetailModel
+                    orderDetailModels.Add(new OrderDetailModel
                     {
-                        InvoiceDetailKey = Convert.ToUInt32(reader["invoiceDetailId"]),
-                        InvoiceKey = Convert.ToUInt32(reader["invoiceId"]),
+                        OrderDetailKey = Convert.ToUInt32(reader["orderDetailId"]),
+                        OrderKey = Convert.ToUInt32(reader["orderId"]),
                         ProductKey = Convert.ToUInt32(reader["productId"]),
-                        InvoiceDetailUnitPrice = Convert.ToDecimal(reader["invoiceDetailUnitPrice"]),
-                        InvoiceDetailQuantity = Convert.ToInt32(reader["invoiceDetailQuantity"]),
-                        InvoiceDetailDiscount = Convert.ToDouble(reader["invoiceDetailDiscount"]),
+                        OrderDetailUnitPrice = Convert.ToDecimal(reader["orderDetailUnitPrice"]),
+                        OrderDetailQuantity = Convert.ToInt32(reader["orderDetailQuantity"]),
+                        OrderDetailDiscount = Convert.ToDouble(reader["orderDetailDiscount"]),
                         IsDelete = Convert.ToInt32(reader["isDelete"])
                     });
                 }
@@ -211,18 +211,18 @@ public class InvoiceDetailRepository
             throw new Exception(ex.Message);
         }
 
-        return invoiceDetailModels;
+        return orderDetailModels;
     }
     public byte[] GetExcel()
     {
         using var workbook = new XLWorkbook();
-        var worksheet = workbook.Worksheets.Add("Administrator > InvoiceDetail ");
-        worksheet.Cell(1, 1).Value = "invoiceDetailId";
-        worksheet.Cell(1, 2).Value = "invoiceId";
+        var worksheet = workbook.Worksheets.Add("Administrator > OrderDetail ");
+        worksheet.Cell(1, 1).Value = "orderDetailId";
+        worksheet.Cell(1, 2).Value = "orderId";
         worksheet.Cell(1, 3).Value = "productId";
-        worksheet.Cell(1, 4).Value = "invoiceDetailUnitPrice";
-        worksheet.Cell(1, 5).Value = "invoiceDetailQuantity";
-        worksheet.Cell(1, 6).Value = "invoiceDetailDiscount";
+        worksheet.Cell(1, 4).Value = "orderDetailUnitPrice";
+        worksheet.Cell(1, 5).Value = "orderDetailQuantity";
+        worksheet.Cell(1, 6).Value = "orderDetailDiscount";
         worksheet.Cell(1, 7).Value = "isDelete";
         var sql = _sharedUtil.GetSqlSession();
         var parameterModels = _sharedUtil.GetListSqlParameter();
@@ -245,12 +245,12 @@ public class InvoiceDetailRepository
                 while (reader.Read())
                 {
                     var currentRow = counter++;
-                    worksheet.Cell(currentRow, 1).Value = reader["invoiceDetailId"].ToString();
-                    worksheet.Cell(currentRow, 2).Value = reader["invoiceId"].ToString();
+                    worksheet.Cell(currentRow, 1).Value = reader["orderDetailId"].ToString();
+                    worksheet.Cell(currentRow, 2).Value = reader["orderId"].ToString();
                     worksheet.Cell(currentRow, 3).Value = reader["productId"].ToString();
-                    worksheet.Cell(currentRow, 4).Value = reader["invoiceDetailUnitPrice"].ToString();
-                    worksheet.Cell(currentRow, 5).Value = reader["invoiceDetailQuantity"].ToString();
-                    worksheet.Cell(currentRow, 6).Value = reader["invoiceDetailDiscount"].ToString();
+                    worksheet.Cell(currentRow, 4).Value = reader["orderDetailUnitPrice"].ToString();
+                    worksheet.Cell(currentRow, 5).Value = reader["orderDetailQuantity"].ToString();
+                    worksheet.Cell(currentRow, 6).Value = reader["orderDetailDiscount"].ToString();
                     worksheet.Cell(currentRow, 7).Value = reader["isDelete"].ToString();
                 }
             }
@@ -268,7 +268,7 @@ public class InvoiceDetailRepository
         return stream.ToArray();
     }
 
-    public void Update(InvoiceDetailModel invoiceDetailModel)
+    public void Update(OrderDetailModel orderDetailModel)
     {
         var sql = string.Empty;
         List<ParameterModel> parameterModels = new();
@@ -278,48 +278,48 @@ public class InvoiceDetailRepository
             connection.Open();
             var mySqlTransaction = connection.BeginTransaction();
             sql = @"
-                UPDATE  invoice_detail 
+                UPDATE  order_detail 
                 SET     
-invoiceId=@invoiceId,
+orderId=@orderId,
 productId=@productId,
-invoiceDetailUnitPrice=@invoiceDetailUnitPrice,
-invoiceDetailQuantity=@invoiceDetailQuantity,
-invoiceDetailDiscount=@invoiceDetailDiscount,
+orderDetailUnitPrice=@orderDetailUnitPrice,
+orderDetailQuantity=@orderDetailQuantity,
+orderDetailDiscount=@orderDetailDiscount,
 isDelete=@isDelete
 
-                WHERE   invoiceDetailId    =   @invoiceDetailId";
+                WHERE   orderDetailId    =   @orderDetailId";
             MySqlCommand mySqlCommand = new(sql, connection);
             parameterModels = new List<ParameterModel>
             {
                 new()
                 {
-                    Key = "@invoiceDetailId",
-                    Value = invoiceDetailModel.InvoiceDetailKey
+                    Key = "@orderDetailId",
+                    Value = orderDetailModel.OrderDetailKey
                 },
                 new()
                 {
-                    Key = "@invoiceId",
-                    Value = invoiceDetailModel.InvoiceKey
+                    Key = "@orderId",
+                    Value = orderDetailModel.OrderKey
                 },
                 new()
                 {
                     Key = "@productId",
-                    Value = invoiceDetailModel.ProductKey
+                    Value = orderDetailModel.ProductKey
                 },
                 new()
                 {
-                    Key = "@invoiceDetailUnitPrice",
-                    Value = invoiceDetailModel.InvoiceDetailUnitPrice
+                    Key = "@orderDetailUnitPrice",
+                    Value = orderDetailModel.OrderDetailUnitPrice
                 },
                 new()
                 {
-                    Key = "@invoiceDetailQuantity",
-                    Value = invoiceDetailModel.InvoiceDetailQuantity
+                    Key = "@orderDetailQuantity",
+                    Value = orderDetailModel.OrderDetailQuantity
                 },
                 new()
                 {
-                    Key = "@invoiceDetailDiscount",
-                    Value = invoiceDetailModel.InvoiceDetailDiscount
+                    Key = "@orderDetailDiscount",
+                    Value = orderDetailModel.OrderDetailDiscount
                 },
                 new()
                 {
@@ -344,7 +344,7 @@ isDelete=@isDelete
         }
     }
 
-    public void Delete(InvoiceDetailModel invoiceDetailModel)
+    public void Delete(OrderDetailModel orderDetailModel)
     {
         var sql = string.Empty;
         List<ParameterModel> parameterModels = new();
@@ -354,16 +354,16 @@ isDelete=@isDelete
             connection.Open();
             var mySqlTransaction = connection.BeginTransaction();
             sql = @"
-                UPDATE  invoice_detail 
+                UPDATE  order_detail 
                 SET     isDelete    =   1
-                WHERE   invoiceDetailId    =   @invoiceDetailId";
+                WHERE   orderDetailId    =   @orderDetailId";
             MySqlCommand mySqlCommand = new(sql, connection);
             parameterModels = new List<ParameterModel>
             {
                 new()
                 {
-                    Key = "@invoiceDetailId",
-                    Value = invoiceDetailModel.InvoiceDetailKey
+                    Key = "@orderDetailId",
+                    Value = orderDetailModel.OrderDetailKey
                 }
             };
             foreach (var parameter in parameterModels)

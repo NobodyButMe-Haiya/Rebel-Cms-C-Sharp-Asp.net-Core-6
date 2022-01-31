@@ -2,7 +2,6 @@
 @using RebelCmsTemplate.Models.Administrator
 @using RebelCmsTemplate.Repository.Administrator;
 @using RebelCmsTemplate.Util;
-@using RebelCmsTemplate.Enum;
 @using Microsoft.AspNetCore.Http
 @{
     SharedUtil sharedUtils = new(_httpContextAccessor);
@@ -183,16 +182,17 @@
                     accessDenied();
                 } else if (typeof (code) === 'string') {
                     callBackError();
-                } else if {
+                } else {
                     location.href = "/";
                 }
-            }).fail(function (xhr) {
-                    console.log(xhr.status)
-                    Swal.fire("System", "@SharedUtil.UserErrorNotification", "error");
-                    accessDenied();
-                }).always(function () {
-                    console.log("always:complete");
-                });
+            }
+        }).fail(function (xhr) {
+            console.log(xhr.status)
+            Swal.fire("System", "@SharedUtil.UserErrorNotification", "error");
+            accessDenied();
+        }).always(function () {
+            console.log("always:complete");
+        });
     }
     function searchRecord() {
         let row = { logKey: "", logUserName: "", logQuery: "", logQueryError: "", logDatetime: "" };
@@ -239,15 +239,16 @@
                     accessDenied();
                 } else if (typeof (code) === 'string') {
                     callBackError();
-                } else if {
+                } else {
                     location.href = "/";
                 }
-            }).fail(function (xhr) {
-                    console.log(xhr.status)
-                    Swal.fire("System", "@SharedUtil.UserErrorNotification", "error");
-                    accessDenied();
-                }).always(function () {
-                    console.log("always:complete");
-                });
+            }
+        }).fail(function (xhr) {
+            console.log(xhr.status)
+            Swal.fire("System", "@SharedUtil.UserErrorNotification", "error");
+            accessDenied();
+        }).always(function () {
+            console.log("always:complete");
+        });
     }
 </script>

@@ -16353,11 +16353,6 @@
       "FileKind": "mvc"
     },
     {
-      "FilePath": "/Users/user/Projects/Rebel-Cms-C-Sharp-Asp.net-Core-6/RebelCmsTemplate/Views/Pages/Application/Invoice.cshtml",
-      "TargetPath": "Views\\Pages\\Application\\Invoice.cshtml",
-      "FileKind": "mvc"
-    },
-    {
       "FilePath": "/Users/user/Projects/Rebel-Cms-C-Sharp-Asp.net-Core-6/RebelCmsTemplate/Views/Pages/Setting/ProductCategory.cshtml",
       "TargetPath": "Views\\Pages\\Setting\\ProductCategory.cshtml",
       "FileKind": "mvc"
@@ -16385,6 +16380,11 @@
     {
       "FilePath": "/Users/user/Projects/Rebel-Cms-C-Sharp-Asp.net-Core-6/RebelCmsTemplate/Views/Pages/Administrator/Log.cshtml",
       "TargetPath": "Views\\Pages\\Administrator\\Log.cshtml",
+      "FileKind": "mvc"
+    },
+    {
+      "FilePath": "/Users/user/Projects/Rebel-Cms-C-Sharp-Asp.net-Core-6/RebelCmsTemplate/Views/Pages/Application/Order.cshtml",
+      "TargetPath": "Views\\Pages\\Application\\Order.cshtml",
       "FileKind": "mvc"
     },
     {

@@ -79,17 +79,13 @@ public class UserController : Controller
                         var userName = Request.Form["userName"].ToString();
                         var userPassword = Request.Form["userPassword"].ToString();
                         var userEmail = Request.Form["userEmail"].ToString();
-                        var userPhone = Request.Form["userPhone"].ToString();
-                        var userAddress = Request.Form["userAddress"].ToString();
 
                         var lastInsertKey = userRepository.Create(new UserModel
                         {
                             RoleKey = roleKey,
                             UserName = userName,
                             UserPassword = userPassword,
-                            UserEmail = userEmail,
-                            UserPhone = userPhone,
-                            UserAddress = userAddress
+                            UserEmail = userEmail
                         });
                         code = ((int) ReturnCodeEnum.CREATE_SUCCESS).ToString();
                         status = true;
@@ -190,8 +186,6 @@ public class UserController : Controller
                             var userName = Request.Form["userName"].ToString();
                             var userPassword = Request.Form["userPassword"].ToString();
                             var userEmail = Request.Form["userEmail"].ToString();
-                            var userPhone = Request.Form["userPhone"].ToString();
-                            var userAddress = Request.Form["userAddress"].ToString();
 
                             userRepository.Update(new UserModel
                             {
@@ -199,8 +193,6 @@ public class UserController : Controller
                                 UserName = userName,
                                 UserPassword = userPassword,
                                 UserEmail = userEmail,
-                                UserPhone = userPhone,
-                                UserAddress = userAddress,
                                 UserKey = userKey
                             });
                             code = ((int) ReturnCodeEnum.UPDATE_SUCCESS).ToString();

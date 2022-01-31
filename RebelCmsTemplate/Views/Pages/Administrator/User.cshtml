@@ -2,7 +2,6 @@
 @using RebelCmsTemplate.Models.Administrator
 @using RebelCmsTemplate.Repository.Administrator;
 @using RebelCmsTemplate.Util;
-@using RebelCmsTemplate.Enum;
 @using Microsoft.AspNetCore.Http
 @{
     SharedUtil sharedUtils = new(_httpContextAccessor);
@@ -255,7 +254,7 @@
         const $userEmail = $("#userEmail");
         const $userPassword = $("#userPassword");
 
-        if ($roleKey.val().length === 0) {
+        if (!$roleKey.val()) {
             Swal.fire("System Error", "Please Enter all the form", "error");
             $roleKey.addClass("is-invalid").trigger('focus');
         }
@@ -310,7 +309,7 @@
                         accessDenied();
                     } else if (typeof (code) === 'string') {
                         callBackError();
-                    } else if {
+                    } else  {
                         location.href = "/";
                     }
                 } else {
@@ -442,7 +441,7 @@
         let $roleKey = $("#roleKey-" + userKey);
         let $userName = $("#userName-" + userKey).val();
         let $userPassword = $("#userPassword-" + userKey).val()
-        if ($roleKey.val().length === 0) {
+        if (!$roleKey.val()) {
             Swal.fire("System Error", "Please Enter all the form", "error");
             $roleKey.addClass("is-invalid").trigger('focus');
         }

@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using ClosedXML.Excel;
-using Microsoft.AspNetCore.Http;
+﻿using ClosedXML.Excel;
 using MySql.Data.MySqlClient;
 using RebelCmsTemplate.Models.Administrator;
 using RebelCmsTemplate.Models.Shared;
@@ -37,11 +33,11 @@ public class UserRepository
                 INSERT INTO `user` (
                     `userId`,       `tenantId`,     `roleId`,
                     `userName`,     `userPassword`, 
-                    `userEmail`,    `isDelete`,     `isConform`
+                    `userEmail`,    `isDelete`
                 ) VALUES (
                     null,           @tenantId,      @roleId,
                     @userName,      @userPassword,  
-                    @userEmail,     0,              0
+                    @userEmail,     0
                 );";
             MySqlCommand mySqlCommand = new(sql, connection);
 
@@ -139,8 +135,6 @@ public class UserRepository
                         RoleKey = Convert.ToUInt32(reader["roleId"]),
                         UserName = reader["userName"].ToString(),
                         UserEmail = reader["userEmail"].ToString(),
-                        UserPhone = reader["userPhone"].ToString(),
-                        UserAddress = reader["userAddress"].ToString(),
                         UserKey = Convert.ToUInt32(reader["userId"])
                     });
                 }
@@ -206,8 +200,6 @@ public class UserRepository
                         RoleKey = Convert.ToUInt32(reader["roleId"]),
                         UserName = reader["userName"].ToString(),
                         UserEmail = reader["userEmail"].ToString(),
-                        UserPhone = reader["userPhone"].ToString(),
-                        UserAddress = reader["userAddress"].ToString(),
                         UserKey = Convert.ToUInt32(reader["userId"])
                     });
                 }

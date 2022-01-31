@@ -2,11 +2,10 @@
 @using RebelCmsTemplate.Models.Application
 @using RebelCmsTemplate.Repository.Application
 @using RebelCmsTemplate.Util;
-@using RebelCmsTemplate.Enum;
 @using Microsoft.AspNetCore.Http
 @{
     SharedUtil sharedUtils = new(_httpContextAccessor);
-    List<InvoiceModel> invoiceModels = new();
+    List<OrderModel> orderModels = new();
     List<CustomerModel> customerModels = new();
     List<ShipperModel> shipperModels = new();
     List<EmployeeModel> employeeModels = new();
@@ -22,8 +21,8 @@
         ProductRepository productRepository = new(_httpContextAccessor);
         productModels = productRepository.Read();
 
-        InvoiceRepository invoiceRepository = new(_httpContextAccessor);
-        invoiceModels = invoiceRepository.Read();
+        OrderRepository orderRepository = new(_httpContextAccessor);
+        orderModels = orderRepository.Read();
     }
     catch (Exception ex)
     {
@@ -104,22 +103,22 @@
                         </tr>
                     </thead>
                     <tbody id="tableBody">
-                        @foreach (var row in invoiceModels)
+                        @foreach (var row in orderModels)
                         {
-                            <tr id='invoice-@row.InvoiceKey'>
+                            <tr id='order-@row.OrderKey'>
                                 <td>@row.CustomerName</td>
                                 <td>@row.ShipperName</td>
                                 <td>@row.EmployeeLastName</td>
-                                <td>@row.InvoiceOrderDate</td>
-                                <td>@row.InvoiceRequiredDate</td>
+                                <td>@row.OrderDate.Value.ToString("dd/MM/yyyy")</td>
+                                <td>@row.OrderRequiredDate.Value.ToString("dd/MM/yyyy")</td>
                                 <td style="text-align: center">
-                                    <Button type="button" class="btn btn-warning" onclick="viewRecord(@row.InvoiceKey)">
+                                    <Button type="button" class="btn btn-warning" onclick="viewRecord(@row.OrderKey)">
                                         <i class="fas fa-edit"></i>&nbsp;VIEW
                                     </Button>
                                 </td>
                             </tr>
                         }
-                        @if (invoiceModels.Count == 0)
+                        @if (orderModels.Count == 0)
                         {
                             <tr>
                                 <td colspan="16" class="noRecord">
@@ -155,7 +154,7 @@
                     </div>
                     <div class="card-body">
                         <div class="row">
-                            <input type="hidden" id="invoiceKey" value="0" />
+                            <input type="hidden" id="orderKey" value="0" />
                             <div class="col-md-6">
                                 <div class="form-group">
                                     <label for="customerKey">Customer</label>
@@ -215,37 +214,37 @@
                             </div>
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label for="invoiceOrderDate">Order Date</label>
-                                    <input type="date" id="invoiceOrderDate" class="form-control" value="" />
+                                    <label for="orderDate">Order Date</label>
+                                    <input type="date" id="orderDate" class="form-control" value="" />
                                 </div>
                             </div>
                         </div>
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label for="invoiceRequiredDate">Required Date</label>
-                                    <input type="date" id="invoiceRequiredDate" class="form-control" value="" />
+                                    <label for="orderRequiredDate">Required Date</label>
+                                    <input type="date" id="orderRequiredDate" class="form-control" value="" />
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label for="invoiceShippedDate">Shipped Date</label>
-                                    <input type="date" id="invoiceShippedDate" class="form-control" value="" />
+                                    <label for="orderShippedDate">Shipped Date</label>
+                                    <input type="date" id="orderShippedDate" class="form-control" value="" />
                                 </div>
                             </div>
                         </div>
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label for="invoiceFreight">Freight</label>
-                                    <input type="number" step="0.01" id="invoiceFreight" class="form-control" value="0"
+                                    <label for="orderFreight">Freight</label>
+                                    <input type="number" step="0.01" id="orderFreight" class="form-control" value="0"
                                         maxlength="104" />
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label for="invoiceShipName">Ship Name</label>
-                                    <input type="text" id="invoiceShipName" class="form-control" value=" "
+                                    <label for="orderShipName">Ship Name</label>
+                                    <input type="text" id="orderShipName" class="form-control" value=" "
                                         maxlength="40" />
                                 </div>
                             </div>
@@ -253,15 +252,15 @@
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label for="invoiceShipAddress">Ship Address</label>
-                                    <input type="text" id="invoiceShipAddress" class="form-control" value=" "
+                                    <label for="orderShipAddress">Ship Address</label>
+                                    <input type="text" id="orderShipAddress" class="form-control" value=" "
                                         maxlength="60" />
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label for="invoiceShipCity">Ship City</label>
-                                    <input type="text" id="invoiceShipCity" class="form-control" value=" "
+                                    <label for="orderShipCity">Ship City</label>
+                                    <input type="text" id="orderShipCity" class="form-control" value=" "
                                         maxlength="15" />
                                 </div>
                             </div>
@@ -269,15 +268,15 @@
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label for="invoiceShipRegion">Ship Region</label>
-                                    <input type="text" id="invoiceShipRegion" class="form-control" value=" "
+                                    <label for="orderShipRegion">Ship Region</label>
+                                    <input type="text" id="orderShipRegion" class="form-control" value=" "
                                         maxlength="15" />
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label for="invoiceShipPostalCode">Ship Postal Code</label>
-                                    <input type="text" id="invoiceShipPostalCode" class="form-control" value=" "
+                                    <label for="orderShipPostalCode">Ship Postal Code</label>
+                                    <input type="text" id="orderShipPostalCode" class="form-control" value=" "
                                         maxlength="10" />
                                 </div>
                             </div>
@@ -285,8 +284,8 @@
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label for="invoiceShipCountry">Ship Country</label>
-                                    <input type="text" id="invoiceShipCountry" class="form-control" value=" "
+                                    <label for="orderShipCountry">Ship Country</label>
+                                    <input type="text" id="orderShipCountry" class="form-control" value=" "
                                         maxlength="15" />
                                 </div>
                             </div>
@@ -326,20 +325,20 @@
                                     </td>
                                     <td>
                                         <label>
-                                            <input type="number" step="0.01" name="invoiceDetailUnitPrice"
-                                                id="detail_invoiceDetailUnitPrice" class="form-control" />
+                                            <input type="number" step="0.01" name="orderDetailUnitPrice" value="0.00"
+                                                id="detail_orderDetailUnitPrice" class="form-control" />
                                         </label>
                                     </td>
                                     <td>
                                         <label>
-                                            <input type="number" name="invoiceDetailQuantity"
-                                                id="detail_invoiceDetailQuantity" class="form-control" />
+                                            <input type="number" name="orderDetailQuantity" value="1"
+                                                id="detail_orderDetailQuantity" class="form-control" />
                                         </label>
                                     </td>
                                     <td>
                                         <label>
-                                            <input type="number" step="0.01" name="invoiceDetailDiscount"
-                                                id="detail_invoiceDetailDiscount" class="form-control" />
+                                            <input type="number" step="0.01" name="orderDetailDiscount" value="0.00"
+                                                id="detail_orderDetailDiscount" class="form-control" />
                                         </label>
                                     </td>
                                     <td style="text-align: center">
@@ -372,20 +371,20 @@
     var productModels = @Json.Serialize(productModels);
 </script>
 <script>
-    var $invoiceKey = $("#invoiceKey");
+    var $orderKey = $("#orderKey");
     var $customerKey = $("#customerKey");
     var $shipperKey = $("#shipperKey");
     var $employeeKey = $("#employeeKey");
-    var $invoiceOrderDate = $("#invoiceOrderDate");
-    var $invoiceRequiredDate = $("#invoiceRequiredDate");
-    var $invoiceShippedDate = $("#invoiceShippedDate");
-    var $invoiceFreight = $("#invoiceFreight");
-    var $invoiceShipName = $("#invoiceShipName");
-    var $invoiceShipAddress = $("#invoiceShipAddress");
-    var $invoiceShipCity = $("#invoiceShipCity");
-    var $invoiceShipRegion = $("#invoiceShipRegion");
-    var $invoiceShipPostalCode = $("#invoiceShipPostalCode");
-    var $nvoiceShipCountry = $("#invoiceShipCountry");
+    var $orderDate = $("#orderDate");
+    var $orderRequiredDate = $("#orderRequiredDate");
+    var $orderShippedDate = $("#orderShippedDate");
+    var $orderFreight = $("#orderFreight");
+    var $orderShipName = $("#orderShipName");
+    var $orderShipAddress = $("#orderShipAddress");
+    var $orderShipCity = $("#orderShipCity");
+    var $orderShipRegion = $("#orderShipRegion");
+    var $orderShipPostalCode = $("#orderShipPostalCode");
+    var $orderShipCountry = $("#orderShipCountry");
 
     function newRecord() {
         $("#listView").hide();
@@ -403,20 +402,20 @@
         $("#deleteButton").attr("disabled", "disabled");
     }
     function emptyForm() {
-        $invoiceKey.val("");
+        $orderKey.val("");
         $customerKey.val("");
         $shipperKey.val("");
         $employeeKey.val("");
-        $invoiceOrderDate.val("");
-        $invoiceRequiredDate.val("");
-        $invoiceShippedDate.val("");
-        $invoiceFreight.val("");
-        $invoiceShipName.val("");
-        $invoiceShipAddress.val("");
-        $invoiceShipCity.val("");
-        $invoiceShipRegion.val("");
-        $invoiceShipPostalCode.val("");
-        $nvoiceShipCountry.val("");
+        $orderDate.val("");
+        $orderRequiredDate.val("");
+        $orderShippedDate.val("");
+        $orderFreight.val("");
+        $orderShipName.val("");
+        $orderShipAddress.val("");
+        $orderShipCity.val("");
+        $orderShipRegion.val("");
+        $orderShipPostalCode.val("");
+        $orderShipCountry.val("");
     }
     function resetRecord() {
         readRecord();
@@ -430,23 +429,23 @@
     function emptyDetailTemplate() {
         return "<tr><td colspan='16'>It's lonely here</td></tr>";
     }
-    function template(invoiceKey, customerName, shipperName, employeeLastName, invoiceOrderDate, invoiceRequiredDate, invoiceShippedDate, invoiceFreight, invoiceShipName, invoiceShipAddress, invoiceShipCity, invoiceShipRegion, invoiceShipPostalCode, invoiceShipCountry) {
+    function template(orderKey, customerName, shipperName, employeeLastName, orderDate, orderRequiredDate) {
         let template = "" +
-            "<tr id='invoice-" + invoiceKey + "'>" +
+            "<tr id='order-" + orderKey + "'>" +
             "<td>" + customerName + "</td>" +
             "<td>" + shipperName + "</td>" +
             "<td>" + employeeLastName + "</td>" +
-            "<td>" + invoiceOrderDate + "</td>" +
-            "<td>" + invoiceRequiredDate + "</td>" +
+            "<td>" + orderDate + "</td>" +
+            "<td>" + orderRequiredDate + "</td>" +
             "<td style='text-align: center'><div class='btn-group'>" +
-            "<Button type='button' class='btn btn-warning' onclick='viewRecord(" + invoiceKey + ")'>" +
+            "<Button type='button' class='btn btn-warning' onclick='viewRecord(" + orderKey + ")'>" +
             "<i class='fas fa-search'></i> View" +
             "</Button>" +
             "</div></td>" +
             "</tr>";
         return template;
     }
-    function templateDetail(invoiceDetailKey, invoiceKey, productKey, invoiceDetailUnitPrice, invoiceDetailQuantity, invoiceDetailDiscount) {
+    function templateDetail(orderDetailKey, orderKey, productKey, orderDetailUnitPrice, orderDetailQuantity, orderDetailDiscount) {
         let productKeyOptions = "";
         let i = 0;
         productModels.map((row) => {
@@ -455,35 +454,35 @@
             productKeyOptions += "<option value='" + row.productKey + "' " + selected + ">" + row.productName + "</option>";
         });
         let template = "" +
-            "<tr id='invoiceDetail-" + invoiceDetailKey + "'>" +
+            "<tr id='orderDetail-" + orderDetailKey + "'>" +
             "<td class='tdNormalAlign'>" +
             " <label>" +
-            "<select id='productKey-" + invoiceDetailKey + "' class='form-control'>";
+            "<select id='productKey-" + orderDetailKey + "' class='form-control'>";
         template += productKeyOptions;
         template += "</select>" +
             "</label>" +
             "</td>" +
             "<td>" +
             "<label>" +
-            "<input type='number' step='0.01' name='invoiceDetailUnitPrice' id='invoiceDetailUnitPrice-" + invoiceDetailKey + "' value='" + invoiceDetailUnitPrice + "' class='form-control' />" +
+            "<input type='number' step='0.01' name='orderDetailUnitPrice' id='orderDetailUnitPrice-" + orderDetailKey + "' value='" + orderDetailUnitPrice + "' class='form-control' />" +
             "</label>" +
             "</td>" +
             "<td>" +
             "<label>" +
-            "<input type='number' name='invoiceDetailQuantity' id='invoiceDetailQuantity-" + invoiceDetailKey + "' value='" + invoiceDetailQuantity + "' class='form-control' />" +
+            "<input type='number' name='orderDetailQuantity' id='orderDetailQuantity-" + orderDetailKey + "' value='" + orderDetailQuantity + "' class='form-control' />" +
             "</label>" +
             "</td>" +
             "<td>" +
             "<label>" +
-            "<input type='number' step='0.01' name='invoiceDetailDiscount' id='invoiceDetailDiscount-" + invoiceDetailKey + "' value='" + invoiceDetailDiscount + "' class='form-control' />" +
+            "<input type='number' step='0.01' name='orderDetailDiscount' id='orderDetailDiscount-" + orderDetailKey + "' value='" + orderDetailDiscount + "' class='form-control' />" +
             "</label>" +
             "</td>" +
             "<td style='text-align: center'><div class='btn-group'>" +
-            " <Button type='button' class='btn btn-warning' onclick='updateDetailRecord(" + invoiceDetailKey + ")'>" +
+            " <Button type='button' class='btn btn-warning' onclick='updateDetailRecord(" + orderDetailKey + ")'>" +
             "<i class='fas fa-edit'></i> UPDATE" +
             "</Button>" +
             "&nbsp;" +
-            "<Button type='button' class='btn btn-danger' onclick='deleteDetailRecord(" + invoiceDetailKey + ")'>" +
+            "<Button type='button' class='btn btn-danger' onclick='deleteDetailRecord(" + orderDetailKey + ")'>" +
             "<i class='fas fa-trash'></i> DELETE" +
             "</Button>" +
             "</div></td>" +
@@ -491,15 +490,16 @@
         return template;
     }
     function createRecord() {
-        if ($customerKey.val().length === 0) {
+   
+        if (!$customerKey.val()) {
             Swal.fire("System Error", "Please Enter all the form", "error");
             $customerKey.addClass("is-invalid").trigger('focus');
         }
-        else if ($shipperKey.val().length === 0) {
+        else if (!$shipperKey.val()) {
             Swal.fire("System Error", "Please Enter all the form", "error");
             $shipperKey.addClass("is-invalid").trigger('focus');
         }
-        else if ($employeeKey.val().length === 0) {
+        else if (!$employeeKey.val()) {
             Swal.fire("System Error", "Please Enter all the form", "error");
             $employeeKey.addClass("is-invalid").trigger('focus');
         }
@@ -509,7 +509,7 @@
             $employeeKey.removeClass("is-invalid");
             $.ajax({
                 type: 'POST',
-                url: "api/application/invoice",
+                url: "api/application/order",
                 async: false,
                 data: {
                     mode: 'create',
@@ -517,16 +517,16 @@
                     customerKey: $customerKey.val(),
                     shipperKey: $shipperKey.val(),
                     employeeKey: $employeeKey.val(),
-                    invoiceOrderDate: $invoiceOrderDate.val(),
-                    invoiceRequiredDate: $invoiceRequiredDate.val(),
-                    invoiceShippedDate: $invoiceShippedDate.val(),
-                    invoiceFreight: $invoiceFreight.val(),
-                    invoiceShipName: $invoiceShipName.val(),
-                    invoiceShipAddress: $invoiceShipAddress.val(),
-                    invoiceShipCity: $invoiceShipCity.val(),
-                    invoiceShipRegion: $invoiceShipRegion.val(),
-                    invoiceShipPostalCode: $invoiceShipPostalCode.val(),
-                    invoiceShipCountry: $invoiceShipCountry.val(),
+                    orderDate: $orderDate.val(),
+                    orderRequiredDate: $orderRequiredDate.val(),
+                    orderShippedDate: $orderShippedDate.val(),
+                    orderFreight: $orderFreight.val(),
+                    orderShipName: $orderShipName.val(),
+                    orderShipAddress: $orderShipAddress.val(),
+                    orderShipCity: $orderShipCity.val(),
+                    orderShipRegion: $orderShipRegion.val(),
+                    orderShipPostalCode: $orderShipPostalCode.val(),
+                    orderShipCountry: $orderShipCountry.val(),
                 }, statusCode: {
                     500: function () {
                         Swal.fire("System Error", "@SharedUtil.UserErrorNotification", "error");
@@ -543,7 +543,7 @@
                 let code = data.code;
                 if (status) {
                     const lastInsertKey = data.lastInsertKey;
-                    $("#invoiceKey").val(lastInsertKey);
+                    $("#orderKey").val(lastInsertKey);
                     $("#createButton").attr("disabled", "disabled");
                     $("#updateButton").removeAttr("disabled");
                     $("#deleteButton").removeAttr("disabled");
@@ -558,7 +558,7 @@
                         accessDenied();
                     } else if (typeof (code) === 'string') {
                         callBackError();
-                    } else if {
+                    } else  {
                         location.href = "/";
                     }
                 } else {
@@ -573,30 +573,34 @@
         }
     }
     function createDetailRecord() {
-        const $invoiceKey = $("#invoiceKey");
+        const $orderKey = $("#orderKey");
         const $productKey = $("#detail_productKey");
-        const $invoiceDetailUnitPrice = $("#detail_invoiceDetailUnitPrice");
-        const $invoiceDetailQuantity = $("#detail_invoiceDetailQuantity");
-        const $invoiceDetailDiscount = $("#detail_invoiceDetailDiscount");
+        const $orderDetailUnitPrice = $("#detail_orderDetailUnitPrice");
+        const $orderDetailQuantity = $("#detail_orderDetailQuantity");
+        const $orderDetailDiscount = $("#detail_orderDetailDiscount");
 
-        if ($productKey.val().length === 0) {
-            Swal.fire("System Error", "Please Enter all the form", "error");
+        if (!$productKey.val()) {
+            Swal.fire("System Error", "Please Enter all the form :: [Product]", "error");
+            $productKey.addClass("is-invalid").trigger('focus');
+        }
+        else if (parseInt($orderDetailQuantity.val())==0) {
+            Swal.fire("System Error", "Please Enter all the form :: [Quantity]", "error");
             $productKey.addClass("is-invalid").trigger('focus');
         }
         else {
             $productKey.removeClass("is-invalid");
             $.ajax({
                 type: 'POST',
-                url: "api/application/invoiceDetail",
+                url: "api/application/orderDetail",
                 async: false,
                 data: {
                     mode: 'create',
                     leafCheckKey: @navigationModel.LeafCheckKey,
-                    invoiceKey: $invoiceKey.val(),
+                    orderKey: $orderKey.val(),
                     productKey: $productKey.val(),
-                    invoiceDetailUnitPrice: $invoiceDetailUnitPrice.val(),
-                    invoiceDetailQuantity: $invoiceDetailQuantity.val(),
-                    invoiceDetailDiscount: $invoiceDetailDiscount.val(),
+                    orderDetailUnitPrice: $orderDetailUnitPrice.val(),
+                    orderDetailQuantity: $orderDetailQuantity.val(),
+                    orderDetailDiscount: $orderDetailDiscount.val(),
                 },
                 statusCode: {
                     500: function () {
@@ -615,7 +619,7 @@
                 let code = data.code;
                 if (status) {
                     const lastInsertKey = data.lastInsertKey;
-                    $("#tableDetailBody").prepend(templateDetail(lastInsertKey, invoiceKey.val(), productKey.val(), invoiceDetailUnitPrice.val(), invoiceDetailQuantity.val(), invoiceDetailDiscount.val()));
+                    $("#tableDetailBody").prepend(templateDetail(lastInsertKey, $orderKey.val(), $productKey.val(), $orderDetailUnitPrice.val(), $orderDetailQuantity.val(), $orderDetailDiscount.val()));
                     Swal.fire({
                         title: 'Success!',
                         text: '@SharedUtil.RecordCreated',
@@ -623,15 +627,15 @@
                         confirmButtonText: 'Cool'
                     });
                     $productKey.val('');
-                    $invoiceDetailUnitPrice.val('');
-                    $invoiceDetailQuantity.val('');
-                    $invoiceDetailDiscount.val('');
+                    $orderDetailUnitPrice.val('');
+                    $orderDetailQuantity.val('');
+                    $orderDetailDiscount.val('');
                 } else if (status === false) {
                     if (parseInt(code) === accessDeniedCode) {
                         accessDenied();
                     } else if (typeof (code) === 'string') {
                         callBackError();
-                    } else if {
+                    } else  {
                         location.href = "/";
                     }
                 } else {
@@ -648,7 +652,7 @@
     function readRecord() {
         $.ajax({
             type: "post",
-            url: "api/application/invoice",
+            url: "api/application/order",
             async: false,
             contentType: "application/x-www-form-urlencoded",
             data: {
@@ -676,7 +680,7 @@
                         let templateStringBuilder = "";
                         for (let i = 0; i < data.data.length; i++) {
                             let row = data.data[i];
-                            templateStringBuilder += template(row.invoiceKey, row.customerName, row.shipperName, row.employeeLastName, row.invoiceOrderDate);
+                            templateStringBuilder += template(row.orderKey, row.customerName, row.shipperName, row.employeeLastName, getLocaleDate(row.orderDate), getLocaleDate(row.orderRequiredDate));
                         }
                         $("#tableBody").html("").html(templateStringBuilder);
                     } else {
@@ -688,7 +692,7 @@
                     accessDenied();
                 } else if (typeof (code) === 'string') {
                     callBackError();
-                } else if {
+                } else  {
                     location.href = "/";
                 }
             } else {
@@ -704,7 +708,7 @@
     function readDetailRecord() {
         $.ajax({
             type: "post",
-            url: "api/application/invoiceDetail",
+            url: "api/application/orderDetail",
             async: false,
             contentType: "application/x-www-form-urlencoded",
             data: {
@@ -733,7 +737,7 @@
                         let templateStringBuilder = "";
                         for (let i = 0; i < data.data.length; i++) {
                             let row = data.data[i];
-                            templateStringBuilder += template(row.invoiceDetailKey, row.invoiceKey, row.productKey, row.invoiceDetailUnitPrice, row.invoiceDetailQuantity, row.invoiceDetailDiscount);
+                            templateStringBuilder += template(row.orderDetailKey, row.orderKey, row.productKey, row.orderDetailUnitPrice, row.orderDetailQuantity, row.orderDetailDiscount);
                         }
                         $("#tableDetailBody").html("").html(templateStringBuilder);
                     } else {
@@ -745,7 +749,7 @@
                     accessDenied();
                 } else if (typeof (code) === 'string') {
                     callBackError();
-                } else if {
+                } else  {
                     location.href = "/";
                 }
             } else {
@@ -761,7 +765,7 @@
     function searchRecord() {
         $.ajax({
             type: "post",
-            url: "api/application/invoice",
+            url: "api/application/order",
             async: false,
             contentType: "application/x-www-form-urlencoded",
             data: {
@@ -789,7 +793,8 @@
                         let templateStringBuilder = "";
                         for (let i = 0; i < data.data.length; i++) {
                             let row = data.data[i];
-                            templateStringBuilder += template(row.invoiceKey, row.customerName, row.shipperName, row.employeeLastName, row.invoiceOrderDate, row.invoiceRequiredDate, row.invoiceShippedDate, row.invoiceFreight, row.invoiceShipName, row.invoiceShipAddress, row.invoiceShipCity, row.invoiceShipRegion, row.invoiceShipPostalCode, row.invoiceShipCountry);
+                            console.log("test:["+row.orderRequiredDate+"]");
+                            templateStringBuilder += template(row.orderKey, row.customerName, row.shipperName, row.employeeLastName, getLocaleDate(row.orderDate), getLocaleDate(row.orderRequiredDate));
                         }
                         $("#tableBody").html("").html(templateStringBuilder);
                     }
@@ -799,7 +804,7 @@
                     accessDenied();
                 } else if (typeof (code) === 'string') {
                     callBackError();
-                } else if {
+                } else  {
                     location.href = "/";
                 }
             } else {
@@ -813,20 +818,25 @@
         });
     }
     function excelRecord() {
-        window.open("api/application/invoice");
+        window.open("api/application/order");
     }
-    function viewRecord(invoiceKey) {
+    function viewRecord(orderKey) {
         $("#listView").hide();
         $("#formView").show();
+        $("#createButton").removeAttr("disabled");
+        $("#createDetailButton").removeAttr("disabled");
+        $("#updateButton").attr("disabled", "disabled");
+        $("#deleteButton").attr("disabled", "disabled");
+        emptyForm();
         $.ajax({
             type: "post",
-            url: "api/application/invoice",
+            url: "api/application/order",
             async: false,
             contentType: "application/x-www-form-urlencoded",
             data: {
                 mode: "singleWithDetail",
                 leafCheckKey: @navigationModel.LeafCheckKey,
-                invoiceKey: invoiceKey
+                orderKey: orderKey
             },
             statusCode: {
                 500: function () {
@@ -844,25 +854,25 @@
                 if (data.dataSingle === void 0) {
                     $("#tableBody").html("").html(emptyTemplate());
                 } else {
-                    $invoiceKey.val(data.dataSingle.invoiceKey);
+                    $orderKey.val(data.dataSingle.orderKey);
                     $customerKey.val(data.dataSingle.customerKey);
                     $shipperKey.val(data.dataSingle.shipperKey);
                     $employeeKey.val(data.dataSingle.employeeKey);
-                    $invoiceOrderDate.val(data.dataSingle.invoiceOrderDate);
-                    $invoiceRequiredDate.val(data.dataSingle.invoiceRequiredDate);
-                    $invoiceShippedDate.val(data.dataSingle.invoiceShippedDate);
-                    $invoiceFreight.val(data.dataSingle.invoiceFreight);
-                    $invoiceShipName.val(data.dataSingle.invoiceShipName);
-                    $invoiceShipAddress.val(data.dataSingle.invoiceShipAddress);
-                    $invoiceShipCity.val(data.dataSingle.invoiceShipCity);
-                    $invoiceShipRegion.val(data.dataSingle.invoiceShipRegion);
-                    $invoiceShipPostalCode.val(data.dataSingle.invoiceShipPostalCode);
-                    $invoiceShipCountry.val(data.dataSingle.invoiceShipCountry);
+                    $orderDate.val(data.dataSingle.orderDate);
+                    $orderRequiredDate.val(data.dataSingle.orderRequiredDate);
+                    $orderShippedDate.val(data.dataSingle.orderShippedDate);
+                    $orderFreight.val(data.dataSingle.orderFreight);
+                    $orderShipName.val(data.dataSingle.orderShipName);
+                    $orderShipAddress.val(data.dataSingle.orderShipAddress);
+                    $orderShipCity.val(data.dataSingle.orderShipCity);
+                    $orderShipRegion.val(data.dataSingle.orderShipRegion);
+                    $orderShipPostalCode.val(data.dataSingle.orderShipPostalCode);
+                    $orderShipCountry.val(data.dataSingle.orderShipCountry);
                     if (data.dataSingle.data.length > 0) {
                         let templateStringBuilder = "";
                         for (let i = 0; i < data.dataSingle.data.length; i++) {
                             let row = data.dataSingle.data[i];
-                            templateStringBuilder += templateDetail(row.invoiceDetailKey, row.invoiceKey, row.productKey, row.invoiceDetailUnitPrice, row.invoiceDetailQuantity, row.invoiceDetailDiscount);
+                            templateStringBuilder += templateDetail(row.orderDetailKey, row.orderKey, row.productKey, row.orderDetailUnitPrice, row.orderDetailQuantity, row.orderDetailDiscount);
                         }
                         $("#tableDetailBody").html("").html(templateStringBuilder);
                     }
@@ -876,7 +886,7 @@
                     accessDenied();
                 } else if (typeof (code) === 'string') {
                     callBackError();
-                } else if {
+                } else  {
                     location.href = "/";
                 }
             } else {
@@ -890,18 +900,18 @@
         });
     }
     function excelRecord() {
-        window.open("api/application/invoice");
+        window.open("api/application/order");
     }
     function updateRecord() {
-        if ($customerKey.val().length === 0) {
+        if (!$customerKey.val()) {
             Swal.fire("System Error", "Please Enter all the form", "error");
             $customerKey.addClass("is-invalid").trigger('focus');
         }
-        else if ($shipperKey.val().length === 0) {
+        else if (!$shipperKey.val()) {
             Swal.fire("System Error", "Please Enter all the form", "error");
             $shipperKey.addClass("is-invalid").trigger('focus');
         }
-        else if ($employeeKey.val().length === 0) {
+        else if (!$employeeKey.val()) {
             Swal.fire("System Error", "Please Enter all the form", "error");
             $employeeKey.addClass("is-invalid").trigger('focus');
         }
@@ -911,25 +921,25 @@
             $employeeKey.removeClass("is-invalid");
             $.ajax({
                 type: 'POST',
-                url: "api/application/invoice",
+                url: "api/application/order",
                 async: false,
                 data: {
                     mode: 'update',
                     leafCheckKey: @navigationModel.LeafCheckKey,
-                    invoiceKey: $invoiceKey.val(),
+                    orderKey: $orderKey.val(),
                     customerKey: $customerKey.val(),
                     shipperKey: $shipperKey.val(),
                     employeeKey: $employeeKey.val(),
-                    invoiceOrderDate: $invoiceOrderDate.val(),
-                    invoiceRequiredDate: $invoiceRequiredDate.val(),
-                    invoiceShippedDate: $invoiceShippedDate.val(),
-                    invoiceFreight: $invoiceFreight.val(),
-                    invoiceShipName: $invoiceShipName.val(),
-                    invoiceShipAddress: $invoiceShipAddress.val(),
-                    invoiceShipCity: $invoiceShipCity.val(),
-                    invoiceShipRegion: $invoiceShipRegion.val(),
-                    invoiceShipPostalCode: $invoiceShipPostalCode.val(),
-                    invoiceShipCountry: $invoiceShipCountry.val(),
+                    orderDate: $orderDate.val(),
+                    orderRequiredDate: $orderRequiredDate.val(),
+                    orderShippedDate: $orderShippedDate.val(),
+                    orderFreight: $orderFreight.val(),
+                    orderShipName: $orderShipName.val(),
+                    orderShipAddress: $orderShipAddress.val(),
+                    orderShipCity: $orderShipCity.val(),
+                    orderShipRegion: $orderShipRegion.val(),
+                    orderShipPostalCode: $orderShipPostalCode.val(),
+                    orderShipCountry: $orderShipCountry.val(),
                 },
                 statusCode: {
                     500: function () {
@@ -956,7 +966,7 @@
                         accessDenied();
                     } else if (typeof (code) === 'string') {
                         callBackError();
-                    } else if {
+                    } else  {
                         location.href = "/";
                     }
                 } else {
@@ -970,30 +980,33 @@
             });
         }
     }
-    function updateDetailRecord(invoiceDetailKey) {
-        let $productKey = $("#productKey-" + invoiceDetailKey);
-        let $invoiceDetailUnitPrice = $("#invoiceDetailUnitPrice-" + invoiceDetailKey);
-        let $invoiceDetailQuantity = $("#invoiceDetailQuantity-" + invoiceDetailKey);
-        let invoiceDetailDiscount = $("#invoiceDetailDiscount-" + invoiceDetailKey);
-        if ($productKey.val().length === 0) {
+    function updateDetailRecord(orderDetailKey) {
+        let $productKey = $("#productKey-" + orderDetailKey);
+        let $orderDetailUnitPrice = $("#orderDetailUnitPrice-" + orderDetailKey);
+        let $orderDetailQuantity = $("#orderDetailQuantity-" + orderDetailKey);
+        let $orderDetailDiscount = $("#orderDetailDiscount-" + orderDetailKey);
+        if (!$productKey.val()) {
             Swal.fire("System Error", "Please Enter all the form", "error");
+            $productKey.addClass("is-invalid").trigger('focus');
+        } else if (parseInt($orderDetailQuantity.val())==0) {
+            Swal.fire("System Error", "Please Enter all the form :: [Quantity]", "error");
             $productKey.addClass("is-invalid").trigger('focus');
         }
         else {
             $productKey.removeClass("is-invalid");
             $.ajax({
                 type: 'POST',
-                url: "api/application/invoiceDetail",
+                url: "api/application/orderDetail",
                 async: false,
                 data: {
                     mode: 'update',
                     leafCheckKey: @navigationModel.LeafCheckKey,
-                    invoiceDetailKey: invoiceDetailKey,
-                    invoiceKey: $invoiceKey.val(),
+                    orderDetailKey: orderDetailKey,
+                    orderKey: $orderKey.val(),
                     productKey: $productKey.val(),
-                    invoiceDetailUnitPrice: $invoiceDetailUnitPrice.val(),
-                    invoiceDetailQuantity: $invoiceDetailQuantity.val(),
-                    invoiceDetailDiscount: $invoiceDetailDiscount.val(),
+                    orderDetailUnitPrice: $orderDetailUnitPrice.val(),
+                    orderDetailQuantity: $orderDetailQuantity.val(),
+                    orderDetailDiscount: $orderDetailDiscount.val(),
                 },
                 statusCode: {
                     500: function () {
@@ -1017,7 +1030,7 @@
                         accessDenied();
                     } else if (typeof (code) === 'string') {
                         callBackError();
-                    } else if {
+                    } else  {
                         location.href = "/";
                     }
                 } else {
@@ -1044,12 +1057,12 @@
             if (result.value) {
                 $.ajax({
                     type: 'POST',
-                    url: "api/application/invoice",
+                    url: "api/application/order",
                     async: false,
                     data: {
                         mode: 'delete',
                         leafCheckKey: @navigationModel.LeafCheckKey,
-                        invoiceKey: $("#invoiceKey").val()
+                        orderKey: $("#orderKey").val()
                     },
                     statusCode: {
                         500: function () {
@@ -1077,7 +1090,7 @@
                             accessDenied();
                         } else if (typeof (code) === 'string') {
                             callBackError();
-                        } else if {
+                        } else  {
                             location.href = "/";
                         }
                     } else {
@@ -1098,7 +1111,7 @@
             }
         });
     }
-    function deleteDetailRecord(invoiceDetailKey) {
+    function deleteDetailRecord(orderDetailKey) {
         Swal.fire({
             title: 'Are you sure?',
             text: "You won't be able to revert this!",
@@ -1111,12 +1124,12 @@
             if (result.value) {
                 $.ajax({
                     type: 'POST',
-                    url: "api/application/invoiceDetail",
+                    url: "api/application/orderDetail",
                     async: false,
                     data: {
                         mode: 'delete',
                         leafCheckKey: @navigationModel.LeafCheckKey,
-                        invoiceDetailKey: invoiceDetailKey
+                        orderDetailKey: orderDetailKey
                     },
                     statusCode: {
                         500: function () {
@@ -1132,14 +1145,14 @@
                     let status = data.status;
                     let code = data.code;
                     if (status) {
-                        $("#invoiceDetail-" + invoiceDetailKey).remove();
+                        $("#orderDetail-" + orderDetailKey).remove();
                         Swal.fire("System", "@SharedUtil.RecordDeleted", "success");
                     } else if (status === false) {
                         if (parseInt(code) === accessDeniedCode) {
                             accessDenied();
                         } else if (typeof (code) === 'string') {
                             callBackError();
-                        } else if {
+                        } else  {
                             location.href = "/";
                         }
                     } else {

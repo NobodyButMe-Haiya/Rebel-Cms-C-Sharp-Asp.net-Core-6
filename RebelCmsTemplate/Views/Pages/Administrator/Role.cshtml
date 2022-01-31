@@ -2,7 +2,6 @@
 @using RebelCmsTemplate.Models.Administrator
 @using RebelCmsTemplate.Repository.Administrator;
 @using RebelCmsTemplate.Util;
-@using RebelCmsTemplate.Enum;
 @using Microsoft.AspNetCore.Http
 @{
     SharedUtil sharedUtils = new(_httpContextAccessor);
@@ -226,7 +225,7 @@
                         accessDenied();
                     } else if (typeof (code) === 'string') {
                         callBackError();
-                    } else if {
+                    } else  {
                         location.href = "/";
                     }
                 } else {
@@ -286,7 +285,7 @@
                     accessDenied();
                 } else if (typeof (code) === 'string') {
                     callBackError();
-                } else if {
+                } else  {
                     location.href = "/";
                 }
             } else {
@@ -343,7 +342,7 @@
                     accessDenied();
                 } else if (typeof (code) === 'string') {
                     callBackError();
-                } else if {
+                } else  {
                     location.href = "/";
                 }
             } else {
@@ -398,7 +397,7 @@
                         accessDenied();
                     } else if (typeof (code) === 'string') {
                         callBackError();
-                    } else if {
+                    } else  {
                         location.href = "/";
                     }
                 } else {
@@ -456,7 +455,7 @@
                             accessDenied();
                         } else if (typeof (code) === 'string') {
                             callBackError();
-                        } else if {
+                        } else  {
                             location.href = "/";
                         }
                     } else {

@@ -2,7 +2,6 @@
 @using RebelCmsTemplate.Models.Application
 @using RebelCmsTemplate.Repository.Application
 @using RebelCmsTemplate.Util;
-@using RebelCmsTemplate.Enum;
 @using RebelCmsTemplate.Models.Setting
 @using RebelCmsTemplate.Repository.Setting
 @using Microsoft.AspNetCore.Http
@@ -356,15 +355,16 @@
             "</tr>";
     }
     function createRecord() {
-        if ($supplierKey.val().length === 0) {
+        console.log("weird:["+$supplierKey.val()+"]");
+        if (!$supplierKey.val()) {
             Swal.fire("System Error", "Please Enter all the form", "error");
             $supplierKey.addClass("is-invalid").trigger('focus');
         }
-        else if ($productCategoryKey.val().length === 0) {
+        else if (!$productCategoryKey.val()) {
             Swal.fire("System Error", "Please Enter all the form", "error");
             $productCategoryKey.addClass("is-invalid").trigger('focus');
         }
-        else if ($productTypeKey.val().length === 0) {
+        else if (!$productTypeKey.val()) {
             Swal.fire("System Error", "Please Enter all the form", "error");
             $productTypeKey.addClass("is-invalid").trigger('focus');
         }
@@ -428,7 +428,7 @@
                         accessDenied();
                     } else if (typeof (code) === 'string') {
                         callBackError();
-                    } else if {
+                    } else  {
                         location.href = "/";
                     }
                 } else {
@@ -484,7 +484,7 @@
                     accessDenied();
                 } else if (typeof (code) === 'string') {
                     callBackError();
-                } else if {
+                } else  {
                     location.href = "/";
                 }
             } else {
@@ -537,7 +537,7 @@
                     accessDenied();
                 } else if (typeof (code) === 'string') {
                     callBackError();
-                } else if {
+                } else  {
                     location.href = "/";
                 }
             } else {
@@ -601,7 +601,7 @@
                     accessDenied();
                 } else if (typeof (code) === 'string') {
                     callBackError();
-                } else if {
+                } else  {
                     location.href = "/";
                 }
             } else {
@@ -618,15 +618,15 @@
         window.open("api/application/product");
     }
     function updateRecord() {
-        if ($supplierKey.val().length === 0) {
+        if (!$supplierKey.val()) {
             Swal.fire("System Error", "Please Enter all the form", "error");
             $supplierKey.addClass("is-invalid").trigger('focus');
         }
-        else if ($productCategoryKey.val().length === 0) {
+        else if (!$productCategoryKey.val()) {
             Swal.fire("System Error", "Please Enter all the form", "error");
             $productCategoryKey.addClass("is-invalid").trigger('focus');
         }
-        else if ($productTypeKey.val().length === 0) {
+        else if (!$productTypeKey.val()) {
             Swal.fire("System Error", "Please Enter all the form", "error");
             $productTypeKey.addClass("is-invalid").trigger('focus');
         }
@@ -682,7 +682,7 @@
                         accessDenied();
                     } else if (typeof (code) === 'string') {
                         callBackError();
-                    } else if {
+                    } else  {
                         location.href = "/";
                     }
                 } else {
@@ -750,7 +750,7 @@
                             accessDenied();
                         } else if (typeof (code) === 'string') {
                             callBackError();
-                        } else if {
+                        } else  {
                             location.href = "/";
                         }
                     } else {

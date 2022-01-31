@@ -136,7 +136,7 @@ public class EmployeeRepository
             else
             {
                 sql +=
-                    @"INSERT INTO employee (employeeId,tenantId,employeeFirstName,employeeLastName,employeeTitle,employeeTitleOfCourtesy,employeeBirthDate,employeeHireDate,employeeAddress,employeeCity,employeeRegion,employeePostalCode,employeeCountry,employeeHomePhone,employeeExtension,employeePhoto,employeeNotes,employeePhotoPath,employeeSalary,isDelete) VALUES (null,@tenantId,@employeeFirstName,@employeeLastName,@employeeTitle,@employeeTitleOfCourtesy,@employeeBirthDate,@employeeHireDate,@employeeAddress,@employeeCity,@employeeRegion,@employeePostalCode,@employeeCountry,@employeeHomePhone,@employeeExtension,@employeePhoto,@employeeNotes,@employeePhotoPath,@employeeSalary,@isDelete);";
+                    @"INSERT INTO employee (employeeId,tenantId,employeeFirstName,employeeLastName,employeeTitle,employeeTitleOfCourtesy,employeeBirthDate,employeeHireDate,employeeAddress,employeeCity,employeeRegion,employeePostalCode,employeeCountry,employeeHomePhone,employeeExtension,employeeNotes,employeePhotoPath,employeeSalary,isDelete) VALUES (null,@tenantId,@employeeFirstName,@employeeLastName,@employeeTitle,@employeeTitleOfCourtesy,@employeeBirthDate,@employeeHireDate,@employeeAddress,@employeeCity,@employeeRegion,@employeePostalCode,@employeeCountry,@employeeHomePhone,@employeeExtension,@employeeNotes,@employeePhotoPath,@employeeSalary,@isDelete);";
 
 
                 parameterModels = new List<ParameterModel>
@@ -244,7 +244,7 @@ public class EmployeeRepository
 
             mySqlCommand.ExecuteNonQuery();
             mySqlTransaction.Commit();
-            lastInsertKey = (int) mySqlCommand.LastInsertedId;
+            lastInsertKey = (int)mySqlCommand.LastInsertedId;
             mySqlCommand.Dispose();
         }
         catch (MySqlException ex)
@@ -299,10 +299,10 @@ public class EmployeeRepository
                         EmployeeTitle = reader["employeeTitle"].ToString(),
                         EmployeeTitleOfCourtesy = reader["employeeTitleOfCourtesy"].ToString(),
                         EmployeeBirthDate = reader["employeeBirthDate"] != DBNull.Value
-                            ? CustomDateTimeConvert.ConvertToDate((DateTime) reader["employeeBirthDate"])
+                            ? CustomDateTimeConvert.ConvertToDate((DateTime)reader["employeeBirthDate"])
                             : null,
                         EmployeeHireDate = reader["employeeHireDate"] != DBNull.Value
-                            ? CustomDateTimeConvert.ConvertToDate((DateTime) reader["employeeHireDate"])
+                            ? CustomDateTimeConvert.ConvertToDate((DateTime)reader["employeeHireDate"])
                             : null,
                         EmployeeAddress = reader["employeeAddress"].ToString(),
                         EmployeeCity = reader["employeeCity"].ToString(),
@@ -311,7 +311,7 @@ public class EmployeeRepository
                         EmployeeCountry = reader["employeeCountry"].ToString(),
                         EmployeeHomePhone = reader["employeeHomePhone"].ToString(),
                         EmployeeExtension = reader["employeeExtension"].ToString(),
-                        EmployeePhoto = (byte[]) reader["employeePhoto"],
+                        EmployeePhoto = reader["employeePhoto"] != DBNull.Value ? (byte[])reader["employeePhoto"] : null,
                         EmployeeNotes = reader["employeeNotes"].ToString(),
                         EmployeePhotoPath = reader["employeePhotoPath"].ToString(),
                         EmployeeSalary = Convert.ToDouble(reader["employeeSalary"])
@@ -395,10 +395,10 @@ public class EmployeeRepository
                         EmployeeTitle = reader["employeeTitle"].ToString(),
                         EmployeeTitleOfCourtesy = reader["employeeTitleOfCourtesy"].ToString(),
                         EmployeeBirthDate = reader["employeeBirthDate"] != DBNull.Value
-                            ? CustomDateTimeConvert.ConvertToDate((DateTime) reader["employeeBirthDate"])
+                            ? CustomDateTimeConvert.ConvertToDate((DateTime)reader["employeeBirthDate"])
                             : null,
                         EmployeeHireDate = reader["employeeHireDate"] != DBNull.Value
-                            ? CustomDateTimeConvert.ConvertToDate((DateTime) reader["employeeHireDate"])
+                            ? CustomDateTimeConvert.ConvertToDate((DateTime)reader["employeeHireDate"])
                             : null,
                         EmployeeAddress = reader["employeeAddress"].ToString(),
                         EmployeeCity = reader["employeeCity"].ToString(),
@@ -407,7 +407,7 @@ public class EmployeeRepository
                         EmployeeCountry = reader["employeeCountry"].ToString(),
                         EmployeeHomePhone = reader["employeeHomePhone"].ToString(),
                         EmployeeExtension = reader["employeeExtension"].ToString(),
-                        EmployeePhoto = (byte[]) reader["employeePhoto"],
+                        EmployeePhoto = reader["employeePhoto"] != DBNull.Value ? (byte[])reader["employeePhoto"] : null,
                         EmployeeNotes = reader["employeeNotes"].ToString(),
                         EmployeePhotoPath = reader["employeePhotoPath"].ToString(),
                         EmployeeSalary = Convert.ToDouble(reader["employeeSalary"])
@@ -474,10 +474,10 @@ public class EmployeeRepository
                         EmployeeTitle = reader["employeeTitle"].ToString(),
                         EmployeeTitleOfCourtesy = reader["employeeTitleOfCourtesy"].ToString(),
                         EmployeeBirthDate = reader["employeeBirthDate"] != DBNull.Value
-                            ? CustomDateTimeConvert.ConvertToDate((DateTime) reader["employeeBirthDate"])
+                            ? CustomDateTimeConvert.ConvertToDate((DateTime)reader["employeeBirthDate"])
                             : null,
                         EmployeeHireDate = reader["employeeHireDate"] != DBNull.Value
-                            ? CustomDateTimeConvert.ConvertToDate((DateTime) reader["employeeHireDate"])
+                            ? CustomDateTimeConvert.ConvertToDate((DateTime)reader["employeeHireDate"])
                             : null,
                         EmployeeAddress = reader["employeeAddress"].ToString(),
                         EmployeeCity = reader["employeeCity"].ToString(),
@@ -486,7 +486,7 @@ public class EmployeeRepository
                         EmployeeCountry = reader["employeeCountry"].ToString(),
                         EmployeeHomePhone = reader["employeeHomePhone"].ToString(),
                         EmployeeExtension = reader["employeeExtension"].ToString(),
-                        EmployeePhoto = (byte[]) reader["employeePhoto"],
+                        EmployeePhoto = reader["employeePhoto"] != DBNull.Value ? (byte[])reader["employeePhoto"] : null,
                         EmployeeNotes = reader["employeeNotes"].ToString(),
                         EmployeePhotoPath = reader["employeePhotoPath"].ToString(),
                         EmployeeSalary = Convert.ToDouble(reader["employeeSalary"])
@@ -508,7 +508,7 @@ public class EmployeeRepository
 
     public uint GetDefault()
     {
-        uint employeeId ;
+        uint employeeId;
         var sql = string.Empty;
         List<ParameterModel> parameterModels = new();
         using var connection = SharedUtil.GetConnection();
@@ -537,7 +537,7 @@ public class EmployeeRepository
             }
 
             _sharedUtil.SetSqlSession(sql, parameterModels);
-            employeeId = (uint) mySqlCommand.ExecuteScalar();
+            employeeId = (uint)mySqlCommand.ExecuteScalar();
         }
         catch (MySqlException ex)
         {
@@ -633,6 +633,7 @@ public class EmployeeRepository
         {
             connection.Open();
             var mySqlTransaction = connection.BeginTransaction();
+
             sql = @"
             UPDATE  employee 
             SET     tenantId                =   @tenantId,
@@ -648,8 +649,12 @@ public class EmployeeRepository
                     employeePostalCode      =   @employeePostalCode,
                     employeeCountry         =   @employeeCountry,
                     employeeHomePhone       =   @employeeHomePhone,
-                    employeeExtension       =   @employeeExtension,
-                    employeePhoto           =   @employeePhoto,
+                    employeeExtension       =   @employeeExtension,";
+            if (employeeModel.EmployeePhoto?.Length > 0)
+            {
+                sql += @"employeePhoto           =   @employeePhoto,";
+            }
+            sql += @"
                     employeeNotes           =   @employeeNotes,
                     employeePhotoPath       =   @employeePhotoPath,
                     employeeSalary          =   @employeeSalary,
