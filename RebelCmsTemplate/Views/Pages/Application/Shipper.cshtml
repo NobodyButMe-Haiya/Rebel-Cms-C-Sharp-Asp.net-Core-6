@@ -202,8 +202,8 @@
                 data: {
                     mode: 'create',
                     leafCheckKey: @navigationModel.LeafCheckKey,
-                    shipperName: shipperName.val(),
-                    shipperPhone: shipperPhone.val(),
+                    shipperName: $shipperName.val(),
+                    shipperPhone: $shipperPhone.val(),
                 }, statusCode: {
                     500: function () {
                         Swal.fire("System Error", "@SharedUtil.UserErrorNotification", "error");
@@ -219,17 +219,15 @@
                 let status = data.status;
                 let code = data.code;
                 if (status) {
-                    const lastInsertKey = data.lastInsertKey;
-                    $("#tableBody").prepend(template(lastInsertKey, $shipperName.val(), $shipperPhone.val()));
+                    $("#tableBody").prepend(template(data.lastInsertKey, $shipperName.val(), $shipperPhone.val()));
                     Swal.fire({
                         title: 'Success!',
                         text: '@SharedUtil.RecordCreated',
                         icon: 'success',
                         confirmButtonText: 'Cool'
                     });
-                    shipperKey.val('');
-                    shipperName.val('');
-                    shipperPhone.val('');
+                    $shipperName.val('');
+                    $shipperPhone.val('');
                 } else if (status === false) {
                     if (parseInt(code) === accessDeniedCode) {
                         accessDenied();
@@ -364,7 +362,7 @@
     }
     function updateRecord(shipperKey) {
         const $supplierName = $("#shipperName-" + shipperKey);
-        const $supplierPhone = $("#shipperPhone-" + shipperKey).val()
+        const $supplierPhone = $("#shipperPhone-" + shipperKey);
         if ($supplierName.val().length === 0) {
             Swal.fire("System Error", "Please Enter all the form", "error");
             $supplierName.addClass("is-invalid").trigger('focus');
@@ -378,9 +376,10 @@
                     mode: 'update',
                     leafCheckKey: @navigationModel.LeafCheckKey,
                     shipperKey: shipperKey,
-                    shipperName: $shipperName.val(),
-                    shipperPhone: $supplierName.val(),
-                }, statusCode: {
+                    shipperName: $supplierName.val(),
+                    shipperPhone: $supplierPhone.val(),
+                }, 
+                statusCode: {
                     500: function () {
                         Swal.fire("System Error", "@SharedUtil.UserErrorNotification", "error");
                     }

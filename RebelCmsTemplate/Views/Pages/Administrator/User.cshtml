@@ -194,7 +194,7 @@
     var rowModels = @Json.Serialize(roleModels);
 </script>
 <script>
-write me  lloo
+
     function resetRecord() {
         readRecord();
         $("#search").val("");
@@ -443,14 +443,15 @@ write me  lloo
     }
     function updateRecord(userKey) {
         let $roleKey = $("#roleKey-" + userKey);
-        let $userName = $("#userName-" + userKey).val();
-        let $userPassword = $("#userPassword-" + userKey).val()
+        let $userName = $("#userName-" + userKey);
+        let $userEmail = $("#userEmail-" + userKey);
+        let $userPassword = $("#userPassword-" + userKey);
         if (!$roleKey.val()) {
-            Swal.fire("System Error", "Please Enter all the form", "error");
+            Swal.fire("System Error", "Please Enter all the form:[Role]", "error");
             $roleKey.addClass("is-invalid").trigger('focus');
         }
         else if ($userName.val().length === 0) {
-            Swal.fire("System Error", "Please Enter all the form", "error");
+            Swal.fire("System Error", "Please Enter all the form:[Name]", "error");
             $userName.addClass("is-invalid").trigger('focus');
         }
         else {
@@ -465,7 +466,7 @@ write me  lloo
                     leafCheckKey: @navigationModel.LeafCheckKey,
                     roleKey: $roleKey.val(),
                     userName: $userName.val(),
-                    userEmail: $userName.val(),
+                    userEmail: $userEmail.val(),
                     userPassword: $userPassword.val(),
                     userKey: userKey
                 },

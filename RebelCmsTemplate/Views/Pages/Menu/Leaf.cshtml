@@ -484,7 +484,8 @@
                 Swal.fire("System", "@SharedUtil.RecordUpdated", 'success')
             } else if (status === false) {
                 if (parseInt(code) === accessDeniedCode) {
-                    accessDenied();
+                    console.log("here problem")
+                  //  accessDenied();
                 } else if (typeof (code) === 'string') {
                     callBackError();
                 } else {

@@ -66,7 +66,7 @@ public class UserController : Controller
                         uint roleKey;
                         if (!string.IsNullOrWhiteSpace(Request.Form["roleKey"]))
                         {
-                            if (!uint.TryParse(Request.Form["productCategoryKey"], out roleKey))
+                            if (!uint.TryParse(Request.Form["roleKey"], out roleKey))
                             {
                                 code = ((int) ReturnCodeEnum.ACCESS_DENIED_NO_MODE).ToString();
                                 return Ok(new {status, code});
@@ -161,7 +161,7 @@ public class UserController : Controller
                 }
                 else
                 {
-                    if (!string.IsNullOrEmpty(Request.Form["roleKey"]))
+                    if (!string.IsNullOrEmpty(Request.Form["userKey"]))
                     {
                         try
                         {
@@ -173,7 +173,7 @@ public class UserController : Controller
                             uint roleKey;
                             if (!string.IsNullOrWhiteSpace(Request.Form["roleKey"]))
                             {
-                                if (!uint.TryParse(Request.Form["productCategoryKey"], out roleKey))
+                                if (!uint.TryParse(Request.Form["roleKey"], out roleKey))
                                 {
                                     code = ((int) ReturnCodeEnum.ACCESS_DENIED_NO_MODE).ToString();
                                     return Ok(new {status, code});

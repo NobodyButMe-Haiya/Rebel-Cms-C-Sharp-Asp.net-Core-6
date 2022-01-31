@@ -212,14 +212,14 @@
                 let code = data.code;
                 if (status) {
                     const lastInsertKey = data.lastInsertKey;
-                    $("#tableBody").prepend(template(lastInsertKey, roleName.val()));
+                    $("#tableBody").prepend(template(lastInsertKey, $roleName.val()));
                     Swal.fire({
                         title: 'Success!',
                         text: '@SharedUtil.RecordCreated',
                         icon: 'success',
                         confirmButtonText: 'Cool'
                     });
-                    roleName.val('');
+                    $roleName.val('');
                 } else if (status === false) {
                     if (parseInt(code) === accessDeniedCode) {
                         accessDenied();

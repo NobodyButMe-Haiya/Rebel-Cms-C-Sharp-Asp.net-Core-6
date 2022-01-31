@@ -147,7 +147,7 @@ public class LeafController : Controller
                 }
                 else
                 {
-                    if (!string.IsNullOrEmpty(Request.Form["leafId"]))
+                    if (!string.IsNullOrEmpty(Request.Form["leafKey"]))
                     {
                         try
                         {
@@ -209,7 +209,7 @@ public class LeafController : Controller
                 }
                 else
                 {
-                    if (!string.IsNullOrEmpty(Request.Form["leafId"]))
+                    if (!string.IsNullOrEmpty(Request.Form["leafKey"]))
                     {
                         try
                         {

@@ -10,8 +10,12 @@
   <component name="ChangeListManager">
     <list default="true" id="a8c2ef3b-a7e0-43bd-a464-513e78306137" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/.idea.RebelCmsTemplate/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.RebelCmsTemplate/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/RebelCmsTemplate/Views/Pages/Administrator/Log.cshtml" beforeDir="false" afterPath="$PROJECT_DIR$/RebelCmsTemplate/Views/Pages/Administrator/Log.cshtml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/RebelCmsTemplate/Views/Pages/Application/Order.cshtml" beforeDir="false" afterPath="$PROJECT_DIR$/RebelCmsTemplate/Views/Pages/Application/Order.cshtml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/RebelCmsTemplate/Controllers/Administrator/UserController.cs" beforeDir="false" afterPath="$PROJECT_DIR$/RebelCmsTemplate/Controllers/Administrator/UserController.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/RebelCmsTemplate/Views/Pages/Administrator/Role.cshtml" beforeDir="false" afterPath="$PROJECT_DIR$/RebelCmsTemplate/Views/Pages/Administrator/Role.cshtml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/RebelCmsTemplate/Views/Pages/Administrator/User.cshtml" beforeDir="false" afterPath="$PROJECT_DIR$/RebelCmsTemplate/Views/Pages/Administrator/User.cshtml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/RebelCmsTemplate/Views/Pages/Application/Employee.cshtml" beforeDir="false" afterPath="$PROJECT_DIR$/RebelCmsTemplate/Views/Pages/Application/Employee.cshtml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/RebelCmsTemplate/Views/Pages/Application/Shipper.cshtml" beforeDir="false" afterPath="$PROJECT_DIR$/RebelCmsTemplate/Views/Pages/Application/Shipper.cshtml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/RebelCmsTemplate/Views/Pages/Menu/Leaf.cshtml" beforeDir="false" afterPath="$PROJECT_DIR$/RebelCmsTemplate/Views/Pages/Menu/Leaf.cshtml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -90,7 +94,7 @@
       <workItem from="1643454755918" duration="1319000" />
       <workItem from="1643473832116" duration="74000" />
       <workItem from="1643509423242" duration="10294000" />
-      <workItem from="1643614234710" duration="8953000" />
+      <workItem from="1643614234710" duration="12475000" />
     </task>
     <task id="LOCAL-00001" summary="refactor .. all mul and pri key will be uint .. unsigned interger .. only positive allow.">
       <created>1643523535518</created>
