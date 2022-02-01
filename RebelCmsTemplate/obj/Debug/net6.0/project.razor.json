@@ -16428,6 +16428,11 @@
       "FileKind": "mvc"
     },
     {
+      "FilePath": "/Users/user/Projects/Rebel-Cms-C-Sharp-Asp.net-Core-6/RebelCmsTemplate/Views/Pages/Setting/OrderStatus.cshtml",
+      "TargetPath": "Views\\Pages\\Setting\\OrderStatus.cshtml",
+      "FileKind": "mvc"
+    },
+    {
       "FilePath": "/Users/user/Projects/Rebel-Cms-C-Sharp-Asp.net-Core-6/RebelCmsTemplate/Views/Error/500.cshtml",
       "TargetPath": "Views\\Error\\500.cshtml",
       "FileKind": "mvc"

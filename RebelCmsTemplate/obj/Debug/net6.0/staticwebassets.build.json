@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "luHt9b+aw2kOH0WgqHLPea3uYYHPEblt2+srshWDGXE=",
+  "Hash": "XdcUpGah1BzPa386erXJm7OyBDxv4MSzlhSLVUhV7+Y=",
   "Source": "RebelCmsTemplate",
   "BasePath": "_content/RebelCmsTemplate",
   "Mode": "Default",
@@ -49,6 +49,23 @@
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "/Users/user/Projects/Rebel-Cms-C-Sharp-Asp.net-Core-6/RebelCmsTemplate/obj/Debug/net6.0/scopedcss/projectbundle/RebelCmsTemplate.bundle.scp.css"
+    },
+    {
+      "Identity": "/Users/user/Projects/Rebel-Cms-C-Sharp-Asp.net-Core-6/RebelCmsTemplate/wwwroot/.DS_Store",
+      "SourceId": "RebelCmsTemplate",
+      "SourceType": "Discovered",
+      "ContentRoot": "/Users/user/Projects/Rebel-Cms-C-Sharp-Asp.net-Core-6/RebelCmsTemplate/wwwroot/",
+      "BasePath": "_content/RebelCmsTemplate",
+      "RelativePath": ".DS_Store",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot/.DS_Store"
     },
     {
       "Identity": "/Users/user/Projects/Rebel-Cms-C-Sharp-Asp.net-Core-6/RebelCmsTemplate/wwwroot/css/app.css",
